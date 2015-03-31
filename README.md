@@ -1,3 +1,3 @@
-**The `dev` branch is discontinued in favor of a one branch workflow!**
+Forked from https://www.github.com/BVLC/caffe dev branch in 2015/3/31
 
-This was adopted in the `rc2` release -- see #1743 for detail.
+Added Batch Normalization, Parametric ReLU, Locally Connected Layer.
