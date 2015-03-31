@@ -917,6 +917,12 @@ const char* UpgradeV1LayerType(const V1LayerParameter_LayerType type) {
     return "WindowData";
   case V1LayerParameter_LayerType_THRESHOLD:
     return "Threshold";
+  case V1LayerParameter_LayerType_BN:
+	return "BN";
+  case V1LayerParameter_LayerType_PRELU:
+    return "PReLU";
+  case V1LayerParameter_LayerType_LOCAL:
+    return "Local";
   default:
     LOG(FATAL) << "Unknown V1LayerParameter layer type: " << type;
     return "";

@@ -38,7 +38,7 @@
 *.sublime-project
 
 # Eclipse Project settings
-#*.*project
+*.*project
 .settings
 
 # QtCreator files
@@ -64,6 +64,7 @@ models/*
 *lmdb
 
 # build, distribute, and bins (+ python proto bindings)
+build
 .build_debug/*
 .build_release/*
 distribute/*
@@ -72,17 +73,6 @@ distribute/*
 python/caffe/proto/
 cmake_build
 .cmake_build
-*.exe
-*.lib
-*.dll
-*.pdb
-*.sdf
-*.obj
-Release
-Debug
-x64
-*.opensdf
-bin
 
 # Generated documentation
 docs/_site

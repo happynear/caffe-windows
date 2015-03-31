@@ -60,6 +60,7 @@ void GlobalInit(int* pargc, char*** pargv) {
   ::google::InitGoogleLogging(*(pargv)[0]);
   // Provide a backtrace on segfault.
   //::google::InstallFailureSignalHandler();
+  initGlog();
 }
 
 #ifdef CPU_ONLY  // CPU-only Caffe.

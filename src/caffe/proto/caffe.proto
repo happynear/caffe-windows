@@ -801,6 +801,9 @@ message V1LayerParameter {
     TANH = 23;
     WINDOW_DATA = 24;
     THRESHOLD = 31;
+	PRELU = 40;
+	LOCAL = 41;
+	BN = 42;
   }
   optional LayerType type = 5;
   repeated BlobProto blobs = 6;
@@ -844,6 +847,9 @@ message V1LayerParameter {
   optional TransformationParameter transform_param = 36;
   optional LossParameter loss_param = 42;
   optional V0LayerParameter layer = 1;
+  optional BNParameter bn_param = 43;
+  optional LocalParameter local_param = 44;
+  optional PReLUParameter prelu_param = 45;
 }
 
 // DEPRECATED: V0LayerParameter is the old way of specifying layer parameters

@@ -149,8 +149,8 @@ class XavierFiller : public Filler<Dtype> {
   virtual void Fill(Blob<Dtype>* blob) {
     CHECK(blob->count());
     int fan_in = blob->count() / blob->num();
-    Dtype scale = sqrt(Dtype(3) / fan_in);
-    caffe_rng_uniform<Dtype>(blob->count(), -scale, scale,
+    Dtype scale = sqrt(Dtype(2) / fan_in);
+    caffe_rng_gaussian<Dtype>(blob->count(), Dtype(0), scale,
         blob->mutable_cpu_data());
     CHECK_EQ(this->filler_param_.sparse(), -1)
          << "Sparsity not supported by this Filler.";
