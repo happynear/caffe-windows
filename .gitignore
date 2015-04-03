@@ -73,6 +73,8 @@ distribute/*
 python/caffe/proto/
 cmake_build
 .cmake_build
+3rdparty
+bin
 
 # Generated documentation
 docs/_site
