@@ -16,6 +16,10 @@ Setup step:
 
 6. Compile.
 
-tips: If you have MKL library, please add the preprocess macro "USE_MKL" defined in the setting of the project.
+TIPS: If you have MKL library, please add the preprocess macro "USE_MKL" defined in the setting of the project.
+
+Matlab Wrapper
+======
+Just change the Matlab include and library path defined in the settings and compile.
 
 
