@@ -7,6 +7,11 @@
 #include "caffe/util/math_functions.hpp"
 #include "caffe/util/rng.hpp"
 
+#ifdef _MSC_VER
+#define __builtin_popcount __popcnt 
+#define __builtin_popcountl __popcnt
+#endif
+
 namespace caffe {
 
 template<>
@@ -337,7 +342,7 @@ float caffe_cpu_dot<float>(const int n, const float* x, const float* y);
 
 template
 double caffe_cpu_dot<double>(const int n, const double* x, const double* y);
-/*
+
 template <>
 int caffe_cpu_hamming_distance<float>(const int n, const float* x,
                                   const float* y) {
@@ -359,7 +364,7 @@ int caffe_cpu_hamming_distance<double>(const int n, const double* x,
   }
   return dist;
 }
-*/
+
 template <>
 float caffe_cpu_asum<float>(const int n, const float* x) {
   return cblas_sasum(n, x, 1);

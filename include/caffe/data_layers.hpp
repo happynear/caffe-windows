@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "boost/scoped_ptr.hpp"
-#include "hdf5.h"
+#include "hdf5/hdf5.h"
 
 #include "caffe/blob.hpp"
 #include "caffe/common.hpp"

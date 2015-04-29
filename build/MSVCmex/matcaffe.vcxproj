@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>MainCaller</ProjectName>
-    <ProjectGuid>{3FF425A9-4745-4889-B568-4BBCA2016D22}</ProjectGuid>
+    <ProjectName>matcaffe</ProjectName>
+    <ProjectGuid>{C8B701B1-A48F-46DF-8256-3E18B5E1E85A}</ProjectGuid>
     <RootNamespace>MainCaller</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -37,7 +37,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -83,9 +83,11 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>../../bin\</OutDir>
+    <OutDir>../../matlab/caffe</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>caffe</TargetName>
+    <TargetExt>.mexw64</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -221,8 +223,7 @@ cd %origin_dir%</Command>
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalLibraryDirectories>../../3rdparty/lib;D:/CUDA/Toolkit/lib/x64;D:/CUDA/Toolkit/lib/x64/$(Configuration);C:\Program Files\MATLAB\R2014a\extern\lib\win64\microsoft;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;D:\CUDA\ToolKit\lib\x64\cudart.lib;D:\CUDA\ToolKit\lib\x64\cublas.lib;D:\CUDA\ToolKit\lib\x64\curand.lib;libprotobuf.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;opencv_highgui248.lib;opencv_imgproc248.lib;opencv_core248.lib;opencv_ml248.lib;opencv_objdetect248.lib;opencv_contrib248.lib;opencv_flann248.lib;opencv_stitching248.lib;opencv_superres248.lib;shlwapi.lib;leveldb.lib;libgsl-0.lib;libgslcblas-0.lib;cublas.lib;cublas_device.lib;curand.lib;cudart.lib;cuda.lib;libglog.lib;gflags.lib;lmdb.lib;cudnn64_65.lib;libmx.lib;libmex.lib;libmat.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
+      <ModuleDefinitionFile>../../matlab/caffe/matcaffe.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -241,6 +242,7 @@ cd %origin_dir%</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\matlab\caffe\matcaffe.cpp" />
     <ClCompile Include="..\..\src\caffe\blob.cpp" />
     <ClCompile Include="..\..\src\caffe\common.cpp" />
     <ClCompile Include="..\..\src\caffe\data_transformer.cpp" />
@@ -310,7 +312,6 @@ cd %origin_dir%</Command>
     <ClCompile Include="..\..\src\caffe\util\io.cpp" />
     <ClCompile Include="..\..\src\caffe\util\math_functions.cpp" />
     <ClCompile Include="..\..\src\caffe\util\upgrade_proto.cpp" />
-    <ClCompile Include="..\..\tools\caffe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\caffe\blob.hpp" />
@@ -370,7 +371,9 @@ cd %origin_dir%</Command>
     <CudaCompile Include="..\..\src\caffe\layers\local_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\lrn_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\mvn_layer.cu" />
-    <CudaCompile Include="..\..\src\caffe\layers\normalize_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\normalize_layer.cu">
+      <FileType>Document</FileType>
+    </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\pooling_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\power_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\prelu_layer.cu" />
@@ -386,6 +389,9 @@ cd %origin_dir%</Command>
     <CudaCompile Include="..\..\src\caffe\layers\threshold_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\util\im2col.cu" />
     <CudaCompile Include="..\..\src\caffe\util\math_functions.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\matlab\caffe\matcaffe.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

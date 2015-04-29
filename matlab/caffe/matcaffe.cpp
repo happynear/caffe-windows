@@ -55,6 +55,7 @@ static mxArray* do_forward(const mxArray* const bottom) {
   const vector<Blob<float>*>& input_blobs = net_->input_blobs();
   if (static_cast<unsigned int>(mxGetDimensions(bottom)[0]) !=
       input_blobs.size()) {
+		  mexPrintf("mxGetDimensions(bottom)[0]: %d\n",static_cast<unsigned int>(mxGetDimensions(bottom)[0]));
     mex_error("Invalid input size");
   }
   for (unsigned int i = 0; i < input_blobs.size(); ++i) {
@@ -296,7 +297,7 @@ static void init(MEX_ARGS) {
   mxFree(model_file);
   mxFree(phase_name);
 
-  init_key = random();  // NOLINT(caffe/random_fn)
+  init_key = rand();  // NOLINT(caffe/random_fn)
 
   if (nlhs == 1) {
     plhs[0] = mxCreateDoubleScalar(init_key);

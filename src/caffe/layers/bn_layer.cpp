@@ -50,7 +50,7 @@ namespace caffe {
 
 		// Check if we need to set up the weights
 		if (this->blobs_.size() > 0) {
-			LOG(INFO) << "Skipping parameter initialization";
+			//LOG(INFO) << "Skipping parameter initialization";
 		} else {
 			this->blobs_.resize(4);
 

@@ -64,9 +64,11 @@ models/*
 *lmdb
 
 # build, distribute, and bins (+ python proto bindings)
-build
 .build_debug/*
 .build_release/*
+Release
+Debug
+x64
 distribute/*
 *.testbin
 *.bin
@@ -75,6 +77,14 @@ cmake_build
 .cmake_build
 3rdparty
 bin
+*.sdf
+*.opensdf
+*.pdb
+*.rar
+*.lib
+*.dll
+*.exp
+*.deps
 
 # Generated documentation
 docs/_site

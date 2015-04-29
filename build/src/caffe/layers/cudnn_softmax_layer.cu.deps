@@ -1,685 +1,806 @@
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\cuda_runtime.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_config.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\sal.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\ConcurrencySal.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\vadefs.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\limits.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\stddef.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\channel_descriptor.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\cuda_runtime_api.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\cuda_device_runtime_api.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\cuda_runtime_api.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\common_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\string.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\time.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\wtime.inl
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\time.inl
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\math_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\math.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\stdlib.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cmath
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\yvals.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xkeycheck.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\use_ansi.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\math.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xtgmath.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xtr1common
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cstdlib
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\cuda_surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\channel_descriptor.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\cuda_texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\channel_descriptor.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\sm_11_atomic_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\sm_12_atomic_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\sm_13_double_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\sm_20_atomic_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\sm_32_atomic_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\sm_35_atomic_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\sm_32_atomic_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\sm_20_intrinsics.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\sm_30_intrinsics.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\sm_32_intrinsics.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\sm_35_intrinsics.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\sm_32_intrinsics.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\cuda_surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_fetch_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\cuda_texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_indirect_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_indirect_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\builtin_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\driver_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\surface_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\texture_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\host_defines.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_functions.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\device_launch_parameters.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\vector_types.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\algorithm
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xmemory
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xmemory0
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\limits
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\ymath.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cfloat
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\float.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtwrn.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\climits
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cwchar
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\wchar.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\swprintf.inl
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xstddef
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cstddef
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\new
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\exception
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\eh.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\malloc.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xutility
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\utility
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\iosfwd
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cstdio
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\stdio.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cstring
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdbg.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\type_traits
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xrefwrap
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xatomic0.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\intrin.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\setjmp.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\immintrin.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\wmmintrin.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\nmmintrin.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\smmintrin.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\tmmintrin.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\pmmintrin.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\emmintrin.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xmmintrin.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\mmintrin.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\ammintrin.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\vector
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\stdexcept
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xstring
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/device_vector.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/config.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/config/config.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/config/simple_defines.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/config/compiler.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\cuda.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/config/host_system.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/config/device_system.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/config/host_device.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\host_defines.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/config/debug.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/config/compiler_fence.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/config/forceinline.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/config/hd_warning_disable.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/config/global_workarounds.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/device_malloc_allocator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/device_ptr.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/memory.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/type_traits/pointer_traits.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/type_traits.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/type_traits/has_trivial_assign.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/type_traits/is_metafunction_defined.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/type_traits/has_nested_type.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/iterator_traits.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\iterator
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\istream
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\ostream
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\ios
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xlocnum
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\streambuf
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xiosbase
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xlocale
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\typeinfo
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xlocinfo
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xlocinfo.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\ctype.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\locale.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xdebug
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xfacet
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\system_error
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cerrno
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\errno.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\share.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/iterator_traversal_tags.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/host_system_tag.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/execution_policy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/execution_policy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/device_system_tag.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/execution_policy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/any_system_tag.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/iterator_traits.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/iterator_categories.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/universal_categories.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/iterator_category_to_traversal.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/iterator_category_to_system.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/pointer.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/iterator_adaptor.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/iterator_facade.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/iterator_facade_category.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/is_iterator_category.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/distance_from_result.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/use_default.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/iterator_adaptor_base.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/reference_forward_declaration.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/pointer.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/reference.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/reference.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/select_system.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/minimum_system.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/type_traits/minimum_type.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/type_traits.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/memory.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/tag.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/pair.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/pair.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/swap.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/memory.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/malloc_and_free.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/malloc_and_free.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/raw_pointer_cast.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/malloc_and_free.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/guarded_cuda_runtime_api.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\cuda_runtime_api.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/system_error.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\string
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/error_code.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/errno.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\iostream
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/error_category.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/functional.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\functional
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xfunctional
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\tuple
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/placeholder.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/actor.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/tuple.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/tuple.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/value.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/composite.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/operators/assignment_operator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/operators/operator_adaptors.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/type_traits/result_of.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/type_traits/function_traits.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/actor.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/argument.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/operators.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/operators/arithmetic_operators.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/operators/relational_operators.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/operators/logical_operators.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/operators/bitwise_operators.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/functional/operators/compound_assignment_operators.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/error_code.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/error_condition.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/system_error.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/error.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\driver_types.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/error.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/bad_alloc.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/static_assert.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/malloc_and_free.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/get_value.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/get_value.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/get_value.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/assign_value.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/copy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/copy.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/copy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/copy.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/internal_functional.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/tuple_of_iterator_references.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/raw_reference_cast.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/raw_reference_cast.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/tuple_transform.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/tuple_meta_transform.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\memory
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\stdint.h
-D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/transform.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/transform.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/transform.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/transform.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/for_each.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/for_each.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/for_each.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/for_each.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/for_each.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/internal/scalar/for_each.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/function.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/for_each.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/for_each.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/minmax.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/distance.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/distance.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/advance.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/advance.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/advance.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/advance.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/distance.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/distance.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/detail/launch_closure.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/cuda_launch_config.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/detail/launch_closure.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/temporary_array.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/tagged_iterator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/contiguous_storage.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/normal_iterator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/is_trivial_iterator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/allocator_traits.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/allocator_traits.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/type_traits/has_member_function.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/type_traits/is_call_possible.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/contiguous_storage.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/copy_construct_range.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/copy_construct_range.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/zip_iterator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/zip_iterator_base.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/minimum_category.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/zip_iterator.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/default_construct_range.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/default_construct_range.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/uninitialized_fill.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/uninitialized_fill.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/uninitialized_fill.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/uninitialized_fill.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/fill.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/fill.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/fill.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/generate.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/generate.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/generate.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/generate.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/generate.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/generate.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/generate.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/fill.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/fill.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/fill.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/fill.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/util/align.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/cstdint.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/runtime_introspection.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/runtime_introspection.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/util/blocking.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system_error.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/uninitialized_fill.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/uninitialized_fill.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/uninitialized_fill.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/destroy_range.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/destroy_range.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/fill_construct_range.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/fill_construct_range.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/temporary_allocator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/tagged_allocator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/tagged_allocator.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/memory.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/temporary_buffer.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/temporary_buffer.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/temporary_buffer.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/temporary_buffer.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/temporary_buffer.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/temporary_buffer.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/temporary_allocator.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/allocator/no_throw_allocator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/temporary_array.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/synchronize.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/synchronize.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/detail/launch_calculator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/detail/launch_calculator.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/transform.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/transform.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/transform.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/copy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/copy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/internal/scalar/copy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/internal/scalar/copy.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/dispatch/is_trivial_copy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/internal/scalar/general_copy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/internal/scalar/trivial_copy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/copy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/copy.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/copy_device_to_device.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/copy_device_to_device.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/copy_cross_system.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/copy_cross_system.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/trivial_copy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/trivial_copy.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/trivial_copy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/trivial_copy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/assign_value.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/assign_value.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/iter_swap.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/iter_swap.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/iter_swap.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/swap.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/swap.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/swap_ranges.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/swap_ranges.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/swap_ranges.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/swap_ranges.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/swap_ranges.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/swap_ranges.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/device_ptr.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/device_reference.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/device_reference.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/device_malloc.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/device_malloc.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/device_free.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/device_free.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/vector_base.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/reverse_iterator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/reverse_iterator_base.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/reverse_iterator.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/vector_base.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/overlapped_copy.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/equal.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/equal.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/equal.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/equal.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/mismatch.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/mismatch.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/mismatch.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/mismatch.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/find.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/find.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/find.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/find.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/reduce.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/reduce.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/reduce.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/reduce.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/reduce_by_key.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/reduce_by_key.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/type_traits/iterator/is_output_iterator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/any_assign.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/scatter.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/scatter.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/scatter.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/scatter.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/permutation_iterator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/permutation_iterator_base.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/scatter.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/scatter.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/scatter.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/scan.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/scan.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/scan.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/scan.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/scan_by_key.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/scan_by_key.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/replace.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/replace.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/replace.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/replace.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/replace.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/replace.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/replace.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/scan.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/scan.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/internal/scalar/scan.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/scan.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/scan.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/detail/fast_scan.h
-c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\thrust\system\cuda\detail\detail\fast_scan.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/reduce_intervals.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/reduce_intervals.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/internal/decompose.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/extern_shared_ptr.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/block/reduce.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/default_decomposition.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/default_decomposition.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/detail/uninitialized.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/detail/alignment.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/scan_by_key.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/scan_by_key.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/internal/scalar/scan_by_key.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/scan_by_key.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/reduce.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/reduce.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/internal/scalar/reduce.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/reduce.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/reduce.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/reduce_by_key.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/reduce_by_key.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/internal/scalar/reduce_by_key.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/type_traits/algorithm/intermediate_type_from_function_and_iterators.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/reduce_by_key.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/reduce_by_key.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/counting_iterator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/counting_iterator.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/numeric_traits.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/transform_iterator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/transform_iterator.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/type_traits/iterator/is_discard_iterator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/discard_iterator.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/iterator/detail/discard_iterator_base.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/block/inclusive_scan.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/extrema.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/extrema.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/extrema.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/extrema.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/transform_reduce.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/transform_reduce.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/transform_reduce.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/generic/transform_reduce.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/transform_reduce.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/transform_reduce.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/transform_reduce.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/extrema.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/extrema.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/internal/scalar/extrema.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/extrema.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/find.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/find.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/internal/scalar/find.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/find.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/mismatch.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/mismatch.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/mismatch.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/detail/adl/equal.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cpp/detail/equal.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/system/cuda/detail/equal.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/device_vector.inl
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/host_vector.h
-C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include\thrust/detail/host_vector.inl
+D:\CUDA\Toolkit\include\cuda_runtime.h
+d:\cuda\toolkit\include\host_config.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\sal.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\ConcurrencySal.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\vadefs.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\host_defines.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\limits.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\stddef.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\channel_descriptor.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\cuda_runtime_api.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\cuda_device_runtime_api.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\cuda_runtime_api.h
+d:\cuda\toolkit\include\driver_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\vector_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\common_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\host_defines.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\string.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\time.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\wtime.inl
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\time.inl
+d:\cuda\toolkit\include\math_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\host_defines.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\math.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\stdlib.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cmath
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\yvals.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xkeycheck.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\use_ansi.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\math.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xtgmath.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xtr1common
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cstdlib
+d:\cuda\toolkit\include\cuda_surface_types.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\channel_descriptor.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\cuda_texture_types.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\channel_descriptor.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\device_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\sm_11_atomic_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\sm_12_atomic_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\sm_13_double_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\sm_20_atomic_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\sm_32_atomic_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\sm_35_atomic_functions.h
+d:\cuda\toolkit\include\sm_32_atomic_functions.h
+d:\cuda\toolkit\include\sm_20_intrinsics.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\sm_30_intrinsics.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\sm_32_intrinsics.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\sm_35_intrinsics.h
+d:\cuda\toolkit\include\sm_32_intrinsics.h
+d:\cuda\toolkit\include\surface_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\cuda_surface_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\vector_functions.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\texture_fetch_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\cuda_texture_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_functions.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\texture_indirect_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\vector_functions.h
+d:\cuda\toolkit\include\surface_indirect_functions.h
+d:\cuda\toolkit\include\builtin_types.h
+d:\cuda\toolkit\include\device_types.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\surface_types.h
+d:\cuda\toolkit\include\texture_types.h
+d:\cuda\toolkit\include\vector_types.h
+d:\cuda\toolkit\include\host_defines.h
+d:\cuda\toolkit\include\vector_functions.h
+d:\cuda\toolkit\include\device_launch_parameters.h
+d:\cuda\toolkit\include\vector_types.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\algorithm
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xmemory
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xmemory0
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\limits
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\ymath.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cfloat
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\float.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtwrn.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\climits
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cwchar
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\wchar.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\swprintf.inl
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xstddef
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cstddef
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\new
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\exception
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\eh.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\malloc.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xutility
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\utility
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\iosfwd
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cstdio
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\stdio.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cstring
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdbg.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\type_traits
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xrefwrap
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xatomic0.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\intrin.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\setjmp.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\immintrin.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\wmmintrin.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\nmmintrin.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\smmintrin.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\tmmintrin.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\pmmintrin.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\emmintrin.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xmmintrin.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\mmintrin.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\ammintrin.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\vector
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\stdexcept
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xstring
+D:\CUDA\Toolkit\include\thrust/device_vector.h
+D:\CUDA\Toolkit\include\thrust/detail/config.h
+D:\CUDA\Toolkit\include\thrust/detail/config/config.h
+D:\CUDA\Toolkit\include\thrust/detail/config/simple_defines.h
+D:\CUDA\Toolkit\include\thrust/detail/config/compiler.h
+D:\CUDA\Toolkit\include\cuda.h
+D:\CUDA\Toolkit\include\thrust/detail/config/host_system.h
+D:\CUDA\Toolkit\include\thrust/detail/config/device_system.h
+D:\CUDA\Toolkit\include\thrust/detail/config/host_device.h
+D:\CUDA\Toolkit\include\host_defines.h
+D:\CUDA\Toolkit\include\thrust/detail/config/debug.h
+D:\CUDA\Toolkit\include\thrust/detail/config/compiler_fence.h
+D:\CUDA\Toolkit\include\thrust/detail/config/forceinline.h
+D:\CUDA\Toolkit\include\thrust/detail/config/hd_warning_disable.h
+D:\CUDA\Toolkit\include\thrust/detail/config/global_workarounds.h
+D:\CUDA\Toolkit\include\thrust/device_malloc_allocator.h
+D:\CUDA\Toolkit\include\thrust/device_ptr.h
+D:\CUDA\Toolkit\include\thrust/memory.h
+D:\CUDA\Toolkit\include\thrust/detail/type_traits/pointer_traits.h
+D:\CUDA\Toolkit\include\thrust/detail/type_traits.h
+D:\CUDA\Toolkit\include\thrust/detail/type_traits/has_trivial_assign.h
+D:\CUDA\Toolkit\include\thrust/detail/type_traits/is_metafunction_defined.h
+D:\CUDA\Toolkit\include\thrust/detail/type_traits/has_nested_type.h
+D:\CUDA\Toolkit\include\thrust/iterator/iterator_traits.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\iterator
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\istream
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\ostream
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\ios
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xlocnum
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\streambuf
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xiosbase
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xlocale
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\typeinfo
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xlocinfo
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xlocinfo.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\ctype.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\locale.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xdebug
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xfacet
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\system_error
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\cerrno
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\errno.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\share.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/iterator_traversal_tags.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/host_system_tag.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/execution_policy.h
+D:\CUDA\Toolkit\include\thrust/detail/execution_policy.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/device_system_tag.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/execution_policy.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/any_system_tag.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/iterator_traits.inl
+D:\CUDA\Toolkit\include\thrust/iterator/iterator_categories.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/universal_categories.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/iterator_category_to_traversal.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/iterator_category_to_system.h
+D:\CUDA\Toolkit\include\thrust/detail/pointer.h
+D:\CUDA\Toolkit\include\thrust/iterator/iterator_adaptor.h
+D:\CUDA\Toolkit\include\thrust/iterator/iterator_facade.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/iterator_facade_category.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/is_iterator_category.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/distance_from_result.h
+D:\CUDA\Toolkit\include\thrust/detail/use_default.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/iterator_adaptor_base.h
+D:\CUDA\Toolkit\include\thrust/detail/reference_forward_declaration.h
+D:\CUDA\Toolkit\include\thrust/detail/pointer.inl
+D:\CUDA\Toolkit\include\thrust/detail/reference.h
+D:\CUDA\Toolkit\include\thrust/detail/reference.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/select_system.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/minimum_system.h
+D:\CUDA\Toolkit\include\thrust/detail/type_traits/minimum_type.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/type_traits.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/memory.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/tag.h
+D:\CUDA\Toolkit\include\thrust/pair.h
+D:\CUDA\Toolkit\include\thrust/detail/pair.inl
+D:\CUDA\Toolkit\include\thrust/detail/swap.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/memory.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/malloc_and_free.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/malloc_and_free.h
+D:\CUDA\Toolkit\include\thrust/detail/raw_pointer_cast.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/malloc_and_free.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/guarded_cuda_runtime_api.h
+D:\CUDA\Toolkit\include\cuda_runtime_api.h
+D:\CUDA\Toolkit\include\thrust/system/system_error.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\string
+D:\CUDA\Toolkit\include\thrust/system/error_code.h
+D:\CUDA\Toolkit\include\thrust/system/detail/errno.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\iostream
+D:\CUDA\Toolkit\include\thrust/system/detail/error_category.inl
+D:\CUDA\Toolkit\include\thrust/functional.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\functional
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xfunctional
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\tuple
+D:\CUDA\Toolkit\include\thrust/detail/functional/placeholder.h
+D:\CUDA\Toolkit\include\thrust/detail/functional/actor.h
+D:\CUDA\Toolkit\include\thrust/tuple.h
+D:\CUDA\Toolkit\include\thrust/detail/tuple.inl
+D:\CUDA\Toolkit\include\thrust/detail/functional/value.h
+D:\CUDA\Toolkit\include\thrust/detail/functional/composite.h
+D:\CUDA\Toolkit\include\thrust/detail/functional/operators/assignment_operator.h
+D:\CUDA\Toolkit\include\thrust/detail/functional/operators/operator_adaptors.h
+D:\CUDA\Toolkit\include\thrust/detail/type_traits/result_of.h
+D:\CUDA\Toolkit\include\thrust/detail/type_traits/function_traits.h
+D:\CUDA\Toolkit\include\thrust/detail/functional/actor.inl
+D:\CUDA\Toolkit\include\thrust/detail/functional/argument.h
+D:\CUDA\Toolkit\include\thrust/detail/functional.inl
+D:\CUDA\Toolkit\include\thrust/detail/functional/operators.h
+D:\CUDA\Toolkit\include\thrust/detail/functional/operators/arithmetic_operators.h
+D:\CUDA\Toolkit\include\thrust/detail/functional/operators/relational_operators.h
+D:\CUDA\Toolkit\include\thrust/detail/functional/operators/logical_operators.h
+D:\CUDA\Toolkit\include\thrust/detail/functional/operators/bitwise_operators.h
+D:\CUDA\Toolkit\include\thrust/detail/functional/operators/compound_assignment_operators.h
+D:\CUDA\Toolkit\include\thrust/system/detail/error_code.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/error_condition.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/system_error.inl
+D:\CUDA\Toolkit\include\thrust/system/cuda/error.h
+D:\CUDA\Toolkit\include\driver_types.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/error.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/bad_alloc.h
+D:\CUDA\Toolkit\include\thrust/detail/static_assert.h
+D:\CUDA\Toolkit\include\thrust/detail/malloc_and_free.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/get_value.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/get_value.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/get_value.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/assign_value.h
+D:\CUDA\Toolkit\include\thrust/detail/copy.h
+D:\CUDA\Toolkit\include\thrust/detail/copy.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/copy.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/copy.inl
+D:\CUDA\Toolkit\include\thrust/detail/internal_functional.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/tuple_of_iterator_references.h
+D:\CUDA\Toolkit\include\thrust/detail/raw_reference_cast.h
+D:\CUDA\Toolkit\include\thrust/detail/raw_reference_cast.inl
+D:\CUDA\Toolkit\include\thrust/detail/tuple_transform.h
+D:\CUDA\Toolkit\include\thrust/detail/tuple_meta_transform.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\memory
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\stdint.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+D:\CUDA\Toolkit\include\thrust/transform.h
+D:\CUDA\Toolkit\include\thrust/detail/transform.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/transform.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/transform.inl
+D:\CUDA\Toolkit\include\thrust/for_each.h
+D:\CUDA\Toolkit\include\thrust/detail/for_each.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/for_each.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/for_each.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/for_each.h
+D:\CUDA\Toolkit\include\thrust/system/detail/internal/scalar/for_each.h
+D:\CUDA\Toolkit\include\thrust/detail/function.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/for_each.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/for_each.inl
+D:\CUDA\Toolkit\include\thrust/detail/minmax.h
+D:\CUDA\Toolkit\include\thrust/distance.h
+D:\CUDA\Toolkit\include\thrust/detail/distance.inl
+D:\CUDA\Toolkit\include\thrust/advance.h
+D:\CUDA\Toolkit\include\thrust/detail/advance.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/advance.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/advance.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/distance.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/distance.inl
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/detail/launch_closure.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/cuda_launch_config.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/detail/launch_closure.inl
+D:\CUDA\Toolkit\include\thrust/detail/temporary_array.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/tagged_iterator.h
+D:\CUDA\Toolkit\include\thrust/detail/contiguous_storage.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/normal_iterator.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/is_trivial_iterator.h
+D:\CUDA\Toolkit\include\thrust/detail/allocator/allocator_traits.h
+D:\CUDA\Toolkit\include\thrust/detail/allocator/allocator_traits.inl
+D:\CUDA\Toolkit\include\thrust/detail/type_traits/has_member_function.h
+D:\CUDA\Toolkit\include\thrust/detail/type_traits/is_call_possible.h
+D:\CUDA\Toolkit\include\thrust/detail/contiguous_storage.inl
+D:\CUDA\Toolkit\include\thrust/detail/allocator/copy_construct_range.h
+D:\CUDA\Toolkit\include\thrust/detail/allocator/copy_construct_range.inl
+D:\CUDA\Toolkit\include\thrust/iterator/zip_iterator.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/zip_iterator_base.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/minimum_category.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/zip_iterator.inl
+D:\CUDA\Toolkit\include\thrust/detail/allocator/default_construct_range.h
+D:\CUDA\Toolkit\include\thrust/detail/allocator/default_construct_range.inl
+D:\CUDA\Toolkit\include\thrust/uninitialized_fill.h
+D:\CUDA\Toolkit\include\thrust/detail/uninitialized_fill.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/uninitialized_fill.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/uninitialized_fill.inl
+D:\CUDA\Toolkit\include\thrust/fill.h
+D:\CUDA\Toolkit\include\thrust/detail/fill.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/fill.h
+D:\CUDA\Toolkit\include\thrust/generate.h
+D:\CUDA\Toolkit\include\thrust/detail/generate.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/generate.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/generate.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/generate.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/generate.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/generate.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/fill.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/fill.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/fill.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/fill.inl
+D:\CUDA\Toolkit\include\thrust/detail/util/align.h
+D:\CUDA\Toolkit\include\thrust/detail/cstdint.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/runtime_introspection.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/runtime_introspection.inl
+D:\CUDA\Toolkit\include\thrust/detail/util/blocking.h
+D:\CUDA\Toolkit\include\thrust/system_error.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/uninitialized_fill.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/uninitialized_fill.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/uninitialized_fill.h
+D:\CUDA\Toolkit\include\thrust/detail/allocator/destroy_range.h
+D:\CUDA\Toolkit\include\thrust/detail/allocator/destroy_range.inl
+D:\CUDA\Toolkit\include\thrust/detail/allocator/fill_construct_range.h
+D:\CUDA\Toolkit\include\thrust/detail/allocator/fill_construct_range.inl
+D:\CUDA\Toolkit\include\thrust/detail/allocator/temporary_allocator.h
+D:\CUDA\Toolkit\include\thrust/detail/allocator/tagged_allocator.h
+D:\CUDA\Toolkit\include\thrust/detail/allocator/tagged_allocator.inl
+D:\CUDA\Toolkit\include\thrust/memory.h
+D:\CUDA\Toolkit\include\thrust/detail/temporary_buffer.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/temporary_buffer.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/temporary_buffer.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/temporary_buffer.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/temporary_buffer.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/temporary_buffer.h
+D:\CUDA\Toolkit\include\thrust/detail/allocator/temporary_allocator.inl
+D:\CUDA\Toolkit\include\thrust/detail/allocator/no_throw_allocator.h
+D:\CUDA\Toolkit\include\thrust/detail/temporary_array.inl
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/synchronize.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/synchronize.inl
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/detail/launch_calculator.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/detail/launch_calculator.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/transform.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/transform.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/transform.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/copy.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/copy.h
+D:\CUDA\Toolkit\include\thrust/system/detail/internal/scalar/copy.h
+D:\CUDA\Toolkit\include\thrust/system/detail/internal/scalar/copy.inl
+D:\CUDA\Toolkit\include\thrust/detail/dispatch/is_trivial_copy.h
+D:\CUDA\Toolkit\include\thrust/system/detail/internal/scalar/general_copy.h
+D:\CUDA\Toolkit\include\thrust/system/detail/internal/scalar/trivial_copy.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/copy.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/copy.inl
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/copy_device_to_device.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/copy_device_to_device.inl
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/copy_cross_system.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/copy_cross_system.inl
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/trivial_copy.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/trivial_copy.inl
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/trivial_copy.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/trivial_copy.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/assign_value.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/assign_value.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/iter_swap.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/iter_swap.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/iter_swap.h
+D:\CUDA\Toolkit\include\thrust/swap.h
+D:\CUDA\Toolkit\include\thrust/detail/swap.inl
+D:\CUDA\Toolkit\include\thrust/detail/swap_ranges.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/swap_ranges.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/swap_ranges.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/swap_ranges.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/swap_ranges.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/swap_ranges.h
+D:\CUDA\Toolkit\include\thrust/detail/device_ptr.inl
+D:\CUDA\Toolkit\include\thrust/device_reference.h
+D:\CUDA\Toolkit\include\thrust/detail/device_reference.inl
+D:\CUDA\Toolkit\include\thrust/device_malloc.h
+D:\CUDA\Toolkit\include\thrust/detail/device_malloc.inl
+D:\CUDA\Toolkit\include\thrust/device_free.h
+D:\CUDA\Toolkit\include\thrust/detail/device_free.inl
+D:\CUDA\Toolkit\include\thrust/detail/vector_base.h
+D:\CUDA\Toolkit\include\thrust/iterator/reverse_iterator.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/reverse_iterator_base.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/reverse_iterator.inl
+D:\CUDA\Toolkit\include\thrust/detail/vector_base.inl
+D:\CUDA\Toolkit\include\thrust/detail/overlapped_copy.h
+D:\CUDA\Toolkit\include\thrust/equal.h
+D:\CUDA\Toolkit\include\thrust/detail/equal.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/equal.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/equal.inl
+D:\CUDA\Toolkit\include\thrust/mismatch.h
+D:\CUDA\Toolkit\include\thrust/detail/mismatch.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/mismatch.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/mismatch.inl
+D:\CUDA\Toolkit\include\thrust/find.h
+D:\CUDA\Toolkit\include\thrust/detail/find.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/find.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/find.inl
+D:\CUDA\Toolkit\include\thrust/reduce.h
+D:\CUDA\Toolkit\include\thrust/detail/reduce.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/reduce.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/reduce.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/reduce_by_key.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/reduce_by_key.inl
+D:\CUDA\Toolkit\include\thrust/detail/type_traits/iterator/is_output_iterator.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/any_assign.h
+D:\CUDA\Toolkit\include\thrust/scatter.h
+D:\CUDA\Toolkit\include\thrust/detail/scatter.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/scatter.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/scatter.inl
+D:\CUDA\Toolkit\include\thrust/iterator/permutation_iterator.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/permutation_iterator_base.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/scatter.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/scatter.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/scatter.h
+D:\CUDA\Toolkit\include\thrust/scan.h
+D:\CUDA\Toolkit\include\thrust/detail/scan.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/scan.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/scan.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/scan_by_key.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/scan_by_key.inl
+D:\CUDA\Toolkit\include\thrust/replace.h
+D:\CUDA\Toolkit\include\thrust/detail/replace.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/replace.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/replace.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/replace.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/replace.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/replace.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/scan.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/scan.h
+D:\CUDA\Toolkit\include\thrust/system/detail/internal/scalar/scan.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/scan.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/scan.inl
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/detail/fast_scan.h
+d:\cuda\toolkit\include\thrust\system\cuda\detail\detail\fast_scan.inl
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/reduce_intervals.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/reduce_intervals.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/internal/decompose.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/extern_shared_ptr.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/block/reduce.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/default_decomposition.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/default_decomposition.inl
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/detail/uninitialized.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/detail/alignment.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/scan_by_key.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/scan_by_key.h
+D:\CUDA\Toolkit\include\thrust/system/detail/internal/scalar/scan_by_key.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/scan_by_key.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/reduce.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/reduce.h
+D:\CUDA\Toolkit\include\thrust/system/detail/internal/scalar/reduce.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/reduce.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/reduce.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/reduce_by_key.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/reduce_by_key.h
+D:\CUDA\Toolkit\include\thrust/system/detail/internal/scalar/reduce_by_key.h
+D:\CUDA\Toolkit\include\thrust/detail/type_traits/algorithm/intermediate_type_from_function_and_iterators.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/reduce_by_key.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/reduce_by_key.inl
+D:\CUDA\Toolkit\include\thrust/iterator/counting_iterator.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/counting_iterator.inl
+D:\CUDA\Toolkit\include\thrust/detail/numeric_traits.h
+D:\CUDA\Toolkit\include\thrust/iterator/transform_iterator.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/transform_iterator.inl
+D:\CUDA\Toolkit\include\thrust/detail/type_traits/iterator/is_discard_iterator.h
+D:\CUDA\Toolkit\include\thrust/iterator/discard_iterator.h
+D:\CUDA\Toolkit\include\thrust/iterator/detail/discard_iterator_base.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/block/inclusive_scan.h
+D:\CUDA\Toolkit\include\thrust/extrema.h
+D:\CUDA\Toolkit\include\thrust/detail/extrema.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/extrema.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/extrema.inl
+D:\CUDA\Toolkit\include\thrust/transform_reduce.h
+D:\CUDA\Toolkit\include\thrust/detail/transform_reduce.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/transform_reduce.h
+D:\CUDA\Toolkit\include\thrust/system/detail/generic/transform_reduce.inl
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/transform_reduce.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/transform_reduce.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/transform_reduce.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/extrema.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/extrema.h
+D:\CUDA\Toolkit\include\thrust/system/detail/internal/scalar/extrema.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/extrema.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/find.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/find.h
+D:\CUDA\Toolkit\include\thrust/system/detail/internal/scalar/find.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/find.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/mismatch.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/mismatch.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/mismatch.h
+D:\CUDA\Toolkit\include\thrust/system/detail/adl/equal.h
+D:\CUDA\Toolkit\include\thrust/system/cpp/detail/equal.h
+D:\CUDA\Toolkit\include\thrust/system/cuda/detail/equal.h
+D:\CUDA\Toolkit\include\thrust/detail/device_vector.inl
+D:\CUDA\Toolkit\include\thrust/host_vector.h
+D:\CUDA\Toolkit\include\thrust/detail/host_vector.inl
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+d:\deeplearning\caffe-windows\3rdparty\include\gflags\gflags_declare.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\sstream
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\fstream
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\map
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xtree
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\set
+D:\CUDA\Toolkit\include\cublas_v2.h
+d:\cuda\toolkit\include\cublas_api.h
+d:\cuda\toolkit\include\driver_types.h
+d:\cuda\toolkit\include\cuComplex.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\math.h
+d:\cuda\toolkit\include\vector_types.h
+D:\CUDA\Toolkit\include\cuda.h
+D:\CUDA\Toolkit\include\cuda_runtime.h
+D:\CUDA\Toolkit\include\curand.h
+D:\CUDA\Toolkit\include\cuda_runtime.h
+D:\CUDA\Toolkit\include\driver_types.h
+D:\CUDA\Toolkit\include\driver_types.h
+D:\CUDA\Toolkit\include\cuda_runtime.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+d:\deeplearning\caffe-windows\3rdparty\include\openblas\openblas_config.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\math.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5pubconf.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5version.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\sys/types.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5api_adpt.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Apublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Opublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Lpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Tpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Tpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5ACpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Cpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Dpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Epublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Epubgen.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Fpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5ACpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Fpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Gpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Lpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Opublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Tpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Lpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5MMpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Opublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ppublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5ACpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Dpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Fpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Lpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Opublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5MMpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Tpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Zpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Rpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Gpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Spublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Tpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Zpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDcore.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDfamily.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDlog.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDmpi.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDmpio.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDmpiposix.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDmulti.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ppublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Fpublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDsec2.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDstdio.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDwindows.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDsec2.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDdirect.h
+d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h

@@ -10,8 +10,8 @@ TODO:
 #include <string>
 #include <vector>
 
-#include "hdf5.h"
-#include "hdf5_hl.h"
+#include "hdf5/hdf5.h"
+#include "hdf5/hdf5_hl.h"
 #include "stdint.h"
 
 #include "caffe/layer.hpp"

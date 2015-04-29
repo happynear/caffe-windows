@@ -189,7 +189,7 @@
     <ClCompile Include="..\..\src\caffe\syncedmem.cpp" />
     <ClCompile Include="..\..\src\caffe\blob.cpp" />
     <ClCompile Include="..\..\src\caffe\common.cpp" />
-    <ClCompile Include="..\..\tools\caffe.cpp" />
+    <ClCompile Include="..\..\matlab\caffe\matcaffe.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\normalize_layer.cpp">
       <Filter>layers</Filter>
     </ClCompile>
@@ -427,5 +427,8 @@
     <CudaCompile Include="..\..\src\caffe\layers\normalize_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\matlab\caffe\matcaffe.def" />
   </ItemGroup>
 </Project>

@@ -923,6 +923,8 @@ const char* UpgradeV1LayerType(const V1LayerParameter_LayerType type) {
     return "PReLU";
   case V1LayerParameter_LayerType_LOCAL:
     return "Local";
+  case V1LayerParameter_LayerType_NORMALIZE:
+    return "Normalize";
   default:
     LOG(FATAL) << "Unknown V1LayerParameter layer type: " << type;
     return "";

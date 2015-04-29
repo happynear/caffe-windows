@@ -121,6 +121,6 @@ namespace caffe {
 #endif
 
 	INSTANTIATE_CLASS(PReLULayer);
-	REGISTER_LAYER_CLASS(PReLU);//why ReLU don't need this?
+	REGISTER_LAYER_CLASS(PReLU);
 
 }  // namespace caffe

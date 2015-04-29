@@ -804,6 +804,7 @@ message V1LayerParameter {
 	PRELU = 40;
 	LOCAL = 41;
 	BN = 42;
+	NORMALIZE = 43;
   }
   optional LayerType type = 5;
   repeated BlobProto blobs = 6;

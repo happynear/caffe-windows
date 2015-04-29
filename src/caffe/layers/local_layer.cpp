@@ -30,6 +30,7 @@ void LocalLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   K_ = channels_ * kernel_size_ * kernel_size_;
   N_ = height_out_ * width_out_;
 
+  CHECK_GT(kernel_size_, 0); 
   CHECK_GT(num_output_, 0); 
   CHECK_GE(height_, kernel_size_) << "height smaller than kernel size";
   CHECK_GE(width_, kernel_size_) << "width smaller than kernel size";

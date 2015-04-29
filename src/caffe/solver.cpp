@@ -207,6 +207,36 @@ void Solver<Dtype>::Step(int iters) {
         }
       }
     }
+#ifdef WF
+	if(display)
+	{
+		  char graddweight[1000];
+		  sprintf_s(graddweight, 20, "grad/weight:");
+		  char layer_norm[1000];
+		  sprintf_s(layer_norm, 20, "layer norm:");
+		  for (int j = 0; j < net_->layers().size(); j++)
+		  {
+			  if(net_->layers()[j]->blobs().size()>0)
+			  {
+				  shared_ptr<Blob<Dtype> > this_blob = net_->layers()[j]->blobs()[0];
+				  //Blob<Dtype> data_sqr;
+				  Dtype data_norm, diff_norm;
+				  //data_sqr.ReshapeLike(*this_blob);
+				  data_norm = sqrt(this_blob->sumsq_data());
+				  diff_norm = sqrt(this_blob->sumsq_diff());
+				  sprintf_s(graddweight+strnlen_s(graddweight,1000), 20, "%.8f ", diff_norm / data_norm);
+				  
+			  }
+			  if( net_->layers()[j]->blobs().size()>0 || net_->layer_names()[j].find("norm")!=net_->layer_names()[j].npos)
+			  {
+				  Dtype map_norm = sqrt(net_->top_vecs()[j][0]->sumsq_data());
+				  sprintf_s(layer_norm+strnlen_s(layer_norm,1000), 20, "%.8f ", map_norm);
+			  }
+		  }
+		  LOG(INFO)<<graddweight;
+		  LOG(INFO)<<layer_norm;
+	}
+#endif
     ComputeUpdateValue();
     net_->Update();
 
@@ -315,6 +345,18 @@ void Solver<Dtype>::Test(const int test_net_id) {
     LOG(INFO) << "    Test net output #" << i << ": " << output_name << " = "
         << mean_score << loss_msg_stream.str();
   }
+#ifdef WF
+  char slopes[1000];
+  sprintf_s(slopes, 20, "PReLU slopes:");
+  for (int i = 0; i < test_net->layers().size(); i++)
+  {
+	  if(test_net->layers()[i]->type() == "PReLU")
+	  {
+		  sprintf_s(slopes+strnlen_s(slopes,1000), 20, "%.3f ",Dtype(test_net->layers()[i]->blobs()[0]->cpu_data()[0]));
+	  }
+  }
+  LOG(INFO)<<slopes;
+#endif
 }
 
 
