@@ -18,6 +18,8 @@ Setup step:
 
 TIPS: If you have MKL library, please add the preprocess macro "USE_MKL" defined in the setting of the project.
 
+中文安装说明：http://blog.csdn.net/happynear/article/details/45372231
+
 Matlab Wrapper
 ======
 Just change the Matlab include and library path defined in the settings and compile.
