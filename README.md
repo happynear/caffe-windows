@@ -24,4 +24,6 @@ Matlab Wrapper
 ======
 Just change the Matlab include and library path defined in the settings and compile.
 
-
+Python Wrapper
+======
+Similar with Matlab, just change the python include and library path defined in the settings and compile.
