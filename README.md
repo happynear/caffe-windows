@@ -27,3 +27,7 @@ Just change the Matlab include and library path defined in the settings and comp
 Python Wrapper
 ======
 Similar with Matlab, just change the python include and library path defined in the settings and compile.
+
+MNIST example
+======
+Please download the mnist leveldb database from http://pan.baidu.com/s/1mgl9ndu and extract it to ./examples/mnist. Then double click ./run_mnist.bat to run the MNIST demo.
