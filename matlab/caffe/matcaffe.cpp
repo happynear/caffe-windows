@@ -10,6 +10,9 @@
 #include "mex.h"
 
 #include "caffe/caffe.hpp"
+#include "boost/algorithm/string.hpp"
+
+using boost::shared_ptr;
 
 #define MEX_ARGS int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs
 
@@ -247,6 +250,101 @@ static void get_weights(MEX_ARGS) {
   plhs[0] = do_get_weights();
 }
 
+static void get_features(MEX_ARGS) {
+	
+	const mxArray* const bottom = prhs[0];
+	const vector<Blob<float>*>& input_blobs = net_->input_blobs();
+	if (static_cast<unsigned int>(mxGetDimensions(bottom)[0]) !=
+		input_blobs.size()) {
+			mexPrintf("mxGetDimensions(bottom)[0]: %d\n",static_cast<unsigned int>(mxGetDimensions(bottom)[0]));
+	mex_error("Invalid input size");
+	}
+	for (unsigned int i = 0; i < input_blobs.size(); ++i) {
+	const mxArray* const elem = mxGetCell(bottom, i);
+	if (!mxIsSingle(elem)) {
+		mex_error("MatCaffe require single-precision float point data");
+	}
+	if (mxGetNumberOfElements(elem) != input_blobs[i]->count()) {
+		std::string error_msg;
+		error_msg += "MatCaffe input size does not match the input size ";
+		error_msg += "of the network";
+		mex_error(error_msg);
+	}
+
+	const float* const data_ptr =
+		reinterpret_cast<const float* const>(mxGetPr(elem));
+	switch (Caffe::mode()) {
+	case Caffe::CPU:
+		caffe_copy(input_blobs[i]->count(), data_ptr,
+			input_blobs[i]->mutable_cpu_data());
+		break;
+	case Caffe::GPU:
+		caffe_copy(input_blobs[i]->count(), data_ptr,
+			input_blobs[i]->mutable_gpu_data());
+		break;
+	default:
+		mex_error("Unknown Caffe mode");
+	}  // switch (Caffe::mode())
+	}
+	const vector<Blob<float>*>& output_blobs = net_->ForwardPrefilled();
+
+	char* extract_feature_blob_names = mxArrayToString(prhs[1]);
+	std::vector<std::string> blob_names;
+	boost::split(blob_names, extract_feature_blob_names, boost::is_any_of(","));
+	size_t num_features = blob_names.size();
+
+	mxArray* mx_layers;
+	{
+	const mwSize dims[2] = {num_features, 1};
+	const char* fnames[2] = {"feature", "layer_names"};
+	mx_layers = mxCreateStructArray(2, dims, 2, fnames);
+	}
+
+	// Step 3: copy weights into output
+	{
+	string prev_layer_name = "";
+	int mx_layer_index = 0;
+	for (unsigned int i = 0; i < num_features; ++i) {
+		mxArray* mx_layer_cells = NULL;
+		const mwSize dims[2] = {static_cast<mwSize>(1), 1};
+		mx_layer_cells = mxCreateCellArray(2, dims);
+		mxSetField(mx_layers, mx_layer_index, "feature", mx_layer_cells);
+		mxSetField(mx_layers, mx_layer_index, "layer_names",
+			mxCreateString(extract_feature_blob_names));
+		mx_layer_index++;
+		
+		if (!net_->has_blob(blob_names[i])) continue;
+		const shared_ptr<Blob<float> > feature_blob = net_
+          ->blob_by_name(blob_names[i]);
+
+		// internally data is stored as (width, height, channels, num)
+		// where width is the fastest dimension
+		mwSize dims_f[4] = {feature_blob->width(), feature_blob->height(),
+			feature_blob->channels(), feature_blob->num()};
+
+		mxArray* mx_weights =
+			mxCreateNumericArray(4, dims_f, mxSINGLE_CLASS, mxREAL);
+		mxSetCell(mx_layer_cells, 0, mx_weights);
+		float* weights_ptr = reinterpret_cast<float*>(mxGetPr(mx_weights));
+
+		switch (Caffe::mode()) {
+		case Caffe::CPU:
+			caffe_copy(feature_blob->count(), feature_blob->cpu_data(),
+				weights_ptr);
+			break;
+		case Caffe::GPU:
+			caffe_copy(feature_blob->count(), feature_blob->gpu_data(),
+				weights_ptr);
+			break;
+		default:
+			mex_error("Unknown Caffe mode");
+		}
+	}
+	}
+	mxFree(extract_feature_blob_names);
+	plhs[0] = mx_layers;
+}
+
 static void set_mode_cpu(MEX_ARGS) {
   Caffe::set_mode(Caffe::CPU);
 }
@@ -386,6 +484,7 @@ static handler_registry handlers[] = {
   { "get_init_key",       get_init_key    },
   { "reset",              reset           },
   { "read_mean",          read_mean       },
+  { "get_features",       get_features    },
   // The end.
   { "END",                NULL            },
 };
