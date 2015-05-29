@@ -4,7 +4,7 @@ Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](
 
 Setup step:
 ======
-1. Download third-party libraries from http://pan.baidu.com/s/1sjr37tj , and put the 3rdparty folder under the root of caffe-windows.
+1. Download third-party libraries from http://pan.baidu.com/s/1gdAfUPt , and put the 3rdparty folder under the root of caffe-windows.
 
 2. Run ./src/caffe/proto/extract_proto.bat to create caffe.pb.h and caffe.pb.cc.
 
