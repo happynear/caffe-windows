@@ -310,7 +310,7 @@ static void get_features(MEX_ARGS) {
 		mx_layer_cells = mxCreateCellArray(2, dims);
 		mxSetField(mx_layers, mx_layer_index, "feature", mx_layer_cells);
 		mxSetField(mx_layers, mx_layer_index, "layer_names",
-			mxCreateString(extract_feature_blob_names));
+			mxCreateString(blob_names[i].c_str()));
 		mx_layer_index++;
 		
 		if (!net_->has_blob(blob_names[i])) continue;
