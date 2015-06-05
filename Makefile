@@ -1,11 +1,19 @@
 PROJECT := caffe
 
 CONFIG_FILE := Makefile.config
+# Explicitly check for the config file, otherwise make -k will proceed anyway.
+ifeq ($(wildcard $(CONFIG_FILE)),)
+$(error $(CONFIG_FILE) not found. See $(CONFIG_FILE).example.)
+endif
 include $(CONFIG_FILE)
 
 BUILD_DIR_LINK := $(BUILD_DIR)
-RELEASE_BUILD_DIR ?= .$(BUILD_DIR)_release
-DEBUG_BUILD_DIR ?= .$(BUILD_DIR)_debug
+ifeq ($(RELEASE_BUILD_DIR),)
+	RELEASE_BUILD_DIR := .$(BUILD_DIR)_release
+endif
+ifeq ($(DEBUG_BUILD_DIR),)
+	DEBUG_BUILD_DIR := .$(BUILD_DIR)_debug
+endif
 
 DEBUG ?= 0
 ifeq ($(DEBUG), 1)
@@ -57,7 +65,7 @@ NONGEN_CXX_SRCS := $(shell find \
 	src/$(PROJECT) \
 	include/$(PROJECT) \
 	python/$(PROJECT) \
-	matlab/$(PROJECT) \
+	matlab/+$(PROJECT)/private \
 	examples \
 	tools \
 	-name "*.cpp" -or -name "*.hpp" -or -name "*.cu" -or -name "*.cuh")
@@ -71,12 +79,12 @@ NONEMPTY_LINT_REPORT := $(BUILD_DIR)/$(LINT_EXT)
 PY$(PROJECT)_SRC := python/$(PROJECT)/_$(PROJECT).cpp
 PY$(PROJECT)_SO := python/$(PROJECT)/_$(PROJECT).so
 PY$(PROJECT)_HXX := include/$(PROJECT)/python_layer.hpp
-# MAT$(PROJECT)_SRC is the matlab wrapper for $(PROJECT)
-MAT$(PROJECT)_SRC := matlab/$(PROJECT)/mat$(PROJECT).cpp
+# MAT$(PROJECT)_SRC is the mex entrance point of matlab package for $(PROJECT)
+MAT$(PROJECT)_SRC := matlab/+$(PROJECT)/private/$(PROJECT)_.cpp
 ifneq ($(MATLAB_DIR),)
 	MAT_SO_EXT := $(shell $(MATLAB_DIR)/bin/mexext)
 endif
-MAT$(PROJECT)_SO := matlab/$(PROJECT)/$(PROJECT).$(MAT_SO_EXT)
+MAT$(PROJECT)_SO := matlab/+$(PROJECT)/private/$(PROJECT)_.$(MAT_SO_EXT)
 
 ##############################
 # Derive generated files
@@ -110,7 +118,7 @@ GTEST_OBJ := $(addprefix $(BUILD_DIR)/, ${GTEST_SRC:.cpp=.o})
 EXAMPLE_OBJS := $(addprefix $(BUILD_DIR)/, ${EXAMPLE_SRCS:.cpp=.o})
 # Output files for automatic dependency generation
 DEPS := ${CXX_OBJS:.o=.d} ${CU_OBJS:.o=.d} ${TEST_CXX_OBJS:.o=.d} \
-	${TEST_CU_OBJS:.o=.d}
+	${TEST_CU_OBJS:.o=.d} $(BUILD_DIR)/${MAT$(PROJECT)_SO:.$(MAT_SO_EXT)=.d}
 # tool, example, and test bins
 TOOL_BINS := ${TOOL_OBJS:.o=.bin}
 EXAMPLE_BINS := ${EXAMPLE_OBJS:.o=.bin}
@@ -171,6 +179,7 @@ WARNINGS := -Wall -Wno-sign-compare
 # Set build directories
 ##############################
 
+DISTRIBUTE_DIR ?= distribute
 DISTRIBUTE_SUBDIRS := $(DISTRIBUTE_DIR)/bin $(DISTRIBUTE_DIR)/lib
 DIST_ALIASES := dist
 ifneq ($(strip $(DISTRIBUTE_DIR)),distribute)
@@ -232,13 +241,15 @@ endif
 # libstdc++ for NVCC compatibility on OS X >= 10.9 with CUDA < 7.0
 ifeq ($(OSX), 1)
 	CXX := /usr/bin/clang++
-	CUDA_VERSION := $(shell $(CUDA_DIR)/bin/nvcc -V | grep -o 'release \d' | grep -o '\d')
-	ifeq ($(shell echo $(CUDA_VERSION) \< 7.0 | bc), 1)
-		CXXFLAGS += -stdlib=libstdc++
-		LINKFLAGS += -stdlib=libstdc++
+	ifneq ($(CPU_ONLY), 1)
+		CUDA_VERSION := $(shell $(CUDA_DIR)/bin/nvcc -V | grep -o 'release \d' | grep -o '\d')
+		ifeq ($(shell echo $(CUDA_VERSION) \< 7.0 | bc), 1)
+			CXXFLAGS += -stdlib=libstdc++
+			LINKFLAGS += -stdlib=libstdc++
+		endif
+		# clang throws this warning for cuda headers
+		WARNINGS += -Wno-unneeded-internal-declaration
 	endif
-	# clang throws this warning for cuda headers
-	WARNINGS += -Wno-unneeded-internal-declaration
 	# gtest needs to use its own tuple to not conflict with clang
 	COMMON_FLAGS += -DGTEST_USE_OWN_TR1_TUPLE=1
 	# boost::thread is called boost_thread-mt to mark multithreading on OS X
@@ -261,7 +272,8 @@ ifneq (,$(findstring clang++,$(CXX)))
 else ifneq (,$(findstring g++,$(CXX)))
 	STATIC_LINK_COMMAND := -Wl,--whole-archive $(STATIC_NAME) -Wl,--no-whole-archive
 else
-	$(error Cannot static link with the $(CXX) compiler.)
+  # The following line must not be indented with a tab, since we are not inside a target
+  $(error Cannot static link with the $(CXX) compiler)
 endif
 
 # Debugging
@@ -319,7 +331,7 @@ else
 		# 10.10 has accelerate while 10.9 has veclib
 		XCODE_CLT_VER := $(shell pkgutil --pkg-info=com.apple.pkg.CLTools_Executables | grep -o 'version: 6')
 		ifneq (,$(findstring version: 6,$(XCODE_CLT_VER)))
-			BLAS_INCLUDE ?= /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/Accelerate.framework/Versions/Current/Frameworks/vecLib.framework/Headers/
+			BLAS_INCLUDE ?= /System/Library/Frameworks/Accelerate.framework/Versions/Current/Frameworks/vecLib.framework/Headers/
 			LDFLAGS += -framework Accelerate
 		else
 			BLAS_INCLUDE ?= /System/Library/Frameworks/vecLib.framework/Versions/Current/Headers/
@@ -448,12 +460,19 @@ $(MAT$(PROJECT)_SO): $(MAT$(PROJECT)_SRC) $(STATIC_NAME)
 			CXX="$(CXX)" \
 			CXXFLAGS="\$$CXXFLAGS $(MATLAB_CXXFLAGS)" \
 			CXXLIBS="\$$CXXLIBS $(STATIC_LINK_COMMAND) $(LDFLAGS)" -output $@
+	@ if [ -f "$(PROJECT)_.d" ]; then \
+		mv -f $(PROJECT)_.d $(BUILD_DIR)/${MAT$(PROJECT)_SO:.$(MAT_SO_EXT)=.d}; \
+	fi
 
 runtest: $(TEST_ALL_BIN)
+	$(TOOL_BUILD_DIR)/caffe
 	$(TEST_ALL_BIN) $(TEST_GPUID) --gtest_shuffle $(TEST_FILTER)
 
 pytest: py
 	cd python; python -m unittest discover -s caffe/test
+	
+mattest: mat
+	cd matlab; $(MATLAB_DIR)/bin/matlab -nodisplay -r 'caffe.run_tests(), exit()'
 
 warn: $(EMPTY_WARN_REPORT)
 
@@ -537,7 +556,12 @@ $(TOOL_BUILD_DIR)/%: $(TOOL_BUILD_DIR)/%.bin | $(TOOL_BUILD_DIR)
 	@ $(RM) $@
 	@ ln -s $(abspath $<) $@
 
-$(TOOL_BINS) $(EXAMPLE_BINS): %.bin : %.o | $(DYNAMIC_NAME)
+$(TOOL_BINS): %.bin : %.o | $(DYNAMIC_NAME)
+	@ echo CXX/LD -o $@
+	$(Q)$(CXX) $< -o $@ $(LINKFLAGS) -l$(PROJECT) $(LDFLAGS) \
+		-Wl,-rpath,$(ORIGIN)/../lib
+
+$(EXAMPLE_BINS): %.bin : %.o | $(DYNAMIC_NAME)
 	@ echo CXX/LD -o $@
 	$(Q)$(CXX) $< -o $@ $(LINKFLAGS) -l$(PROJECT) $(LDFLAGS) \
 		-Wl,-rpath,$(ORIGIN)/../../lib

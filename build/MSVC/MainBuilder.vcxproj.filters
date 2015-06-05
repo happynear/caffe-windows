@@ -193,6 +193,15 @@
     <ClCompile Include="..\..\src\caffe\layers\normalize_layer.cpp">
       <Filter>layers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\log_layer.cpp">
+      <Filter>layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\reduction_layer.cpp">
+      <Filter>layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\util\cudnn.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\caffe\proto\caffe.pb.h">
@@ -352,9 +361,6 @@
     <CudaCompile Include="..\..\src\caffe\layers\exp_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\flatten_layer.cu">
-      <Filter>layers</Filter>
-    </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\hdf5_data_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
@@ -425,6 +431,12 @@
       <Filter>util</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\normalize_layer.cu">
+      <Filter>layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\log_layer.cu">
+      <Filter>layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\reduction_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
   </ItemGroup>

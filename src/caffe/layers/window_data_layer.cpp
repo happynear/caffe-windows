@@ -23,7 +23,8 @@
 //   'source' field specifies the window_file
 //   'crop_size' indicates the desired warped size
 
-double round(double r)
+template <typename Dtype>
+Dtype round(Dtype r)
 {
 	return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
 }
@@ -182,8 +183,9 @@ void WindowDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
       << top[0]->channels() << "," << top[0]->height() << ","
       << top[0]->width();
   // label
-  top[1]->Reshape(batch_size, 1, 1, 1);
-  this->prefetch_label_.Reshape(batch_size, 1, 1, 1);
+  vector<int> label_shape(1, batch_size);
+  top[1]->Reshape(label_shape);
+  this->prefetch_label_.Reshape(label_shape);
 
   // data mean
   has_mean_file_ = this->transform_param_.has_mean_file();

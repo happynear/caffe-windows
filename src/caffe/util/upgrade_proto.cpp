@@ -919,8 +919,6 @@ const char* UpgradeV1LayerType(const V1LayerParameter_LayerType type) {
     return "Threshold";
   case V1LayerParameter_LayerType_BN:
 	return "BN";
-  case V1LayerParameter_LayerType_PRELU:
-    return "PReLU";
   case V1LayerParameter_LayerType_LOCAL:
     return "Local";
   case V1LayerParameter_LayerType_NORMALIZE:

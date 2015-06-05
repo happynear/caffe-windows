@@ -10,6 +10,8 @@
 #include "caffe/util/device_alternate.hpp"
 #include "caffe/util/mkl_alternate.hpp"
 
+#include "boost/math/special_functions/sign.hpp"
+
 namespace caffe {
 
 // Caffe gemm provides a simpler interface to the gemm functions, with the
@@ -89,6 +91,9 @@ template <typename Dtype>
 void caffe_exp(const int n, const Dtype* a, Dtype* y);
 
 template <typename Dtype>
+void caffe_log(const int n, const Dtype* a, Dtype* y);
+
+template <typename Dtype>
 void caffe_abs(const int n, const Dtype* a, Dtype* y);
 
 template <typename Dtype>
@@ -134,8 +139,8 @@ DEFINE_CAFFE_CPU_UNARY_FUNC(sign, y[i] = caffe_sign<Dtype>(x[i]));
 // The name sngbit is meant to avoid conflicts with std::signbit in the macro.
 // The extra parens are needed because CUDA < 6.5 defines signbit as a macro,
 // and we don't want that to expand here when CUDA headers are also included.
-//DEFINE_CAFFE_CPU_UNARY_FUNC(sgnbit, \
-//    y[i] = static_cast<bool>((std::signbit)(x[i])));
+DEFINE_CAFFE_CPU_UNARY_FUNC(sgnbit, \
+    y[i] = static_cast<bool>((boost::math::signbit)(x[i])));
 
 DEFINE_CAFFE_CPU_UNARY_FUNC(fabs, y[i] = std::fabs(x[i]));
 
@@ -202,6 +207,9 @@ void caffe_gpu_abs(const int n, const Dtype* a, Dtype* y);
 
 template <typename Dtype>
 void caffe_gpu_exp(const int n, const Dtype* a, Dtype* y);
+
+template <typename Dtype>
+void caffe_gpu_log(const int n, const Dtype* a, Dtype* y);
 
 template <typename Dtype>
 void caffe_gpu_powx(const int n, const Dtype* a, const Dtype b, Dtype* y);

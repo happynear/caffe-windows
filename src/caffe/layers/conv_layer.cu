@@ -17,7 +17,7 @@ void ConvolutionLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     Dtype* top_data = top[i]->mutable_gpu_data();
     for (int n = 0; n < this->num_; ++n) {
       this->forward_gpu_gemm(bottom_data + bottom[i]->offset(n), weight,
-          top_data + top[i]->offset(n),false);
+		  top_data + top[i]->offset(n),false);
       if (this->bias_term_) {
         const Dtype* bias = this->blobs_[1]->gpu_data();
         this->forward_gpu_bias(top_data + top[i]->offset(n), bias);
@@ -31,13 +31,6 @@ void ConvolutionLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
   const Dtype* weight = this->blobs_[0]->gpu_data();
   Dtype* weight_diff = this->blobs_[0]->mutable_gpu_diff();
-  if (this->param_propagate_down_[0]) {
-    caffe_gpu_set(this->blobs_[0]->count(), Dtype(0), weight_diff);
-  }
-  if (this->bias_term_ && this->param_propagate_down_[1]) {
-    caffe_gpu_set(this->blobs_[1]->count(), Dtype(0),
-        this->blobs_[1]->mutable_gpu_diff());
-  }
   for (int i = 0; i < top.size(); ++i) {
     const Dtype* top_diff = top[i]->gpu_diff();
     // Bias gradient, if necessary.

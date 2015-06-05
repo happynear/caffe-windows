@@ -1,2 +1,0 @@
-LIBRARY "../../matlab/caffe\caffe.mexw64"
-EXPORTS mexFunction

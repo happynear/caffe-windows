@@ -6,6 +6,8 @@ project(Caffe C CXX)
 # ---[ Using cmake scripts and modules
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 
+include(ExternalProject)
+
 include(cmake/Utils.cmake)
 include(cmake/Targets.cmake)
 include(cmake/Misc.cmake)
@@ -17,14 +19,16 @@ caffe_option(CPU_ONLY  "Build Caffe wihtout CUDA support" OFF) # TODO: rename to
 caffe_option(USE_CUDNN "Build Caffe with cuDNN libary support" ON IF NOT CPU_ONLY)
 caffe_option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 caffe_option(BUILD_python "Build Python wrapper" ON)
+set(python_version "2" CACHE STRING "Specify which python version to use")
 caffe_option(BUILD_matlab "Build Matlab wrapper" OFF IF UNIX OR APPLE)
 caffe_option(BUILD_docs   "Build documentation" ON IF UNIX OR APPLE)
+caffe_option(BUILD_python_layer "Build the caffe python layer" ON)
 
 # ---[ Dependencies
 include(cmake/Dependencies.cmake)
 
 # ---[ Flags
-if(UNIX OR APLE)
+if(UNIX OR APPLE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Wall")
 endif()
 

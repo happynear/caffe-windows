@@ -17,11 +17,11 @@ namespace caffe {
  * @brief An interface for the units of computation which can be composed into a
  *        Net.
  *
- * Layer&s must implement a Forward function, in which they take their input
- * (bottom) Blob&s (if any) and compute their output Blob&s (if any).
+ * Layer%s must implement a Forward function, in which they take their input
+ * (bottom) Blob%s (if any) and compute their output Blob%s (if any).
  * They may also implement a Backward function, in which they compute the error
- * gradients with respect to their input Blob&s, given the error gradients with
- * their output Blob&s.
+ * gradients with respect to their input Blob%s, given the error gradients with
+ * their output Blob%s.
  */
 template <typename Dtype>
 class Layer {
@@ -406,6 +406,7 @@ template <typename Dtype>
 inline Dtype Layer<Dtype>::Forward(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
   Dtype loss = 0;
+  Reshape(bottom, top);
   switch (Caffe::mode()) {
   case Caffe::CPU:
     Forward_cpu(bottom, top);

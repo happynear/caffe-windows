@@ -94,35 +94,29 @@ protected:
 	virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
 		const vector<Blob<Dtype>*>& top);
 	virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
-		const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+		const vector<bool>& propagate_down,const vector<Blob<Dtype>*>& bottom);	
 	virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
-		const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+		const vector<bool>& propagate_down,const vector<Blob<Dtype>*>& bottom);
 
 	// spatial mean & variance
-	Blob<Dtype> spatial_statistic_;
+	Blob<Dtype> spatial_mean_, spatial_variance_;
 	// batch mean & variance
-	Blob<Dtype> batch_statistic_;
+	Blob<Dtype> batch_mean_, batch_variance_;
 	// buffer blob
 	Blob<Dtype> buffer_blob_;
-	// x_norm and x_std
-	Blob<Dtype> x_norm_, x_std_;
-	// Due to buffer_blob_ and x_norm, this implementation is memory-consuming
-	// May use for-loop instead
+	// x_norm
+	Blob<Dtype> x_norm_;
 
 	// x_sum_multiplier is used to carry out sum using BLAS
 	Blob<Dtype> spatial_sum_multiplier_, batch_sum_multiplier_;
 
 	// dimension
-	int num_;
-	int channels_;
-	int height_;
-	int width_;
+	int N_;
+	int C_;
+	int H_;
+	int W_;
 	// eps
 	Dtype var_eps_;
-	// decay factor
-	Dtype decay_;
-	// whether or not using moving average for inference
-	bool moving_average_;
 
 };
 
@@ -183,8 +177,8 @@ class ConcatLayer : public Layer<Dtype> {
    *   - K @f$ (N \times C \times H \times W) @f$
    *      the inputs @f$ x_K @f$
    * @param top output Blob vector (length 1)
-   *   -# @f$ (KN \times C \times H \times W) @f$ if concat_dim == 0, or
-   *      @f$ (N \times KC \times H \times W) @f$ if concat_dim == 1:
+   *   -# @f$ (KN \times C \times H \times W) @f$ if axis == 0, or
+   *      @f$ (N \times KC \times H \times W) @f$ if axis == 1:
    *      the concatenated output @f$
    *        y = [\begin{array}{cccc} x_1 & x_2 & ... & x_K \end{array}]
    *      @f$
@@ -199,8 +193,8 @@ class ConcatLayer : public Layer<Dtype> {
    *
    * @param top output Blob vector (length 1), providing the error gradient with
    *        respect to the outputs
-   *   -# @f$ (KN \times C \times H \times W) @f$ if concat_dim == 0, or
-   *      @f$ (N \times KC \times H \times W) @f$ if concat_dim == 1:
+   *   -# @f$ (KN \times C \times H \times W) @f$ if axis == 0, or
+   *      @f$ (N \times KC \times H \times W) @f$ if axis == 1:
    *      containing error gradients @f$ \frac{\partial E}{\partial y} @f$
    *      with respect to concatenated outputs @f$ y @f$
    * @param propagate_down see Layer::Backward.
@@ -221,13 +215,10 @@ class ConcatLayer : public Layer<Dtype> {
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
-  Blob<Dtype> col_bob_;
   int count_;
-  int num_;
-  int channels_;
-  int height_;
-  int width_;
-  int concat_dim_;
+  int num_concats_;
+  int concat_input_size_;
+  int concat_axis_;
 };
 
 /**
@@ -268,6 +259,69 @@ class EltwiseLayer : public Layer<Dtype> {
 };
 
 /**
+ * @brief Takes two+ Blobs, interprets last Blob as a selector and
+ *  filter remaining Blobs accordingly with selector data (0 means that
+ * the corresponding item has to be filtered, non-zero means that corresponding
+ * item needs to stay).
+ */
+template <typename Dtype>
+class FilterLayer : public Layer<Dtype> {
+ public:
+  explicit FilterLayer(const LayerParameter& param)
+      : Layer<Dtype>(param) {}
+  virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+
+  virtual inline const char* type() const { return "Filter"; }
+  virtual inline int MinBottomBlobs() const { return 2; }
+  virtual inline int MinTopBlobs() const { return 1; }
+
+ protected:
+  /**
+   * @param bottom input Blob vector (length 2+)
+   *   -# @f$ (N \times C \times H \times W) @f$
+   *      the inputs to be filtered @f$ x_1 @f$
+   *   -# ...
+   *   -# @f$ (N \times C \times H \times W) @f$
+   *      the inputs to be filtered @f$ x_K @f$
+   *   -# @f$ (N \times 1 \times 1 \times 1) @f$
+   *      the selector blob
+   * @param top output Blob vector (length 1+)
+   *   -# @f$ (S \times C \times H \times W) @f$ ()
+   *        the filtered output @f$ x_1 @f$
+   *        where S is the number of items
+   *        that haven't been filtered
+   *      @f$ (S \times C \times H \times W) @f$
+   *        the filtered output @f$ x_K @f$
+   *        where S is the number of items
+   *        that haven't been filtered
+   */
+  virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+    const vector<Blob<Dtype>*>& top);
+
+  /**
+   * @brief Computes the error gradient w.r.t. the forwarded inputs.
+   *
+   * @param top output Blob vector (length 1+), providing the error gradient with
+   *        respect to the outputs
+   * @param propagate_down see Layer::Backward.
+   * @param bottom input Blob vector (length 2+), into which the top error
+   *        gradient is copied
+   */
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+    const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+
+  bool first_reshape_;
+  vector<int> indices_to_forward_;
+};
+
+/**
  * @brief Reshapes the input Blob into flat vectors.
  *
  * Note: because this layer does not change the input values -- merely the
@@ -300,8 +354,6 @@ class FlattenLayer : public Layer<Dtype> {
    */
   virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
-  virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
-      const vector<Blob<Dtype>*>& top);
 
   /**
    * @brief Computes the error gradient w.r.t. the concatenate inputs.
@@ -314,10 +366,6 @@ class FlattenLayer : public Layer<Dtype> {
    */
   virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
-  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
-      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
-
-  int count_;
 };
 
 /**
@@ -388,6 +436,90 @@ class MVNLayer : public Layer<Dtype> {
 
   /// sum_multiplier is used to carry out sum using BLAS
   Blob<Dtype> sum_multiplier_;
+  Dtype eps_;
+};
+
+/*
+ * @brief Reshapes the input Blob into an arbitrary-sized output Blob.
+ *
+ * Note: similarly to FlattenLayer, this layer does not change the input values
+ * (see FlattenLayer, Blob::ShareData and Blob::ShareDiff).
+ */
+template <typename Dtype>
+class ReshapeLayer : public Layer<Dtype> {
+ public:
+  explicit ReshapeLayer(const LayerParameter& param)
+      : Layer<Dtype>(param) {}
+  virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+
+  virtual inline const char* type() const { return "Reshape"; }
+  virtual inline int ExactNumBottomBlobs() const { return 1; }
+  virtual inline int ExactNumTopBlobs() const { return 1; }
+
+ protected:
+  virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top) {}
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {}
+  virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top) {}
+  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {}
+
+  /// @brief vector of axes indices whose dimensions we'll copy from the bottom
+  vector<int> copy_axes_;
+  /// @brief the index of the axis whose dimension we infer, or -1 if none
+  int inferred_axis_;
+  /// @brief the product of the "constant" output dimensions
+  int constant_count_;
+};
+
+/**
+ * @brief Compute "reductions" -- operations that return a scalar output Blob
+ *        for an input Blob of arbitrary size, such as the sum, absolute sum,
+ *        and sum of squares.
+ *
+ * TODO(dox): thorough documentation for Forward, Backward, and proto params.
+ */
+template <typename Dtype>
+class ReductionLayer : public Layer<Dtype> {
+ public:
+  explicit ReductionLayer(const LayerParameter& param)
+      : Layer<Dtype>(param) {}
+  virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+
+  virtual inline const char* type() const { return "Reduction"; }
+  virtual inline int ExactNumBottomBlobs() const { return 1; }
+  virtual inline int ExactNumTopBlobs() const { return 1; }
+
+ protected:
+  virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+
+  /// @brief the reduction operation performed by the layer
+  ReductionParameter_ReductionOp op_;
+  /// @brief a scalar coefficient applied to all outputs
+  Dtype coeff_;
+  /// @brief the index of the first input axis to reduce
+  int axis_;
+  /// @brief the number of reductions performed
+  int num_;
+  /// @brief the input size of each reduction
+  int dim_;
+  /// @brief a helper Blob used for summation (op_ == SUM)
+  Blob<Dtype> sum_multiplier_;
 };
 
 /**
@@ -446,6 +578,9 @@ class SoftmaxLayer : public Layer<Dtype> {
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
+  int outer_num_;
+  int inner_num_;
+  int softmax_axis_;
   /// sum_multiplier is used to carry out sum using BLAS
   Blob<Dtype> sum_multiplier_;
   /// scale is an intermediate Blob to hold temporary results.
@@ -476,8 +611,8 @@ class CuDNNSoftmaxLayer : public SoftmaxLayer<Dtype> {
 
   bool handles_setup_;
   cudnnHandle_t             handle_;
-  cudnnTensor4dDescriptor_t bottom_desc_;
-  cudnnTensor4dDescriptor_t top_desc_;
+  cudnnTensorDescriptor_t bottom_desc_;
+  cudnnTensorDescriptor_t top_desc_;
 };
 #endif
 
@@ -542,13 +677,10 @@ class SliceLayer : public Layer<Dtype> {
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
-  Blob<Dtype> col_bob_;
   int count_;
-  int num_;
-  int channels_;
-  int height_;
-  int width_;
-  int slice_dim_;
+  int num_slices_;
+  int slice_size_;
+  int slice_axis_;
   vector<int> slice_point_;
 };
 

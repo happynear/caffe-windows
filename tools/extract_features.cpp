@@ -122,9 +122,10 @@ int feature_extraction_pipeline(int argc, char** argv) {
 
   std::vector<shared_ptr<db::DB> > feature_dbs;
   std::vector<shared_ptr<db::Transaction> > txns;
+  const char* db_type = argv[++arg_pos];
   for (size_t i = 0; i < num_features; ++i) {
     LOG(INFO)<< "Opening dataset " << dataset_names[i];
-    shared_ptr<db::DB> db(db::GetDB(argv[++arg_pos]));
+    shared_ptr<db::DB> db(db::GetDB(db_type));
     db->Open(dataset_names.at(i), db::NEW);
     feature_dbs.push_back(db);
     shared_ptr<db::Transaction> txn(db->NewTransaction());
@@ -147,9 +148,9 @@ int feature_extraction_pipeline(int argc, char** argv) {
       int dim_features = feature_blob->count() / batch_size;
       const Dtype* feature_blob_data;
       for (int n = 0; n < batch_size; ++n) {
-        datum.set_height(dim_features);
-        datum.set_width(1);
-        datum.set_channels(1);
+        datum.set_height(feature_blob->height());
+        datum.set_width(feature_blob->width());
+        datum.set_channels(feature_blob->channels());
         datum.clear_data();
         datum.clear_float_data();
         feature_blob_data = feature_blob->cpu_data() +
@@ -157,7 +158,7 @@ int feature_extraction_pipeline(int argc, char** argv) {
         for (int d = 0; d < dim_features; ++d) {
           datum.add_float_data(feature_blob_data[d]);
         }
-        int length = snprintf(key_str, kMaxKeyStrLength, "%d",
+        int length = snprintf(key_str, kMaxKeyStrLength, "%010d",
             image_indices[i]);
         string out;
         CHECK(datum.SerializeToString(&out));

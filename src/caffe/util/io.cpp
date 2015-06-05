@@ -48,7 +48,7 @@ void WriteProtoToTextFile(const Message& proto, const char* filename) {
 }
 
 bool ReadProtoFromBinaryFile(const char* filename, Message* proto) {
-  int fd = open(filename, O_RDONLY|O_BINARY);
+  int fd = open(filename, O_RDONLY | O_BINARY);
   CHECK_NE(fd, -1) << "File not found: " << filename;
   ZeroCopyInputStream* raw_input = new FileInputStream(fd);
   CodedInputStream* coded_input = new CodedInputStream(raw_input);
@@ -252,11 +252,11 @@ void hdf5_load_nd_dataset_helper(
   CHECK_GE(status, 0) << "Failed to get dataset info for " << dataset_name_;
   CHECK_EQ(class_, H5T_FLOAT) << "Expected float or double data";
 
-  blob->Reshape(
-    dims[0],
-    (dims.size() > 1) ? dims[1] : 1,
-    (dims.size() > 2) ? dims[2] : 1,
-    (dims.size() > 3) ? dims[3] : 1);
+  vector<int> blob_dims(dims.size());
+  for (int i = 0; i < dims.size(); ++i) {
+    blob_dims[i] = dims[i];
+  }
+  blob->Reshape(blob_dims);
 }
 
 template <>

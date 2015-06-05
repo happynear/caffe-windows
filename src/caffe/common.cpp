@@ -1,12 +1,12 @@
 #include <glog/logging.h>
 #include <cstdio>
 #include <ctime>
-#include <process.h>
-#include <direct.h>
 #include <boost/date_time.hpp>
 
 #include "caffe/common.hpp"
 #include "caffe/util/rng.hpp"
+
+#include <process.h>
 
 namespace caffe {
 

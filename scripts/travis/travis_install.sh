@@ -47,12 +47,12 @@ if $WITH_CUDA; then
 fi
 
 # Install LMDB
-LMDB_URL=ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/openldap-2.4.39.tgz
-LMDB_FILE=/tmp/openldap.tgz
+LMDB_URL=https://github.com/LMDB/lmdb/archive/LMDB_0.9.14.tar.gz
+LMDB_FILE=/tmp/lmdb.tar.gz
 pushd .
-curl $LMDB_URL -o $LMDB_FILE
+wget $LMDB_URL -O $LMDB_FILE
 tar -C /tmp -xzvf $LMDB_FILE
-cd /tmp/openldap*/libraries/liblmdb/
+cd /tmp/lmdb*/libraries/liblmdb/
 $MAKE
 $MAKE install
 popd
@@ -67,4 +67,3 @@ export PATH=/home/travis/miniconda/bin:$PATH
 conda update --yes conda
 conda install --yes numpy scipy matplotlib scikit-image pip
 pip install protobuf
-rm /home/travis/miniconda/lib/libm.*

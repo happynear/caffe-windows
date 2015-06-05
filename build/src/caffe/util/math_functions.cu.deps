@@ -686,7 +686,7 @@ D:\CUDA\Toolkit\include\thrust/detail/host_vector.inl
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\algorithm
-d:\deeplearning\caffe-windows\3rdparty\include\gflags\gflags_declare.h
+d:\deeplearning\caffe123\3rdparty\include\gflags\gflags_declare.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\sstream
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\fstream
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\map
@@ -709,5 +709,3 @@ C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-d:\deeplearning\caffe-windows\3rdparty\include\openblas\openblas_config.h
-C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\math.h

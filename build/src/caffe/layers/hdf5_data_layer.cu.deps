@@ -319,110 +319,112 @@ C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\share.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\vector
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xmemory
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5pubconf.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5version.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5pubconf.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5version.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\sys/types.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5api_adpt.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Apublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Opublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Lpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Tpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Tpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5ACpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Cpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Dpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Epublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Epubgen.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Fpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5ACpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Fpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Gpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Lpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Opublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Tpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Lpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5MMpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Opublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ppublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5ACpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Dpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Fpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Lpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Opublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5MMpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Tpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Zpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Rpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Gpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Spublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5public.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Tpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Zpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDcore.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDfamily.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDlog.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDmpi.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDmpio.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDmpiposix.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDmulti.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ppublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Fpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDsec2.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDstdio.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDwindows.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDsec2.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5FDdirect.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5Ipublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5DOpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5DSpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5LTpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5IMpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5TBpublic.h
-d:\deeplearning\caffe-windows\3rdparty\include\hdf5\H5PTpublic.h
-C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\algorithm
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5api_adpt.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Apublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Opublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Lpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Tpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Tpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5ACpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Cpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Dpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Epublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Epubgen.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Fpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5ACpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Fpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Gpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Lpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Opublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Tpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Lpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5MMpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Opublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ppublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5ACpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Dpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Fpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Lpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Opublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5MMpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Tpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Zpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Rpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Gpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Spublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5public.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Tpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Zpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDcore.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDfamily.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDlog.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDmpi.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDmpio.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDmpiposix.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDmulti.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ppublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Fpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDsec2.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDstdio.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDwindows.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDsec2.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5FDdirect.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5Ipublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5DOpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5DSpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5LTpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5IMpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5TBpublic.h
+d:\deeplearning\caffe123\3rdparty\include\hdf5\H5PTpublic.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\memory
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\algorithm
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\functional
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\xfunctional
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\tuple
-d:\deeplearning\caffe-windows\3rdparty\include\gflags\gflags_declare.h
+d:\deeplearning\caffe123\3rdparty\include\gflags\gflags_declare.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\sstream
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\fstream
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\iostream
@@ -446,13 +448,11 @@ C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-d:\deeplearning\caffe-windows\3rdparty\include\openblas\openblas_config.h
+d:\deeplearning\caffe123\3rdparty\include\openblas\openblas_config.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\math.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
+C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\io.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\process.h
-C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
-C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
-C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\assert.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h
