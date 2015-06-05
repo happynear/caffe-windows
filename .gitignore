@@ -97,6 +97,7 @@ docs/dev
 *.sst
 *.ldb
 LOCK
-LOG*
+LOG
+LOG.old
 CURRENT
 MANIFEST-*
