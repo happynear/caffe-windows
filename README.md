@@ -1,12 +1,12 @@
-Forked from https://www.github.com/BVLC/caffe dev branch in 2015/3/31
+Forked from https://www.github.com/BVLC/caffe master branch in 2015/6/5
 
 Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](http://arxiv.org/abs/1502.01852), Locally Connected Layer, Normalize Layer.
 
 Setup step:
 ======
-1. Download third-party libraries from http://pan.baidu.com/s/1gdAfUPt , and put the 3rdparty folder under the root of caffe-windows.
+1. Download third-party libraries from http://pan.baidu.com/s/1sjE5ER7 , and put the 3rdparty folder under the root of caffe-windows.
 
-2. Run ./src/caffe/proto/extract_proto.bat to create caffe.pb.h and caffe.pb.cc.
+2. Run ./src/caffe/proto/extract_proto.bat to create caffe.pb.h, caffe.pb.cc and caffe_pb2.py.
 
 3. Double click ./build/MSVC/MainBuilder.sln to open the solution in Visual Studio 2012 (only VS2012 supported).
 
