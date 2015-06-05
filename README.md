@@ -23,7 +23,7 @@ TIPS: If you have MKL library, please add the preprocess macro "USE_MKL" defined
 Matlab Wrapper
 ======
 Just change the Matlab include and library path defined in the settings and compile.
-Don't forget to add the ./matlab to your Matlab path.
+Don't forget to add ./matlab to your Matlab path.
 
 Python Wrapper
 ======
