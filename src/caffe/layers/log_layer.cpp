@@ -18,14 +18,14 @@ namespace caffe {
 			// If base == -1, interpret the base as e and set log_base = 1 exactly.
 			// Otherwise, calculate its log explicitly.
 			const Dtype log_base = (base == Dtype(-1)) ? Dtype(1) : log(base);
-			CHECK(!isnan(log_base))
+			CHECK(!_isnanf(log_base))
 				<< "NaN result: log(base) = log(" << base << ") = " << log_base;
-			CHECK(!isinf(log_base))
+			CHECK(_finitef(log_base))
 				<< "Inf result: log(base) = log(" << base << ") = " << log_base;
 			base_scale_ = Dtype(1) / log_base;
-			CHECK(!isnan(base_scale_))
+			CHECK(!_isnanf(base_scale_))
 				<< "NaN result: 1/log(base) = 1/log(" << base << ") = " << base_scale_;
-			CHECK(!isinf(base_scale_))
+			CHECK(_finitef(base_scale_))
 				<< "Inf result: 1/log(base) = 1/log(" << base << ") = " << base_scale_;
 			input_scale_ = this->layer_param_.log_param().scale();
 			input_shift_ = this->layer_param_.log_param().shift();
