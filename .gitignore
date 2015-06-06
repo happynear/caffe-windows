@@ -101,3 +101,10 @@ LOG
 LOG.old
 CURRENT
 MANIFEST-*
+
+#google log
+*.INFO
+*.WARNING
+*.ERROR
+*.FATAL
+

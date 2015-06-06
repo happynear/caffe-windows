@@ -353,7 +353,6 @@ message LayerParameter {
   optional WindowDataParameter window_data_param = 129;
   optional BNParameter bn_param = 137;
   optional LocalParameter local_param = 138;
-  optional InsanityParameter insanity_param = 139;
 }
 
 // Message that stores parameters used to apply transformation
@@ -965,7 +964,6 @@ message V1LayerParameter {
 	LOCAL = 41;
 	BN = 42;
 	NORMALIZE = 43;
-	INSANITY = 44;
   }
   optional LayerType type = 5;
   repeated BlobProto blobs = 6;
@@ -1012,7 +1010,6 @@ message V1LayerParameter {
   optional BNParameter bn_param = 43;
   optional LocalParameter local_param = 44;
   optional PReLUParameter prelu_param = 45;
-  optional InsanityParameter insanity_param = 46;
 }
 
 // DEPRECATED: V0LayerParameter is the old way of specifying layer parameters
@@ -1107,17 +1104,6 @@ message V0LayerParameter {
   optional uint32 concat_dim = 65 [default = 1];
 
   optional HDF5OutputParameter hdf5_output_param = 1001;
-}
-
-message InsanityParameter {
-  // Insanity, or Randomized Leaky Rectified Linear Unit, described in
-  // Bing Xu, Naiyan Wang, Tianqi Chen, Mu Li,
-  // Empirical Evaluation of Rectified Activations in Convolution Network
-  
-  optional float lb = 1 [default = 5.];
-  optional float ub = 2 [default = 10.];
-  optional int32 saturation_start = 3 [default = 0];
-  optional int32 saturation_end = 4 [default = 0];
 }
 
 message PReLUParameter {
