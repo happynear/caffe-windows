@@ -525,7 +525,7 @@ static handler_registry handlers[] = {
  **/
 // Usage: caffe_(api_command, arg1, arg2, ...)
 void mexFunction(MEX_ARGS) {
-  if(init_key == -2) init_key = static_cast<double>(caffe_rng_rand());
+  init_key = static_cast<double>(caffe_rng_rand());
   mexLock();  // Avoid clearing the mex file.
   mxCHECK(nrhs > 0, "Usage: caffe_(api_command, arg1, arg2, ...)");
   {// Handle input command
