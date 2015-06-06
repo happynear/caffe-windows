@@ -202,6 +202,9 @@
       <Filter>util</Filter>
     </ClCompile>
     <ClCompile Include="..\..\matlab\+caffe\private\caffe_.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\insanity_layer.cpp">
+      <Filter>layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\caffe\proto\caffe.pb.h">
@@ -437,6 +440,9 @@
       <Filter>layers</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\reduction_layer.cu">
+      <Filter>layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\insanity_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
   </ItemGroup>
