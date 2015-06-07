@@ -34,7 +34,7 @@ void InsanityLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   CHECK_GE(bottom[0]->num_axes(), 2)
       << "Number of axes of bottom blob must be >=2.";
   top[0]->ReshapeLike(*bottom[0]);
-  if (bottom[0] == top[0]) {
+  if (bottom[0] == top[0] && lb_ < 0) {
     // For in-place computation
     bottom_memory_.ReshapeLike(*bottom[0]);
   }
@@ -51,7 +51,7 @@ void InsanityLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   Dtype* slope_data = alpha.mutable_cpu_data();
 
   // For in-place computation
-  if (bottom[0] == top[0]) {
+  if (bottom[0] == top[0] && lb_ < 0) {
     caffe_copy(count, bottom_data, bottom_memory_.mutable_cpu_data());
   }
 
@@ -83,7 +83,7 @@ void InsanityLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
   const int channels = bottom[0]->channels();
 
   // For in-place computation
-  if (top[0] == bottom[0]) {
+  if (top[0] == bottom[0] && lb_ < 0) {
     bottom_data = bottom_memory_.cpu_data();
   }
 
@@ -92,7 +92,7 @@ void InsanityLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
     for (int i = 0; i < count; ++i) {
       bottom_diff[i] = top_diff[i] * ((bottom_data[i] > 0)
-          + (bottom_data[i] <= 0)) / slope_data[i];
+          + (bottom_data[i] <= 0) / slope_data[i]);
     }
   }
 }

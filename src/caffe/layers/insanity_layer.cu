@@ -45,7 +45,7 @@ void InsanityLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   const int channels = bottom[0]->channels();
 
   // For in-place computation
-  if (top[0] == bottom[0]) {
+  if (top[0] == bottom[0] && lb_ < 0) {
     caffe_copy(count, bottom_data, bottom_memory_.mutable_gpu_data());
   }
 
@@ -76,7 +76,7 @@ void InsanityLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   const int channels = bottom[0]->channels();
 
   // For in-place computation
-  if (top[0] == bottom[0]) {
+  if (top[0] == bottom[0] && lb_ < 0) {
     bottom_data = bottom_memory_.gpu_data();
   }
 
