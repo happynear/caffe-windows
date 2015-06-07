@@ -16,7 +16,9 @@ void InsanityLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   int channels = bottom[0]->channels();
   lb_ = insanity_param_.lb();
   ub_ = insanity_param_.ub();
-  mean_slope = (ub_ - lb_) / (log(ub_) - log(lb_));
+  CHECK_GT(ub_, lb_) << "upper bound must > lower bound.";
+  CHECK_NE(lb_ * ub_, 0) <<"lower & upper bound must not be 0.";
+  mean_slope = (ub_ - lb_) / (log(abs(ub_)) - log(abs(lb_)));
   saturation_start_ = insanity_param_.saturation_start();
   saturation_end_ = insanity_param_.saturation_end();
   CHECK_GE(saturation_start_, 0)
