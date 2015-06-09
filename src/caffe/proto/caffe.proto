@@ -1116,8 +1116,6 @@ message InsanityParameter {
   
   optional float lb = 1 [default = 5.];
   optional float ub = 2 [default = 10.];
-  optional int32 saturation_start = 3 [default = 0];
-  optional int32 saturation_end = 4 [default = 0];
 }
 
 message PReLUParameter {
@@ -1134,6 +1132,9 @@ message PReLUParameter {
 message BNParameter {
   optional FillerParameter scale_filler = 1; // The filler for the scale
   optional FillerParameter shift_filler = 2; // The filler for the shift
+  optional float var_eps = 3 [default = 1e-10]; // The epsilon added to variance
+  optional bool moving_average = 4 [default = true]; // whether or not using moving average for inference
+  optional float decay = 5 [default = 0.95]; // The decay factor for moving average
 }
 
 // Message that stores parameters used by LocalLayer
