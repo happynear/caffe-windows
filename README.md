@@ -35,8 +35,8 @@ Please download the mnist leveldb database from http://pan.baidu.com/s/1mgl9ndu 
 
 Acknowlegement
 ======
-We greatly thank [Yangqing Jia](https://github.com/Yangqing) and [BVLC group](https://www.github.com/BVLC/caffe) for developing Caffe,
-[@niuzhiheng](https://github.com/niuzhiheng) for his contribution on the first generation of caffe-windows,
-[@ChenglongChen](https://github.com/ChenglongChen/batch_normalization) for his implementation of Batch Normalization,
-[@jackculpepper](https://github.com/jackculpepper/caffe) for his implementation of locally-connected layer,
+We greatly thank [Yangqing Jia](https://github.com/Yangqing) and [BVLC group](https://www.github.com/BVLC/caffe) for developing Caffe,\
+[@niuzhiheng](https://github.com/niuzhiheng) for his contribution on the first generation of caffe-windows,\
+[@ChenglongChen](https://github.com/ChenglongChen/batch_normalization) for his implementation of Batch Normalization,\
+[@jackculpepper](https://github.com/jackculpepper/caffe) for his implementation of locally-connected layer,\
 and all people who have contribute to the caffe user group.
