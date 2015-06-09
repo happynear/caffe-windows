@@ -19,12 +19,6 @@ void InsanityLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   CHECK_GT(ub_, lb_) << "upper bound must > lower bound.";
   CHECK_NE(lb_ * ub_, 0) <<"lower & upper bound must not be 0.";
   mean_slope = (ub_ - lb_) / (log(abs(ub_)) - log(abs(lb_)));
-  saturation_start_ = insanity_param_.saturation_start();
-  saturation_end_ = insanity_param_.saturation_end();
-  CHECK_GE(saturation_start_, 0)
-	  << "saturation must be >=0";
-  CHECK_GE(saturation_end_, 0)
-	  << "saturation must be >=0";
   alpha.ReshapeLike(*bottom[0]);
 }
 

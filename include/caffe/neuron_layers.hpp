@@ -765,7 +765,6 @@ class InsanityLayer : public NeuronLayer<Dtype> {
 
 
   Dtype lb_, ub_, mean_slope;
-  int saturation_start_, saturation_end_;
   Blob<Dtype> alpha;  // random generated negative slope
   Blob<Dtype> bottom_memory_;  // memory for in-place computation
 };
