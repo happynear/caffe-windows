@@ -445,5 +445,8 @@
     <ClCompile Include="..\..\src\caffe\layers\insanity_layer.cpp">
       <Filter>layers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\spp_layer.cpp">
+      <Filter>layers</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
