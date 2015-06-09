@@ -236,6 +236,9 @@
     <CudaCompile Include="..\..\src\caffe\layers\reduction_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\insanity_layer.cu">
+      <Filter>layers</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\caffe\proto\caffe.pb.cc">
@@ -438,6 +441,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\util\cudnn.cpp">
       <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\insanity_layer.cpp">
+      <Filter>layers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 Forked from https://www.github.com/BVLC/caffe master branch in 2015/6/5
 
-Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](http://arxiv.org/abs/1502.01852), Locally Connected Layer, Normalize Layer.
+Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](http://arxiv.org/abs/1502.01852), Locally Connected Layer, Normalize Layer, [Randomized ReLU](http://arxiv.org/abs/1505.00853).
 
 Setup step:
 ======
@@ -32,3 +32,15 @@ Similar with Matlab, just change the python include and library path defined in 
 MNIST example
 ======
 Please download the mnist leveldb database from http://pan.baidu.com/s/1mgl9ndu and extract it to ./examples/mnist. Then double click ./run_mnist.bat to run the MNIST demo.
+
+Acknowlegement
+======
+We greatly thank [Yangqing Jia](https://github.com/Yangqing) and [BVLC group](https://www.github.com/BVLC/caffe) for developing Caffe,
+
+[@niuzhiheng](https://github.com/niuzhiheng) for his contribution on the first generation of caffe-windows,
+
+[@ChenglongChen](https://github.com/ChenglongChen/batch_normalization) for his implementation of Batch Normalization,
+
+[@jackculpepper](https://github.com/jackculpepper/caffe) for his implementation of locally-connected layer,
+
+and all people who have contribute to the caffe user group.

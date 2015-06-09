@@ -116,6 +116,7 @@
     <CudaCompile Include="..\..\src\caffe\layers\inner_product_layer.cu">
       <FileType>Document</FileType>
     </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\insanity_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\local_layer.cu">
       <FileType>Document</FileType>
     </CudaCompile>
@@ -217,6 +218,7 @@
     <ClCompile Include="..\..\src\caffe\layers\image_data_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\infogain_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\inner_product_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\insanity_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\local_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\log_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\loss_layer.cpp" />
