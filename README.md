@@ -43,4 +43,4 @@ We greatly thank [Yangqing Jia](https://github.com/Yangqing) and [BVLC group](ht
 
 [@jackculpepper](https://github.com/jackculpepper/caffe) for his implementation of locally-connected layer,
 
-and all people who have contribute to the caffe user group.
+and all people who have contributed to the caffe user group.
