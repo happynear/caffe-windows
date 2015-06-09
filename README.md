@@ -4,11 +4,11 @@ Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](
 
 Setup step:
 ======
-1. Download third-party libraries from http://pan.baidu.com/s/1sjE5ER7 , and put the 3rdparty folder under the root of caffe-windows.
+1. Download third-party libraries from http://pan.baidu.com/s/1sjE5ER7 , and put the 3rdparty folder under the root of caffe-windows. If your VS version is not 2012, please refer to [this project](https://github.com/willyd/caffe-windows-dependencies) to create 3rdparty libraries.
 
 2. Run ./src/caffe/proto/extract_proto.bat to create caffe.pb.h, caffe.pb.cc and caffe_pb2.py.
 
-3. Double click ./build/MSVC/MainBuilder.sln to open the solution in Visual Studio 2012 (only VS2012 supported).
+3. Double click ./build/MSVC/MainBuilder.sln to open the solution in Visual Studio 2012. Higher version of VS can also work, but you must create your own 3rdparty libraries.
 
 4. Change the compile mode to Release and X64.
 
