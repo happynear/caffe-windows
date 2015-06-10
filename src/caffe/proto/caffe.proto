@@ -46,6 +46,7 @@ message FillerParameter {
   optional float max = 4 [default = 1]; // the max value in uniform filler
   optional float mean = 5 [default = 0]; // the mean value in Gaussian filler
   optional float std = 6 [default = 1]; // the std value in Gaussian filler
+  optional float alpha = 9 [default = 0]; // the alpha in equation 15 of <Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification>
   // The expected number of non-zero output weights for a given input in
   // Gaussian filler -- the default -1 means don't perform sparsification.
   optional int32 sparse = 7 [default = -1];
