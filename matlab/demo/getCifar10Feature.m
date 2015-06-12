@@ -17,7 +17,7 @@ caffe.set_device(gpu_id);
 net_model = 'D:\deeplearning\caffe-windows\examples\cifar10\cifar10_full_train_test.prototxt';
 net_weights = 'D:\deeplearning\caffe-windows\examples\cifar10\cifar10_full_iter_80000.caffemodel';
 
-%%%%%%%%%extract the train feature
+%%%%%%%%%extract the train features
 train_net = caffe.Net(net_model,net_weights,'train');
 output_blob_index = train_net.name2blob_index('pool3');%feature blob
 output_blob = train_net.blob_vec(output_blob_index);
@@ -47,7 +47,7 @@ output = output_blob.get_data();
 output = reshape(output,size(output,1)*size(output,2)*size(output,3),size(output,4));
 assert(sum(sum(abs(output - feature_train(:,1:size(output,2)))))==0);
 
-%%%%%%%%%extract the train feature
+%%%%%%%%%extract the test features
 test_net = caffe.Net(net_model,net_weights,'test');
 output_blob_index = test_net.name2blob_index('pool3');%feature blob
 output_blob = test_net.blob_vec(output_blob_index);
