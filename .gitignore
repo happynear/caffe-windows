@@ -108,3 +108,7 @@ MANIFEST-*
 *.ERROR
 *.FATAL
 
+*.jpg
+*.bmp
+*.png
+
