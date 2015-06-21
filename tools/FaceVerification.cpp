@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
 	MemoryDataLayer<float>* data_layer_ptr = (MemoryDataLayer<float>*)&(*caffe_test_net.layers()[0]);
 	data_layer_ptr->AddMatVector(datum_vector,labels);
 	const std::vector<Blob<float>*>& result = caffe_test_net.ForwardPrefilled();
-	cout<<"distance:"<<result[0]->cpu_data()[0]<<endl;
+	cout<<"ÏàËÆ¶È:"<<1 - result[0]->cpu_data()[0]<<endl;
 	
 	//test_accuracy+=result[0]->cpu_data()[0];
 

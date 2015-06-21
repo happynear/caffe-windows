@@ -479,6 +479,14 @@ static void read_mean(MEX_ARGS) {
   mxFree(mean_proto_file);
 }
 
+// Usage: caffe_('need_backward',hNet)
+static void need_backward(MEX_ARGS) {
+  mxCHECK(nrhs == 1 && mxIsStruct(prhs[0]),
+      "Usage: caffe_('need_backward', hNet)");
+  Net<float>* net = handle_to_ptr<Net<float> >(prhs[0]);
+  net->SetAllNeedBackward();
+}
+
 /** -----------------------------------------------------------------
  ** Available commands.
  **/
@@ -516,16 +524,53 @@ static handler_registry handlers[] = {
   { "get_init_key",       get_init_key    },
   { "reset",              reset           },
   { "read_mean",          read_mean       },
+  { "need_backward",      need_backward   },
   // The end.
   { "END",                NULL            },
 };
+
+void initGlog()
+{
+	FLAGS_log_dir="D:\\log\\";
+	_mkdir(FLAGS_log_dir.c_str());
+	std::string LOG_INFO_FILE;
+	std::string LOG_WARNING_FILE;
+	std::string LOG_ERROR_FILE;
+	std::string LOG_FATAL_FILE;
+	std::string now_time=boost::posix_time::to_iso_extended_string(boost::posix_time::second_clock::local_time());
+	now_time[13]='-';
+	now_time[16]='-';
+	LOG_INFO_FILE = FLAGS_log_dir + "INFO" + now_time + ".txt";
+	google::SetLogDestination(google::GLOG_INFO,LOG_INFO_FILE.c_str());
+	LOG_WARNING_FILE = FLAGS_log_dir + "WARNING" + now_time + ".txt";
+	google::SetLogDestination(google::GLOG_WARNING,LOG_WARNING_FILE.c_str());
+	LOG_ERROR_FILE = FLAGS_log_dir + "ERROR" + now_time + ".txt";
+	google::SetLogDestination(google::GLOG_ERROR,LOG_ERROR_FILE.c_str());
+	LOG_FATAL_FILE = FLAGS_log_dir + "FATAL" + now_time + ".txt";
+	google::SetLogDestination(google::GLOG_FATAL,LOG_FATAL_FILE.c_str());
+}
 
 /** -----------------------------------------------------------------
  ** matlab entry point.
  **/
 // Usage: caffe_(api_command, arg1, arg2, ...)
 void mexFunction(MEX_ARGS) {
-  if(init_key == -2) init_key = static_cast<double>(caffe_rng_rand());
+  if(init_key == -2)
+  {
+	  init_key = static_cast<double>(caffe_rng_rand());
+	  FLAGS_alsologtostderr = 1;
+	  initGlog();
+	  FILE *stream = freopen( "D:\\log\\caffe_matlab_log.txt", "w", stderr );  
+  
+	  if( stream == NULL )
+	  {
+		  mxERROR("error on freopen\n" );
+	  }
+	  else  
+	  {
+		  fprintf(stderr,"Open freopen.txt successfully!\r\n");
+	  }
+  }
   mexLock();  // Avoid clearing the mex file.
   mxCHECK(nrhs > 0, "Usage: caffe_(api_command, arg1, arg2, ...)");
   {// Handle input command

@@ -249,6 +249,18 @@ void Net<Dtype>::Init(const NetParameter& in_param) {
 }
 
 template <typename Dtype>
+void Net<Dtype>::SetAllNeedBackward()
+{
+	for (int layer_id = layers_.size() - 1; layer_id >= 0; --layer_id) {
+		layer_need_backward_[layer_id] = true;
+		for (int bottom_id = 0; bottom_id < bottom_vecs_[layer_id].size();
+               ++bottom_id) {
+        bottom_need_backward_[layer_id][bottom_id] = true;
+        }
+	}
+}
+
+template <typename Dtype>
 void Net<Dtype>::FilterNet(const NetParameter& param,
     NetParameter* param_filtered) {
   NetState net_state(param.state());

@@ -140,6 +140,7 @@ class Net {
   inline const vector<bool>& layer_need_backward() const {
     return layer_need_backward_;
   }
+  void SetAllNeedBackward();
   /// @brief returns the parameters
   inline const vector<shared_ptr<Blob<Dtype> > >& params() const {
     return params_;
