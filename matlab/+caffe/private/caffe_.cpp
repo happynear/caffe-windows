@@ -531,7 +531,7 @@ static handler_registry handlers[] = {
 
 void initGlog()
 {
-	FLAGS_log_dir="D:\\log\\";
+	FLAGS_log_dir=".\\log\\";
 	_mkdir(FLAGS_log_dir.c_str());
 	std::string LOG_INFO_FILE;
 	std::string LOG_WARNING_FILE;
@@ -548,6 +548,19 @@ void initGlog()
 	google::SetLogDestination(google::GLOG_ERROR,LOG_ERROR_FILE.c_str());
 	LOG_FATAL_FILE = FLAGS_log_dir + "FATAL" + now_time + ".txt";
 	google::SetLogDestination(google::GLOG_FATAL,LOG_FATAL_FILE.c_str());
+	FLAGS_alsologtostderr = 1;
+	string log_dir = "D:\\log\\";
+	string log_file = log_dir + "INFO" + now_time + ".txt";
+	FILE *stream = freopen(log_file.c_str(), "w", stderr );  
+  
+	if( stream == NULL )
+	{
+		mxERROR("error on freopen\n" );
+	}
+	else  
+	{
+		fprintf(stderr,"Open freopen.txt successfully!\r\n");
+	}
 }
 
 /** -----------------------------------------------------------------
@@ -558,18 +571,7 @@ void mexFunction(MEX_ARGS) {
   if(init_key == -2)
   {
 	  init_key = static_cast<double>(caffe_rng_rand());
-	  FLAGS_alsologtostderr = 1;
 	  initGlog();
-	  FILE *stream = freopen( "D:\\log\\caffe_matlab_log.txt", "w", stderr );  
-  
-	  if( stream == NULL )
-	  {
-		  mxERROR("error on freopen\n" );
-	  }
-	  else  
-	  {
-		  fprintf(stderr,"Open freopen.txt successfully!\r\n");
-	  }
   }
   mexLock();  // Avoid clearing the mex file.
   mxCHECK(nrhs > 0, "Usage: caffe_(api_command, arg1, arg2, ...)");
