@@ -15,7 +15,7 @@ caffe.reset_all();
 %     backend: LEVELDB
 %   }
 net_model = 'D:\deeplearning\caffe-windows\examples\cifar10\cifar10_full.prototxt';
-net_weights = 'D:\deeplearning\caffe-windows\examples\cifar10\cifar10_full_iter_80000.caffemodel';
+net_weights = 'D:\deeplearning\caffe-windows\examples\cifar10\cifar10_full_iter_90000.caffemodel';
 mean_file = 'D:\deeplearning\caffe-windows\examples\cifar10\mean.binaryproto';
 
 %%%%%%%%%extract the train features
@@ -31,9 +31,10 @@ input_data(:,:,:,1) = randn(size(mean_image));
 % output_label = train_net.blob_vec(output_label_index);
 prob = train_net.forward({input_data});
 [max_prob,max_idx] = max(prob{1});
+max_idx = 1;
 back_data = zeros(size(prob{1}),'single');
 back_data(max_idx) = -1;
-base_lr = 50;
+base_lr = 500;
 while max_prob<0.9999
     lr = base_lr;
     if max_prob>0.9
@@ -41,6 +42,9 @@ while max_prob<0.9999
     end;
     if max_prob>0.99
         lr = base_lr * 100;
+    end;
+    if max_prob>0.999
+        lr = base_lr * 1000;
     end;
     disp(max_prob);
     res = train_net.backward({back_data});
@@ -54,3 +58,4 @@ while max_prob<0.9999
     prob = train_net.forward({input_data});
     [max_prob,max_idx] = max(prob{1});
 end;
+imshow(uint8(mean_image + input_data));
