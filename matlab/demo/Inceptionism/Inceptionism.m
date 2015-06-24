@@ -14,9 +14,12 @@ caffe.set_device(gpu_id);
 %     batch_size: 100
 %     backend: LEVELDB
 %   }
-net_model = 'D:\deeplearning\caffe-windows\examples\GoogLeNet\googlenet_deploy_prob.prototxt';
-net_weights = 'D:\deeplearning\caffe-windows\examples\GoogLeNet\thinned_net.caffemodel';
+net_model = 'D:\deeplearning\caffe-windows\examples\GoogLeNet\googlenet_deploy_prob3.prototxt';
+net_weights = 'D:\deeplearning\caffe-windows\examples\GoogLeNet\imagenet_googlenet.caffemodel';
 mean_file = 'D:\deeplearning\caffe-windows\examples\GoogLeNet\imagenet_mean.binaryproto';
+% net_model = 'D:\deeplearning\caffe-windows\examples\GoogLeNet\googlenet_deploy_prob.prototxt';
+% net_weights = 'D:\deeplearning\caffe-windows\examples\GoogLeNet\thinned_net.caffemodel';
+% mean_file = 'D:\deeplearning\caffe-windows\examples\GoogLeNet\imagenet_mean.binaryproto';
 % net_model = 'D:\deeplearning\caffe-windows\examples\PlaceCNN\hybridCNN_deploy_upgraded.prototxt';
 % net_weights = 'D:\deeplearning\caffe-windows\examples\PlaceCNN\hybridCNN_iter_700000_upgraded.caffemodel';
 % mean_file = 'D:\deeplearning\caffe-windows\examples\PlaceCNN\hybridCNN_mean.binaryproto';
@@ -35,7 +38,7 @@ input_data = zeros(size(mean_image,1), size(mean_image,2), 3, 1, 'single');
 % input_data(60:180,180,:) = 1;
 
 % trans_image = single(imread('e:\\banana.png'));
-trans_image = imresize(trans_image,[size(mean_image,1), size(mean_image,2)]);
+% trans_image = imresize(trans_image,[size(mean_image,1), size(mean_image,2)]);
 % input_data(:,:,:,1) = trans_image - mean_image;%randn(size(mean_image));
 input_data(:,:,:,1) = randn(size(mean_image)) * 10;
 % input_data(:,:,:,1) = zeros(size(mean_image));
@@ -43,87 +46,102 @@ input_data(:,:,:,1) = randn(size(mean_image)) * 10;
 % input_data(:,:,:,1) = imfilter(input_data(:,:,:,1),H,'same');
 % input_data = input_data / std(input_data(:)) * 30;
 
+use_clip = true;
+use_cv_norm = true;
+use_weight_decay = false;
+use_image_blur = false;
+use_gradient_blur = false;
 
-% output_blob_index = train_net.name2blob_index('pool3');%feature blob
-% output_blob = train_net.blob_vec(output_blob_index);
-% output_label_index = train_net.name2blob_index('label');
-% output_label = train_net.blob_vec(output_label_index);
+H = fspecial('gaussian',[7 7],1);
+% nth_layer = train_net.layer_vec(train_net.name2layer_index('blur'));
+% blur_kernel = zeros(7,7,3,3);
+% blur_kernel(:,:,1,1) = H;
+% blur_kernel(:,:,2,2) = H;
+% blur_kernel(:,:,3,3) = H;
+% nth_layer.params(1).set_data(blur_kernel);
+
 prob = train_net.forward({input_data});
-[max_prob,max_idx] = max(prob{1});
-max_idx = 784;
-this_prob = prob{1}(max_idx);
-back_data = zeros(size(prob{1}),'single');
+[max_prob,max_idx] = max(prob{3});
+max_idx = 955;
+this_prob = prob{3}(max_idx);
+back_data = zeros(size(prob{3}),'single');
 back_data(max_idx) = 1;
-base_lr = 10;
+back_cell = prob;
+back_cell{1} = back_data;
+back_cell{2} = back_data;
+back_cell{3} = back_data;
+blur_data = zeros(size(input_data));
+base_lr = 100;
 lambda1 = 0.0001;
-lambda2 = 0.0002;
+lambda2 = 0.0004;
 last_prob = -999;
 momentum = 0.8;
 lastgrad = zeros(size(mean_image));
-H = fspecial('gaussian',[7 7],0.8);
+mask = ones(size(mean_image,1), size(mean_image,2));
 iter = 1;
 dropout = 0.5;
+
 while 1
-%     lr = base_lr;
     lr = base_lr;% * sqrt(this_prob / (1 - this_prob));
-%     if this_prob>0.9
-%         lr = base_lr * 10;
-%     end;
-%     if this_prob>0.99
-%         lr = base_lr * 100;
-%     end;
-%     if this_prob>0.999
-%         lr = base_lr * 1000;
-%     end;
-%     if this_prob>0.7
-%         lambda2 = 0.8;
-%     end;
-    res = train_net.backward({back_data});
-%     nth_layer = train_net.layer_vec(train_net.name2layer_index('ip1'));
-%     nth_layer_blob1_diff = nth_layer.params(1).get_diff();
-%     nth_layer_blob1_data = nth_layer.params(1).get_data();
-%     nth_blob = train_net.blob_vec(train_net.name2blob_index('ip1'));
-%     nth_blob_diff = nth_blob.get_diff();
-%     nth_blob_data = nth_blob.get_data();
+    res = train_net.backward(back_cell);
     
     bak_data = input_data;
     
-%     res{1} = imfilter(res{1},H,'same');
+    if use_gradient_blur
+        res{1} = imfilter(res{1},H,'same');
+    end;
+    
+    if use_clip
+        app_gradient = sum(abs(res{1} .* input_data(:,:,:,1)),3);
+        app_gradient = app_gradient < mean(app_gradient(:)) * 0.5;
+        grad = reshape(res{1},[size(mean_image,1)*size(mean_image,2) 3]);
+        grad(app_gradient==1,:) = 0;
+        grad = reshape(grad,size(input_data));
+        res{1} = grad;
+    end;
+    
     
     lastgrad = (1 - momentum) * lr * res{1} / norm(res{1}(:))  + momentum * lastgrad;%
+%     lastgrad = reshape(lastgrad,[size(mean_image,1)*size(mean_image,2) 3]);
+%     lastgrad(mask==1,:) = 0;
+%     lastgrad = reshape(lastgrad,size(input_data));
     input_data(:,:,:,1) = input_data(:,:,:,1) + lastgrad;
     
-%     if this_prob > 0.1
+    if use_cv_norm
         I = input_data(:,:,:,1);
 %         Gx = sign(I(2:end-1,2:end-1,:) - I(1:end-2,2:end-1,:)) - sign(I(3:end,2:end-1,:) - I(2:end-1,2:end-1,:));
 %         Gy = sign(I(2:end-1,2:end-1,:) - I(2:end-1,1:end-2,:)) - sign(I(2:end-1,3:end,:) - I(2:end-1,2:end-1,:));
 %         Gx = smoothL1(I(2:end-1,2:end-1,:) - I(1:end-2,2:end-1,:)) - smoothL1(I(3:end,2:end-1,:) - I(2:end-1,2:end-1,:));
 %         Gy = smoothL1(I(2:end-1,2:end-1,:) - I(2:end-1,1:end-2,:)) - smoothL1(I(2:end-1,3:end,:) - I(2:end-1,2:end-1,:));
-
         Gx = sign(I(2:end-1,:,:) - I(1:end-2,:,:)) - sign(I(3:end,:,:) - I(2:end-1,:,:));
         Gx = [sign(I(1,:,:) - I(2,:,:)); Gx; sign(I(end,:,:) - I(end-1,:,:))];
         Gy = sign(I(:,2:end-1,:) - I(:,1:end-2,:)) - sign(I(:,3:end,:) - I(:,2:end-1,:));
         Gy = [sign(I(:,1,:) - I(:,2,:)) Gy sign(I(:,end,:) - I(:,end-1,:))];
         input_data(:,:,:,1) = input_data(:,:,:,1) - lr * lambda2 * (Gx + Gy);
-%         input_data(:,:,:,1) = input_data(:,:,:,1) - lr * lambda1 * (I);
+    end;
+    if use_weight_decay
+        input_data(:,:,:,1) = input_data(:,:,:,1) - lr * lambda1 * I;
+    end;
 %         input_data = (input_data -mean(input_data(:))) / std(input_data(:)) * 30;
 %     end;
 
-    for_forward = reshape(input_data,[size(mean_image,1)*size(mean_image,2) 3]);
-    mask = rand(size(mean_image,1), size(mean_image,2)) < dropout;
-    for_forward(mask==1,:) = 0;
-    for_forward = reshape(for_forward,size(input_data));
-    prob = train_net.forward({input_data});
-    this_prob = prob{1}(max_idx);
+%     for_forward = reshape(input_data,[size(mean_image,1)*size(mean_image,2) 3]);
+%     mask = rand(size(mean_image,1), size(mean_image,2)) < dropout;
+%     for_forward(mask==1,:) = 0;
+%     for_forward = reshape(for_forward,size(input_data));
+    
+    if mod(iter,10) ==0&&use_image_blur&&iter<3000
+        blur_data = input_data;
+        blur_data(:,:,:,1) = imfilter(blur_data(:,:,:,1),H,'same');
+        prob = train_net.forward({blur_data});
+    else
+        prob = train_net.forward({input_data});
+    end;
+    
+    this_prob = prob{3}(max_idx);
     fprintf('iter=%d,lr=%f,prob=%f,last_prob=%f\n',iter,lr,this_prob,last_prob);
     iter = iter + 1;
-    if mod(iter,10) ==0%&&this_prob>0.7
-%         if iter<700
-            input_data(:,:,:,1) = imfilter(input_data(:,:,:,1),H,'same');
-%         else
-%             input_data(:,:,:,1) = imguidedfilter(input_data(:,:,:,1));
-%         end;
-    end;
+    
     if mod(iter,100)==0
         figure(1)
         output = reshape(input_data,[size(input_data,1)*size(input_data,2) size(input_data,3)]);
