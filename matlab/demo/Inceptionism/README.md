@@ -12,5 +12,5 @@ Open inceptionism.m and change all the file paths to yours and run the script, y
 
 Please feel free to change the switches to use some of the priors, such as tv norm, weight decay, blur, clip etc...
 
-The max_idx variable refers to the class in ImageNet that you want to generate. All classes are listed in ImageNet2012_labels.txt 
+The max_idx variable refers to the class in ImageNet that you want to generate. The classes are listed in ImageNet2012_labels.txt 
 of my Baidu YunDisk (http://pan.baidu.com/s/1dDpSH01).
