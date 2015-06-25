@@ -10,7 +10,15 @@ Certainly, the newest version of my Caffe in this repository should be installed
 
 Open inceptionism.m and change all the file paths to yours and run the script, you will get a fantasy image.
 
-Please feel free to change the switches to use some of the priors, such as tv norm, weight decay, blur, clip etc...
-
 The max_idx variable refers to the class in ImageNet that you want to generate. The classes are listed in ImageNet2012_labels.txt 
 of my Baidu YunDisk (http://pan.baidu.com/s/1dDpSH01).
+
+Please feel free to change the switches to use some of the priors, such as tv-norm, weight decay, blur, clip etc. In my experiments, simultaneously using tv-norm and image bluring leads to the best performance.
+
+Gallery
+==============
+ant: ![ant](gallery/ant.jpg)
+banana: ![banana](gallery/banana.jpg)
+canoe: ![canoe](gallery/canoe.jpg)
+starfish: ![starfish](gallery/starfish.jpg)
+screw: ![screw](gallery/screw.jpg)
