@@ -17,7 +17,7 @@ Please feel free to change the switches to use some of the priors, such as tv-no
 
 Gallery
 ==============
-Obviously, these images are not as vivid as Google's Inceptionism. I will keep optimizing the algorithm.
+2015/6/25 I have generated images with quality no less than Google's. Sorry I could not tell the key technique until I have written a technique report. I will release the codes once I have uploaded the report.
 
 ant:
 
