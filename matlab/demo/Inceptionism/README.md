@@ -1,4 +1,4 @@
-Iceptionism
+Inceptionism
 ===============
 
 Aiming at reproducing Inceptionism described in http://googleresearch.blogspot.jp/2015/06/inceptionism-going-deeper-into-neural.html .
