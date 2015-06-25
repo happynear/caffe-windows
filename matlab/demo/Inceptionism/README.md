@@ -17,6 +17,8 @@ Please feel free to change the switches to use some of the priors, such as tv-no
 
 Gallery
 ==============
+Obviously, these images are not as vivid as Google's Inceptionism. I will keep optimizing the algorithm.
+
 ant:
 
 ![ant](gallery/ant.jpg)
