@@ -18,7 +18,11 @@ Please feel free to change the switches to use some of the priors, such as tv-no
 Gallery
 ==============
 ant: ![ant](gallery/ant.jpg)
+
 banana: ![banana](gallery/banana.jpg)
+
 canoe: ![canoe](gallery/canoe.jpg)
+
 starfish: ![starfish](gallery/starfish.jpg)
+
 screw: ![screw](gallery/screw.jpg)
