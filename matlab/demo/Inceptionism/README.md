@@ -17,7 +17,7 @@ Please feel free to change the switches to use some of the priors, such as tv-no
 
 Gallery
 ==============
-2015/6/25 I have generated images whose quality is no less than Google's. Sorry that I could not tell the key technique until I have written a technique report. I will release the codes once I have uploaded the report.
+2015/6/25 Some more wonderful images are generated. Sorry that I could not tell the key technique until I have written a technique report. I will release the codes once I have uploaded the report.
 
 ant:
 
