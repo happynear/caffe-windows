@@ -17,12 +17,22 @@ Please feel free to change the switches to use some of the priors, such as tv-no
 
 Gallery
 ==============
-ant: ![ant](gallery/ant.jpg)
+ant:
 
-banana: ![banana](gallery/banana.jpg)
+![ant](gallery/ant.jpg)
 
-canoe: ![canoe](gallery/canoe.jpg)
+banana:
 
-starfish: ![starfish](gallery/starfish.jpg)
+![banana](gallery/banana.jpg)
 
-screw: ![screw](gallery/screw.jpg)
+canoe:
+
+![canoe](gallery/canoe.jpg)
+
+starfish:
+
+![starfish](gallery/starfish.jpg)
+
+screw:
+
+![screw](gallery/screw.jpg)
