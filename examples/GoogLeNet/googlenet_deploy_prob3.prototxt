@@ -835,12 +835,12 @@ layers {
     }
   }
 }
-layers {
-  name: "loss1"
-  type: SOFTMAX
-  bottom: "cls1_fc2"
-  top: "loss1"
-}
+#layers {
+#  name: "loss1"
+#  type: SOFTMAX
+#  bottom: "cls1_fc2"
+#  top: "loss1"
+#}
 
 # Inception module 4 ***************
 layers {
@@ -1526,12 +1526,12 @@ layers {
     }
   }
 }
-layers {
-  name: "loss2"
-  type: SOFTMAX
-  bottom: "cls2_fc2"
-  top: "loss2"
-}
+#layers {
+#  name: "loss2"
+#  type: SOFTMAX
+#  bottom: "cls2_fc2"
+#  top: "loss2"
+#}
 
 # Inception module 7 ***************
 layers {
@@ -2173,9 +2173,9 @@ layers {
     }
   }
 }
-layers {
-  name: "loss3"
-  type: SOFTMAX
-  bottom: "cls3_fc"
-  top: "loss3"
-}
+#layers {
+#  name: "loss3"
+#  type: SOFTMAX
+#  bottom: "cls3_fc"
+#  top: "loss3"
+#}
