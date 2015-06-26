@@ -17,6 +17,17 @@ Please feel free to change the switches to use some of the priors, such as tv-no
 
 Gallery
 ==============
+2015/6/26 Bigger Images are generated.
+
+megalith:
+
+![](http://pic2.zhimg.com/54c0ee332437a548d25475e1e80ef985_b.jpg)
+
+mixture of coral and starfish:
+
+![](http://pic1.zhimg.com/c647e1790e56b624e4f59a376acd14d0_b.jpg)
+
+
 2015/6/25 Some more wonderful images are generated. Sorry that I could not tell the key technique until I have written a technique report. I will release the codes once I have uploaded the report.
 
 ant:
