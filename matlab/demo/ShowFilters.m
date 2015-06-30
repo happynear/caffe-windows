@@ -3,7 +3,7 @@ caffe.reset_all();
 net_model = 'D:\deeplearning\caffe-windows\examples\GoogLeNet\googlenet_deploy_prob.prototxt';
 net_weights = 'D:\deeplearning\caffe-windows\examples\GoogLeNet\thinned_net.caffemodel';
 net = caffe.Net(net_model,net_weights,'test');
-nth_layer = net.layer_vec(train_net.name2layer_index('conv1'));
+nth_layer = net.layer_vec(net.name2layer_index('conv1'));
 nth_layer_blob1_data = nth_layer.params(1).get_data();
 
 sizeB = size(nth_layer_blob1_data);

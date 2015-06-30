@@ -540,22 +540,23 @@ void initGlog()
 	std::string now_time=boost::posix_time::to_iso_extended_string(boost::posix_time::second_clock::local_time());
 	now_time[13]='-';
 	now_time[16]='-';
-	LOG_INFO_FILE = FLAGS_log_dir + "INFO" + now_time + ".txt";
+	/*LOG_INFO_FILE = FLAGS_log_dir + "INFO" + now_time + ".txt";
 	google::SetLogDestination(google::GLOG_INFO,LOG_INFO_FILE.c_str());
 	LOG_WARNING_FILE = FLAGS_log_dir + "WARNING" + now_time + ".txt";
 	google::SetLogDestination(google::GLOG_WARNING,LOG_WARNING_FILE.c_str());
 	LOG_ERROR_FILE = FLAGS_log_dir + "ERROR" + now_time + ".txt";
 	google::SetLogDestination(google::GLOG_ERROR,LOG_ERROR_FILE.c_str());
 	LOG_FATAL_FILE = FLAGS_log_dir + "FATAL" + now_time + ".txt";
-	google::SetLogDestination(google::GLOG_FATAL,LOG_FATAL_FILE.c_str());
+	google::SetLogDestination(google::GLOG_FATAL,LOG_FATAL_FILE.c_str());*/
 	FLAGS_alsologtostderr = 1;
-	string log_dir = "D:\\log\\";
-	string log_file = log_dir + "INFO" + now_time + ".txt";
+	string log_dir = ".\\log\\";
+	_mkdir(FLAGS_log_dir.c_str());
+	string log_file = log_dir + "MATLAB_INFO" + now_time + ".txt";
 	FILE *stream = freopen(log_file.c_str(), "w", stderr );  
   
 	if( stream == NULL )
 	{
-		mxERROR("error on freopen\n" );
+		mexWarnMsgTxt("error on freopen. Maybe \n" );
 	}
 	else  
 	{
