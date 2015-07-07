@@ -2,6 +2,10 @@ Forked from https://www.github.com/BVLC/caffe master branch in 2015/6/5
 
 Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](http://arxiv.org/abs/1502.01852), Locally Connected Layer, Normalize Layer, [Randomized ReLU](http://arxiv.org/abs/1505.00853).
 
+Update
+======
+2015/07/07  Visual Studio 2013 with CUDA 7.0 is now supported. A beta version 3rdparty library can be downloaded from [this link](http://pan.baidu.com/s/1sj3IvzZ). All the libraries have been updated to the latest version. Please help me try and report bugs.
+
 Setup step:
 ======
 1. Download third-party libraries from http://pan.baidu.com/s/1sjE5ER7 , and put the 3rdparty folder under the root of caffe-windows. If your VS version is not 2012, please refer to [this project](https://github.com/willyd/caffe-windows-dependencies) to create 3rdparty libraries.
