@@ -8,11 +8,11 @@ Update
 
 Setup step:
 ======
-1. Download third-party libraries from http://pan.baidu.com/s/1sjE5ER7 , and put the 3rdparty folder under the root of caffe-windows. ~~If your VS version is not 2012, please refer to [this project](https://github.com/willyd/caffe-windows-dependencies) to create 3rdparty libraries.~~
+1. Download third-party libraries from http://pan.baidu.com/s/1sjE5ER7 , and put the 3rdparty folder under the root of caffe-windows. Add the ./3rdparty/bin folder to your environment variable `PATH`.
 
 2. Run ./src/caffe/proto/extract_proto.bat to create caffe.pb.h, caffe.pb.cc and caffe_pb2.py.
 
-3. Double click ./build/MSVC/MainBuilder.sln to open the solution in Visual Studio 2012. ~~Higher version of VS can also work, but you must create your own 3rdparty libraries.~~
+3. Double click ./build/MSVC/MainBuilder.sln to open the solution in Visual Studio 2012. If you are using VS2013, please download 3rdparty libraries and solution files from http://pan.baidu.com/s/1sj3IvzZ.
 
 4. Change the compile mode to Release and X64.
 
