@@ -4,7 +4,7 @@ Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](
 
 Update
 ======
-2015/07/07  Visual Studio 2013 with CUDA 7.0 is now supported. A beta version 3rdparty library can be downloaded from [this link](http://pan.baidu.com/s/1sj3IvzZ). All the libraries have been updated to the latest version. Please help me try and report bugs.
+2015/07/07  Visual Studio 2013 with CUDA 7.0 is now supported. A beta version 3rdparty library can be downloaded from http://pan.baidu.com/s/1sj3IvzZ. All the libraries have been updated to the latest version. Please help me try and report bugs.
 
 Setup step:
 ======
