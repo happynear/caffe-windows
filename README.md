@@ -8,7 +8,7 @@ Update
 
 Setup step:
 ======
-1. Download third-party libraries from http://pan.baidu.com/s/1sjE5ER7 , and put the 3rdparty folder under the root of caffe-windows. Add the ./3rdparty/bin folder to your environment variable `PATH`.
+1. Download third-party libraries from http://pan.baidu.com/s/1sjE5ER7 (for VS2012), and put the 3rdparty folder under the root of caffe-windows. Add the ./3rdparty/bin folder to your environment variable `PATH`.
 
 2. Run ./src/caffe/proto/extract_proto.bat to create caffe.pb.h, caffe.pb.cc and caffe_pb2.py.
 
