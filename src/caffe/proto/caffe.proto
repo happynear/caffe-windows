@@ -355,6 +355,8 @@ message LayerParameter {
   optional BNParameter bn_param = 137;
   optional LocalParameter local_param = 138;
   optional InsanityParameter insanity_param = 139;
+  optional TripletLossParameter triplet_loss_param = 140;
+  optional ROIPoolingParameter roi_pooling_param = 141;
 }
 
 // Message that stores parameters used to apply transformation
@@ -436,6 +438,11 @@ message ContrastiveLossParameter {
   // legacy_version = true uses (margin - d^2). This is kept to support /
   // reproduce existing models and results
   optional bool legacy_version = 2 [default = false]; 
+}
+
+message TripletLossParameter {
+  //margin for negative triplet
+  optional float margin = 1 [default = 1.0];
 }
 
 message ConvolutionParameter {
@@ -704,6 +711,17 @@ message PowerParameter {
   optional float shift = 3 [default = 0.0];
 }
 
+// Message that stores parameters used by ROIPoolingLayer
+message ROIPoolingParameter {
+  // Pad, kernel size, and stride are all given as a single value for equal
+  // dimensions in height and width or as Y, X pairs.
+  optional uint32 pooled_h = 1 [default = 0]; // The pooled output height
+  optional uint32 pooled_w = 2 [default = 0]; // The pooled output width
+  // Multiplicative spatial scale factor to translate ROI coords from their
+  // input scale to the scale used when pooling
+  optional float spatial_scale = 3 [default = 1];
+}
+
 message PythonParameter {
   optional string module = 1;
   optional string layer = 2;
@@ -967,6 +985,8 @@ message V1LayerParameter {
 	BN = 42;
 	NORMALIZE = 43;
 	INSANITY = 44;
+	TRIPLET_LOSS = 45;
+	ROIPOOLING = 46;
   }
   optional LayerType type = 5;
   repeated BlobProto blobs = 6;
@@ -1014,6 +1034,8 @@ message V1LayerParameter {
   optional LocalParameter local_param = 44;
   optional PReLUParameter prelu_param = 45;
   optional InsanityParameter insanity_param = 46;
+  optional TripletLossParameter triplet_loss_param = 47;
+  optional ROIPoolingParameter roi_pooling_param = 48;
 }
 
 // DEPRECATED: V0LayerParameter is the old way of specifying layer parameters
