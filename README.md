@@ -6,7 +6,7 @@ Update
 ======
 2015/07/07  Visual Studio 2013 with CUDA 7.0 is now supported. A beta version 3rdparty library can be downloaded from http://pan.baidu.com/s/1sj3IvzZ. All the libraries have been updated to the latest version. Please help me try and report bugs.
 
-WARNING: Due to the low compile speed of VS2012 with CUDA 6.5, update of VS2012 3rdparty library will be stopped after September. If you are configuring a new platform, we strongly recommend you to use Visual Studio 2013 and CUDA 7.0.
+WARNING: Due to the low compile speed of VS2012 with CUDA 6.5, VS2012 3rdparty library will not continue to be updated after September, 2015. If you are configuring a new platform, we strongly recommend you to use Visual Studio 2013 and CUDA 7.0.
 
 Setup step:
 ======
