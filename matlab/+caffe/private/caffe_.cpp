@@ -296,18 +296,44 @@ static void net_get_attr(MEX_ARGS) {
 
 // Usage: caffe_('net_forward', hNet)
 static void net_forward(MEX_ARGS) {
-  mxCHECK(nrhs == 1 && mxIsStruct(prhs[0]),
-      "Usage: caffe_('net_forward', hNet)");
+  mxCHECK(nrhs<=3 && mxIsStruct(prhs[0]),
+      "Usage: caffe_('net_forward', hNet, from_layer=0, to_layer=end)");
   Net<float>* net = handle_to_ptr<Net<float> >(prhs[0]);
-  net->ForwardPrefilled();
+  if (nrhs == 1)
+	net->ForwardPrefilled();
+  else if (nrhs == 2)
+  {
+	  mxCHECK(mxIsDouble(prhs[1]),
+		"Usage: caffe_('net_forward', hNet, from_layer=0, to_layer=end)");
+	  net->ForwardFrom((int) mxGetScalar(prhs[1]));
+  }
+  else if(nrhs == 3)
+  {
+	  mxCHECK(mxIsDouble(prhs[1]) && mxIsDouble(prhs[2]),
+		"Usage: caffe_('net_forward', hNet, from_layer=0, to_layer=end)");
+	  net->ForwardFromTo((int) mxGetScalar(prhs[1]), (int) mxGetScalar(prhs[2]));
+  }
 }
 
 // Usage: caffe_('net_backward', hNet)
 static void net_backward(MEX_ARGS) {
-  mxCHECK(nrhs == 1 && mxIsStruct(prhs[0]),
-      "Usage: caffe_('net_backward', hNet)");
+  mxCHECK(nrhs <=3 && mxIsStruct(prhs[0]),
+      "Usage: caffe_('net_backward', hNet, from_layer=end, to_layer=0)");
   Net<float>* net = handle_to_ptr<Net<float> >(prhs[0]);
-  net->Backward();
+  if (nrhs == 1)
+	net->Backward();
+  else if (nrhs == 2)
+  {
+	  mxCHECK(mxIsDouble(prhs[1]),
+		"Usage: caffe_('net_backward', hNet, from_layer=end, to_layer=0)");
+	  net->BackwardFrom((int) mxGetScalar(prhs[1]));
+  }
+  else if(nrhs == 3)
+  {
+	  mxCHECK(mxIsDouble(prhs[1]) && mxIsDouble(prhs[2]),
+		"Usage: caffe_('net_backward', hNet, from_layer=end, to_layer=0)");
+	  net->BackwardFromTo((int) mxGetScalar(prhs[1]), (int) mxGetScalar(prhs[2]));
+  }
 }
 
 // Usage: caffe_('net_copy_from', hNet, weights_file)
@@ -556,7 +582,7 @@ void initGlog()
   
 	if( stream == NULL )
 	{
-		mexWarnMsgTxt("error on freopen. Maybe \n" );
+		mexWarnMsgTxt("error on freopen. \n" );
 	}
 	else  
 	{
