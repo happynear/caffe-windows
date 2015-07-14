@@ -10,7 +10,7 @@ WARNING: Due to the low compile speed of VS2012 with CUDA 6.5, VS2012 3rdparty l
 
 Setup step:
 ======
-1. Download third-party libraries from http://pan.baidu.com/s/1sjE5ER7 (for VS2012), and put the 3rdparty folder under the root of caffe-windows. **Please don't forgert to add the `./3rdparty/bin` folder to your environment variable `PATH`.**
+1. Download third-party libraries from http://pan.baidu.com/s/1sjE5ER7 (for VS2012), and put the 3rdparty folder under the root of caffe-windows. **Please don't forget to add the `./3rdparty/bin` folder to your environment variable `PATH`.**
 
 2. Run `./src/caffe/proto/extract_proto.bat` to create `caffe.pb.h`, `caffe.pb.cc` and `caffe_pb2.py`.
 
