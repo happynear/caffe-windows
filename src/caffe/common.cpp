@@ -15,6 +15,7 @@ shared_ptr<Caffe> Caffe::singleton_;
 // random seeding
 int64_t cluster_seedgen(void) {
   int64_t s, seed, pid;
+#ifndef _MSC_VER
   FILE* f = fopen("/dev/urandom", "rb");
   if (f && fread(&seed, 1, sizeof(seed), f) == sizeof(seed)) {
     fclose(f);
@@ -25,6 +26,7 @@ int64_t cluster_seedgen(void) {
               "using fallback algorithm to generate seed instead.";
   if (f)
     fclose(f);
+#endif
 
   pid = _getpid();
   s = time(NULL);
