@@ -4,7 +4,9 @@ Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](
 
 Update
 ======
-2015/07/07  Visual Studio 2013 with CUDA 7.0 is now supported. A beta version 3rdparty library can be downloaded from http://pan.baidu.com/s/1sj3IvzZ. All the libraries have been updated to the latest version. Please help me try and report bugs.
+2015/08/06 CuDNN v3 is released! The new 3rdparty library with CuDNN v3 can be downloaded from http://pan.baidu.com/s/1i390tZB. In this update, I use an ungainly method to build the caffe core functions in one project as a static lib. I am still looking for better solutions. Issue and Pull Request are welcomed.
+
+2015/07/07  Visual Studio 2013 with CUDA 7.0 is now supported. A beta version 3rdparty library can be downloaded from ~http://pan.baidu.com/s/1sj3IvzZ(deprecated)~. All the libraries have been updated to the latest version. Please help me try and report bugs.
 
 WARNING: Due to the low compile speed of VS2012 with CUDA 6.5, VS2012 3rdparty library will not continue to be updated after September, 2015. If you are configuring a new platform, we strongly recommend you to use Visual Studio 2013 and CUDA 7.0.
 
@@ -23,6 +25,8 @@ Setup step:
 6. Compile.
 
 TIPS: If you have MKL library, please add the preprocess macro "USE_MKL" defined in the setting of the project.
+
+If you want build other tools, just copy and rename `./build/MSVC` folder to another one, and add the new project to the VS solution. Remove `caffe.cpp` and add your target cpp file. Then you will get a corresponding exe file in `./bin`.
 
 中文安装说明：http://blog.csdn.net/happynear/article/details/45372231
 
