@@ -106,5 +106,5 @@ void InfogainLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
 }
 
 INSTANTIATE_CLASS(InfogainLossLayer);
-REGISTER_LAYER_CLASS(InfogainLoss);
+
 }  // namespace caffe

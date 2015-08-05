@@ -55,6 +55,6 @@ STUB_GPU(SplitLayer);
 #endif
 
 INSTANTIATE_CLASS(SplitLayer);
-REGISTER_LAYER_CLASS(Split);
+
 
 }  // namespace caffe

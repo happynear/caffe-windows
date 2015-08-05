@@ -84,34 +84,8 @@ classdef Net < handle
     function forward_prefilled(self)
       caffe_('net_forward', self.hNet_self);
     end
-    function forward_to(self, to_layer)
-      CHECK(ischar(to_layer), 'to_layer must be a string');
-      caffe_('net_forward', self.hNet_self, 0, self.name2layer_index(to_layer) - 1);
-    end
-    function forward_from(self, from_layer)
-      CHECK(ischar(from_layer), 'from_layer must be a string');
-      caffe_('net_forward', self.hNet_self, self.name2layer_index(from_layer) - 1);
-    end
-    function forward_fromto(self, from_layer, to_layer)
-      CHECK(ischar(from_layer), 'from_layer must be a string');
-      CHECK(ischar(to_layer), 'to_layer must be a string');
-      caffe_('net_forward', self.hNet_self, self.name2layer_index(from_layer) - 1, self.name2layer_index(to_layer) - 1);
-    end
     function backward_prefilled(self)
       caffe_('net_backward', self.hNet_self);
-    end
-    function backward_to(self, to_layer)
-      CHECK(ischar(to_layer), 'to_layer must be a string');
-      caffe_('net_backward', self.hNet_self, length(self.layer_vec) - 1, self.name2layer_index(to_layer) - 1);
-    end
-    function backward_from(self, from_layer)
-      CHECK(ischar(from_layer), 'from_layer must be a string');
-      caffe_('net_backward', self.hNet_self, self.name2layer_index(from_layer) - 1);
-    end
-    function backward_fromto(self, from_layer, to_layer)
-      CHECK(ischar(from_layer), 'from_layer must be a string');
-      CHECK(ischar(to_layer), 'to_layer must be a string');
-      caffe_('net_backward', self.hNet_self, self.name2layer_index(from_layer) - 1, self.name2layer_index(to_layer) - 1);
     end
     function res = forward(self, input_data)
       CHECK(iscell(input_data), 'input_data must be a cell array');
@@ -150,9 +124,6 @@ classdef Net < handle
     end
     function reshape(self)
       caffe_('net_reshape', self.hNet_self);
-    end
-    function need_backward(self)
-      caffe_('need_backward', self.hNet_self);
     end
     function save(self, weights_file)
       CHECK(ischar(weights_file), 'weights_file must be a string');

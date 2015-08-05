@@ -516,8 +516,6 @@ V1LayerParameter_LayerType UpgradeV0LayerType(const string& type) {
     return V1LayerParameter_LayerType_TANH;
   } else if (type == "window_data") {
     return V1LayerParameter_LayerType_WINDOW_DATA;
-  } else if (type == "triplet_loss") {
-    return V1LayerParameter_LayerType_TRIPLET_LOSS;
   } else {
     LOG(FATAL) << "Unknown layer name: " << type;
     return V1LayerParameter_LayerType_NONE;
@@ -590,8 +588,8 @@ bool UpgradeNetAsNeeded(const string& param_file, NetParameter* param) {
   if (NetNeedsV0ToV1Upgrade(*param)) {
     // NetParameter was specified using the old style (V0LayerParameter); try to
     // upgrade it.
-    LOG(ERROR) << "Attempting to upgrade input file specified using deprecated "
-               << "V0LayerParameter: " << param_file;
+    LOG(INFO) << "Attempting to upgrade input file specified using deprecated "
+              << "V0LayerParameter: " << param_file;
     NetParameter original_param(*param);
     if (!UpgradeV0Net(original_param, param)) {
       success = false;
@@ -601,29 +599,29 @@ bool UpgradeNetAsNeeded(const string& param_file, NetParameter* param) {
       LOG(INFO) << "Successfully upgraded file specified using deprecated "
                 << "V0LayerParameter";
     }
-    LOG(ERROR) << "Note that future Caffe releases will not support "
+    LOG(WARNING) << "Note that future Caffe releases will not support "
         << "V0NetParameter; use ./build/tools/upgrade_net_proto_text for "
         << "prototxt and ./build/tools/upgrade_net_proto_binary for model "
         << "weights upgrade this and any other net protos to the new format.";
   }
   // NetParameter uses old style data transformation fields; try to upgrade it.
   if (NetNeedsDataUpgrade(*param)) {
-    LOG(ERROR) << "Attempting to upgrade input file specified using deprecated "
-               << "transformation parameters: " << param_file;
+    LOG(INFO) << "Attempting to upgrade input file specified using deprecated "
+              << "transformation parameters: " << param_file;
     UpgradeNetDataTransformation(param);
     LOG(INFO) << "Successfully upgraded file specified using deprecated "
               << "data transformation parameters.";
-    LOG(ERROR) << "Note that future Caffe releases will only support "
-               << "transform_param messages for transformation fields.";
+    LOG(WARNING) << "Note that future Caffe releases will only support "
+                 << "transform_param messages for transformation fields.";
   }
   if (NetNeedsV1ToV2Upgrade(*param)) {
-    LOG(ERROR) << "Attempting to upgrade input file specified using deprecated "
-               << "V1LayerParameter: " << param_file;
+    LOG(INFO) << "Attempting to upgrade input file specified using deprecated "
+              << "V1LayerParameter: " << param_file;
     NetParameter original_param(*param);
     if (!UpgradeV1Net(original_param, param)) {
       success = false;
       LOG(ERROR) << "Warning: had one or more problems upgrading "
-          << "V1LayerParameter (see above); continuing anyway.";
+                 << "V1LayerParameter (see above); continuing anyway.";
     } else {
       LOG(INFO) << "Successfully upgraded file specified using deprecated "
                 << "V1LayerParameter";
@@ -919,14 +917,6 @@ const char* UpgradeV1LayerType(const V1LayerParameter_LayerType type) {
     return "WindowData";
   case V1LayerParameter_LayerType_THRESHOLD:
     return "Threshold";
-  case V1LayerParameter_LayerType_BN:
-	return "BN";
-  case V1LayerParameter_LayerType_LOCAL:
-    return "Local";
-  case V1LayerParameter_LayerType_NORMALIZE:
-    return "Normalize";
-  case V1LayerParameter_LayerType_INSANITY:
-	return "Insanity";
   default:
     LOG(FATAL) << "Unknown V1LayerParameter layer type: " << type;
     return "";

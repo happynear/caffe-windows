@@ -122,6 +122,6 @@ STUB_GPU(FilterLayer);
 #endif
 
 INSTANTIATE_CLASS(FilterLayer);
-REGISTER_LAYER_CLASS(Filter);
+
 
 }  // namespace caffe

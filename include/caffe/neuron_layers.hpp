@@ -718,7 +718,6 @@ class ThresholdLayer : public NeuronLayer<Dtype> {
 
   Dtype threshold_;
 };
-
 /**
  * @brief Randomized Leaky Rectified Linear Unit @f$
  *        y_i = \max(0, x_i) + frac{\min(0, x_i)}{a_i}
@@ -768,7 +767,6 @@ class InsanityLayer : public NeuronLayer<Dtype> {
   Blob<Dtype> alpha;  // random generated negative slope
   Blob<Dtype> bottom_memory_;  // memory for in-place computation
 };
-
 /**
  * @brief Parameterized Rectified Linear Unit non-linearity @f$
  *        y_i = \max(0, x_i) + a_i \min(0, x_i)

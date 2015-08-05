@@ -127,6 +127,6 @@ STUB_GPU(ReductionLayer);
 #endif
 
 INSTANTIATE_CLASS(ReductionLayer);
-REGISTER_LAYER_CLASS(Reduction);
+
 
 }  // namespace caffe

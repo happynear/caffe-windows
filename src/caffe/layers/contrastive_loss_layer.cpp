@@ -71,7 +71,7 @@ void ContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
       int channels = bottom[i]->channels();
       for (int j = 0; j < num; ++j) {
         Dtype* bout = bottom[i]->mutable_cpu_diff();
-        if (static_cast<int>(bottom[2]->cpu_data()[j])==static_cast<int>(bottom[3]->cpu_data()[j])) {  // similar pairs
+        if (static_cast<int>(bottom[2]->cpu_data()[j])==static_cast<int>(bottom[2]->cpu_data()[j])) {  // similar pairs
           caffe_cpu_axpby(
               channels,
               alpha,
@@ -100,6 +100,6 @@ STUB_GPU(ContrastiveLossLayer);
 #endif
 
 INSTANTIATE_CLASS(ContrastiveLossLayer);
-REGISTER_LAYER_CLASS(ContrastiveLoss);
+
 
 }  // namespace caffe

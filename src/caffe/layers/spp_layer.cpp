@@ -188,6 +188,6 @@ void SPPLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
 
 
 INSTANTIATE_CLASS(SPPLayer);
-REGISTER_LAYER_CLASS(SPP);
+
 
 }  // namespace caffe

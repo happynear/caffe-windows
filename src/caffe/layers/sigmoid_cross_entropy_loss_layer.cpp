@@ -75,6 +75,6 @@ STUB_GPU_BACKWARD(SigmoidCrossEntropyLossLayer, Backward);
 #endif
 
 INSTANTIATE_CLASS(SigmoidCrossEntropyLossLayer);
-REGISTER_LAYER_CLASS(SigmoidCrossEntropyLoss);
+
 
 }  // namespace caffe

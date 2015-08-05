@@ -23,12 +23,6 @@
 //   'source' field specifies the window_file
 //   'crop_size' indicates the desired warped size
 
-template <typename Dtype>
-Dtype round(Dtype r)
-{
-	return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
-}
-
 namespace caffe {
 
 template <typename Dtype>
@@ -467,6 +461,6 @@ void WindowDataLayer<Dtype>::InternalThreadEntry() {
 }
 
 INSTANTIATE_CLASS(WindowDataLayer);
-REGISTER_LAYER_CLASS(WindowData);
+
 
 }  // namespace caffe

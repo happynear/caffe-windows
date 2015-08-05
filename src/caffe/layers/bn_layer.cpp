@@ -263,6 +263,6 @@ void BNLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
 #endif
 
 	INSTANTIATE_CLASS(BNLayer);
-	REGISTER_LAYER_CLASS(BN);
+	
 
 }  // namespace caffe

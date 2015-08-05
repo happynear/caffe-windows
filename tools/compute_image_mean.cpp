@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
         "Usage:\n"
         "    compute_image_mean [FLAGS] INPUT_DB [OUTPUT_FILE]\n");
 
-  gflags::ParseCommandLineFlags(&argc, &argv, true);
+  caffe::GlobalInit(&argc, &argv);
 
   if (argc < 2 || argc > 3) {
     gflags::ShowUsageWithFlagsRestrict(argv[0], "tools/compute_image_mean");

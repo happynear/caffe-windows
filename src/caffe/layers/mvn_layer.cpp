@@ -140,6 +140,6 @@ STUB_GPU(MVNLayer);
 #endif
 
 INSTANTIATE_CLASS(MVNLayer);
-REGISTER_LAYER_CLASS(MVN);
+
 
 }  // namespace caffe

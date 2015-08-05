@@ -72,6 +72,6 @@ STUB_GPU(HDF5OutputLayer);
 #endif
 
 INSTANTIATE_CLASS(HDF5OutputLayer);
-REGISTER_LAYER_CLASS(HDF5Output);
+
 
 }  // namespace caffe

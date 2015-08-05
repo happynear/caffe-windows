@@ -15,7 +15,12 @@
 #include <string>
 #include <utility>  // pair
 #include <vector>
-#include <direct.h>
+
+#ifdef _MSC_VER
+// fence this include inside VS specific macro
+// to avoid breaking the Linux Makefile build
+#include "caffe/export.hpp"
+#endif
 
 #include "caffe/util/device_alternate.hpp"
 
@@ -28,39 +33,45 @@
 namespace gflags = google;
 #endif  // GFLAGS_GFLAGS_H_
 
-#ifdef _MSC_VER
-#define snprintf sprintf_s
-#endif
-
 // Disable the copy and assignment operator for a class.
 #define DISABLE_COPY_AND_ASSIGN(classname) \
 private:\
   classname(const classname&);\
   classname& operator=(const classname&)
 
+#ifndef _MSC_VER
+#define DEFINE_FORCE_LINK_SYMBOL(classname, token)
+#else
+#define DEFINE_FORCE_LINK_SYMBOL(classname, token) \
+	int g_caffe_force_link_##token##_##classname = 0
+#endif
+
 // Instantiate a class with float and double specifications.
 #define INSTANTIATE_CLASS(classname) \
-  char gInstantiationGuard##classname; \
-  template class classname<float>; \
-  template class classname<double>
+	char gInstantiationGuard##classname; \
+	template class classname<float>; \
+	template class classname<double>; \
+	DEFINE_FORCE_LINK_SYMBOL(classname, instantiate);
 
 #define INSTANTIATE_LAYER_GPU_FORWARD(classname) \
-  template void classname<float>::Forward_gpu( \
-      const std::vector<Blob<float>*>& bottom, \
-      const std::vector<Blob<float>*>& top); \
-  template void classname<double>::Forward_gpu( \
-      const std::vector<Blob<double>*>& bottom, \
-      const std::vector<Blob<double>*>& top);
+	template void classname<float>::Forward_gpu(\
+	const std::vector<Blob<float>*>& bottom, \
+	const std::vector<Blob<float>*>& top); \
+	template void classname<double>::Forward_gpu(\
+	const std::vector<Blob<double>*>& bottom, \
+	const std::vector<Blob<double>*>& top); \
+	DEFINE_FORCE_LINK_SYMBOL(classname, forward_gpu);
 
 #define INSTANTIATE_LAYER_GPU_BACKWARD(classname) \
-  template void classname<float>::Backward_gpu( \
-      const std::vector<Blob<float>*>& top, \
-      const std::vector<bool>& propagate_down, \
-      const std::vector<Blob<float>*>& bottom); \
-  template void classname<double>::Backward_gpu( \
-      const std::vector<Blob<double>*>& top, \
-      const std::vector<bool>& propagate_down, \
-      const std::vector<Blob<double>*>& bottom)
+	template void classname<float>::Backward_gpu(\
+	const std::vector<Blob<float>*>& top, \
+	const std::vector<bool>& propagate_down, \
+	const std::vector<Blob<float>*>& bottom); \
+	template void classname<double>::Backward_gpu(\
+	const std::vector<Blob<double>*>& top, \
+	const std::vector<bool>& propagate_down, \
+	const std::vector<Blob<double>*>& bottom); \
+	DEFINE_FORCE_LINK_SYMBOL(classname, backward_gpu);
 
 #define INSTANTIATE_LAYER_GPU_FUNCS(classname) \
   INSTANTIATE_LAYER_GPU_FORWARD(classname); \
@@ -82,8 +93,8 @@ using boost::shared_ptr;
 // Common functions and classes from std that caffe often uses.
 using std::fstream;
 using std::ios;
-//using std::isnan;
-//using std::isinf;
+using std::isnan;
+using std::isinf;
 using std::iterator;
 using std::make_pair;
 using std::map;

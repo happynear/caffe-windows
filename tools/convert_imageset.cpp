@@ -13,7 +13,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include <iostream>
 
 #include "boost/scoped_ptr.hpp"
 #include "gflags/gflags.h"
@@ -27,7 +26,6 @@
 using namespace caffe;  // NOLINT(build/namespaces)
 using std::pair;
 using boost::scoped_ptr;
-using std::string;
 
 DEFINE_bool(gray, false,
     "When this option is on, treat images as grayscale ones");
@@ -45,7 +43,8 @@ DEFINE_string(encode_type, "",
     "Optional: What type should we encode the image as ('png','jpg',...).");
 
 int main(int argc, char** argv) {
-	FLAGS_alsologtostderr = 1;
+  ::google::InitGoogleLogging(argv[0]);
+
 #ifndef GFLAGS_GFLAGS_H_
   namespace gflags = google;
 #endif
@@ -56,7 +55,7 @@ int main(int argc, char** argv) {
         "    convert_imageset [FLAGS] ROOTFOLDER/ LISTFILE DB_NAME\n"
         "The ImageNet dataset for the training demo is at\n"
         "    http://www.image-net.org/download-images\n");
-  GlobalInit(&argc,&argv);
+  caffe::GlobalInit(&argc, &argv);
 
   if (argc < 4) {
     gflags::ShowUsageWithFlagsRestrict(argv[0], "tools/convert_imageset");
@@ -72,15 +71,8 @@ int main(int argc, char** argv) {
   std::vector<std::pair<std::string, int> > lines;
   std::string filename;
   int label;
-  string fileline;
-
-  while (!infile.eof()) {
-	  getline(infile,fileline);
-	  filename = fileline.substr(0,fileline.find_last_of(' '));
-	  filename.erase(filename.find_last_not_of(' ')+1);
-	  label = atoi(fileline.substr(fileline.find_last_of(' ')).c_str());
-	  //LOG(INFO)<<filename<<" "<<label;
-      lines.push_back(std::make_pair(filename, label));
+  while (infile >> filename >> label) {
+    lines.push_back(std::make_pair(filename, label));
   }
   if (FLAGS_shuffle) {
     // randomly shuffle data
@@ -136,7 +128,7 @@ int main(int argc, char** argv) {
       }
     }
     // sequential
-    int length = snprintf(key_cstr, kMaxKeyLength, "%08d_%s", line_id,
+    int length = sprintf_s(key_cstr, kMaxKeyLength, "%08d_%s", line_id,
         lines[line_id].first.c_str());
 
     // Put in db

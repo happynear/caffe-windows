@@ -52,6 +52,6 @@ STUB_GPU(EuclideanLossLayer);
 #endif
 
 INSTANTIATE_CLASS(EuclideanLossLayer);
-REGISTER_LAYER_CLASS(EuclideanLoss);
+
 
 }  // namespace caffe

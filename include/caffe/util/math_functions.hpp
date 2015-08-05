@@ -10,8 +10,6 @@
 #include "caffe/util/device_alternate.hpp"
 #include "caffe/util/mkl_alternate.hpp"
 
-#include "boost/math/special_functions/sign.hpp"
-
 namespace caffe {
 
 // Caffe gemm provides a simpler interface to the gemm functions, with the
@@ -140,7 +138,7 @@ DEFINE_CAFFE_CPU_UNARY_FUNC(sign, y[i] = caffe_sign<Dtype>(x[i]));
 // The extra parens are needed because CUDA < 6.5 defines signbit as a macro,
 // and we don't want that to expand here when CUDA headers are also included.
 DEFINE_CAFFE_CPU_UNARY_FUNC(sgnbit, \
-    y[i] = static_cast<bool>((boost::math::signbit)(x[i])));
+    y[i] = static_cast<bool>((std::signbit)(x[i])));
 
 DEFINE_CAFFE_CPU_UNARY_FUNC(fabs, y[i] = std::fabs(x[i]));
 

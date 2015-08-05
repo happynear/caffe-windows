@@ -14,9 +14,7 @@
       << cudnnGetErrorString(status); \
   } while (0)
 
-#if CUDNN_VERSION < 20
-
-inline const char* cudnnGetErrorString(cudnnStatus_t status) {
+/*inline const char* cudnnGetErrorString(cudnnStatus_t status) {
   switch (status) {
     case CUDNN_STATUS_SUCCESS:
       return "CUDNN_STATUS_SUCCESS";
@@ -42,8 +40,7 @@ inline const char* cudnnGetErrorString(cudnnStatus_t status) {
       return "CUDNN_STATUS_LICENSE_ERROR";
   }
   return "Unknown cudnn status";
-}
-#endif
+}*/
 
 namespace caffe {
 
@@ -56,7 +53,6 @@ template<> class dataType<float>  {
   static float oneval, zeroval;
   static const void *one, *zero;
 };
-
 template<> class dataType<double> {
  public:
   static const cudnnDataType_t type = CUDNN_DATA_DOUBLE;

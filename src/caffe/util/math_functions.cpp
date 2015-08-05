@@ -7,9 +7,6 @@
 #include "caffe/util/math_functions.hpp"
 #include "caffe/util/rng.hpp"
 
-#define __builtin_popcount __popcnt   
-#define __builtin_popcountl __popcnt  
-
 namespace caffe {
 
 template<>
@@ -350,6 +347,9 @@ float caffe_cpu_dot<float>(const int n, const float* x, const float* y);
 
 template
 double caffe_cpu_dot<double>(const int n, const double* x, const double* y);
+
+#define __builtin_popcount __popcnt
+#define __builtin_popcountl __popcnt64
 
 template <>
 int caffe_cpu_hamming_distance<float>(const int n, const float* x,

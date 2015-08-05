@@ -15,7 +15,12 @@ using caffe::Layer;
 using caffe::shared_ptr;
 using caffe::Timer;
 using caffe::vector;
+using caffe::LayerRegisterer;
 
+//extern LayerRegisterer<float> g_creator_f_AbsVal;
+//extern LayerRegisterer<double> g_creator_d_AbsVal;
+//#pragma comment(linker, "/include:g_creator_f_AbsVal")
+//#pragma comment(linker, "/include:g_creator_d_AbsVal")
 
 DEFINE_int32(gpu, -1,
     "Run in GPU mode on given device ID.");

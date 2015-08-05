@@ -135,6 +135,6 @@ STUB_GPU(PReLULayer);
 #endif
 
 INSTANTIATE_CLASS(PReLULayer);
-REGISTER_LAYER_CLASS(PReLU);
+
 
 }  // namespace caffe

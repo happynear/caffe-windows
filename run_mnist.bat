@@ -1,2 +1,2 @@
-.\bin\MainCaller.exe train --solver=examples/mnist/lenet_solver.prototxt
+.\bin\caffe.exe train --solver=examples/mnist/lenet_solver.prototxt
 pause
