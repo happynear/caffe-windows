@@ -6,7 +6,7 @@ Update
 ======
 2015/08/06 CuDNN v3 is released! The new 3rdparty library with CuDNN v3 can be downloaded from http://pan.baidu.com/s/1i390tZB. In this update, I use an ungainly method to build the caffe core functions in one project as a static lib. I am still looking for better solutions. Issues and Pull Requests are welcomed.
 
-**WARNING: Visual Studio 2012 and CUDA6.5 are no longer supported. Please update your CUDA to version 7.0. If you are still using VS2012, please open the solution in buildVS2013 and modify the platform toolset to Visual Studio 2012(v110).**
+**WARNING: Visual Studio 2012 and CUDA6.5 are no longer supported. Please update your CUDA to version 7.0. If you are still using VS2012, please try this solution file and 3rdparty library http://pan.baidu.com/s/1i3hGef7. I haven't check it. So if you find bugs, please report to me.**
 
 2015/07/07  Visual Studio 2013 with CUDA 7.0 is now supported. A beta version 3rdparty library can be downloaded from (deprecated). All the libraries have been updated to the latest version. Please help me try and report bugs.
 
@@ -14,11 +14,11 @@ WARNING: Due to the low compile speed of VS2012 with CUDA 6.5, VS2012 3rdparty l
 
 Setup step:
 ======
-1. Download third-party libraries from http://pan.baidu.com/s/1sjE5ER7 (for VS2012), and put the 3rdparty folder under the root of caffe-windows. **Please don't forget to add the `./3rdparty/bin` folder to your environment variable `PATH`.**
+1. Download third-party libraries from http://pan.baidu.com/s/1i390tZB, and put the 3rdparty folder under the root of caffe-windows. **Please don't forget to add the `./3rdparty/bin` folder to your environment variable `PATH`.**
 
 2. Run `./src/caffe/proto/extract_proto.bat` to create `caffe.pb.h`, `caffe.pb.cc` and `caffe_pb2.py`.
 
-3. Double click ./build/MSVC/MainBuilder.sln to open the solution in Visual Studio 2012. If you are using VS2013, please download 3rdparty libraries and solution files from http://pan.baidu.com/s/1sj3IvzZ.
+3. Double click ./build/MSVC/MainBuilder.sln to open the solution.
 
 4. Change the compile mode to Release and X64.
 
@@ -29,6 +29,8 @@ Setup step:
 TIPS: If you have MKL library, please add the preprocess macro "USE_MKL" defined in the setting of the project.
 
 If you want build other tools, just copy and rename `./build/MSVC` folder to another one, and add the new project to the VS solution. Remove `caffe.cpp` and add your target cpp file. Then you will get a corresponding exe file in `./bin`.
+
+If you are still using Visual Studio 2012, please download 3rdparty library from
 
 中文安装说明：http://blog.csdn.net/happynear/article/details/45372231
 
