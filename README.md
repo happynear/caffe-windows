@@ -28,7 +28,7 @@ Setup step:
 
 TIPS: If you have MKL library, please add the preprocess macro "USE_MKL" defined in the setting of the project.
 
-If you want build other tools, just copy and rename `./build/MSVC` folder to another one, and add the new project to the VS solution. Remove `caffe.cpp` and add your target cpp file. Then you will get a corresponding exe file in `./bin`.
+If you want build other tools, just copy and rename `./build/MSVC` folder to another one, and add the new project to the VS solution. Remove `caffe.cpp` and add your target cpp file. Compile it, then you will get a corresponding exe file in `./bin`.
 
 中文安装说明：http://blog.csdn.net/happynear/article/details/45372231
 
