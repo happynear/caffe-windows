@@ -1,4 +1,4 @@
-Forked from https://www.github.com/BVLC/caffe master branch in 2015/6/5
+Forked from https://www.github.com/BVLC/caffe master branch in 2015/8/5
 
 Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](http://arxiv.org/abs/1502.01852), Locally Connected Layer, Normalize Layer, [Randomized ReLU](http://arxiv.org/abs/1505.00853), Triplet Loss, SmoothL1 Layer, ROI Layer. 
 
