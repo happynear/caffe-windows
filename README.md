@@ -6,7 +6,7 @@ Update
 ======
 2015/08/06 CuDNN v3 is released! The new 3rdparty library with CuDNN v3 can be downloaded from http://pan.baidu.com/s/1i390tZB. In this update, I use an ungainly method to build the caffe core functions in one project as a static lib. I am still looking for better solutions. Issues and Pull Requests are welcomed.
 
-**WARNING: Visual Studio 2012 and CUDA6.5 are no longer supported. If you are still using VS2012, please do not update!**
+**WARNING: Visual Studio 2012 and CUDA6.5 are no longer supported. Please update your CUDA to version 7.0. If you are still using VS2012, please open the solution in buildVS2013 and modify the platform toolset to Visual Studio 2012(v110).**
 
 2015/07/07  Visual Studio 2013 with CUDA 7.0 is now supported. A beta version 3rdparty library can be downloaded from (deprecated). All the libraries have been updated to the latest version. Please help me try and report bugs.
 
