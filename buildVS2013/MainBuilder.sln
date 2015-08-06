@@ -4,16 +4,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "caffe", "MSVC\MainBuilder.vcxproj", "{3FF425A9-4745-4889-B568-4BBCA2016D22}"
+	ProjectSection(ProjectDependencies) = postProject
+		{63A79297-9CC4-4081-ADAC-7F40CE965C95} = {63A79297-9CC4-4081-ADAC-7F40CE965C95}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "matcaffe", "MSVCmex\matcaffe.vcxproj", "{C8B701B1-A48F-46DF-8256-3E18B5E1E85A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{63A79297-9CC4-4081-ADAC-7F40CE965C95} = {63A79297-9CC4-4081-ADAC-7F40CE965C95}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pycaffe", "python\pycaffe.vcxproj", "{290244F8-8BD6-4AB6-8796-A3F3AB60A2F9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{63A79297-9CC4-4081-ADAC-7F40CE965C95} = {63A79297-9CC4-4081-ADAC-7F40CE965C95}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "caffelib", "caffelib\caffelib.vcxproj", "{63A79297-9CC4-4081-ADAC-7F40CE965C95}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "convert_imageset", "convert_imageset\convert_imageset.vcxproj", "{928BD5E3-135B-45B8-BAB3-D5AA0F2109F4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{63A79297-9CC4-4081-ADAC-7F40CE965C95} = {63A79297-9CC4-4081-ADAC-7F40CE965C95}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "compute_image_mean", "compute_image_mean\compute_image_mean.vcxproj", "{19D5CCE8-93AA-41DF-8E90-1F24477F70C6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{63A79297-9CC4-4081-ADAC-7F40CE965C95} = {63A79297-9CC4-4081-ADAC-7F40CE965C95}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
