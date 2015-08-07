@@ -23,11 +23,23 @@ namespace caffe {
 // does not seem to create a memory bottleneck here.
 
 inline void CaffeMallocHost(void** ptr, size_t size) {
+#ifndef CPU_ONLY
+  if (Caffe::mode() == Caffe::GPU) {
+    CUDA_CHECK(cudaMallocHost(ptr, size));
+    return;
+  }
+#endif
   *ptr = malloc(size);
   CHECK(*ptr) << "host allocation of size " << size << " failed";
 }
 
 inline void CaffeFreeHost(void* ptr) {
+#ifndef CPU_ONLY
+  if (Caffe::mode() == Caffe::GPU) {
+    CUDA_CHECK(cudaFreeHost(ptr));
+    return;
+  }
+#endif
   free(ptr);
 }
 
@@ -42,19 +54,24 @@ class SyncedMemory {
  public:
   SyncedMemory()
       : cpu_ptr_(NULL), gpu_ptr_(NULL), size_(0), head_(UNINITIALIZED),
-        own_cpu_data_(false) {}
+        own_cpu_data_(false), own_gpu_data_(false), gpu_device_(-1) {}
   explicit SyncedMemory(size_t size)
       : cpu_ptr_(NULL), gpu_ptr_(NULL), size_(size), head_(UNINITIALIZED),
-        own_cpu_data_(false) {}
+        own_cpu_data_(false), own_gpu_data_(false), gpu_device_(-1) {}
   ~SyncedMemory();
   const void* cpu_data();
   void set_cpu_data(void* data);
   const void* gpu_data();
+  void set_gpu_data(void* data);
   void* mutable_cpu_data();
   void* mutable_gpu_data();
   enum SyncedHead { UNINITIALIZED, HEAD_AT_CPU, HEAD_AT_GPU, SYNCED };
   SyncedHead head() { return head_; }
   size_t size() { return size_; }
+
+#ifndef CPU_ONLY
+  void async_gpu_push(const cudaStream_t& stream);
+#endif
 
  private:
   void to_cpu();
@@ -64,6 +81,8 @@ class SyncedMemory {
   size_t size_;
   SyncedHead head_;
   bool own_cpu_data_;
+  bool own_gpu_data_;
+  int gpu_device_;
 
   DISABLE_COPY_AND_ASSIGN(SyncedMemory);
 };  // class SyncedMemory
