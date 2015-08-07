@@ -4,15 +4,15 @@ Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](
 
 Update
 ======
-2015/08/06 CuDNN v3 is released! The new 3rdparty library with cuDNN v3 can be downloaded from http://pan.baidu.com/s/1i390tZB. In this update, I use an ungainly method to build the caffe core functions in one project as a static lib. I am still looking for better solutions. Issues and Pull Requests are welcomed.
+2015/08/06 The cuDNN v3 is not very stable at present. The master branch has been rolled back to cuDNN v2. The cuDNN v3 will come back as soon as it has been tested enough. Nonetheless, you can still find cuDNN v3 version in branch `cudnnv3`. 
+
+Fortunately, cuDNN is backward-compatible, so the 3rdparty libraries (http://pan.baidu.com/s/1i390tZB) need not to be changed.
+
+2015/08/06 cuDNN v3 is released! The new 3rdparty library with cuDNN v3 can be downloaded from http://pan.baidu.com/s/1i390tZB. In this update, I use an ungainly method to build the caffe core functions in one project as a static lib. I am still looking for better solutions. Issues and Pull Requests are welcomed.
 
 **Please help me test the speed of cuDNN v3 on non-MaxWell architecture GPUs. On my GTX780, some kinds of net, such as VGG, are quite slower than cuDNN v2.**
 
 **WARNING: Visual Studio 2012 and CUDA6.5 are no longer supported. Please update your CUDA to version 7.0. If you are still using VS2012, please try this solution file and 3rdparty library http://pan.baidu.com/s/1i3hGef7. I haven't check it. So if you find bugs, please report to me.**
-
-2015/07/07  Visual Studio 2013 with CUDA 7.0 is now supported. A beta version 3rdparty library can be downloaded from (deprecated). All the libraries have been updated to the latest version. Please help me try and report bugs.
-
-WARNING: Due to the low compile speed of VS2012 with CUDA 6.5, VS2012 3rdparty library will not continue to be updated after September, 2015. If you are configuring a new platform, we strongly recommend you to use Visual Studio 2013 and CUDA 7.0.
 
 Setup step:
 ======
