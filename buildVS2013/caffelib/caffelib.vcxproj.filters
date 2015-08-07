@@ -65,12 +65,6 @@
     <ClCompile Include="..\..\src\caffe\layers\cudnn_conv_layer.cpp">
       <Filter>layers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\cudnn_lcn_layer.cpp">
-      <Filter>layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\cudnn_lrn_layer.cpp">
-      <Filter>layers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\cudnn_pooling_layer.cpp">
       <Filter>layers</Filter>
     </ClCompile>
@@ -144,9 +138,6 @@
       <Filter>layers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\loss_layer.cpp">
-      <Filter>layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\lrn_layer.cpp">
       <Filter>layers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\memory_data_layer.cpp">
@@ -235,6 +226,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\util\db_leveldb.cpp">
       <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\caffe\src\caffe\layers\lrn_layer.cpp">
+      <Filter>layers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -374,12 +368,6 @@
     <CudaCompile Include="..\..\src\caffe\layers\cudnn_conv_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\cudnn_lcn_layer.cu">
-      <Filter>layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\cudnn_lrn_layer.cu">
-      <Filter>layers</Filter>
-    </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\cudnn_pooling_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
@@ -432,9 +420,6 @@
       <Filter>layers</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\log_layer.cu">
-      <Filter>layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\lrn_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\mvn_layer.cu">
@@ -495,6 +480,9 @@
       <Filter>layers</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\triplet_loss_layer.cu">
+      <Filter>layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\..\caffe\src\caffe\layers\lrn_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
   </ItemGroup>

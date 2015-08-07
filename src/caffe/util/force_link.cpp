@@ -46,5 +46,6 @@ namespace caffe
 	REGISTER_LAYER_CLASS(Transformer);
 	REGISTER_LAYER_CLASS(TripletLoss);
 	REGISTER_LAYER_CLASS(WindowData);
+	REGISTER_LAYER_CLASS(LRN);
 }
 
