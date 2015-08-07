@@ -16,12 +16,13 @@
 #include <utility>  // pair
 #include <vector>
 
-#include "caffe/util/device_alternate.hpp"
-
-#ifdef USE_CNMEM
-// cuMEM integration
-#include <caffe/util/cnmem.h>
+#ifdef _MSC_VER
+// fence this include inside VS specific macro
+// to avoid breaking the Linux Makefile build
+#include "caffe/export.hpp"
 #endif
+
+#include "caffe/util/device_alternate.hpp"
 
 // gflags 2.1 issue: namespace google was changed to gflags without warning.
 // Luckily we will be able to use GFLAGS_GFLAGS_H_ to detect if it is version
@@ -38,11 +39,19 @@ private:\
   classname(const classname&);\
   classname& operator=(const classname&)
 
+#ifndef _MSC_VER
+#define DEFINE_FORCE_LINK_SYMBOL(classname, token)
+#else
+#define DEFINE_FORCE_LINK_SYMBOL(classname, token) \
+	int g_caffe_force_link_##token##_##classname = 0
+#endif
+
 // Instantiate a class with float and double specifications.
 #define INSTANTIATE_CLASS(classname) \
 	char gInstantiationGuard##classname; \
 	template class classname<float>; \
-	template class classname<double>
+	template class classname<double>; \
+	DEFINE_FORCE_LINK_SYMBOL(classname, instantiate);
 
 #define INSTANTIATE_LAYER_GPU_FORWARD(classname) \
 	template void classname<float>::Forward_gpu(\
@@ -50,7 +59,8 @@ private:\
 	const std::vector<Blob<float>*>& top); \
 	template void classname<double>::Forward_gpu(\
 	const std::vector<Blob<double>*>& bottom, \
-	const std::vector<Blob<double>*>& top);
+	const std::vector<Blob<double>*>& top); \
+	DEFINE_FORCE_LINK_SYMBOL(classname, forward_gpu);
 
 #define INSTANTIATE_LAYER_GPU_BACKWARD(classname) \
 	template void classname<float>::Backward_gpu(\
@@ -60,7 +70,8 @@ private:\
 	template void classname<double>::Backward_gpu(\
 	const std::vector<Blob<double>*>& top, \
 	const std::vector<bool>& propagate_down, \
-	const std::vector<Blob<double>*>& bottom)
+	const std::vector<Blob<double>*>& bottom); \
+	DEFINE_FORCE_LINK_SYMBOL(classname, backward_gpu);
 
 #define INSTANTIATE_LAYER_GPU_FUNCS(classname) \
   INSTANTIATE_LAYER_GPU_FORWARD(classname); \
@@ -142,9 +153,6 @@ class Caffe {
   inline static curandGenerator_t curand_generator() {
     return Get().curand_generator_;
   }
-#ifdef USE_CUDNN
-  inline static cudnnHandle_t cudnn_handle() { return Get().cudnn_handle_; }
-#endif
 #endif
 
   // Returns the mode: running on CPU or GPU.
@@ -167,9 +175,6 @@ class Caffe {
 #ifndef CPU_ONLY
   cublasHandle_t cublas_handle_;
   curandGenerator_t curand_generator_;
-#ifdef USE_CUDNN
-  cudnnHandle_t cudnn_handle_;
-#endif
 #endif
   shared_ptr<RNG> random_generator_;
 
@@ -181,62 +186,6 @@ class Caffe {
   Caffe();
 
   DISABLE_COPY_AND_ASSIGN(Caffe);
-};
-
-class MemoryHandler {
-public:
-	static MemoryHandler& Get();
-#ifndef CPU_ONLY
-	static void mallocGPU(void **ptr, size_t size,
-		cudaStream_t stream = cudaStreamDefault);
-	static void freeGPU(void *ptr, cudaStream_t = cudaStreamDefault);
-	static void registerStream(cudaStream_t stream);
-#endif
-	static void setGPUs(const std::vector<int>& gpus) { Get().gpus_ = gpus; }
-	static void usePool() { Get().using_pool_ = true; }
-	static bool usingPool() {
-#ifdef USE_CNMEM
-		return Get().using_pool_;
-#else
-		return false;
-#endif
-	}
-	static void getInfo(size_t *free_mem, size_t *used_mem);
-	static void destroy();
-	~MemoryHandler() { }
-
-private:
-	MemoryHandler() : using_pool_(false), initialized_(false) {}
-	static void Init();
-	// static void Destroy();
-#ifndef CPU_ONLY
-	void allocate_memory(void **ptr, size_t size, cudaStream_t stream);
-	void free_memory(void *ptr, cudaStream_t stream);
-#endif
-	DISABLE_COPY_AND_ASSIGN(MemoryHandler);
-
-	bool using_pool_;
-	bool initialized_;
-	std::vector<int> gpus_;
-};
-
-class MemoryHandlerActivator {
-public:
-	explicit MemoryHandlerActivator(const std::vector<int>& gpus)
-		: using_pool_(false) {
-		if (gpus.size() > 0) {
-			using_pool_ = true;
-			MemoryHandler::usePool();
-			MemoryHandler::setGPUs(gpus);
-		}
-	}
-	~MemoryHandlerActivator() {
-		if (using_pool_) {
-			MemoryHandler::destroy();
-		}
-	}
-private:
-	int using_pool_;
 };
 
 }  // namespace caffe
