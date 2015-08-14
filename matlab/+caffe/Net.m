@@ -125,6 +125,9 @@ classdef Net < handle
     function reshape(self)
       caffe_('net_reshape', self.hNet_self);
     end
+    function need_backward(self)
+      caffe_('need_backward', self.hNet_self);
+    end
     function save(self, weights_file)
       CHECK(ischar(weights_file), 'weights_file must be a string');
       caffe_('net_save', self.hNet_self, weights_file);
