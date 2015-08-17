@@ -20,11 +20,11 @@ Setup step:
 
 2. Run `./src/caffe/proto/extract_proto.bat` to create `caffe.pb.h`, `caffe.pb.cc` and `caffe_pb2.py`.
 
-3. Double click ./build/MSVC/MainBuilder.sln to open the solution.
+3. Double click ./build/MainBuilder.sln to open the solution.
 
 4. Change the compile mode to Release and X64.
 
-5. Change the CUDA include and library path to your own ones.
+5. ~~Change the CUDA include and library path to your own ones.~~
 
 6. Compile.
 
