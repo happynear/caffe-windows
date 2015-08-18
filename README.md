@@ -4,7 +4,7 @@ Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](
 
 Update
 ======
-2015/08/18 The lmdb problem has been fixed. Download the new lmdb lib file from http://pan.baidu.com/s/1qWoUpXy (only a small patch), overwrite the original one in `3rdparty/lib`, and re-link the convert_imageset, convert_mnist etc projects, you will be able to create lmdb on Windows.
+2015/08/18 The lmdb problem has been fixed. Download the new lmdb lib file from http://pan.baidu.com/s/1dDHbbgP (only a small patch), overwrite the original one in `3rdparty/lib`, and re-link the convert_imageset, convert_mnist etc projects, you will be able to create lmdb on Windows.
 Thanks to [dw](https://github.com/dw/py-lmdb).
 
 2015/08/08 The cuDNN v3 is not very stable at present. The master branch has been rolled back to cuDNN v2. The cuDNN v3 will come back as soon as it has been tested enough. Nonetheless, you can still find cuDNN v3 version in branch `cuDNNV3`. 
