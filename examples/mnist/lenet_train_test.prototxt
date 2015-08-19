@@ -5,8 +5,8 @@ layer {
   top: "data"
   top: "label"
   data_param {
-    source: "examples/mnist/mnist_train_lmdb"
-    backend: LMDB
+    source: "examples/mnist/mnist-train-leveldb"
+    backend: LEVELDB
     batch_size: 64
   }
   transform_param {
@@ -20,8 +20,8 @@ layer {
   top: "data"
   top: "label"
   data_param {
-    source: "examples/mnist/mnist_train_lmdb"
-    backend: LMDB
+    source: "examples/mnist/mnist-test-leveldb"
+    backend: LEVELDB
     batch_size: 100
   }
   transform_param {
