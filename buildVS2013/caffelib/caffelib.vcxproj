@@ -202,7 +202,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\caffe\src\caffe\layers\lrn_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\lrn_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\blob.cpp" />
     <ClCompile Include="..\..\src\caffe\common.cpp" />
     <ClCompile Include="..\..\src\caffe\data_transformer.cpp" />
@@ -316,7 +316,7 @@
     <ClInclude Include="..\..\src\caffe\proto\caffe.pb.h" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="..\..\..\caffe\src\caffe\layers\lrn_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\lrn_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\absval_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\base_data_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\bnll_layer.cu" />
