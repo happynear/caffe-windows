@@ -16,7 +16,7 @@ TODO:
 
 #include "caffe/data_layers.hpp"
 #include "caffe/layer.hpp"
-#include "caffe/util/io.hpp"
+#include "caffe/util/hdf5.hpp"
 
 namespace caffe {
 
@@ -162,6 +162,6 @@ STUB_GPU_FORWARD(HDF5DataLayer, Forward);
 #endif
 
 INSTANTIATE_CLASS(HDF5DataLayer);
-
+REGISTER_LAYER_CLASS(HDF5Data);
 
 }  // namespace caffe

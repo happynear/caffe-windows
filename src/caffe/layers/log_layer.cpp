@@ -82,6 +82,6 @@ STUB_GPU(LogLayer);
 #endif
 
 INSTANTIATE_CLASS(LogLayer);
-
+REGISTER_LAYER_CLASS(Log);
 
 }  // namespace caffe

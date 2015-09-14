@@ -255,5 +255,4 @@ STUB_GPU_BACKWARD(LRNLayer, CrossChannelBackward);
 
 INSTANTIATE_CLASS(LRNLayer);
 
-
 }  // namespace caffe

@@ -1,40 +1,50 @@
+#include <boost/thread.hpp>
 #include <glog/logging.h>
+#include <cmath>
 #include <cstdio>
 #include <ctime>
-#include <boost/date_time.hpp>
 
 #include "caffe/common.hpp"
 #include "caffe/util/rng.hpp"
 
+#include <boost/date_time.hpp>
 #include <process.h>
 #include <direct.h>
 
 namespace caffe {
 
-shared_ptr<Caffe> Caffe::singleton_;
+// Make sure each thread can have different values.
+static boost::thread_specific_ptr<Caffe> thread_instance_;
+
+Caffe& Caffe::Get() {
+  if (!thread_instance_.get()) {
+    thread_instance_.reset(new Caffe());
+  }
+  return *(thread_instance_.get());
+}
 
 // random seeding
 int64_t cluster_seedgen(void) {
-  int64_t s, seed, pid;
+	int64_t s, seed, pid;
 #ifndef _MSC_VER
-  FILE* f = fopen("/dev/urandom", "rb");
-  if (f && fread(&seed, 1, sizeof(seed), f) == sizeof(seed)) {
-    fclose(f);
-    return seed;
-  }
+	FILE* f = fopen("/dev/urandom", "rb");
+	if (f && fread(&seed, 1, sizeof(seed), f) == sizeof(seed)) {
+		fclose(f);
+		return seed;
+	}
 
-  LOG(INFO) << "System entropy source not available, "
-              "using fallback algorithm to generate seed instead.";
-  if (f)
-    fclose(f);
+	LOG(INFO) << "System entropy source not available, "
+		"using fallback algorithm to generate seed instead.";
+	if (f)
+		fclose(f);
 
-  pid = getpid();
+	pid = getpid();
 #else
-  pid = _getpid();
+	pid = _getpid();
 #endif
-  s = time(NULL);
-  seed = abs(((s * 181) * ((pid - 83) * 359)) % 104729);
-  return seed;
+	s = time(NULL);
+	seed = abs(((s * 181) * ((pid - 83) * 359)) % 104729);
+	return seed;
 }
 
 void initGlog()
@@ -59,20 +69,21 @@ void initGlog()
 }
 
 void GlobalInit(int* pargc, char*** pargv) {
-  // Google flags.
-  ::gflags::ParseCommandLineFlags(pargc, pargv, true);
-  
-  // Provide a backtrace on segfault.
-  //::google::InstallFailureSignalHandler();
-  // Google logging.
-  initGlog();
-  ::google::InitGoogleLogging(*(pargv)[0]);
+	// Google flags.
+	::gflags::ParseCommandLineFlags(pargc, pargv, true);
+
+	// Provide a backtrace on segfault.
+	//::google::InstallFailureSignalHandler();
+	// Google logging.
+	initGlog();
+	::google::InitGoogleLogging(*(pargv)[0]);
 }
 
 #ifdef CPU_ONLY  // CPU-only Caffe.
 
 Caffe::Caffe()
-    : random_generator_(), mode_(Caffe::CPU) { }
+    : random_generator_(), mode_(Caffe::CPU),
+      solver_count_(1), root_solver_(true) { }
 
 Caffe::~Caffe() { }
 
@@ -116,7 +127,7 @@ void* Caffe::RNG::generator() {
 
 Caffe::Caffe()
     : cublas_handle_(NULL), curand_generator_(NULL), random_generator_(),
-    mode_(Caffe::CPU) {
+    mode_(Caffe::CPU), solver_count_(1), root_solver_(true) {
   // Try to create a cublas handler, and report an error if failed (but we will
   // keep the program running as one might just want to run CPU code).
   if (cublasCreate(&cublas_handle_) != CUBLAS_STATUS_SUCCESS) {

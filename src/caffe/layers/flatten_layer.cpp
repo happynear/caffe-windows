@@ -39,6 +39,6 @@ void FlattenLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
 }
 
 INSTANTIATE_CLASS(FlattenLayer);
-
+REGISTER_LAYER_CLASS(Flatten);
 
 }  // namespace caffe

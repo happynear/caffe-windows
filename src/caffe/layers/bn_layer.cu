@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <vector>
 
-#include "caffe/common_layers.hpp"
+#include "caffe/custom_layers.hpp"
 #include "caffe/filler.hpp"
 #include "caffe/layer.hpp"
 #include "caffe/util/math_functions.hpp"

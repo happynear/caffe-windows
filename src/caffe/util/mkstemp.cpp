@@ -10,6 +10,9 @@ version 2.1 of the License, or (at your option) any later version.  */
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <string.h>
+#include <time.h>
+#include <Windows.h>
 
 static const char letters[] =
 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

@@ -5,7 +5,7 @@
 // Written by Ross Girshick
 // ------------------------------------------------------------------
 
-#include "caffe/loss_layers.hpp"
+#include "caffe/custom_layers.hpp"
 
 namespace caffe {
 

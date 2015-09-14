@@ -202,11 +202,12 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\caffe\layers\lrn_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\blob.cpp" />
     <ClCompile Include="..\..\src\caffe\common.cpp" />
+    <ClCompile Include="..\..\src\caffe\data_reader.cpp" />
     <ClCompile Include="..\..\src\caffe\data_transformer.cpp" />
     <ClCompile Include="..\..\src\caffe\internal_thread.cpp" />
+    <ClCompile Include="..\..\src\caffe\layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\absval_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\accuracy_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\argmax_layer.cpp" />
@@ -228,6 +229,7 @@
     <ClCompile Include="..\..\src\caffe\layers\dropout_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\dummy_data_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\eltwise_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\embed_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\euclidean_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\exp_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\filter_layer.cpp" />
@@ -243,6 +245,7 @@
     <ClCompile Include="..\..\src\caffe\layers\local_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\log_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\lrn_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\memory_data_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\multinomial_logistic_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\mvn_layer.cpp" />
@@ -266,22 +269,29 @@
     <ClCompile Include="..\..\src\caffe\layers\spp_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\tanh_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\threshold_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\tile_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\transformer_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\triplet_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\window_data_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layer_factory.cpp" />
     <ClCompile Include="..\..\src\caffe\net.cpp" />
+    <ClCompile Include="..\..\src\caffe\parallel.cpp" />
     <ClCompile Include="..\..\src\caffe\proto\caffe.pb.cc" />
     <ClCompile Include="..\..\src\caffe\solver.cpp" />
     <ClCompile Include="..\..\src\caffe\syncedmem.cpp" />
     <ClCompile Include="..\..\src\caffe\util\benchmark.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\blocking_queue.cpp" />
     <ClCompile Include="..\..\src\caffe\util\cudnn.cpp" />
     <ClCompile Include="..\..\src\caffe\util\db.cpp" />
     <ClCompile Include="..\..\src\caffe\util\db_leveldb.cpp" />
     <ClCompile Include="..\..\src\caffe\util\db_lmdb.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\hdf5.cpp" />
     <ClCompile Include="..\..\src\caffe\util\im2col.cpp" />
     <ClCompile Include="..\..\src\caffe\util\insert_splits.cpp" />
     <ClCompile Include="..\..\src\caffe\util\io.cpp" />
     <ClCompile Include="..\..\src\caffe\util\math_functions.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\mkstemp.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\signal_handler.cpp" />
     <ClCompile Include="..\..\src\caffe\util\upgrade_proto.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -289,34 +299,46 @@
     <ClInclude Include="..\..\include\caffe\caffe.hpp" />
     <ClInclude Include="..\..\include\caffe\common.hpp" />
     <ClInclude Include="..\..\include\caffe\common_layers.hpp" />
+    <ClInclude Include="..\..\include\caffe\custom_layers.hpp" />
     <ClInclude Include="..\..\include\caffe\data_layers.hpp" />
+    <ClInclude Include="..\..\include\caffe\data_reader.hpp" />
     <ClInclude Include="..\..\include\caffe\data_transformer.hpp" />
+    <ClInclude Include="..\..\include\caffe\export.hpp" />
     <ClInclude Include="..\..\include\caffe\filler.hpp" />
+    <ClInclude Include="..\..\include\caffe\forcelink.hpp" />
+    <ClInclude Include="..\..\include\caffe\force_link.hpp" />
     <ClInclude Include="..\..\include\caffe\internal_thread.hpp" />
     <ClInclude Include="..\..\include\caffe\layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layer_factory.hpp" />
     <ClInclude Include="..\..\include\caffe\loss_layers.hpp" />
     <ClInclude Include="..\..\include\caffe\net.hpp" />
     <ClInclude Include="..\..\include\caffe\neuron_layers.hpp" />
+    <ClInclude Include="..\..\include\caffe\parallel.hpp" />
     <ClInclude Include="..\..\include\caffe\python_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\solver.hpp" />
     <ClInclude Include="..\..\include\caffe\syncedmem.hpp" />
     <ClInclude Include="..\..\include\caffe\util\benchmark.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\blocking_queue.hpp" />
     <ClInclude Include="..\..\include\caffe\util\cudnn.hpp" />
     <ClInclude Include="..\..\include\caffe\util\db.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\db_leveldb.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\db_lmdb.hpp" />
     <ClInclude Include="..\..\include\caffe\util\device_alternate.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\gpu_util.cuh" />
+    <ClInclude Include="..\..\include\caffe\util\hdf5.hpp" />
     <ClInclude Include="..\..\include\caffe\util\im2col.hpp" />
     <ClInclude Include="..\..\include\caffe\util\insert_splits.hpp" />
     <ClInclude Include="..\..\include\caffe\util\io.hpp" />
     <ClInclude Include="..\..\include\caffe\util\math_functions.hpp" />
     <ClInclude Include="..\..\include\caffe\util\mkl_alternate.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\mkstemp.hpp" />
     <ClInclude Include="..\..\include\caffe\util\rng.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\signal_handler.h" />
     <ClInclude Include="..\..\include\caffe\util\upgrade_proto.hpp" />
     <ClInclude Include="..\..\include\caffe\vision_layers.hpp" />
     <ClInclude Include="..\..\src\caffe\proto\caffe.pb.h" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="..\..\src\caffe\layers\lrn_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\absval_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\base_data_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\bnll_layer.cu" />
@@ -333,6 +355,7 @@
     <CudaCompile Include="..\..\src\caffe\layers\deconv_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\dropout_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\eltwise_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\embed_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\euclidean_loss_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\exp_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\filter_layer.cu" />
@@ -343,6 +366,7 @@
     <CudaCompile Include="..\..\src\caffe\layers\insanity_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\local_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\log_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\lrn_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\mvn_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\normalize_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\pooling_layer.cu" />
@@ -361,10 +385,14 @@
     <CudaCompile Include="..\..\src\caffe\layers\split_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\tanh_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\threshold_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\tile_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\transformer_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\triplet_loss_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\util\im2col.cu" />
     <CudaCompile Include="..\..\src\caffe\util\math_functions.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\src\caffe\CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

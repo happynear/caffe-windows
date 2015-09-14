@@ -75,90 +75,6 @@ class ArgMaxLayer : public Layer<Dtype> {
  *        or channel dimension, outputting the result.
  */
 template <typename Dtype>
-class BNLayer : public Layer<Dtype> {
-public:
-	explicit BNLayer(const LayerParameter& param)
-		: Layer<Dtype>(param) {}
-	virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
-		const vector<Blob<Dtype>*>& top);
-	virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
-      const vector<Blob<Dtype>*>& top);
-
-	virtual inline const char* type() const { return "BN"; }
-	virtual inline int ExactNumBottomBlobs() const { return 1; }
-	virtual inline int ExactNumTopBlobs() const { return 1; }
-
-protected:
-	virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
-		const vector<Blob<Dtype>*>& top);
-	virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
-		const vector<Blob<Dtype>*>& top);
-	virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
-		const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
-	virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
-		const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
-
-	// spatial mean & variance
-	Blob<Dtype> spatial_statistic_;
-	// batch mean & variance
-	Blob<Dtype> batch_statistic_;
-	// buffer blob
-	Blob<Dtype> buffer_blob_;
-	// x_norm and x_std
-	Blob<Dtype> x_norm_, x_std_;
-	// Due to buffer_blob_ and x_norm, this implementation is memory-consuming
-	// May use for-loop instead
-
-	// x_sum_multiplier is used to carry out sum using BLAS
-	Blob<Dtype> spatial_sum_multiplier_, batch_sum_multiplier_;
-
-	// dimension
-	int num_;
-	int channels_;
-	int height_;
-	int width_;
-	// eps
-	Dtype var_eps_;
-	// decay factor
-	Dtype decay_;
-	// whether or not using moving average for inference
-	bool moving_average_;
-
-};
-
-/**
- * @brief Normalizes input.
- */
-template <typename Dtype>
-class NormalizeLayer : public Layer<Dtype> {
- public:
-  explicit NormalizeLayer(const LayerParameter& param)
-      : Layer<Dtype>(param) {}
-  virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
-      const vector<Blob<Dtype>*>& top);
-
-  virtual inline const char* type() const { return "Normalize"; }
-  virtual inline int ExactNumBottomBlobs() const { return 1; }
-  virtual inline int ExactNumTopBlobs() const { return 1; }
-
- protected:
-  virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
-      const vector<Blob<Dtype>*>& top);
-  virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
-      const vector<Blob<Dtype>*>& top);
-  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
-      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
-  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
-     const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
-
-  Blob<Dtype> sum_multiplier_, norm_, squared_;
-};
-
-/**
- * @brief Takes at least two Blob%s and concatenates them along either the num
- *        or channel dimension, outputting the result.
- */
-template <typename Dtype>
 class ConcatLayer : public Layer<Dtype> {
  public:
   explicit ConcatLayer(const LayerParameter& param)
@@ -262,6 +178,44 @@ class EltwiseLayer : public Layer<Dtype> {
   Blob<int> max_idx_;
 
   bool stable_prod_grad_;
+};
+
+/**
+ * @brief A layer for learning "embeddings" of one-hot vector input.
+ *        Equivalent to an InnerProductLayer with one-hot vectors as input, but
+ *        for efficiency the input is the "hot" index of each column itself.
+ *
+ * TODO(dox): thorough documentation for Forward, Backward, and proto params.
+ */
+template <typename Dtype>
+class EmbedLayer : public Layer<Dtype> {
+ public:
+  explicit EmbedLayer(const LayerParameter& param)
+      : Layer<Dtype>(param) {}
+  virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+
+  virtual inline const char* type() const { return "Embed"; }
+  virtual inline int ExactNumBottomBlobs() const { return 1; }
+  virtual inline int ExactNumTopBlobs() const { return 1; }
+
+ protected:
+  virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+
+  int M_;
+  int K_;
+  int N_;
+  bool bias_term_;
+  Blob<Dtype> bias_multiplier_;
 };
 
 /**
@@ -654,41 +608,6 @@ class SplitLayer : public Layer<Dtype> {
 };
 
 /**
-* @brief Apply an affine transform on the input layer, where the affine parameters
-*        are learned by back-propagation.
-*        Max Jaderberg etc, Spatial Transformer Networks.
-*
-* TODO(dox): thorough documentation for Forward, Backward, and proto params.
-*/
-template <typename Dtype>
-class TransformerLayer : public Layer<Dtype> {
-public:
-	explicit TransformerLayer(const LayerParameter& param)
-		: Layer<Dtype>(param) {}
-	virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
-		const vector<Blob<Dtype>*>& top);
-
-	virtual inline const char* type() const { return "Transformer"; }
-	virtual inline int ExactNumBottomBlobs() const { return 2; }
-	virtual inline int MinTopBlobs() const { return 1; }
-
-protected:
-	virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
-		const vector<Blob<Dtype>*>& top);
-	virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
-		const vector<Blob<Dtype>*>& top);
-	virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
-		const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
-	virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
-		const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
-
-	int count_;
-	Blob<Dtype> CoordinateTarget;//3*(nwh)
-	Blob<Dtype> CoordinateSource;//2*(nwh)
-	Blob<Dtype> InterpolateWeight;//4*(nwh)
-};
-
-/**
  * @brief Takes a Blob and slices it along either the num or channel dimension,
  *        outputting multiple sliced Blob results.
  *
@@ -723,6 +642,35 @@ class SliceLayer : public Layer<Dtype> {
   int slice_size_;
   int slice_axis_;
   vector<int> slice_point_;
+};
+
+/**
+ * @brief Copy a Blob along specified dimensions.
+ */
+template <typename Dtype>
+class TileLayer : public Layer<Dtype> {
+ public:
+  explicit TileLayer(const LayerParameter& param)
+      : Layer<Dtype>(param) {}
+  virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+
+  virtual inline const char* type() const { return "Tile"; }
+  virtual inline int ExactNumBottomBlobs() const { return 1; }
+  virtual inline int ExactNumTopBlobs() const { return 1; }
+
+ protected:
+  virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+
+  unsigned int axis_, tiles_, outer_dim_, inner_dim_;
 };
 
 }  // namespace caffe
