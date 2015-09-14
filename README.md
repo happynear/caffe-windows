@@ -38,7 +38,9 @@ Please download the mnist leveldb database from http://pan.baidu.com/s/1mgl9ndu 
 Update log
 ======
 2015/09/14 Multi-GPU is supported now. 
+
 WARNING: When you are using multiple gpus to train a model, please do not directly close the command window. Instead, please use `Ctrl+C` to avoid the gpu driver from crash.
+
 You can also press `Ctrl+Break` to save a model snapshot whenever you want during training.
 
 2015/08/18 The lmdb problem has been fixed. Download the new lmdb lib file from http://pan.baidu.com/s/1dDHbbgP (only a small patch), overwrite the original one in `3rdparty/lib`, and re-link the convert_imageset, convert_mnist etc projects, you will be able to create lmdb on Windows.
