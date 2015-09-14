@@ -24,7 +24,7 @@ Setup step:
 
 3. Double click ./build/MainBuilder.sln to open the solution.
 
-4. Change the compile mode to Release and X64.
+4. Change the compile mode to Release and X64. For Debug mode, you may need these 3rparty libraries http://pan.baidu.com/s/1qW88MTY .
 
 5. ~~Change the CUDA include and library path to your own ones.~~
 
