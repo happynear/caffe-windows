@@ -482,14 +482,6 @@ static void read_mean(MEX_ARGS) {
 	mxFree(mean_proto_file);
 }
 
-// Usage: caffe_('need_backward',hNet)
-static void need_backward(MEX_ARGS) {
-	mxCHECK(nrhs == 1 && mxIsStruct(prhs[0]),
-		"Usage: caffe_('need_backward', hNet)");
-	Net<float>* net = handle_to_ptr<Net<float> >(prhs[0]);
-	net->SetAllNeedBackward();
-}
-
 /** -----------------------------------------------------------------
 ** Available commands.
 **/
@@ -527,7 +519,6 @@ static handler_registry handlers[] = {
 	{ "get_init_key", get_init_key },
 	{ "reset", reset },
 	{ "read_mean", read_mean },
-	{ "need_backward", need_backward },
 	// The end.
 	{ "END", NULL },
 };
