@@ -31,6 +31,12 @@ Python Wrapper
 ======
 Similar with Matlab, just change the python include and library path defined in the settings and compile.
 
+Most of the libraries listed in `./python/requirements.txt` can be installed by `pip install`. However, some of them cannot be installed so easily.
+
+For protobuf, you may download the codes from https://github.com/google/protobuf. Copy `caffe-windows-root/src/caffe/proto/protoc.exe` to `protobuf-root/src`. Then run `python setup.py install` in `protobuf-root/python`.
+
+For leveldb, I have created a repository https://github.com/happynear/py-leveldb-windows , please follow the instruction in ReadMe.md to install.
+
 MNIST example
 ======
 Please download the mnist leveldb database from http://pan.baidu.com/s/1mgl9ndu and extract it to `./examples/mnist`. Then double click `./run_mnist.bat` to run the MNIST demo.
