@@ -35,7 +35,7 @@ Most of the libraries listed in `./python/requirements.txt` can be installed by 
 
 For protobuf, you may download the codes from https://github.com/google/protobuf. Copy `caffe-windows-root/src/caffe/proto/protoc.exe` to `protobuf-root/src`. Then run `python setup.py install` in `protobuf-root/python`.
 
-For leveldb, I have created a repository https://github.com/happynear/py-leveldb-windows , please follow the instruction in ReadMe.md to install.
+For leveldb, I have created a repository https://github.com/happynear/py-leveldb-windows , please follow the instruction in `README.md` to install.
 
 MNIST example
 ======
