@@ -100,6 +100,6 @@ STUB_GPU(ContrastiveLossLayer);
 #endif
 
 INSTANTIATE_CLASS(ContrastiveLossLayer);
-
+REGISTER_LAYER_CLASS(ContrastiveLoss);
 
 }  // namespace caffe

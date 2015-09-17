@@ -147,6 +147,6 @@ STUB_GPU(TripletLossLayer);
 #endif
 
 INSTANTIATE_CLASS(TripletLossLayer);
-
+REGISTER_LAYER_CLASS(TripletLoss);
 
 }  // namespace caffe

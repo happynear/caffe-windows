@@ -136,6 +136,6 @@ STUB_GPU(ROIPoolingLayer);
 #endif
 
 INSTANTIATE_CLASS(ROIPoolingLayer);
-
+REGISTER_LAYER_CLASS(ROIPooling);
 
 }  // namespace caffe
