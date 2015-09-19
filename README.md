@@ -24,12 +24,12 @@ If you want build other tools, just copy and rename `./build/MSVC` folder to ano
 
 Matlab Wrapper
 ======
-Just change the Matlab include and library path defined in the settings and compile.
+Just replace the Matlab include and library path defined in the settings and compile.
 **Don't forget to add `./matlab` to your Matlab path.**
 
 Python Wrapper
 ======
-Similar with Matlab, just change the python include and library path defined in the settings and compile.
+Similar with Matlab, replace the python include and library path and compile.
 
 Most of the libraries listed in `./python/requirements.txt` can be installed by `pip install`. However, some of them cannot be installed so easily.
 
