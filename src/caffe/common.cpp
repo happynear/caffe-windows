@@ -25,26 +25,26 @@ Caffe& Caffe::Get() {
 
 // random seeding
 int64_t cluster_seedgen(void) {
-	int64_t s, seed, pid;
+  int64_t s, seed, pid;
 #ifndef _MSC_VER
-	FILE* f = fopen("/dev/urandom", "rb");
-	if (f && fread(&seed, 1, sizeof(seed), f) == sizeof(seed)) {
-		fclose(f);
-		return seed;
-	}
+  FILE* f = fopen("/dev/urandom", "rb");
+  if (f && fread(&seed, 1, sizeof(seed), f) == sizeof(seed)) {
+    fclose(f);
+    return seed;
+  }
 
-	LOG(INFO) << "System entropy source not available, "
-		"using fallback algorithm to generate seed instead.";
-	if (f)
-		fclose(f);
+  LOG(INFO) << "System entropy source not available, "
+    "using fallback algorithm to generate seed instead.";
+  if (f)
+    fclose(f);
 
-	pid = getpid();
+  pid = getpid();
 #else
-	pid = _getpid();
+  pid = _getpid();
 #endif
-	s = time(NULL);
-	seed = abs(((s * 181) * ((pid - 83) * 359)) % 104729);
-	return seed;
+  s = time(NULL);
+  seed = abs(((s * 181) * ((pid - 83) * 359)) % 104729);
+  return seed;
 }
 
 void initGlog() {
