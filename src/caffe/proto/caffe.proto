@@ -418,6 +418,8 @@ message TransformationParameter {
   optional float gaussian_noise_std = 8 [default = 1];
   // Add uniform noise.
   optional float uniform_noise_range = 9 [default = 1];
+  // noise mask
+  optional float noise_mask_ratio = 10 [default = 1];
 }
 
 // Message that stores parameters shared by loss layers
