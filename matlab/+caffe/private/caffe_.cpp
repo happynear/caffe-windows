@@ -399,10 +399,10 @@ static void blob_reshape(MEX_ARGS) {
 
 // Usage: caffe_('blob_get_data', hBlob)
 static void blob_get_data(MEX_ARGS) {
-	mxCHECK(nrhs == 1 && mxIsStruct(prhs[0]),
-		"Usage: caffe_('blob_get_data', hBlob)");
-	Blob<float>* blob = handle_to_ptr<Blob<float> >(prhs[0]);
-	plhs[0] = blob_to_mx_mat(blob, DATA);
+  mxCHECK(nrhs == 1 && mxIsStruct(prhs[0]),
+    "Usage: caffe_('blob_get_data', hBlob)");
+  Blob<float>* blob = handle_to_ptr<Blob<float> >(prhs[0]);
+  plhs[0] = blob_to_mx_mat(blob, DATA);
 }
 
 // Usage: caffe_('blob_set_data', hBlob, new_data)
@@ -523,38 +523,35 @@ static handler_registry handlers[] = {
 	{ "END", NULL },
 };
 
-void initGlog()
-{
-	FLAGS_log_dir = ".\\log\\";
-	_mkdir(FLAGS_log_dir.c_str());
-	std::string LOG_INFO_FILE;
-	std::string LOG_WARNING_FILE;
-	std::string LOG_ERROR_FILE;
-	std::string LOG_FATAL_FILE;
-	std::string now_time = boost::posix_time::to_iso_extended_string(boost::posix_time::second_clock::local_time());
-	now_time[13] = '-';
-	now_time[16] = '-';
-	LOG_INFO_FILE = FLAGS_log_dir + "INFO" + now_time + ".txt";
-	google::SetLogDestination(google::GLOG_INFO, LOG_INFO_FILE.c_str());
-	LOG_WARNING_FILE = FLAGS_log_dir + "WARNING" + now_time + ".txt";
-	google::SetLogDestination(google::GLOG_WARNING, LOG_WARNING_FILE.c_str());
-	LOG_ERROR_FILE = FLAGS_log_dir + "ERROR" + now_time + ".txt";
-	google::SetLogDestination(google::GLOG_ERROR, LOG_ERROR_FILE.c_str());
-	LOG_FATAL_FILE = FLAGS_log_dir + "FATAL" + now_time + ".txt";
-	google::SetLogDestination(google::GLOG_FATAL, LOG_FATAL_FILE.c_str());
-	FLAGS_alsologtostderr = 1;
-	string log_dir = "D:\\log\\";
-	string log_file = log_dir + "INFO" + now_time + ".txt";
-	FILE *stream = freopen(log_file.c_str(), "w", stderr);
+void initGlog() {
+  FLAGS_log_dir = ".\\log\\";
+  _mkdir(FLAGS_log_dir.c_str());
+  std::string LOG_INFO_FILE;
+  std::string LOG_WARNING_FILE;
+  std::string LOG_ERROR_FILE;
+  std::string LOG_FATAL_FILE;
+  std::string now_time = boost::posix_time::to_iso_extended_string(boost::posix_time::second_clock::local_time());
+  now_time[13] = '-';
+  now_time[16] = '-';
+  LOG_INFO_FILE = FLAGS_log_dir + "INFO" + now_time + ".txt";
+  google::SetLogDestination(google::GLOG_INFO, LOG_INFO_FILE.c_str());
+  LOG_WARNING_FILE = FLAGS_log_dir + "WARNING" + now_time + ".txt";
+  google::SetLogDestination(google::GLOG_WARNING, LOG_WARNING_FILE.c_str());
+  LOG_ERROR_FILE = FLAGS_log_dir + "ERROR" + now_time + ".txt";
+  google::SetLogDestination(google::GLOG_ERROR, LOG_ERROR_FILE.c_str());
+  LOG_FATAL_FILE = FLAGS_log_dir + "FATAL" + now_time + ".txt";
+  google::SetLogDestination(google::GLOG_FATAL, LOG_FATAL_FILE.c_str());
+  FLAGS_alsologtostderr = 1;
+  string log_dir = "D:\\log\\";
+  string log_file = log_dir + "INFO" + now_time + ".txt";
+  FILE *stream = freopen(log_file.c_str(), "w", stderr);
 
-	if (stream == NULL)
-	{
-		mxERROR("error on freopen\n");
-	}
-	else
-	{
-		fprintf(stderr, "Open freopen.txt successfully!\r\n");
-	}
+  if (stream == NULL) {
+    mxERROR("error on freopen\n");
+  }
+  else {
+    fprintf(stderr, "Open freopen.txt successfully!\r\n");
+  }
 }
 
 /** -----------------------------------------------------------------
@@ -562,29 +559,28 @@ void initGlog()
 **/
 // Usage: caffe_(api_command, arg1, arg2, ...)
 void mexFunction(MEX_ARGS) {
-	if (init_key == -2)
-	{
-		init_key = static_cast<double>(caffe_rng_rand());
-		initGlog();
-	}
-	mexLock();  // Avoid clearing the mex file.
-	mxCHECK(nrhs > 0, "Usage: caffe_(api_command, arg1, arg2, ...)");
-	{// Handle input command
-		char* cmd = mxArrayToString(prhs[0]);
-		bool dispatched = false;
-		// Dispatch to cmd handler
-		for (int i = 0; handlers[i].func != NULL; i++) {
-			if (handlers[i].cmd.compare(cmd) == 0) {
-				handlers[i].func(nlhs, plhs, nrhs - 1, prhs + 1);
-				dispatched = true;
-				break;
-			}
-		}
-		if (!dispatched) {
-			ostringstream error_msg;
-			error_msg << "Unknown command '" << cmd << "'";
-			mxERROR(error_msg.str().c_str());
-		}
-		mxFree(cmd);
-	}
+  if (init_key == -2) {
+    init_key = static_cast<double>(caffe_rng_rand());
+    initGlog();
+  }
+  mexLock();  // Avoid clearing the mex file.
+  mxCHECK(nrhs > 0, "Usage: caffe_(api_command, arg1, arg2, ...)");
+  {// Handle input command
+    char* cmd = mxArrayToString(prhs[0]);
+    bool dispatched = false;
+    // Dispatch to cmd handler
+    for (int i = 0; handlers[i].func != NULL; i++) {
+      if (handlers[i].cmd.compare(cmd) == 0) {
+        handlers[i].func(nlhs, plhs, nrhs - 1, prhs + 1);
+        dispatched = true;
+        break;
+      }
+    }
+    if (!dispatched) {
+      ostringstream error_msg;
+      error_msg << "Unknown command '" << cmd << "'";
+      mxERROR(error_msg.str().c_str());
+    }
+    mxFree(cmd);
+  }
 }
