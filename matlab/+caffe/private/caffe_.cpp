@@ -299,18 +299,44 @@ static void net_get_attr(MEX_ARGS) {
 
 // Usage: caffe_('net_forward', hNet)
 static void net_forward(MEX_ARGS) {
-	mxCHECK(nrhs == 1 && mxIsStruct(prhs[0]),
-		"Usage: caffe_('net_forward', hNet)");
+	mxCHECK(nrhs <= 3 && mxIsStruct(prhs[0]),
+		"Usage: caffe_('net_forward', hNet, from_layer=0, to_layer=end)");
 	Net<float>* net = handle_to_ptr<Net<float> >(prhs[0]);
-	net->ForwardPrefilled();
+	if (nrhs == 1)
+		net->ForwardPrefilled();
+	else if (nrhs == 2)
+	{
+		mxCHECK(mxIsDouble(prhs[1]),
+			"Usage: caffe_('net_forward', hNet, from_layer=0, to_layer=end)");
+		net->ForwardFrom((int)mxGetScalar(prhs[1]));
+	}
+	else if (nrhs == 3)
+	{
+		mxCHECK(mxIsDouble(prhs[1]) && mxIsDouble(prhs[2]),
+			"Usage: caffe_('net_forward', hNet, from_layer=0, to_layer=end)");
+		net->ForwardFromTo((int)mxGetScalar(prhs[1]), (int)mxGetScalar(prhs[2]));
+	}
 }
 
 // Usage: caffe_('net_backward', hNet)
 static void net_backward(MEX_ARGS) {
-	mxCHECK(nrhs == 1 && mxIsStruct(prhs[0]),
-		"Usage: caffe_('net_backward', hNet)");
+	mxCHECK(nrhs <= 3 && mxIsStruct(prhs[0]),
+		"Usage: caffe_('net_backward', hNet, from_layer=end, to_layer=0)");
 	Net<float>* net = handle_to_ptr<Net<float> >(prhs[0]);
-	net->Backward();
+	if (nrhs == 1)
+		net->Backward();
+	else if (nrhs == 2)
+	{
+		mxCHECK(mxIsDouble(prhs[1]),
+			"Usage: caffe_('net_backward', hNet, from_layer=end, to_layer=0)");
+		net->BackwardFrom((int)mxGetScalar(prhs[1]));
+	}
+	else if (nrhs == 3)
+	{
+		mxCHECK(mxIsDouble(prhs[1]) && mxIsDouble(prhs[2]),
+			"Usage: caffe_('net_backward', hNet, from_layer=end, to_layer=0)");
+		net->BackwardFromTo((int)mxGetScalar(prhs[1]), (int)mxGetScalar(prhs[2]));
+	}
 }
 
 // Usage: caffe_('net_copy_from', hNet, weights_file)
@@ -482,6 +508,62 @@ static void read_mean(MEX_ARGS) {
 	mxFree(mean_proto_file);
 }
 
+static bool is_log_inited = false;
+
+static void glog_failure_handler(){
+	static bool is_glog_failure = false;
+	if (!is_glog_failure)
+	{
+		is_glog_failure = true;
+		::google::FlushLogFiles(0);
+		mexErrMsgTxt("glog check error, please check log and clear mex");
+	}
+}
+
+static void protobuf_log_handler(::google::protobuf::LogLevel level, const char* filename, int line,
+	const std::string& message)
+{
+	const int max_err_length = 512;
+	char err_message[max_err_length];
+	sprintf_s(err_message, max_err_length, "Protobuf : %s . at %s Line %d",
+		message.c_str(), filename, line);
+	LOG(INFO) << err_message;
+	::google::FlushLogFiles(0);
+	mexErrMsgTxt(err_message);
+}
+
+// Usage: caffe_('init_log', log_base_filename)
+static void init_log(MEX_ARGS) {
+	mxCHECK(nrhs == 1 && mxIsChar(prhs[0]),
+		"Usage: caffe_('init_log', log_dir)");
+	if (is_log_inited)
+		::google::ShutdownGoogleLogging();
+	char* log_base_filename = mxArrayToString(prhs[0]);
+	::google::SetLogDestination(0, log_base_filename);
+	mxFree(log_base_filename);
+	::google::protobuf::SetLogHandler(&protobuf_log_handler);
+	::google::InitGoogleLogging("caffe_mex");
+	::google::InstallFailureFunction(&glog_failure_handler);
+
+	is_log_inited = true;
+}
+
+void initGlog() {
+	if (is_log_inited) return;
+	string log_dir = ".\\log\\";
+	std::string now_time = boost::posix_time::to_iso_extended_string(boost::posix_time::second_clock::local_time());
+	now_time[13] = '-';
+	now_time[16] = '-';
+	string log_file = log_dir + "INFO" + now_time + ".txt";
+	const char* log_base_filename = log_file.c_str();
+	::google::SetLogDestination(0, log_base_filename);
+	::google::protobuf::SetLogHandler(&protobuf_log_handler);
+	::google::InitGoogleLogging("caffe_mex");
+	::google::InstallFailureFunction(&glog_failure_handler);
+
+	is_log_inited = true;
+}
+
 /** -----------------------------------------------------------------
 ** Available commands.
 **/
@@ -519,40 +601,10 @@ static handler_registry handlers[] = {
 	{ "get_init_key", get_init_key },
 	{ "reset", reset },
 	{ "read_mean", read_mean },
+	{ "init_log", init_log },
 	// The end.
 	{ "END", NULL },
 };
-
-void initGlog() {
-  FLAGS_log_dir = ".\\log\\";
-  _mkdir(FLAGS_log_dir.c_str());
-  std::string LOG_INFO_FILE;
-  std::string LOG_WARNING_FILE;
-  std::string LOG_ERROR_FILE;
-  std::string LOG_FATAL_FILE;
-  std::string now_time = boost::posix_time::to_iso_extended_string(boost::posix_time::second_clock::local_time());
-  now_time[13] = '-';
-  now_time[16] = '-';
-  LOG_INFO_FILE = FLAGS_log_dir + "INFO" + now_time + ".txt";
-  google::SetLogDestination(google::GLOG_INFO, LOG_INFO_FILE.c_str());
-  LOG_WARNING_FILE = FLAGS_log_dir + "WARNING" + now_time + ".txt";
-  google::SetLogDestination(google::GLOG_WARNING, LOG_WARNING_FILE.c_str());
-  LOG_ERROR_FILE = FLAGS_log_dir + "ERROR" + now_time + ".txt";
-  google::SetLogDestination(google::GLOG_ERROR, LOG_ERROR_FILE.c_str());
-  LOG_FATAL_FILE = FLAGS_log_dir + "FATAL" + now_time + ".txt";
-  google::SetLogDestination(google::GLOG_FATAL, LOG_FATAL_FILE.c_str());
-  FLAGS_alsologtostderr = 1;
-  string log_dir = "D:\\log\\";
-  string log_file = log_dir + "INFO" + now_time + ".txt";
-  FILE *stream = freopen(log_file.c_str(), "w", stderr);
-
-  if (stream == NULL) {
-    mxERROR("error on freopen\n");
-  }
-  else {
-    fprintf(stderr, "Open freopen.txt successfully!\r\n");
-  }
-}
 
 /** -----------------------------------------------------------------
 ** matlab entry point.
@@ -561,7 +613,7 @@ void initGlog() {
 void mexFunction(MEX_ARGS) {
   if (init_key == -2) {
     init_key = static_cast<double>(caffe_rng_rand());
-    initGlog();
+	initGlog();
   }
   mexLock();  // Avoid clearing the mex file.
   mxCHECK(nrhs > 0, "Usage: caffe_(api_command, arg1, arg2, ...)");
