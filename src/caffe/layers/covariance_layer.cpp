@@ -27,7 +27,7 @@ namespace caffe {
 
     for (int n = 0; n < num; n++) {
       caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasTrans, channel, channel, spatial_dim,
-        1 / (Dtype)spatial_dim, bottom_data + n * spatial_dim * channel, temp.cpu_data() + n * spatial_dim * channel, Dtype(0), top_data + n * channel * channel);
+        1 / (Dtype)spatial_dim / (Dtype)channel, bottom_data + n * spatial_dim * channel, temp.cpu_data() + n * spatial_dim * channel, Dtype(0), top_data + n * channel * channel);
     }
   }
 
@@ -55,7 +55,7 @@ namespace caffe {
 
     for (int n = 0; n < num; n++) {
       caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, channel, spatial_dim, channel,
-        Dtype(1) / (Dtype)spatial_dim, top_diff + n * channel * channel, bottom_data + n * spatial_dim * channel, Dtype(0), bottom_diff + n * spatial_dim * channel);
+        1 / (Dtype)spatial_dim / (Dtype)channel, top_diff + n * channel * channel, bottom_data + n * spatial_dim * channel, Dtype(0), bottom_diff + n * spatial_dim * channel);
     }
   }
 

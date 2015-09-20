@@ -61,7 +61,7 @@ namespace caffe {
 							value += this->blob_data_->data_at(n, i, ii, jj) * this->blob_data_->data_at(n, j, ii, jj);
 						}
 					}
-					value /= spatial_dim;
+					value /= spatial_dim * channel;
 					LOG(INFO) << "(" << n << "," << i << "," << j << ")" << "(" << value << "," << this->blob_top_->cpu_data()[n*channel*channel + i*channel + j] << ")";
 					CHECK(abs(value - this->blob_top_->cpu_data()[n*channel*channel + i*channel + j]) < 1e-4) << "(" << n << "," << i << "," << j << ")" << "(" << value << "," << this->blob_top_->cpu_data()[n*channel*channel + i*channel + j] << ")";
 
