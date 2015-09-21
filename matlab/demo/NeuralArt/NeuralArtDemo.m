@@ -8,7 +8,7 @@ caffe.set_device(gpu_id);
 % original_file = 'D:\deepLearning\caffe-windows\matlab\demo\Inceptionism\googlenet_neuralart.prototxt';
 % net_weights = 'D:\deeplearning\caffe-windows\examples\GoogLeNet\imagenet_googlenet.caffemodel';
 original_file = 'D:\deepLearning\caffe-windows\matlab\demo\Inceptionism\VGG_16_nueralart.prototxt';
-net_weights = 'D:\deepLearning\caffe-windows\examples\VGG\thinned_net.caffemodel';
+net_weights = 'D:\deepLearning\caffe-windows\examples\VGG\VGG16_thinned_net.caffemodel';
 % style_layer = {'icp2_in','icp3_out','icp5_out','icp7_out','icp9_out'};
 style_layer = {'conv1_1','conv2_1','conv3_1','conv4_1','conv5_1'};
 style_weights = [1 1 1 1 1 0.1];
