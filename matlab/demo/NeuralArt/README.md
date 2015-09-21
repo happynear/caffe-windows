@@ -9,4 +9,4 @@ be downloaded from http://pan.baidu.com/s/1kT8d3Iv .
 
 Usage
 ===========
-I exploited this on my laptop and it's too slow to tune the parameters to be best. The performance is not very good right now. However, you can still try it.
+I exploited this on my laptop and it's too slow to tune the parameters to be the best. The performance is not very good right now. However, you can still try it.
