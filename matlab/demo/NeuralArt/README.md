@@ -1,4 +1,4 @@
-A caffe implementation of Neural Art
+A Caffe Implementation of Neural Art
 ============
 
 Based on paper
