@@ -1,0 +1,8 @@
+layer {
+  name: "smoothl1{num}"
+  type: "SmoothL1Loss"
+  bottom: "{bottom1}"
+  bottom: "{bottom2}"
+  top: "smoothl1{num}"
+  loss_weight: {loss_weight}
+}

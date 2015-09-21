@@ -1,0 +1,44 @@
+layer {
+  name: "conv{num}"
+  type: "Convolution"
+  bottom: "{bottom_name}"
+  top: "conv{num}"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: {node_num}
+    kernel_size: {kernel_size}
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "gaussian"
+	  std: 0.5
+#      type: "constant"
+#	  value: 0
+    }
+  }
+}
+layer {
+  name: "bn{num}"
+  type: "BN"
+  bottom: "conv{num}"
+  top: "bn{num}"
+  bn_param {
+	scale_filler {
+	  type: "constant"
+	  value: 3
+	}
+	shift_filler {
+	  type: "gaussian"
+	  std: 2
+#      type: "constant"
+#	  value: 0
+	}
+ }
+}

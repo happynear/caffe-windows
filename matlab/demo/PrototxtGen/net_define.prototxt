@@ -1,0 +1,453 @@
+name: "mnist_siamese_train_test"
+input: "data"
+input_dim: 1
+input_dim: 2
+input_dim: 640
+input_dim: 480
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 20
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "gaussian"
+	  std: 0.5
+#      type: "constant"
+#	  value: 0
+    }
+  }
+}
+layer {
+  name: "bn1"
+  type: "BN"
+  bottom: "conv1"
+  top: "bn1"
+  bn_param {
+	scale_filler {
+	  type: "constant"
+	  value: 3
+	}
+	shift_filler {
+	  type: "gaussian"
+	  std: 2
+#      type: "constant"
+#	  value: 0
+	}
+ }
+}
+layer {
+  name: "relu1"
+  type: "Sigmoid"
+  bottom: "bn1"
+  top: "bn1"
+  relu_param {
+    negative_slope: 0
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "bn1"
+  top: "conv2"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 20
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "gaussian"
+	  std: 0.5
+#      type: "constant"
+#	  value: 0
+    }
+  }
+}
+layer {
+  name: "bn2"
+  type: "BN"
+  bottom: "conv2"
+  top: "bn2"
+  bn_param {
+	scale_filler {
+	  type: "constant"
+	  value: 3
+	}
+	shift_filler {
+	  type: "gaussian"
+	  std: 2
+#      type: "constant"
+#	  value: 0
+	}
+ }
+}
+layer {
+  name: "relu2"
+  type: "Sigmoid"
+  bottom: "bn2"
+  top: "bn2"
+  relu_param {
+    negative_slope: 0
+  }
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "bn2"
+  top: "conv3"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 20
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "gaussian"
+	  std: 0.5
+#      type: "constant"
+#	  value: 0
+    }
+  }
+}
+layer {
+  name: "bn3"
+  type: "BN"
+  bottom: "conv3"
+  top: "bn3"
+  bn_param {
+	scale_filler {
+	  type: "constant"
+	  value: 3
+	}
+	shift_filler {
+	  type: "gaussian"
+	  std: 2
+#      type: "constant"
+#	  value: 0
+	}
+ }
+}
+layer {
+  name: "relu3"
+  type: "Sigmoid"
+  bottom: "bn3"
+  top: "bn3"
+  relu_param {
+    negative_slope: 0
+  }
+}
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "bn3"
+  top: "conv4"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 20
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "gaussian"
+	  std: 0.5
+#      type: "constant"
+#	  value: 0
+    }
+  }
+}
+layer {
+  name: "bn4"
+  type: "BN"
+  bottom: "conv4"
+  top: "bn4"
+  bn_param {
+	scale_filler {
+	  type: "constant"
+	  value: 3
+	}
+	shift_filler {
+	  type: "gaussian"
+	  std: 2
+#      type: "constant"
+#	  value: 0
+	}
+ }
+}
+layer {
+  name: "relu4"
+  type: "Sigmoid"
+  bottom: "bn4"
+  top: "bn4"
+  relu_param {
+    negative_slope: 0
+  }
+}
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "bn4"
+  top: "conv5"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 20
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "gaussian"
+	  std: 0.5
+#      type: "constant"
+#	  value: 0
+    }
+  }
+}
+layer {
+  name: "bn5"
+  type: "BN"
+  bottom: "conv5"
+  top: "bn5"
+  bn_param {
+	scale_filler {
+	  type: "constant"
+	  value: 3
+	}
+	shift_filler {
+	  type: "gaussian"
+	  std: 2
+#      type: "constant"
+#	  value: 0
+	}
+ }
+}
+layer {
+  name: "relu5"
+  type: "Sigmoid"
+  bottom: "bn5"
+  top: "bn5"
+  relu_param {
+    negative_slope: 0
+  }
+}
+layer {
+  name: "conv6"
+  type: "Convolution"
+  bottom: "bn5"
+  top: "conv6"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 20
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "gaussian"
+	  std: 0.5
+#      type: "constant"
+#	  value: 0
+    }
+  }
+}
+layer {
+  name: "bn6"
+  type: "BN"
+  bottom: "conv6"
+  top: "bn6"
+  bn_param {
+	scale_filler {
+	  type: "constant"
+	  value: 3
+	}
+	shift_filler {
+	  type: "gaussian"
+	  std: 2
+#      type: "constant"
+#	  value: 0
+	}
+ }
+}
+layer {
+  name: "relu6"
+  type: "Sigmoid"
+  bottom: "bn6"
+  top: "bn6"
+  relu_param {
+    negative_slope: 0
+  }
+}
+layer {
+  name: "conv7"
+  type: "Convolution"
+  bottom: "bn6"
+  top: "conv7"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 20
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "gaussian"
+	  std: 0.5
+#      type: "constant"
+#	  value: 0
+    }
+  }
+}
+layer {
+  name: "bn7"
+  type: "BN"
+  bottom: "conv7"
+  top: "bn7"
+  bn_param {
+	scale_filler {
+	  type: "constant"
+	  value: 3
+	}
+	shift_filler {
+	  type: "gaussian"
+	  std: 2
+#      type: "constant"
+#	  value: 0
+	}
+ }
+}
+layer {
+  name: "relu7"
+  type: "Sigmoid"
+  bottom: "bn7"
+  top: "bn7"
+  relu_param {
+    negative_slope: 0
+  }
+}
+layer {
+  name: "conv8"
+  type: "Convolution"
+  bottom: "bn7"
+  top: "conv8"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 20
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "gaussian"
+	  std: 0.5
+#      type: "constant"
+#	  value: 0
+    }
+  }
+}
+layer {
+  name: "bn8"
+  type: "BN"
+  bottom: "conv8"
+  top: "bn8"
+  bn_param {
+	scale_filler {
+	  type: "constant"
+	  value: 3
+	}
+	shift_filler {
+	  type: "gaussian"
+	  std: 2
+#      type: "constant"
+#	  value: 0
+	}
+ }
+}
+layer {
+  name: "relu8"
+  type: "Sigmoid"
+  bottom: "bn8"
+  top: "bn8"
+  relu_param {
+    negative_slope: 0
+  }
+}
+layer {
+  name: "output"
+  type: "Convolution"
+  bottom: "bn8"
+  top: "output"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 3
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}

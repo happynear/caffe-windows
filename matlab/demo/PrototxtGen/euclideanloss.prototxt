@@ -1,0 +1,8 @@
+layer {
+  name: "euclidean{num}"
+  type: "EuclideanLoss"
+  bottom: "{bottom1}"
+  bottom: "{bottom2}"
+  top: "euclidean{num}"
+  loss_weight: {loss_weight}
+}

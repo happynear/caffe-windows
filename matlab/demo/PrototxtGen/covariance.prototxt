@@ -1,0 +1,6 @@
+layer {
+  name: "cov{num}"
+  type: "Covariance"
+  bottom: "{bottom_name}"
+  top: "cov{num}"
+}
