@@ -1,8 +1,4 @@
-
-caffe.reset_all();
-caffe.set_mode_gpu();
-gpu_id = 0;  % we will use the first gpu in this demo
-caffe.set_device(gpu_id);
+function PrototxtGen(layers,savefolder,image_size,save_num)
 
 net_model = 'D:\project\NNComplexity\net_define.prototxt';
 inception_file = 'inception.prototxt';
@@ -11,25 +7,17 @@ conv1x1_file = '1x1conv.prototxt';
 conv1x1_content = fileread(conv1x1_file);
 pooling_file = 'pooling.prototxt';
 pooling_content = fileread(pooling_file);
+maxout_file = 'maxout.prototxt';
+maxout_content = fileread(maxout_file);
+activation_file = 'activation.prototxt';
+activation_content = fileread(activation_file);
 output_file = 'output.prototxt';
 output_content = fileread(output_file);
 
 activation = 'ReLU';
 
-layers = {
-%     struct('type', 'convolution', 'outputmaps', 100, 'kernelsize', 3, 'activation', activation) %convolution layer
-%     struct('type', 'convolution', 'outputmaps', 10, 'kernelsize', 3, 'activation', activation) %convolution layer
-%     struct('type', 'convolution', 'outputmaps', 10, 'kernelsize', 3, 'activation', activation) %convolution layer
-%     struct('type', 'pooling', 'scale', 2, 'method', 'AVE')  
-    struct('type', 'inception', 'node1x1', 100, 'reduce3x3', 50, 'node3x3', 100, 'reduce5x5', 50, 'node5x5', 100, 'poolconv', 100) 
-%     struct('type', 'inception', 'node1x1', 20, 'reduce3x3', 10, 'node3x3', 20, 'reduce5x5', 10, 'node5x5', 20, 'poolconv', 20) 
-%     struct('type', 'inception', 'node1x1', 20, 'reduce3x3', 10, 'node3x3', 20, 'reduce5x5', 10, 'node5x5', 20, 'poolconv', 20) 
-%     struct('type', 'convolution', 'outputmaps', 20, 'kernelsize', 1, 'activation', activation) %convolution layer
-%     struct('type', 'convolution', 'outputmaps', 20, 'kernelsize', 1, 'activation', activation) %convolution layer
-%     struct('type', 'pooling', 'scale', 2, 'method', 'AVE') 
-};
-width = 600;
-height = 400;
+width = image_size(1);
+height = image_size(2);
 border = 5;
 
 fid = fopen(net_model,'w');
@@ -50,7 +38,29 @@ for i=1:length(layers)
         this_layer = strrep(this_layer,'{node_num}',num2str(layers{i}.outputmaps));
         this_layer = strrep(this_layer,'{bottom_name}',top_layer);
         this_layer = strrep(this_layer,'{kernel_size}',num2str(layers{i}.kernelsize));
-        this_layer = strrep(this_layer,'{activation}',layers{i}.activation);
+        if strcmp(layers{i}.activation,'maxout')
+            top_layer = regexp(this_layer,top_layer_exp,'tokens');
+            top_layer = top_layer{end}{1};
+            fprintf(fid,'%s\r\n',this_layer);
+            this_layer = strrep(maxout_content,'{num}',num2str(i));
+            this_layer = strrep(this_layer,'{bottom_name}',top_layer);
+        elseif strcmp(layers{i}.activation,'LReLU')
+            top_layer = regexp(this_layer,top_layer_exp,'tokens');
+            top_layer = top_layer{end}{1};
+            fprintf(fid,'%s\r\n',this_layer);
+            this_layer = strrep(activation_content,'{num}',num2str(i));
+            this_layer = strrep(this_layer,'{bottom_name}',top_layer);
+            this_layer = strrep(this_layer,'{activation}','ReLU');
+            this_layer = strrep(this_layer,'{negative_slope}',num2str(rand() / 2));
+        else
+            top_layer = regexp(this_layer,top_layer_exp,'tokens');
+            top_layer = top_layer{end}{1};
+            fprintf(fid,'%s\r\n',this_layer);
+            this_layer = strrep(activation_content,'{num}',num2str(i));
+            this_layer = strrep(this_layer,'{bottom_name}',top_layer);
+            this_layer = strrep(this_layer,'{activation}',layers{i}.activation);
+            this_layer = strrep(this_layer,'{negative_slope}',num2str(0));
+        end;
     elseif strcmp(layers{i}.type,'pooling')
         this_layer = strrep(pooling_content,'{num}',num2str(i));
         this_layer = strrep(this_layer,'{bottom_name}',top_layer);
@@ -65,6 +75,9 @@ for i=1:length(layers)
         this_layer = strrep(this_layer,'{5x5reduce}',num2str(layers{i}.reduce5x5));
         this_layer = strrep(this_layer,'{5x5node}',num2str(layers{i}.node5x5));
         this_layer = strrep(this_layer,'{poolconv}',num2str(layers{i}.poolconv));
+    elseif strcmp(layers{i}.type,'maxout')
+        this_layer = strrep(maxout_content,'{num}',num2str(i));
+        this_layer = strrep(this_layer,'{bottom_name}',top_layer);
     end;
     top_layer = regexp(this_layer,top_layer_exp,'tokens');
     top_layer = top_layer{end}{1};
@@ -73,20 +86,3 @@ end;
 this_layer = strrep(output_content,'{bottom_name}',top_layer);
 fprintf(fid,'%s\r\n',this_layer);
 fclose(fid);
-
-train_net = caffe.Net(net_model,'train');
-
-input_data = zeros(height, width, 2, 1, 'single');
-input_data(:,:,1,1) = repmat((1:height)',1,width) / height;
-input_data(:,:,2,1) = repmat((1:width),height,1) / width;
-input_data = input_data - 0.5;
-
-output_data = train_net.forward({input_data});
-
-output = output_data{1};
-output = output(border+1:end-border,border+1:end-border,:);
-output = bsxfun(@minus,output,min(min(output,[],1),[],2));
-output = bsxfun(@rdivide,output,max(max(output,[],1),[],2));
-figure(1);
-imshow(Lab2RGB(output));
-% imshow(output);
