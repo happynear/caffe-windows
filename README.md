@@ -12,7 +12,13 @@ Setup step:
 
 4. Change the compile mode to Release and X64. For Debug mode, you may need these 3rparty libraries http://pan.baidu.com/s/1qW88MTY .
 
-5. ~~Change the CUDA include and library path to your own ones.~~
+5. Modify the cuda device compute capability defined in the settings (`caffelib properties` -> `CUDA C/C++` -> `Device` -> `Code Generation`) to your GPU's compute capability (such as compute_30,sm_30; etc). You can look up for your GPU's compute capability in https://en.wikipedia.org/wiki/CUDA . Some general GPUs' compute capabilities are listed below:
+
+| GPU           | Compute Cap   |
+| ------------------------------------------- |:---------------------:|
+| GTX660, 680, 760, 770                       | compute_30,sm_30      |
+| GTX780, Titan Z, Titan Black, K20, K40      | compute_35,sm_35      |
+| GTX960, 980, Titan X                        | compute_52,sm_52      |
 
 6. Compile.
 
