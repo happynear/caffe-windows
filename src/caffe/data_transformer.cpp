@@ -50,8 +50,6 @@ namespace caffe {
     const bool has_mean_file = param_.has_mean_file();
     const bool has_uint8 = data.size() > 0;
     const bool has_mean_values = mean_values_.size() > 0;
-    const bool has_gaussian_noise = param_.has_gaussian_noise_std();
-    const bool has_uniform_noise = param_.has_uniform_noise_range();
 
     CHECK_GT(datum_channels, 0);
     CHECK_GE(datum_height, crop_size);
@@ -94,22 +92,6 @@ namespace caffe {
       }
     }
 
-    Blob<Dtype> gaussian_noise;
-    Blob<unsigned int> noise_mask;
-    if (has_gaussian_noise) {
-      gaussian_noise.Reshape(1, datum_channels, datum_height, datum_width);
-      noise_mask.Reshape(1, datum_channels, datum_height, datum_width);
-      caffe_rng_gaussian<Dtype>(gaussian_noise.count(), 0, param_.gaussian_noise_std(), gaussian_noise.mutable_cpu_data());
-      caffe_rng_bernoulli(noise_mask.count(), param_.noise_mask_ratio(), noise_mask.mutable_cpu_data());
-    }
-    Blob<Dtype> uniform_noise;
-    if (has_uniform_noise) {
-      uniform_noise.Reshape(1, datum_channels, datum_height, datum_width);
-      noise_mask.Reshape(1, datum_channels, datum_height, datum_width);
-      caffe_rng_uniform<Dtype>(uniform_noise.count(), -param_.uniform_noise_range(), param_.uniform_noise_range(), uniform_noise.mutable_cpu_data());
-      caffe_rng_bernoulli(noise_mask.count(), param_.noise_mask_ratio(), noise_mask.mutable_cpu_data());
-    }
-
     Dtype datum_element;
     int top_index, data_index;
     for (int c = 0; c < datum_channels; ++c) {
@@ -128,12 +110,6 @@ namespace caffe {
           }
           else {
             datum_element = datum.float_data(data_index);
-          }
-          if (has_gaussian_noise && noise_mask.cpu_data()[data_index]) {
-            datum_element += gaussian_noise.cpu_data()[data_index];
-          }
-          if (has_uniform_noise && noise_mask.cpu_data()[data_index]) {
-            datum_element += uniform_noise.cpu_data()[data_index];
           }
           if (has_mean_file) {
             transformed_data[top_index] =
@@ -319,24 +295,6 @@ namespace caffe {
 
     CHECK(cv_cropped_img.data);
 
-    const bool has_gaussian_noise = param_.has_gaussian_noise_std();
-    const bool has_uniform_noise = param_.has_uniform_noise_range();
-    Blob<Dtype> gaussian_noise;
-    Blob<unsigned int> noise_mask;
-    if (has_gaussian_noise) {
-      gaussian_noise.Reshape(1, img_channels, img_height, img_width);
-      noise_mask.Reshape(1, img_channels, img_height, img_width);
-      caffe_rng_gaussian<Dtype>(gaussian_noise.count(), 0, param_.gaussian_noise_std(), gaussian_noise.mutable_cpu_data());
-      caffe_rng_bernoulli(noise_mask.count(), param_.noise_mask_ratio(), noise_mask.mutable_cpu_data());
-    }
-    Blob<Dtype> uniform_noise;
-    if (has_uniform_noise) {
-      uniform_noise.Reshape(1, img_channels, img_height, img_width);
-      noise_mask.Reshape(1, img_channels, img_height, img_width);
-      caffe_rng_uniform<Dtype>(uniform_noise.count(), -param_.uniform_noise_range(), param_.uniform_noise_range(), uniform_noise.mutable_cpu_data());
-      caffe_rng_bernoulli(noise_mask.count(), param_.noise_mask_ratio(), noise_mask.mutable_cpu_data());
-    }
-
     Dtype* transformed_data = transformed_blob->mutable_cpu_data();
     int top_index;
     for (int h = 0; h < height; ++h) {
@@ -352,12 +310,6 @@ namespace caffe {
           }
           // int top_index = (c * height + h) * width + w;
           Dtype pixel = static_cast<Dtype>(ptr[img_index++]);
-          if (has_gaussian_noise && noise_mask.cpu_data()[img_index - 1]) {
-            pixel += gaussian_noise.cpu_data()[img_index - 1];
-          }
-          if (has_uniform_noise && noise_mask.cpu_data()[img_index - 1]) {
-            pixel += uniform_noise.cpu_data()[img_index - 1];
-          }
           if (has_mean_file) {
             int mean_index = (c * img_height + h_off + h) * img_width + w_off + w;
             transformed_data[top_index] =
@@ -436,31 +388,6 @@ namespace caffe {
     }
 
     Dtype* input_data = input_blob->mutable_cpu_data();
-    const bool has_gaussian_noise = param_.has_gaussian_noise_std();
-    const bool has_uniform_noise = param_.has_uniform_noise_range();
-    Blob<Dtype> gaussian_noise;
-    Blob<unsigned int> noise_mask;
-    if (has_gaussian_noise) {
-      gaussian_noise.ReshapeLike(*input_blob);
-      noise_mask.Reshape(input_blob->shape());
-      caffe_rng_gaussian<Dtype>(gaussian_noise.count(), 0, param_.gaussian_noise_std(), gaussian_noise.mutable_cpu_data());
-      caffe_rng_bernoulli(noise_mask.count(), param_.noise_mask_ratio(), noise_mask.mutable_cpu_data());
-      for (int i = 0; i < gaussian_noise.count(); ++i) {
-        gaussian_noise.mutable_cpu_data()[i] = gaussian_noise.cpu_data()[i] * noise_mask.cpu_data()[i];
-      }
-      caffe_add<Dtype>(input_blob->count(), input_data, gaussian_noise.cpu_data(), input_data);
-    }
-    Blob<Dtype> uniform_noise;
-    if (has_uniform_noise) {
-      uniform_noise.ReshapeLike(*input_blob);
-      noise_mask.Reshape(input_blob->shape());
-      caffe_rng_uniform<Dtype>(uniform_noise.count(), -param_.uniform_noise_range(), param_.uniform_noise_range(), uniform_noise.mutable_cpu_data());
-      for (int i = 0; i < uniform_noise.count(); ++i) {
-        uniform_noise.mutable_cpu_data()[i] = uniform_noise.cpu_data()[i] * noise_mask.cpu_data()[i];
-      }
-      caffe_add<Dtype>(input_blob->count(), input_data, uniform_noise.cpu_data(), input_data);
-    }
-
     if (has_mean_file) {
       CHECK_EQ(input_channels, data_mean_.channels());
       CHECK_EQ(input_height, data_mean_.height());
@@ -600,9 +527,7 @@ namespace caffe {
   template <typename Dtype>
   void DataTransformer<Dtype>::InitRand() {
     const bool needs_rand = param_.mirror() ||
-      (phase_ == TRAIN && param_.crop_size() ||
-      param_.has_uniform_noise_range() ||
-      param_.has_gaussian_noise_std());
+      (phase_ == TRAIN && param_.crop_size());
     if (needs_rand) {
       const unsigned int rng_seed = caffe_rng_rand();
       rng_.reset(new Caffe::RNG(rng_seed));

@@ -414,12 +414,6 @@ message TransformationParameter {
   optional bool force_color = 6 [default = false];
   // Force the decoded image to have 1 color channels.
   optional bool force_gray = 7 [default = false];
-  // Add gaussian noise.
-  optional float gaussian_noise_std = 8 [default = 1];
-  // Add uniform noise.
-  optional float uniform_noise_range = 9 [default = 1];
-  // noise mask
-  optional float noise_mask_ratio = 10 [default = 1];
 }
 
 // Message that stores parameters shared by loss layers
