@@ -4,6 +4,7 @@ Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](
 
 Setup step:
 ======
+
 1. Download third-party libraries from http://pan.baidu.com/s/1pJmW7tL and extract the files to `caffe-windows_root/3rdparty/`. **Please don't forget to add the `./3rdparty/bin` folder to your environment variable `PATH`.**
 
 2. Run `./src/caffe/proto/extract_proto.bat` to create `caffe.pb.h`, `caffe.pb.cc` and `caffe_pb2.py`.
@@ -14,13 +15,13 @@ Setup step:
 
 5. Modify the cuda device compute capability defined in the settings (`caffelib properties` -> `CUDA C/C++` -> `Device` -> `Code Generation`) to your GPU's compute capability (such as compute_30,sm_30; etc). You can look up for your GPU's compute capability in https://en.wikipedia.org/wiki/CUDA . Some general GPUs' compute capabilities are listed below:
 
-| GPU           | Compute Cap   |
+| GPU                                         | Compute Capability    |
 | ------------------------------------------- |:---------------------:|
 | GTX660, 680, 760, 770                       | compute_30,sm_30      |
 | GTX780, Titan Z, Titan Black, K20, K40      | compute_35,sm_35      |
 | GTX960, 980, Titan X                        | compute_52,sm_52      |
 
-6. Compile.
+6 Compile.
 
 TIPS: If you have MKL library, please add the preprocess macro "USE_MKL" defined in the setting of the project.
 
