@@ -16,9 +16,9 @@ Setup step:
 
 5. Modify the cuda device compute capability defined in the settings (`caffelib properties` -> `CUDA C/C++` -> `Device` -> `Code Generation`) to your GPU's compute capability (such as compute_30,sm_30; etc). You can look up for your GPU's compute capability in https://en.wikipedia.org/wiki/CUDA . Some general GPUs' compute capabilities are listed below.
 
-If your GPU's compute capability is below 2.1, please remove the `USE_CUDNN` macro in the proprocessor definition of all projects.
+- If your GPU's compute capability is below 2.1, please remove the `USE_CUDNN` macro in the proprocessor definition of all projects.
 
-If you do not have a Nvidia GPU, please also add `CPU_ONLY` macro besides removing `USE_CUDNN`.
+- If you do not have a Nvidia GPU, please also add `CPU_ONLY` macro besides removing `USE_CUDNN`.
 
 6. Compile.
 
