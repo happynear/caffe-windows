@@ -35,6 +35,17 @@ __global__ void InsanityBackward(const int n, const int channels, const int dim,
   }
 }
 
+// CUDA kernel for bottom backward
+template <typename Dtype>
+__global__ void InsanityBackwardTest(const int n, const int channels, const int dim,
+                                 const Dtype* in_diff, const Dtype* in_data, Dtype* out_diff,
+                                 const Dtype slope_data) {
+  CUDA_KERNEL_LOOP(index, n) {
+    out_diff[index] = in_diff[index] * ((in_data[index] > 0)
+                                        + (in_data[index] <= 0) / slope_data);
+  }
+}
+
 template <typename Dtype>
 void InsanityLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
@@ -85,11 +96,18 @@ void InsanityLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     Dtype* bottom_diff = bottom[0]->mutable_gpu_diff();
     const Dtype* slope_data = alpha.gpu_data();
 
-    // NOLINT_NEXT_LINE(whitespace/operators)
-    InsanityBackward<Dtype><<<CAFFE_GET_BLOCKS(count),
-        CAFFE_CUDA_NUM_THREADS>>>(
+    if (this->phase_ == TRAIN) {
+      // NOLINT_NEXT_LINE(whitespace/operators)
+      InsanityBackward<Dtype> << <CAFFE_GET_BLOCKS(count),
+        CAFFE_CUDA_NUM_THREADS >> >(
         count, channels, dim, top_diff, bottom_data, bottom_diff, slope_data);
-    CUDA_POST_KERNEL_CHECK;
+      CUDA_POST_KERNEL_CHECK;
+    } else {
+      InsanityBackwardTest<Dtype> << <CAFFE_GET_BLOCKS(count),
+        CAFFE_CUDA_NUM_THREADS >> >(
+        count, channels, dim, top_diff, bottom_data, bottom_diff, mean_slope);
+      CUDA_POST_KERNEL_CHECK;
+    }
   }
 }
 
