@@ -6,7 +6,7 @@
 *    Description:
 *
 *        Version:  1.0
-*        Created:  2015年08月07日 16时31分56秒
+*        Created:  2015脛锚08脭脗07脠脮 16脢卤31路脰56脙毛
 *       Revision:  none
 *       Compiler:  gcc
 *
@@ -106,7 +106,7 @@ namespace caffe {
         //prepare for backward pass
         caffe_set(channels, Dtype(0), diff_ap_.mutable_cpu_data() + (i*channels));
         caffe_set(channels, Dtype(0), diff_an_.mutable_cpu_data() + (i*channels));
-        //caffe_set(channels, Dtype(0), diff_pn_.mutable_cpu_data() + (i*channels));
+        caffe_set(channels, Dtype(0), diff_pn_.mutable_cpu_data() + (i*channels));
       }
     }
     loss = loss / static_cast<Dtype>(bottom[0]->num()) / Dtype(2);
