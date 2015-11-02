@@ -4,17 +4,31 @@ Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](
 
 Setup step:
 ======
-1. Download third-party libraries from http://pan.baidu.com/s/1i390tZB, and put the 3rdparty folder under the root of caffe-windows. **Please don't forget to add the `./3rdparty/bin` folder to your environment variable `PATH`.**
+
+1. Download third-party libraries from [BaiduYun Disk](http://pan.baidu.com/s/1pJmW7tL) or [OneDrive](http://1drv.ms/1JIc9gd
+) and extract the files to `caffe-windows_root/3rdparty/`. **Please don't forget to add the `./3rdparty/bin` folder to your environment variable `PATH`.**
 
 2. Run `./src/caffe/proto/extract_proto.bat` to create `caffe.pb.h`, `caffe.pb.cc` and `caffe_pb2.py`.
 
-3. Double click ./build/MainBuilder.sln to open the solution.
+3. Double click ./build/MainBuilder.sln to open the solution. 
 
 4. Change the compile mode to Release and X64. For Debug mode, you may need these 3rparty libraries http://pan.baidu.com/s/1qW88MTY .
 
-5. ~~Change the CUDA include and library path to your own ones.~~
+5. Modify the cuda device compute capability defined in the settings (`caffelib properties` -> `CUDA C/C++` -> `Device` -> `Code Generation`) to your GPU's compute capability (such as compute_30,sm_30; etc). You can look up for your GPU's compute capability in https://en.wikipedia.org/wiki/CUDA . Some general GPUs' compute capabilities are listed below.
+
+ - If your GPU's compute capability is below or equal to 2.1, please remove the `USE_CUDNN` macro in the proprocessor definition of all projects.
+
+ - If you do not have a Nvidia GPU, please also add `CPU_ONLY` macro besides removing `USE_CUDNN`.
 
 6. Compile.
+
+| GPU                                         | Compute Capability    |
+| ------------------------------------------- |:---------------------:|
+| GTX660, 680, 760, 770                       | compute_30,sm_30      |
+| GTX780, Titan Z, Titan Black, K20, K40      | compute_35,sm_35      |
+| GTX960, 980, Titan X                        | compute_52,sm_52      |
+
+
 
 TIPS: If you have MKL library, please add the preprocess macro "USE_MKL" defined in the setting of the project.
 
@@ -24,12 +38,18 @@ If you want build other tools, just copy and rename `./build/MSVC` folder to ano
 
 Matlab Wrapper
 ======
-Just change the Matlab include and library path defined in the settings and compile.
+Just replace the Matlab include and library path defined in the settings and compile.
 **Don't forget to add `./matlab` to your Matlab path.**
 
 Python Wrapper
 ======
-Similar with Matlab, just change the python include and library path defined in the settings and compile.
+Similar with Matlab, replace the python include and library path and compile.
+
+Most of the libraries listed in `./python/requirements.txt` can be installed by `pip install`. However, some of them cannot be installed so easily.
+
+For protobuf, you may download the codes from https://github.com/google/protobuf. Copy `caffe-windows-root/src/caffe/proto/protoc.exe` to `protobuf-root/src`. Then run `python setup.py install` in `protobuf-root/python`.
+
+For leveldb, I have created a repository https://github.com/happynear/py-leveldb-windows . Please follow the instructions in `README.md` to install it.
 
 MNIST example
 ======

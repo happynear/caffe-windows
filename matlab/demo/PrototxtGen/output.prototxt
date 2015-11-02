@@ -1,0 +1,23 @@
+layer {
+  name: "output"
+  type: "Convolution"
+  bottom: "{bottom_name}"
+  top: "output"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 3
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "msra"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}

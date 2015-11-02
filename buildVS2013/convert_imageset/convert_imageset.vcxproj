@@ -202,9 +202,17 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\caffe\layer_factory.cpp" />
-    <ClCompile Include="..\..\src\caffe\util\force_link.cpp" />
     <ClCompile Include="..\..\tools\convert_imageset.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\caffelib\caffelib.vcxproj">
+      <Project>{63a79297-9cc4-4081-adac-7f40ce965c95}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

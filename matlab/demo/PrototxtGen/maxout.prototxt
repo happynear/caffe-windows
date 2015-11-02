@@ -1,0 +1,21 @@
+layer{
+  name: "slice{num}"
+  type: "Slice"
+  slice_param {
+	slice_dim: 1
+  }
+  bottom: "{bottom_name}"
+  top: "slice{num}_1"
+  top: "slice{num}_2"
+}
+
+layer{
+  name: "etlwise{num}"
+  type: "Eltwise"
+  bottom: "slice{num}_1"
+  bottom: "slice{num}_2"
+  top: "eltwise{num}"
+  eltwise_param {
+	operation: MAX
+  }
+}

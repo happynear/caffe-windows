@@ -1,0 +1,9 @@
+layer {
+  name: "relu{num}"
+  type: "{activation}"
+  bottom: "{bottom_name}"
+  top: "{bottom_name}"
+  relu_param {
+    negative_slope: {negative_slope}
+  }
+}

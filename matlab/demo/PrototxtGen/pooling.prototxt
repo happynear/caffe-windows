@@ -1,0 +1,11 @@
+layer {
+  name: "pool{num}"
+  type: "Pooling"
+  bottom: "{bottom_name}"
+  top: "pool{num}"
+  pooling_param {
+    pool: {method}
+    kernel_size: {scale}
+    stride: {scale}
+  }
+}

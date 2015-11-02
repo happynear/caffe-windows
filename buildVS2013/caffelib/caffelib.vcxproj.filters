@@ -250,8 +250,11 @@
     <ClCompile Include="..\..\src\caffe\data_transformer.cpp" />
     <ClCompile Include="..\..\src\caffe\internal_thread.cpp" />
     <ClCompile Include="..\..\src\caffe\layer.cpp" />
-    <ClCompile Include="..\..\src\caffe\layer_factory.cpp" />
     <ClCompile Include="..\..\src\caffe\net.cpp" />
+    <ClCompile Include="..\..\src\caffe\layer_factory.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\covariance_layer.cpp">
+      <Filter>layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\caffe\proto\caffe.pb.h">
@@ -551,6 +554,9 @@
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\util\im2col.cu">
       <Filter>util</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\covariance_layer.cu">
+      <Filter>layers</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

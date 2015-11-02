@@ -97,6 +97,6 @@ STUB_GPU(InsanityLayer);
 #endif
 
 INSTANTIATE_CLASS(InsanityLayer);
-
+REGISTER_LAYER_CLASS(Insanity);
 
 }  // namespace caffe
