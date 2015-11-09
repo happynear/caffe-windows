@@ -64,13 +64,13 @@ int main(int argc, char* argv[])
 	LOG(INFO)<<"reading weights from "<<FLAGS_weights;
  	caffe_test_net.CopyTrainedLayersFrom(FLAGS_weights);
 	LOG(INFO)<<"reading label info from"<<FLAGS_labelfile;
-	//NetParameter net_param;
-	//// For intermediate results, we will also dump the gradient values.
-	//caffe_test_net.ToProto(&net_param, false);
-	//char iter_str_buffer[256];
-	//sprintf_s(iter_str_buffer, 256, "thinned_net.caffemodel");
-	//LOG(INFO) << "Snapshotting to " << iter_str_buffer;
-	//WriteProtoToBinaryFile(net_param, iter_str_buffer);
+	NetParameter net_param;
+	// For intermediate results, we will also dump the gradient values.
+	caffe_test_net.ToProto(&net_param, false);
+	char iter_str_buffer[256];
+	sprintf_s(iter_str_buffer, 256, "thinned_net.caffemodel");
+	LOG(INFO) << "Snapshotting to " << iter_str_buffer;
+	WriteProtoToBinaryFile(net_param, iter_str_buffer);
 	ifstream labels_file(FLAGS_labelfile,ios_base::in);
 	vector<string> labels;
 	char *buf = new char[256];

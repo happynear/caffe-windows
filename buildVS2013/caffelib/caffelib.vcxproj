@@ -166,11 +166,12 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <AdditionalIncludeDirectories>../../3rdparty/include;../../src;../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;NDEBUG;_CONSOLE;USE_CUDNN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;NDEBUG;_CONSOLE;USE_CUDNN;USE_OPENCV;USE_LEVELDB;USE_LMDB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -194,7 +195,7 @@
     </CudaCompile>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>compute_20,sm_20;compute_30,sm_30;compute_35,sm_35;compute_50,sm_50;</CodeGeneration>
+      <CodeGeneration>compute_30,sm_30;</CodeGeneration>
     </CudaCompile>
     <PreBuildEvent>
       <Command>
@@ -213,6 +214,8 @@
     <ClCompile Include="..\..\src\caffe\layers\argmax_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\base_conv_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\base_data_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\batch_norm_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\batch_reindex_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\bnll_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\bn_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\concat_layer.cpp" />
@@ -220,6 +223,8 @@
     <ClCompile Include="..\..\src\caffe\layers\conv_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\covariance_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\cudnn_conv_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\cudnn_lcn_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\cudnn_lrn_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\cudnn_pooling_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\cudnn_relu_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\cudnn_sigmoid_layer.cpp" />
@@ -279,6 +284,12 @@
     <ClCompile Include="..\..\src\caffe\parallel.cpp" />
     <ClCompile Include="..\..\src\caffe\proto\caffe.pb.cc" />
     <ClCompile Include="..\..\src\caffe\solver.cpp" />
+    <ClCompile Include="..\..\src\caffe\solvers\adadelta_solver.cpp" />
+    <ClCompile Include="..\..\src\caffe\solvers\adagrad_solver.cpp" />
+    <ClCompile Include="..\..\src\caffe\solvers\adam_solver.cpp" />
+    <ClCompile Include="..\..\src\caffe\solvers\nesterov_solver.cpp" />
+    <ClCompile Include="..\..\src\caffe\solvers\rmsprop_solver.cpp" />
+    <ClCompile Include="..\..\src\caffe\solvers\sgd_solver.cpp" />
     <ClCompile Include="..\..\src\caffe\syncedmem.cpp" />
     <ClCompile Include="..\..\src\caffe\util\benchmark.cpp" />
     <ClCompile Include="..\..\src\caffe\util\blocking_queue.cpp" />
@@ -306,8 +317,6 @@
     <ClInclude Include="..\..\include\caffe\data_transformer.hpp" />
     <ClInclude Include="..\..\include\caffe\export.hpp" />
     <ClInclude Include="..\..\include\caffe\filler.hpp" />
-    <ClInclude Include="..\..\include\caffe\forcelink.hpp" />
-    <ClInclude Include="..\..\include\caffe\force_link.hpp" />
     <ClInclude Include="..\..\include\caffe\internal_thread.hpp" />
     <ClInclude Include="..\..\include\caffe\layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layer_factory.hpp" />
@@ -342,6 +351,8 @@
   <ItemGroup>
     <CudaCompile Include="..\..\src\caffe\layers\absval_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\base_data_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\batch_norm_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\batch_reindex_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\bnll_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\bn_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\concat_layer.cu" />
@@ -351,6 +362,8 @@
       <FileType>Document</FileType>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\cudnn_conv_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\cudnn_lcn_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\cudnn_lrn_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\cudnn_pooling_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\cudnn_relu_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\cudnn_sigmoid_layer.cu" />

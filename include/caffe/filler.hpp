@@ -8,7 +8,6 @@
 #include <string>
 
 #include "caffe/blob.hpp"
-#include "caffe/common.hpp"
 #include "caffe/proto/caffe.pb.h"
 #include "caffe/syncedmem.hpp"
 #include "caffe/util/math_functions.hpp"
@@ -200,8 +199,7 @@ class MSRAFiller : public Filler<Dtype> {
         FillerParameter_VarianceNorm_FAN_OUT) {
       n = fan_out;
     }
-	Dtype alpha = this->filler_param_.alpha();
-	Dtype std = sqrt(Dtype(2) / n / (1 + alpha * alpha));
+    Dtype std = sqrt(Dtype(2) / n);
     caffe_rng_gaussian<Dtype>(blob->count(), Dtype(0), std,
         blob->mutable_cpu_data());
     CHECK_EQ(this->filler_param_.sparse(), -1)

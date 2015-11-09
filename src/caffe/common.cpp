@@ -26,6 +26,17 @@ Caffe& Caffe::Get() {
 // random seeding
 int64_t cluster_seedgen(void) {
   int64_t s, seed, pid;
+  FILE* f = fopen("/dev/urandom", "rb");
+  if (f && fread(&seed, 1, sizeof(seed), f) == sizeof(seed)) {
+    fclose(f);
+    return seed;
+  }
+
+  LOG(INFO) << "System entropy source not available, "
+              "using fallback algorithm to generate seed instead.";
+  if (f)
+    fclose(f);
+
 #ifndef _MSC_VER
   FILE* f = fopen("/dev/urandom", "rb");
   if (f && fread(&seed, 1, sizeof(seed), f) == sizeof(seed)) {
@@ -42,8 +53,9 @@ int64_t cluster_seedgen(void) {
 #else
   pid = _getpid();
 #endif
+
   s = time(NULL);
-  seed = abs(((s * 181) * ((pid - 83) * 359)) % 104729);
+  seed = std::abs(((s * 181) * ((pid - 83) * 359)) % 104729);
   return seed;
 }
 
@@ -70,7 +82,6 @@ void initGlog() {
 void GlobalInit(int* pargc, char*** pargv) {
   // Google flags.
   ::gflags::ParseCommandLineFlags(pargc, pargv, true);
-
   // Provide a backtrace on segfault.
   //::google::InstallFailureSignalHandler();
   // Google logging.

@@ -255,6 +255,36 @@
     <ClCompile Include="..\..\src\caffe\layers\covariance_layer.cpp">
       <Filter>layers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\batch_reindex_layer.cpp">
+      <Filter>layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\batch_norm_layer.cpp">
+      <Filter>layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\cudnn_lcn_layer.cpp">
+      <Filter>layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\solvers\nesterov_solver.cpp">
+      <Filter>solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\solvers\rmsprop_solver.cpp">
+      <Filter>solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\solvers\sgd_solver.cpp">
+      <Filter>solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\solvers\adadelta_solver.cpp">
+      <Filter>solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\solvers\adagrad_solver.cpp">
+      <Filter>solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\solvers\adam_solver.cpp">
+      <Filter>solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\cudnn_lrn_layer.cpp">
+      <Filter>layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\caffe\proto\caffe.pb.h">
@@ -365,12 +395,6 @@
     <ClInclude Include="..\..\include\caffe\filler.hpp">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\caffe\force_link.hpp">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\forcelink.hpp">
-      <Filter>header</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\caffe\internal_thread.hpp">
       <Filter>header</Filter>
     </ClInclude>
@@ -399,6 +423,9 @@
     </Filter>
     <Filter Include="header\util">
       <UniqueIdentifier>{57ab0cc8-8ae4-4d50-90c9-8cf0e6b6b77c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="solvers">
+      <UniqueIdentifier>{da16896d-0ebf-4e1e-80de-f76e7c74f35d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -556,6 +583,18 @@
       <Filter>util</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\covariance_layer.cu">
+      <Filter>layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\batch_norm_layer.cu">
+      <Filter>layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\batch_reindex_layer.cu">
+      <Filter>layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\cudnn_lcn_layer.cu">
+      <Filter>layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\cudnn_lrn_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
   </ItemGroup>

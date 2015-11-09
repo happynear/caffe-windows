@@ -10,7 +10,8 @@ except:
     from itertools import zip_longest as izip_longest
 import numpy as np
 
-from ._caffe import Net, SGDSolver
+from ._caffe import Net, SGDSolver, NesterovSolver, AdaGradSolver, \
+        RMSPropSolver, AdaDeltaSolver, AdamSolver
 import caffe.io
 
 # We directly update methods from Net here (rather than using composition or
@@ -25,6 +26,15 @@ def _Net_blobs(self):
     blobs indexed by name
     """
     return OrderedDict(zip(self._blob_names, self._blobs))
+
+
+@property
+def _Net_blob_loss_weights(self):
+    """
+    An OrderedDict (bottom to top, i.e., input to output) of network
+    blob loss weights indexed by name
+    """
+    return OrderedDict(zip(self._blob_names, self._blob_loss_weights))
 
 
 @property
@@ -136,8 +146,6 @@ def _Net_backward(self, diffs=None, start=None, end=None, **kwargs):
         # Set top diffs according to defined shapes and make arrays single and
         # C-contiguous as Caffe expects.
         for top, diff in kwargs.iteritems():
-            if diff.ndim != 4:
-                raise Exception('{} diff is not 4-d'.format(top))
             if diff.shape[0] != self.blobs[top].num:
                 raise Exception('Diff is not batch sized')
             self.blobs[top].diff[...] = diff
@@ -270,6 +278,7 @@ def _Net_batch(self, blobs):
 
 # Attach methods to Net.
 Net.blobs = _Net_blobs
+Net.blob_loss_weights = _Net_blob_loss_weights
 Net.params = _Net_params
 Net.forward = _Net_forward
 Net.backward = _Net_backward

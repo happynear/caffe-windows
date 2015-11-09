@@ -29,14 +29,11 @@
 
 #include <iostream>
 
-#include <glog/logging.h>
 #include "gtest/gtest.h"
-#include "caffe/common.hpp"
 
 GTEST_API_ int main(int argc, char **argv) {
   std::cout << "Running main() from gtest_main.cc\n";
-  FLAGS_alsologtostderr = 1;
-  caffe::GlobalInit(&argc, &argv);
+
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
