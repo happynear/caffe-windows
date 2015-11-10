@@ -307,7 +307,7 @@ message ParamSpec {
 // NOTE
 // Update the next available ID when you add a new LayerParameter field.
 //
-// LayerParameter next available layer-specific ID: 145 (last added: batch_norm_param)
+// LayerParameter next available layer-specific ID: 146 (last added: eltwise_affine_param)
 message LayerParameter {
   optional string name = 1; // the layer name
   optional string type = 2; // the layer type
@@ -397,6 +397,7 @@ message LayerParameter {
   optional InsanityParameter insanity_param = 141;
   optional TripletLossParameter triplet_loss_param = 142;
   optional ROIPoolingParameter roi_pooling_param = 143;
+  optional EltwiseAffineParameter eltwise_affine_param = 145;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1097,6 +1098,7 @@ message V1LayerParameter {
     TRIPLET_LOSS = 45;
     ROIPOOLING = 46;
     BATCH_NORM = 47;
+	ELTWISE_AFFINE = 48;
   }
   optional LayerType type = 5;
   repeated BlobProto blobs = 6;
@@ -1146,6 +1148,7 @@ message V1LayerParameter {
   optional InsanityParameter insanity_param = 46;
   optional TripletLossParameter triplet_loss_param = 47;
   optional ROIPoolingParameter roi_pooling_param = 48;
+  optional EltwiseAffineParameter eltwise_affine_param = 49;
 }
 
 // DEPRECATED: V0LayerParameter is the old way of specifying layer parameters
@@ -1293,4 +1296,15 @@ message LocalParameter {
   optional uint32 stride = 6 [default = 1]; // The stride
   optional FillerParameter weight_filler = 7; // The filler for the weight
   optional FillerParameter bias_filler = 8; // The filler for the bias
+}
+
+message EltwiseAffineParameter {
+
+  // Initial value of a_i. Default is a_i=1.0 for all i.
+  optional FillerParameter slope_filler = 1;
+
+  optional FillerParameter bias_filler = 2;
+
+  // Whether or not slope paramters are shared across channels.
+  optional bool channel_shared = 3 [default = false];
 }
