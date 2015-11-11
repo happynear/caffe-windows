@@ -20,12 +20,13 @@ namespace caffe {
 
 
     if (use_global_stats_) {
-      // use the stored mean/variance estimates.  TODO(cdoersch): allow an option
-      // to use an unbiased variance estimate, like the paper does.
-      caffe_copy(mean_.count(), this->blobs_[0]->gpu_data(),
-                 mean_.mutable_gpu_data());
+      // use the stored mean/variance estimates.
+      Dtype scale_factor = this->blobs_[2]->cpu_data()[0] == 0 ?
+        0 : 1 / this->blobs_[2]->cpu_data()[0];
+      caffe_gpu_scale(variance_.count(), scale_factor,
+                      this->blobs_[0]->gpu_data(), mean_.mutable_gpu_data());
       int m = bottom[0]->count() / channels_;
-      Dtype scale_factor = m > 1 ? Dtype(m) / (m - 1) : 1;
+      scale_factor *= m > 1 ? Dtype(m) / (m - 1) : 1;
       caffe_gpu_scale(variance_.count(), scale_factor,
                       this->blobs_[1]->gpu_data(), variance_.mutable_gpu_data());
     }
@@ -61,15 +62,12 @@ namespace caffe {
                             variance_.mutable_gpu_data());  // E((X_EX)^2)
 
       // compute and save moving average
-      Dtype scale_factor = this->blobs_[2]->cpu_data()[0] == 0 ?
-        1 : 1 - moving_average_fraction_;
-      caffe_gpu_axpby(mean_.count(), scale_factor,
-                      mean_.gpu_data(), moving_average_fraction_,
-                      this->blobs_[0]->mutable_gpu_data());
-      caffe_gpu_axpby(variance_.count(), scale_factor,
-                      variance_.gpu_data(), moving_average_fraction_,
-                      this->blobs_[1]->mutable_gpu_data());
+      this->blobs_[2]->mutable_cpu_data()[0] *= moving_average_fraction_;
       this->blobs_[2]->mutable_cpu_data()[0] += 1;
+      caffe_gpu_axpby(mean_.count(), Dtype(1), mean_.gpu_data(),
+                      moving_average_fraction_, this->blobs_[0]->mutable_gpu_data());
+      caffe_gpu_axpby(variance_.count(), Dtype(1), variance_.gpu_data(),
+                      moving_average_fraction_, this->blobs_[1]->mutable_gpu_data());
     }
 
     // normalize variance
@@ -95,7 +93,6 @@ namespace caffe {
   void BatchNormLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
                                            const vector<bool>& propagate_down,
                                            const vector<Blob<Dtype>*>& bottom) {
-    CHECK(!use_global_stats_);
     const Dtype* top_diff;
     if (bottom[0] != top[0]) {
       top_diff = top[0]->gpu_diff();
@@ -104,8 +101,12 @@ namespace caffe {
       caffe_copy(x_norm_.count(), top[0]->gpu_diff(), x_norm_.mutable_gpu_diff());
       top_diff = x_norm_.gpu_diff();
     }
-    const Dtype* top_data = x_norm_.gpu_data();
     Dtype* bottom_diff = bottom[0]->mutable_gpu_diff();
+    if (use_global_stats_) {
+      caffe_gpu_div(temp_.count(), top_diff, temp_.gpu_data(), bottom_diff);
+      return;
+    }
+    const Dtype* top_data = x_norm_.gpu_data();
     int num = bottom[0]->shape()[0];
     int spatial_dim = bottom[0]->count() / (channels_*bottom[0]->shape(0));
     // if Y = (X-mean(X))/(sqrt(var(X)+eps)), then
