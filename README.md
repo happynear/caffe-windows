@@ -15,7 +15,7 @@ Setup step:
 
  - If your GPU's compute capability is below or equal to 2.1, please remove the `USE_CUDNN` macro in the proprocessor definition of all projects.
 
- - If you do not have a Nvidia GPU, please also add `CPU_ONLY` macro besides removing `USE_CUDNN`.
+ - If you do not have a Nvidia GPU, please also add `CPU_ONLY` macro besides removing `USE_CUDNN`. Then remove all `.cu` files in the caffelib project in order not to compile the GPU-related codes.
 
 6. Compile.
 
