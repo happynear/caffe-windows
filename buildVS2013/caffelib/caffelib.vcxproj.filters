@@ -252,9 +252,6 @@
     <ClCompile Include="..\..\src\caffe\layer.cpp" />
     <ClCompile Include="..\..\src\caffe\net.cpp" />
     <ClCompile Include="..\..\src\caffe\layer_factory.cpp" />
-    <ClCompile Include="..\..\src\caffe\layers\covariance_layer.cpp">
-      <Filter>layers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\batch_reindex_layer.cpp">
       <Filter>layers</Filter>
     </ClCompile>
@@ -287,6 +284,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\eltwise_affine_layer.cpp">
       <Filter>layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\gram_layer.cpp">
+	  <Filter>layers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\multi_label_image_data_layer.cpp">
       <Filter>layers</Filter>
@@ -588,9 +588,6 @@
     <CudaCompile Include="..\..\src\caffe\util\im2col.cu">
       <Filter>util</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\covariance_layer.cu">
-      <Filter>layers</Filter>
-    </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\batch_norm_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
@@ -604,6 +601,9 @@
       <Filter>layers</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\eltwise_affine_layer.cu">
+      <Filter>layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\gram_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
   </ItemGroup>
