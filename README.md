@@ -1,6 +1,4 @@
-Forked from https://www.github.com/BVLC/caffe master branch in 2015/9/1
-
-Added [Batch Normalization](http://arxiv.org/abs/1502.03167), [Parametric ReLU](http://arxiv.org/abs/1502.01852), Locally Connected Layer, Normalize Layer, [Randomized ReLU](http://arxiv.org/abs/1505.00853), Triplet Loss, SmoothL1 Layer, ROI Layer. 
+Forked from https://www.github.com/BVLC/caffe master branch in 2015/11/09 . Next update time may be around 2016/01/01 .
 
 Setup step:
 ======
@@ -17,7 +15,7 @@ Setup step:
 
  - If your GPU's compute capability is below or equal to 2.1, please remove the `USE_CUDNN` macro in the proprocessor definition of all projects.
 
- - If you do not have a Nvidia GPU, please also add `CPU_ONLY` macro besides removing `USE_CUDNN`.
+ - If you do not have a Nvidia GPU, please also add `CPU_ONLY` macro besides removing `USE_CUDNN`. Then remove all `.cu` files in the caffelib project to avoid compiling the GPU-related codes.
 
 6. Compile.
 
