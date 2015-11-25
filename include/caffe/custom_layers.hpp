@@ -349,14 +349,14 @@ namespace caffe {
 	* TODO(dox): thorough documentation for Forward, Backward, and proto params.
 	*/
 	template <typename Dtype>
-	class CovarianceLayer : public Layer<Dtype> {
+	class GramLayer : public Layer<Dtype> {
 	public:
-		explicit CovarianceLayer(const LayerParameter& param)
+    explicit GramLayer(const LayerParameter& param)
 			: Layer<Dtype>(param) {}
 		virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
 			const vector<Blob<Dtype>*>& top);
 
-		virtual inline const char* type() const { return "Covariance"; }
+		virtual inline const char* type() const { return "Gram"; }
 		virtual inline int ExactNumBottomBlobs() const { return 1; }
 		virtual inline int MinTopBlobs() const { return 1; }
 

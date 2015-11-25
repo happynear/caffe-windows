@@ -221,7 +221,7 @@
     <ClCompile Include="..\..\src\caffe\layers\concat_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\contrastive_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\conv_layer.cpp" />
-    <ClCompile Include="..\..\src\caffe\layers\covariance_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\gram_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\cudnn_conv_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\cudnn_lcn_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\cudnn_lrn_layer.cpp" />
@@ -359,7 +359,7 @@
     <CudaCompile Include="..\..\src\caffe\layers\concat_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\contrastive_loss_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\conv_layer.cu" />
-    <CudaCompile Include="..\..\src\caffe\layers\covariance_layer.cu">
+    <CudaCompile Include="..\..\src\caffe\layers\gram_layer.cu">
       <FileType>Document</FileType>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\cudnn_conv_layer.cu" />
