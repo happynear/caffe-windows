@@ -342,6 +342,34 @@ class WindowDataLayer : public BasePrefetchingDataLayer<Dtype> {
   vector<std::pair<std::string, Datum > > image_database_cache_;
 };
 
+/**
+* @brief Provides data to the Net from image files.
+*
+* TODO(dox): thorough documentation for Forward and proto params.
+*/
+template <typename Dtype>
+class MultiLabelImageDataLayer : public BasePrefetchingDataLayer<Dtype> {
+public:
+  explicit MultiLabelImageDataLayer(const LayerParameter& param)
+    : BasePrefetchingDataLayer<Dtype>(param) {}
+  virtual ~MultiLabelImageDataLayer();
+  virtual void DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
+    const vector<Blob<Dtype>*>& top);
+
+  virtual inline const char* type() const { return "MultiLabelImageData"; }
+  virtual inline int ExactNumBottomBlobs() const { return 0; }
+  virtual inline int ExactNumTopBlobs() const { return 2; }
+
+protected:
+  shared_ptr<Caffe::RNG> prefetch_rng_;
+  virtual void ShuffleImages();
+  virtual void load_batch(Batch<Dtype>* batch);
+
+  vector<std::pair<std::string, shared_ptr<vector<int> > > > lines_;
+  int label_count;
+  int lines_id_;
+};
+
 }  // namespace caffe
 
 #endif  // CAFFE_DATA_LAYERS_HPP_
