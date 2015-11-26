@@ -3,7 +3,7 @@ FAQ for caffe-windows
 
  - I don't have a GPU, how can I build caffe without CUDA support?
  
-   If you do not have a Nvidia GPU, please add CPU_ONLY macro to the preprocessor definition and delete USE_CUDNN macro.
+   If you do not have a Nvidia GPU, please add `CPU_ONLY` macro to the preprocessor definition and delete `USE_CUDNN` macro.
    Then remove all .cu files in the caffelib project to avoid compiling the GPU-related codes.
    
  - How to use the static library `caffelib.lib` in my own project?
@@ -19,3 +19,5 @@ FAQ for caffe-windows
    
    Another method is to add `layer_factory.cpp` and `force_link.cpp` to your own project, to let the compiler know the existence of
    the layers and solvers.
+   
+   If you came across similar error when using `caffe.exe`, I guess you may modified the `.vcxproj` files by yourself. VS lost some configurations during your modification. Never mind, you can still follow the above instructions to fix it.
