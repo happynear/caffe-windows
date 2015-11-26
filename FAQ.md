@@ -20,4 +20,12 @@ FAQ for caffe-windows
    Another method is to add `layer_factory.cpp` and `force_link.cpp` to your own project, to let the compiler know the existence of
    the layers and solvers.
    
-   If you came across similar error when using `caffe.exe`, I guess you may have modified the `.vcxproj` files by yourself. VS lost some configurations during your modification. Never mind, you can still follow the above instructions to fix it.
+   If you came across similar error when using `caffe.exe`, I guess you may have modified the `.vcxproj` files manually by yourself. VS lost some configurations during your modification. Never mind, you can still follow the above instructions to fix it.
+   
+  - How to compile the codes in Debug mode?
+   
+  There is a [3rdparty library archive file](http://pan.baidu.com/s/1qW88MTY) provided by a friend of me. However, I haven't tested it.
+
+  You can compile your own third party libraries from https://github.com/willyd/caffe-windows-dependencies . Throught this way, you can get a better acknowledgement about how to utilize online resources to build an open-source software.
+  
+  In addition, you can still debug the codes in Release mode, by following the instructions here https://msdn.microsoft.com/en-us/library/fsk896zz.aspx .
