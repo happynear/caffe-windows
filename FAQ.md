@@ -22,7 +22,7 @@ FAQ for caffe-windows
    
    If you came across similar error when using `caffe.exe`, I guess you may have modified the `.vcxproj` files manually by yourself. VS lost some configurations during your modification. Never mind, you can still follow the above instructions to fix it.
    
-  - How to compile the codes in Debug mode?
+ - How to compile the codes in Debug mode?
    
   There is a [3rdparty library archive file](http://pan.baidu.com/s/1qW88MTY) provided by a friend of me. However, I haven't tested it.
 
