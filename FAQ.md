@@ -26,6 +26,6 @@ FAQ for caffe-windows
    
   There is a [3rdparty library archive file](http://pan.baidu.com/s/1qW88MTY) provided by a friend of me. However, I haven't tested it.
 
-  You can compile your own third party libraries from https://github.com/willyd/caffe-windows-dependencies . Throught this way, you can get a better acknowledgement about how to utilize online resources to build an open-source software.
+  You can compile your own third party libraries from https://github.com/willyd/caffe-windows-dependencies . This way is the most recommended, because you can better understand Visual Studio during configuring so much applications.
   
   In addition, you can still debug the codes in Release mode, by following the instructions here https://msdn.microsoft.com/en-us/library/fsk896zz.aspx .
