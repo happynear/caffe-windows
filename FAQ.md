@@ -20,4 +20,4 @@ FAQ for caffe-windows
    Another method is to add `layer_factory.cpp` and `force_link.cpp` to your own project, to let the compiler know the existence of
    the layers and solvers.
    
-   If you came across similar error when using `caffe.exe`, I guess you may modified the `.vcxproj` files by yourself. VS lost some configurations during your modification. Never mind, you can still follow the above instructions to fix it.
+   If you came across similar error when using `caffe.exe`, I guess you may have modified the `.vcxproj` files by yourself. VS lost some configurations during your modification. Never mind, you can still follow the above instructions to fix it.
