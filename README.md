@@ -7,15 +7,13 @@ Setup step:
 
 2. Run `./src/caffe/proto/extract_proto.bat` to create `caffe.pb.h`, `caffe.pb.cc` and `caffe_pb2.py`.
 
-3. Double click ./build/MainBuilder.sln to open the solution. 
+3. Double click ./buildVS2013/MainBuilder.sln to open the solution. If you do not have a Nvidia GPU, please open ./build_cpu_only/MainBuilder.sln.
 
 4. Change the compile mode to Release and X64. For Debug mode, you may need these 3rparty libraries http://pan.baidu.com/s/1qW88MTY .
 
 5. Modify the cuda device compute capability defined in the settings (`caffelib properties` -> `CUDA C/C++` -> `Device` -> `Code Generation`) to your GPU's compute capability (such as compute_30,sm_30; etc). You can look up for your GPU's compute capability in https://en.wikipedia.org/wiki/CUDA . Some general GPUs' compute capabilities are listed below.
 
  - If your GPU's compute capability is below or equal to 2.1, please remove the `USE_CUDNN` macro in the proprocessor definition of all projects.
-
- - If you do not have a Nvidia GPU, please also add `CPU_ONLY` macro besides removing `USE_CUDNN`. Then remove all `.cu` files in the caffelib project to avoid compiling the GPU-related codes.
 
 6. Compile.
 
