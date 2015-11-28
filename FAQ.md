@@ -24,3 +24,7 @@ FAQ for caffe-windows
   You can compile your own third party libraries from https://github.com/willyd/caffe-windows-dependencies . This way is the most recommended, because you can better understand Visual Studio during configuring so much applications.
   
   In addition, you can still debug the codes in Release mode, by following the instructions here https://msdn.microsoft.com/en-us/library/fsk896zz.aspx .
+
+ - How can I create other tools, such as `extract_features.cpp` and `cpp_classification.cpp`?
+  
+  I have only created projects which is used most frequently in my eyes. If you want to compile other tools, there is no need to create a new project. You can just copy and rename `./build/MSVC` folder to another one, and add the new project to the VS solution. Remove `caffe.cpp` and add your target cpp file. Compile it, then you will get a corresponding exe file in `./bin`.
