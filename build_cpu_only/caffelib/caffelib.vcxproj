@@ -1,0 +1,343 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>caffelib</ProjectName>
+    <ProjectGuid>{63A79297-9CC4-4081-ADAC-7F40CE965C95}</ProjectGuid>
+    <RootNamespace>MainCaller</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.61030.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>../../bin\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>../../bin\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>../../bin\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>../../bin\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../3rdparty/include;../../src;../../src/include;D:\ThirdPartyLibrary\caffe\include;D:\ThirdPartyLibrary\caffe\src;D:\ThirdPartyLibrary\boost_1_57_0;D:\ThirdPartyLibrary\glog-0.3.3\src\windows;D:\ThirdPartyLibrary\gflags-2.1.1\buildx64\include;C:\Program Files (x86)\Intel\Composer XE 2015\mkl\include;C:\Program Files (x86)\Intel\Composer XE 2015\compiler\include;D:\ThirdPartyLibrary\hdf5\include;D:\ThirdPartyLibrary\leveldb\include;D:\ThirdPartyLibrary\snappy-windows\include;D:\deeplearning\caffeold\3rdparty\include;D:\ThirdPartyLibrary\opencv248\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;D:\ThirdPartyLibrary\protobuf-2.5.0\vsprojects\x64\Release\libprotobuf.lib;D:\ThirdPartyLibrary\boost_1_57_0\lib64-msvc-11.0\boost_system-vc110-mt-1_57.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_tools.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_hl_fortran.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_fortran.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_hl_f90cstub.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_f90cstub.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_cpp.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_hl_cpp.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_hl.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5.lib;D:\ThirdPartyLibrary\hdf5\lib\zlib.lib;D:\ThirdPartyLibrary\hdf5\lib\szip.lib;opencv_highgui249.lib;opencv_imgproc249.lib;opencv_core249.lib;shlwapi.lib;leveldb.lib;libgsl-0.lib;libgslcblas-0.lib;cublas.lib;cublas_device.lib;curand.lib;cudart.lib;cuda.lib;libprotobuf.lib;libglog.lib;gflags.lib;lmdb.lib;D:\CUDA\cudnn-6.5-win-R1\cudnn64_65.lib;C:\Program Files (x86)\Intel\Composer XE 2015\mkl\lib\intel64\mkl_rt.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:/ThirdPartyLibrary/boost_1_57_0/lib64-msvc-11.0;D:/ThirdPartyLibrary/boost_1_57_0/lib64-msvc-11.0/$(Configuration);D:/CUDA/Toolkit/lib/x64;D:/CUDA/Toolkit/lib/x64/$(Configuration);D:\deeplearning\caffeold\3rdparty\lib;%(AdditionalLibraryDirectories);$(CudaToolkitLibDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../3rdparty/include;../../3rdparty/include/eigen3/Eigen;../../src;../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalLibraryDirectories>../../3rdparty/lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.0\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>leveldbd.lib;libopenblas.lib;libprotobufd.lib;libglog.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>../../3rdparty/include;../../src;../../src/include;D:\ThirdPartyLibrary\caffe\include;D:\ThirdPartyLibrary\caffe\src;D:\ThirdPartyLibrary\boost_1_57_0;D:\CUDA\Toolkit\include;D:\ThirdPartyLibrary\glog-0.3.3\src\windows;D:\ThirdPartyLibrary\gflags-2.1.1\buildx64\include;C:\Program Files (x86)\Intel\Composer XE 2015\mkl\include;C:\Program Files (x86)\Intel\Composer XE 2015\compiler\include;D:\ThirdPartyLibrary\hdf5\include;D:\ThirdPartyLibrary\leveldb\include;D:\ThirdPartyLibrary\snappy-windows\include;D:\deeplearning\caffeold\3rdparty\include;D:\ThirdPartyLibrary\opencv248\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>D:/ThirdPartyLibrary/boost_1_57_0/lib64-msvc-11.0;D:/ThirdPartyLibrary/boost_1_57_0/lib64-msvc-11.0/$(Configuration);D:\deeplearning\caffeold\3rdparty\lib;%(AdditionalLibraryDirectories);$(CudaToolkitLibDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;D:\ThirdPartyLibrary\protobuf-2.5.0\vsprojects\x64\Release\libprotobuf.lib;D:\ThirdPartyLibrary\boost_1_57_0\lib64-msvc-11.0\boost_system-vc110-mt-1_57.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_tools.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_hl_fortran.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_fortran.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_hl_f90cstub.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_f90cstub.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_cpp.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_hl_cpp.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5_hl.lib;D:\ThirdPartyLibrary\hdf5\lib\hdf5.lib;D:\ThirdPartyLibrary\hdf5\lib\zlib.lib;D:\ThirdPartyLibrary\hdf5\lib\szip.lib;opencv_highgui249.lib;opencv_imgproc249.lib;opencv_core249.lib;shlwapi.lib;leveldb.lib;libgsl-0.lib;libgslcblas-0.lib;libprotobuf.lib;libglog.lib;gflags.lib;lmdb.lib;C:\Program Files (x86)\Intel\Composer XE 2015\mkl\lib\intel64\mkl_rt.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>../../3rdparty/include;../../src;../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;NDEBUG;_CONSOLE;CPU_ONLY;USE_OPENCV;USE_LEVELDB;USE_LMDB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalLibraryDirectories>../../3rdparty/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;cudart.lib;cublas.lib;curand.lib;libprotobuf.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;opencv_world300.lib;shlwapi.lib;leveldb.lib;cublas_device.lib;cuda.lib;libglog.lib;lmdb.lib;cudnn64_65.lib;libopenblas.dll.a;libgflags.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\caffe\blob.cpp" />
+    <ClCompile Include="..\..\src\caffe\common.cpp" />
+    <ClCompile Include="..\..\src\caffe\data_reader.cpp" />
+    <ClCompile Include="..\..\src\caffe\data_transformer.cpp" />
+    <ClCompile Include="..\..\src\caffe\internal_thread.cpp" />
+    <ClCompile Include="..\..\src\caffe\layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\absval_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\accuracy_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\argmax_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\base_conv_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\base_data_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\batch_norm_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\batch_reindex_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\bnll_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\bn_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\concat_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\contrastive_loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\conv_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\cudnn_conv_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\cudnn_lcn_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\cudnn_lrn_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\cudnn_pooling_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\cudnn_relu_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\cudnn_sigmoid_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\cudnn_softmax_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\cudnn_tanh_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\data_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\deconv_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\dropout_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\dummy_data_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\eltwise_affine_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\eltwise_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\embed_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\euclidean_loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\exp_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\filter_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\flatten_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\gram_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\hdf5_data_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\hdf5_output_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\hinge_loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\im2col_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\image_data_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\infogain_loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\inner_product_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\insanity_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\local_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\log_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\lrn_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\memory_data_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\multinomial_logistic_loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\mvn_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\neuron_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\normalize_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\pooling_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\power_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\prelu_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\reduction_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\relu_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\reshape_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\roi_pooling_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\sigmoid_cross_entropy_loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\sigmoid_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\silence_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\slice_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\smooth_L1_loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\softmax_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\softmax_loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\split_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\spp_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\tanh_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\threshold_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\tile_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\transformer_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\triplet_loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\window_data_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layer_factory.cpp" />
+    <ClCompile Include="..\..\src\caffe\net.cpp" />
+    <ClCompile Include="..\..\src\caffe\parallel.cpp" />
+    <ClCompile Include="..\..\src\caffe\proto\caffe.pb.cc" />
+    <ClCompile Include="..\..\src\caffe\solver.cpp" />
+    <ClCompile Include="..\..\src\caffe\solvers\adadelta_solver.cpp" />
+    <ClCompile Include="..\..\src\caffe\solvers\adagrad_solver.cpp" />
+    <ClCompile Include="..\..\src\caffe\solvers\adam_solver.cpp" />
+    <ClCompile Include="..\..\src\caffe\solvers\nesterov_solver.cpp" />
+    <ClCompile Include="..\..\src\caffe\solvers\rmsprop_solver.cpp" />
+    <ClCompile Include="..\..\src\caffe\solvers\sgd_solver.cpp" />
+    <ClCompile Include="..\..\src\caffe\syncedmem.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\benchmark.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\blocking_queue.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\cudnn.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\db.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\db_leveldb.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\db_lmdb.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\hdf5.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\im2col.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\insert_splits.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\io.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\math_functions.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\mkstemp.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\signal_handler.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\upgrade_proto.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\caffe\blob.hpp" />
+    <ClInclude Include="..\..\include\caffe\caffe.hpp" />
+    <ClInclude Include="..\..\include\caffe\common.hpp" />
+    <ClInclude Include="..\..\include\caffe\common_layers.hpp" />
+    <ClInclude Include="..\..\include\caffe\custom_layers.hpp" />
+    <ClInclude Include="..\..\include\caffe\data_layers.hpp" />
+    <ClInclude Include="..\..\include\caffe\data_reader.hpp" />
+    <ClInclude Include="..\..\include\caffe\data_transformer.hpp" />
+    <ClInclude Include="..\..\include\caffe\export.hpp" />
+    <ClInclude Include="..\..\include\caffe\filler.hpp" />
+    <ClInclude Include="..\..\include\caffe\internal_thread.hpp" />
+    <ClInclude Include="..\..\include\caffe\layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\layer_factory.hpp" />
+    <ClInclude Include="..\..\include\caffe\loss_layers.hpp" />
+    <ClInclude Include="..\..\include\caffe\net.hpp" />
+    <ClInclude Include="..\..\include\caffe\neuron_layers.hpp" />
+    <ClInclude Include="..\..\include\caffe\parallel.hpp" />
+    <ClInclude Include="..\..\include\caffe\python_layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\solver.hpp" />
+    <ClInclude Include="..\..\include\caffe\syncedmem.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\benchmark.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\blocking_queue.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\cudnn.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\db.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\db_leveldb.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\db_lmdb.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\device_alternate.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\gpu_util.cuh" />
+    <ClInclude Include="..\..\include\caffe\util\hdf5.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\im2col.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\insert_splits.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\io.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\math_functions.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\mkl_alternate.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\mkstemp.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\rng.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\signal_handler.h" />
+    <ClInclude Include="..\..\include\caffe\util\upgrade_proto.hpp" />
+    <ClInclude Include="..\..\include\caffe\vision_layers.hpp" />
+    <ClInclude Include="..\..\src\caffe\proto\caffe.pb.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\src\caffe\CMakeLists.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>
