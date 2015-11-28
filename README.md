@@ -1,5 +1,7 @@
 Forked from https://www.github.com/BVLC/caffe master branch in 2015/11/09 . Next update time may be around 2016/01/01 .
 
+I have listed some 
+
 Setup step:
 ======
 
@@ -9,11 +11,12 @@ Setup step:
 
 3. Double click ./buildVS2013/MainBuilder.sln to open the solution. If you do not have a Nvidia GPU, please open ./build_cpu_only/MainBuilder.sln.
 
-4. Change the compile mode to Release and X64. For Debug mode, you may need these 3rparty libraries http://pan.baidu.com/s/1qW88MTY .
+4. Change the compile mode to Release and X64.
 
 5. Modify the cuda device compute capability defined in the settings (`caffelib properties` -> `CUDA C/C++` -> `Device` -> `Code Generation`) to your GPU's compute capability (such as compute_30,sm_30; etc). You can look up for your GPU's compute capability in https://en.wikipedia.org/wiki/CUDA . Some general GPUs' compute capabilities are listed below.
 
  - If your GPU's compute capability is below or equal to 2.1, please remove the `USE_CUDNN` macro in the proprocessor definition of all projects.
+ - If you are using cpu only solution, just ignore this step.
 
 6. Compile.
 
@@ -23,11 +26,6 @@ Setup step:
 | GTX780, Titan Z, Titan Black, K20, K40      | compute_35,sm_35      |
 | GTX960, 980, Titan X                        | compute_52,sm_52      |
 
-
-
-TIPS: If you have MKL library, please add the preprocess macro "USE_MKL" defined in the setting of the project.
-
-If you want build other tools, just copy and rename `./build/MSVC` folder to another one, and add the new project to the VS solution. Remove `caffe.cpp` and add your target cpp file. Compile it, then you will get a corresponding exe file in `./bin`.
 
 中文安装说明：http://blog.csdn.net/happynear/article/details/45372231
 
