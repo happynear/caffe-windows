@@ -45,8 +45,8 @@ void MultiLabelImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>&
     std::stringstream stream;
     stream << this_line;
     stream >> filename;
-    int label;
-    shared_ptr<vector<int> > labels_ptr(new vector<int>);
+    Dtype label;
+    shared_ptr<vector<Dtype> > labels_ptr(new vector<Dtype>);
     while (!stream.eof()) {
       stream >> label;
       labels_ptr->push_back(label);

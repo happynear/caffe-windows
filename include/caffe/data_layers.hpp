@@ -376,7 +376,7 @@ namespace caffe {
     virtual void ShuffleImages();
     virtual void load_batch(Batch<Dtype>* batch);
 
-    vector<std::pair<std::string, shared_ptr<vector<int> > > > lines_;
+    vector<std::pair<std::string, shared_ptr<vector<Dtype> > > > lines_;
     int label_count;
     int lines_id_;
   };
