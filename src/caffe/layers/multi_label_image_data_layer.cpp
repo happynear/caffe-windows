@@ -1,5 +1,6 @@
 #ifdef USE_OPENCV
 #include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 #include <fstream>  // NOLINT(readability/streams)
 #include <iostream>  // NOLINT(readability/streams)
@@ -7,6 +8,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <random>
 
 #include "caffe/data_layers.hpp"
 #include "caffe/util/benchmark.hpp"
@@ -21,19 +23,82 @@ MultiLabelImageDataLayer<Dtype>::~MultiLabelImageDataLayer<Dtype>() {
   this->StopInternalThread();
 }
 
+typedef std::mt19937 RANDOM_ENGINE;
+
+template <typename Dtype>
+void extract_face(cv::Mat& input_image, shared_ptr<vector<Dtype> > points, int point_count,
+                  int new_width, int new_height,
+                  float max_shear_ratio = 0, float max_aspect_ratio=0, float max_rotate_angle = 0,
+                  float min_random_scale = 1, float max_random_scale = 1) {
+  LOG(INFO) << max_shear_ratio << " " << max_aspect_ratio << " " << max_rotate_angle << " " << min_random_scale << " " << max_random_scale;
+  cv::Point2d face_center;
+  face_center.x = (*points)[0] + (*points)[2] - (*points)[4];
+  face_center.y = (((*points)[1] + (*points)[3]) / 2 + (*points)[5]) / 2;
+  double eye_scale = std::max((*points)[4] - (*points)[0], (*points)[2] - (*points)[4]) * 2 * 1.5;
+
+  RANDOM_ENGINE prnd(time(NULL));
+  std::uniform_real_distribution<float> rand_uniform(0, 1);
+  // shear
+  float s = rand_uniform(prnd) * max_shear_ratio * 2 - max_shear_ratio;
+  // rotate
+  int angle = std::uniform_int_distribution<int>(
+    -max_rotate_angle, max_rotate_angle)(prnd);
+  float a = cos(angle / 180.0 * CV_PI);
+  float b = sin(angle / 180.0 * CV_PI);
+  // scale
+  float scale = rand_uniform(prnd) *
+    (max_random_scale - min_random_scale) + min_random_scale;
+  scale = scale * new_height / (eye_scale * 2);
+  // aspect ratio
+  float ratio = rand_uniform(prnd) *
+    max_aspect_ratio * 2 - max_aspect_ratio + 1;
+  float hs = 2 * scale / (1 + ratio);
+  float ws = ratio * hs;
+  int flip = std::uniform_int_distribution<int>(0, 1)(prnd)* 2 - 1;
+  hs *= flip;
+
+  cv::Mat M(2, 3, CV_32F);
+  M.at<float>(0, 0) = hs * a - s * b * ws;
+  M.at<float>(1, 0) = -b * ws;
+  M.at<float>(0, 1) = hs * b + s * a * ws;
+  M.at<float>(1, 1) = a * ws;
+  M.at<float>(0, 2) = new_width / 2 -M.at<float>(0, 0) * face_center.x - M.at<float>(0, 1) * face_center.y;
+  M.at<float>(1, 2) = new_height / 2 -M.at<float>(1, 0) * face_center.x - M.at<float>(1, 1) * face_center.y;
+  LOG(INFO) << M.at<float>(0, 0) << " " << M.at<float>(1, 0) << " " << M.at<float>(0, 1) << " " << M.at<float>(1, 1) << " " << new_width << " " << new_height << " " << flip;
+  cv::Mat temp_;
+  cv::warpAffine(input_image, temp_, M, cv::Size(new_width, new_height),
+                 cv::INTER_LINEAR,
+                 cv::BORDER_TRANSPARENT,
+                 cv::Scalar(123.68, 116.779, 103.939));
+  input_image = temp_.clone();
+  for (int j = 0; j < point_count; j++) {
+    Dtype x = M.at<float>(0, 0)*(*points)[j * 2] + M.at<float>(0, 1) * (*points)[j * 2 + 1] + M.at<float>(0, 2);
+    Dtype y = M.at<float>(1, 0)*(*points)[j * 2] + M.at<float>(1, 1) * (*points)[j * 2 + 1] + M.at<float>(1, 2);
+    (*points)[j * 2] = x;
+    (*points)[j * 2 + 1] = y;
+  }
+  if (flip == -1) {
+    std::swap((*points)[0], (*points)[2]);
+    std::swap((*points)[1], (*points)[3]);
+    std::swap((*points)[6], (*points)[8]);
+    std::swap((*points)[7], (*points)[9]);
+  }
+}
+
 template <typename Dtype>
 void MultiLabelImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
-  const int new_height = this->layer_param_.image_data_param().new_height();
-  const int new_width  = this->layer_param_.image_data_param().new_width();
-  const bool is_color  = this->layer_param_.image_data_param().is_color();
-  string root_folder = this->layer_param_.image_data_param().root_folder();
+  ImageDataParameter image_data_param = this->layer_param_.image_data_param();
+  const int new_height = image_data_param.new_height();
+  const int new_width = image_data_param.new_width();
+  const bool is_color = image_data_param.is_color();
+  string root_folder = image_data_param.root_folder();
 
   CHECK((new_height == 0 && new_width == 0) ||
       (new_height > 0 && new_width > 0)) << "Current implementation requires "
       "new_height and new_width to be set at the same time.";
   // Read the file with filenames and labels
-  const string& source = this->layer_param_.image_data_param().source();
+  const string& source = image_data_param.source();
   LOG(INFO) << "Opening file " << source;
   std::ifstream infile(source.c_str());
   string filename;
@@ -61,7 +126,7 @@ void MultiLabelImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>&
     lines_.push_back(std::make_pair(filename, labels_ptr));
   }
 
-  if (this->layer_param_.image_data_param().shuffle()) {
+  if (image_data_param.shuffle()) {
     // randomly shuffle data
     LOG(INFO) << "Shuffling data";
     const unsigned int prefetch_rng_seed = caffe_rng_rand();
@@ -72,7 +137,7 @@ void MultiLabelImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>&
 
   lines_id_ = 0;
   // Check if we would need to randomly skip a few data points
-  if (this->layer_param_.image_data_param().rand_skip()) {
+  if (image_data_param.rand_skip()) {
     unsigned int skip = caffe_rng_rand() %
         this->layer_param_.image_data_param().rand_skip();
     LOG(INFO) << "Skipping first " << skip << " data points.";
@@ -80,14 +145,25 @@ void MultiLabelImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>&
     lines_id_ = skip;
   }
   // Read an image, and use it to initialize the top blob.
-  cv::Mat cv_img = ReadImageToCVMat(root_folder + lines_[lines_id_].first,
-                                    new_height, new_width, is_color);
+  cv::Mat cv_img;
+  if (image_data_param.face_transform()) {
+    cv_img = ReadImageToCVMat(root_folder + lines_[lines_id_].first,
+                              0, 0, is_color);
+    extract_face(cv_img, lines_[lines_id_].second, image_data_param.face_point_num(),
+                 image_data_param.new_width(), image_data_param.new_height(),
+                 image_data_param.max_shear_ratio(), image_data_param.max_aspect_ratio(), image_data_param.max_rotate_angle(),
+                 image_data_param.min_random_scale(), image_data_param.max_random_scale());
+  }
+  else {
+    cv_img = ReadImageToCVMat(root_folder + lines_[lines_id_].first,
+                              new_height, new_width, is_color);
+  }
   CHECK(cv_img.data) << "Could not load " << lines_[lines_id_].first;
   // Use data_transformer to infer the expected blob shape from a cv_image.
   vector<int> top_shape = this->data_transformer_->InferBlobShape(cv_img);
   this->transformed_data_.Reshape(top_shape);
   // Reshape prefetch_data and top[0] according to the batch_size.
-  const int batch_size = this->layer_param_.image_data_param().batch_size();
+  const int batch_size = image_data_param.batch_size();
   CHECK_GT(batch_size, 0) << "Positive batch size required";
   top_shape[0] = batch_size;
   for (int i = 0; i < this->PREFETCH_COUNT; ++i) {
@@ -132,8 +208,19 @@ void MultiLabelImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
 
   // Reshape according to the first image of each batch
   // on single input batches allows for inputs of varying dimension.
-  cv::Mat cv_img = ReadImageToCVMat(root_folder + lines_[lines_id_].first,
-      new_height, new_width, is_color);
+  cv::Mat cv_img;
+  if (image_data_param.face_transform()) {
+    cv_img = ReadImageToCVMat(root_folder + lines_[lines_id_].first,
+                              0, 0, is_color);
+    extract_face(cv_img, lines_[lines_id_].second, image_data_param.face_point_num(),
+                 image_data_param.new_width(), image_data_param.new_height(),
+                 image_data_param.max_shear_ratio(), image_data_param.max_aspect_ratio(), image_data_param.max_rotate_angle(),
+                 image_data_param.min_random_scale(), image_data_param.max_random_scale());
+  }
+  else {
+    cv_img = ReadImageToCVMat(root_folder + lines_[lines_id_].first,
+                              new_height, new_width, is_color);
+  }
   CHECK(cv_img.data) << "Could not load " << lines_[lines_id_].first;
   // Use data_transformer to infer the expected blob shape from a cv_img.
   vector<int> top_shape = this->data_transformer_->InferBlobShape(cv_img);
@@ -151,12 +238,25 @@ void MultiLabelImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
     // get a blob
     timer.Start();
     CHECK_GT(lines_size, lines_id_);
-    cv::Mat cv_img = ReadImageToCVMat(root_folder + lines_[lines_id_].first,
-        new_height, new_width, is_color);
+    cv::Mat cv_img;
+    if (image_data_param.face_transform()) {
+      cv_img = ReadImageToCVMat(root_folder + lines_[lines_id_].first,
+                                0, 0, is_color);
+    }
+    else {
+      cv_img = ReadImageToCVMat(root_folder + lines_[lines_id_].first,
+                                        new_height, new_width, is_color);
+    }
     CHECK(cv_img.data) << "Could not load " << lines_[lines_id_].first;
     read_time += timer.MicroSeconds();
     timer.Start();
     // Apply transformations (mirror, crop...) to the image
+    if (image_data_param.face_transform()) {
+      extract_face(cv_img, lines_[lines_id_].second, image_data_param.face_point_num(),
+                   image_data_param.new_width(), image_data_param.new_height(),
+                   image_data_param.max_shear_ratio(), image_data_param.max_aspect_ratio(), image_data_param.max_rotate_angle(),
+                   image_data_param.min_random_scale(), image_data_param.max_random_scale());
+    }
     int offset = batch->data_.offset(item_id);
     this->transformed_data_.set_cpu_data(prefetch_data + offset);
     this->data_transformer_->Transform(cv_img, &(this->transformed_data_));
