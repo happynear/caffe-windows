@@ -46,7 +46,7 @@ void BNLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
 
 		// history variance
 		this->blobs_[3].reset(new Blob<Dtype>(1, channels_, 1, 1));
-		caffe_set(channels_, Dtype(0), this->blobs_[3]->mutable_cpu_data());
+		caffe_set(channels_, Dtype(1), this->blobs_[3]->mutable_cpu_data());
 
 	}  // parameter initialization
 	this->param_propagate_down_.resize(this->blobs_.size(), true);

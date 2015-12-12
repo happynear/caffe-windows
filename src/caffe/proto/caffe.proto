@@ -307,7 +307,7 @@ message ParamSpec {
 // NOTE
 // Update the next available ID when you add a new LayerParameter field.
 //
-// LayerParameter next available layer-specific ID: 146 (last added: eltwise_affine_param)
+// LayerParameter next available layer-specific ID: 148 (last added: noise_param)
 message LayerParameter {
   optional string name = 1; // the layer name
   optional string type = 2; // the layer type
@@ -398,6 +398,8 @@ message LayerParameter {
   optional TripletLossParameter triplet_loss_param = 142;
   optional ROIPoolingParameter roi_pooling_param = 143;
   optional EltwiseAffineParameter eltwise_affine_param = 145;
+  optional SubRegionParameter sub_region_param = 146;
+  optional NoiseParameter noise_param = 147;
 }
 
 // Message that stores parameters used to apply transformation
@@ -706,7 +708,9 @@ message ImageDataParameter {
   optional float max_rotate_angle = 16 [default = 0];
   optional float min_random_scale = 17 [default = 1];
   optional float max_random_scale = 18 [default = 1];
-  optional uint32 face_point_num = 19 [default = 0];
+  optional uint32 max_random_shift = 19 [default = 0];
+  optional bool face_mirror = 20 [default = false];
+  optional uint32 face_point_num = 21 [default = 0];
   // DEPRECATED. See TransformationParameter. For data pre-processing, we can do
   // simple scaling and subtracting the data mean, if provided. Note that the
   // mean subtraction is always carried out before scaling.
@@ -1157,6 +1161,8 @@ message V1LayerParameter {
   optional TripletLossParameter triplet_loss_param = 47;
   optional ROIPoolingParameter roi_pooling_param = 48;
   optional EltwiseAffineParameter eltwise_affine_param = 49;
+  optional SubRegionParameter sub_region_param = 50;
+  optional NoiseParameter noise_param = 51;
 }
 
 // DEPRECATED: V0LayerParameter is the old way of specifying layer parameters
@@ -1315,4 +1321,18 @@ message EltwiseAffineParameter {
 
   // Whether or not slope paramters are shared across channels.
   optional bool channel_shared = 3 [default = false];
+}
+
+message SubRegionParameter {
+  optional uint32 region_height = 1;
+  optional uint32 region_width = 2;
+  optional uint32 data_height = 3;
+  optional uint32 data_width = 4;
+  optional uint32 as_dim = 5 [default = 1];
+}
+
+message NoiseParameter {
+  optional float gaussian_std = 1 [default = 0];
+  optional float uniform_range = 2 [default = 0];
+  optional float bias = 3 [default = 0];
 }
