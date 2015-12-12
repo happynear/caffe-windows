@@ -222,6 +222,12 @@ void Solver<Dtype>::Step(int iters) {
       loss += net_->ForwardBackward(bottom_vec);
     }
     loss /= param_.iter_size();
+    if (isnan(loss)) {
+      LOG_IF(INFO, Caffe::root_solver()) << "Iteration " << iter_
+        << ", loss = " << loss << ", ignore and continue.";
+      ++iter_;
+      continue;
+    }
     // average the loss across iterations for smoothed reporting
     if (losses.size() < average_loss) {
       losses.push_back(loss);

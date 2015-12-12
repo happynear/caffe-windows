@@ -22,7 +22,7 @@ inline void MakeTempFilename(string* temp_filename) {
   strcpy(temp_filename_cstr, temp_filename->c_str());
   int fd = mkstemp(temp_filename_cstr);
   CHECK_GE(fd, 0) << "Failed to open a temporary file at: " << *temp_filename;
-  close(fd);
+  _close(fd);
   *temp_filename = temp_filename_cstr;
   delete[] temp_filename_cstr;
 }
