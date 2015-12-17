@@ -28,3 +28,9 @@ FAQ for caffe-windows
  - How can I create other tools, such as `extract_features.cpp` and `cpp_classification.cpp`?
   
   I have only created projects which is used most frequently in my eyes. If you want to compile other tools, there is no need to create a new project. You can just copy and rename `./build/MSVC` folder to another one, and add the new project to the VS solution. Remove `caffe.cpp` and add your target cpp file. Compile it, then you will get a corresponding exe file in `./bin`.
+
+ - Why can't my VS open the projects?
+  
+  This is mainly because your CUDA version is different from mine, CUDA 7.0. You can modify the CUDA configurations in the `.vcxproj` file manually by open each `.vcxproj` with notepad or other text processor. 
+
+  However, manually modifying the project file may destroy some of the configurations. Someone reported that the reference relationship between the projects was lost after they modified the project files. You may refer to the second question to solve this problem.
