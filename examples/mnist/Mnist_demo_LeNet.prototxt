@@ -131,7 +131,7 @@ layer {
     lr_mult: 1
     decay_mult: 0
   }
-    param {
+  param {
     lr_mult: 0
     decay_mult: 0
   }
