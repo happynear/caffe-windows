@@ -65,6 +65,14 @@ layer {
     lr_mult: 1
     decay_mult: 0
   }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
   bn_param {
 	scale_filler {
 	  type: "constant"
@@ -121,6 +129,14 @@ layer {
   }
   param {
     lr_mult: 1
+    decay_mult: 0
+  }
+    param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
     decay_mult: 0
   }
   bn_param {
