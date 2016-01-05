@@ -1,3 +1,6 @@
+Forked from https://github.com/happynear/caffe-windows master branch.Modified CUDA version from 7.0 to 7.5.
+There is the original README.md below.
+
 Forked from https://www.github.com/BVLC/caffe master branch in 2015/11/09 . Next update time may be around 2016/01/01 .
 
 I have made a list of some frequently asked questions in [FAQ.md](FAQ.md). If you get confused during configuring, please firstly look up for your question in the [FAQ.md](FAQ.md). This FAQ list is still under construction, I will keep adding questions into it.
