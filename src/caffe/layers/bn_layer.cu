@@ -27,7 +27,7 @@ namespace caffe {
       caffe_gpu_gemv<Dtype>(CblasTrans, num_, channels_, Dtype(1. / num_), spatial_statistic_.gpu_data(),
                             batch_sum_multiplier_.gpu_data(), Dtype(0), batch_statistic_.mutable_gpu_data());
       // save history mean
-		  caffe_gpu_axpby(batch_statistic_.count(), decay_, batch_statistic_.gpu_data(), Dtype(1) - decay_,
+		  caffe_gpu_axpby(batch_statistic_.count(), Dtype(1) - decay_, batch_statistic_.gpu_data(), decay_,
 			    this->blobs_[2]->mutable_gpu_data());
 		}
 		if (this->phase_ == TEST && moving_average_) {
@@ -55,7 +55,7 @@ namespace caffe {
       caffe_gpu_gemv<Dtype>(CblasTrans, num_, channels_, Dtype(1. / num_), spatial_statistic_.gpu_data(),
                             batch_sum_multiplier_.gpu_data(), Dtype(0), batch_statistic_.mutable_gpu_data());
       // save history variance
-      caffe_gpu_axpby(batch_statistic_.count(), decay_, batch_statistic_.gpu_data(), Dtype(1) - decay_,
+      caffe_gpu_axpby(batch_statistic_.count(), Dtype(1) - decay_, batch_statistic_.gpu_data(), decay_,
                       this->blobs_[3]->mutable_gpu_data());
     }
 		if (this->phase_ == TEST && moving_average_) {
