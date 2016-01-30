@@ -51,6 +51,8 @@ inline void MakeTempFilename(string* temp_filename) {
 
 bool ReadProtoFromTextFile(const char* filename, Message* proto);
 
+bool ReadProtoFromTextContent(const string& text, Message* proto);
+
 inline bool ReadProtoFromTextFile(const string& filename, Message* proto) {
   return ReadProtoFromTextFile(filename.c_str(), proto);
 }
