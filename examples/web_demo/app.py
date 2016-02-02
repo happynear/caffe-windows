@@ -139,7 +139,7 @@ class ImagenetClassifier(object):
             ])
         self.labels = labels_df.sort('synset_id')['name'].values
 
-        self.bet = cPickle.load(open(bet_file))
+        self.bet = cPickle.load(open(bet_file, 'rb'))
         # A bias to prefer children nodes in single-chain paths
         # I am setting the value to 0.1 as a quick, simple model.
         # We could use better psychological models here...
