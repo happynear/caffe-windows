@@ -76,14 +76,12 @@ class SyncedMemory {
   void* gpu_ptr_;
   size_t size_;
   SyncedHead head_;
-
   bool own_cpu_data_;
   bool cpu_malloc_use_cuda_;
   bool own_gpu_data_;
   int gpu_device_;
-
-	bool strange_cpu_data_;
-	bool strange_gpu_data_;
+  bool strange_cpu_data_;
+  bool strange_gpu_data_;
 
   DISABLE_COPY_AND_ASSIGN(SyncedMemory);
 };  // class SyncedMemory

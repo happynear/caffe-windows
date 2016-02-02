@@ -158,11 +158,11 @@ class Layer {
       const vector<Blob<Dtype>*>& top);
 
   inline void Backward_cpu_no_loss(const vector<Blob<Dtype>*>& top,
-			const vector<bool>& propagate_down,
+      const vector<bool>& propagate_down,
       const vector<Blob<Dtype>*>& bottom);
 
   inline void Backward_gpu_no_loss(const vector<Blob<Dtype>*>& top,
-			const vector<bool>& propagate_down,
+      const vector<bool>& propagate_down,
       const vector<Blob<Dtype>*>& bottom);
   /**
    * @brief Given the top blob error gradients, compute the bottom blob error
@@ -208,8 +208,8 @@ class Layer {
 	 */
   void SetLearnableWeights(const vector<Blob<Dtype>*>& weights) {
     CHECK_EQ(blobs_.size(), weights.size());
-		for(int i = 0; i < weights.size(); ++ i)
-			blobs_[i].reset(weights[i]);
+    for(int i = 0; i < weights.size(); ++ i)
+      blobs_[i].reset(weights[i]);
   }
 
   /**
@@ -473,7 +473,6 @@ class Layer {
   DISABLE_COPY_AND_ASSIGN(Layer);
 };  // class Layer
 
-
 // Forward and backward wrappers. You should implement the cpu and
 // gpu specific implementations instead, and should not change these
 // functions.
@@ -519,9 +518,9 @@ inline Dtype Layer<Dtype>::Forward(const vector<Blob<Dtype>*>& bottom,
 template <typename Dtype>
 inline void Layer<Dtype>::Forward_cpu_no_loss(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
-	Lock();
-	//(TODO)Haoran: Reshape might be commented...
-	Reshape(bottom, top);
+  Lock();
+  //(TODO)Haoran: Reshape might be commented...
+  Reshape(bottom, top);
   Forward_cpu(bottom, top);
   Unlock();
 }
@@ -529,23 +528,23 @@ inline void Layer<Dtype>::Forward_cpu_no_loss(const vector<Blob<Dtype>*>& bottom
 template <typename Dtype>
 inline void Layer<Dtype>::Forward_gpu_no_loss(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
-	Lock();
-	//(TODO)Haoran: Reshape might be commented...
-	Reshape(bottom, top);
+  Lock();
+  //(TODO)Haoran: Reshape might be commented...
+  Reshape(bottom, top);
   Forward_gpu(bottom, top);
   Unlock();
 }
 
 template <typename Dtype>
 inline void Layer<Dtype>::Backward_cpu_no_loss(const vector<Blob<Dtype>*>& top,
-		const vector<bool>& propagate_down,
+    const vector<bool>& propagate_down,
     const vector<Blob<Dtype>*>& bottom) {
   Backward_cpu(top, propagate_down, bottom);
 }
 
 template <typename Dtype>
 inline void Layer<Dtype>::Backward_gpu_no_loss(const vector<Blob<Dtype>*>& top,
-		const vector<bool>& propagate_down,
+    const vector<bool>& propagate_down,
     const vector<Blob<Dtype>*>& bottom) {
   Backward_gpu(top, propagate_down, bottom);
 }

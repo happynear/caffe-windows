@@ -82,11 +82,11 @@ const void* SyncedMemory::cpu_data() {
 }
 
 void SyncedMemory::set_strange_cpu_data(void* data) {
-	set_cpu_data(data, true);
+  set_cpu_data(data, true);
 }
 
 void SyncedMemory::set_strange_gpu_data(void* data) {
-	set_gpu_data(data, true);
+  set_gpu_data(data, true);
 }
 
 void SyncedMemory::set_cpu_data(void* data, bool strange) {
@@ -97,7 +97,7 @@ void SyncedMemory::set_cpu_data(void* data, bool strange) {
   cpu_ptr_ = data;
   head_ = HEAD_AT_CPU;
   own_cpu_data_ = false;
-	strange_cpu_data_ = strange;
+  strange_cpu_data_ = strange;
 }
 
 const void* SyncedMemory::gpu_data() {
@@ -125,7 +125,7 @@ void SyncedMemory::set_gpu_data(void* data, bool strange) {
   gpu_ptr_ = data;
   head_ = HEAD_AT_GPU;
   own_gpu_data_ = false;
-	strange_gpu_data_ = strange;
+  strange_gpu_data_ = strange;
 #else
   NO_GPU;
 #endif

@@ -266,10 +266,10 @@ class Blob {
 
   bool ShapeEquals(const BlobProto& other);
 
-	void SetCpuData(Dtype* data_ptr);
-	void SetCpuGrad(Dtype* data_ptr);
-	void SetGpuData(Dtype* data_ptr);
-	void SetGpuGrad(Dtype* data_ptr);
+  void SetCpuData(Dtype* data_ptr);
+  void SetCpuGrad(Dtype* data_ptr);
+  void SetGpuData(Dtype* data_ptr);
+  void SetGpuGrad(Dtype* data_ptr);
 
  protected:
   shared_ptr<SyncedMemory> data_;
@@ -278,7 +278,7 @@ class Blob {
   vector<int> shape_;
   int count_;
   int capacity_;
-	bool strangeData_;
+  bool strangeData_;
 
   DISABLE_COPY_AND_ASSIGN(Blob);
 };  // class Blob

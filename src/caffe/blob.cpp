@@ -525,7 +525,7 @@ void Blob<Dtype>::FromProto(const BlobProto& proto, bool reshape) {
 template <>
 void Blob<double>::ToProto(BlobProto* proto, bool write_diff) const {
   proto->clear_shape();
-  for (size_t i = 0; i < shape_.size(); ++i) {
+  for (int i = 0; i < shape_.size(); ++i) {
     proto->mutable_shape()->add_dim(shape_[i]);
   }
   proto->clear_double_data();
@@ -545,7 +545,7 @@ void Blob<double>::ToProto(BlobProto* proto, bool write_diff) const {
 template <>
 void Blob<float>::ToProto(BlobProto* proto, bool write_diff) const {
   proto->clear_shape();
-  for (size_t i = 0; i < shape_.size(); ++i) {
+  for (int i = 0; i < shape_.size(); ++i) {
     proto->mutable_shape()->add_dim(shape_[i]);
   }
   proto->clear_data();

@@ -11,7 +11,6 @@ void Layer<Dtype>::InitMutex() {
 template <typename Dtype>
 void Layer<Dtype>::Lock() {
   if (IsShared()) {
-
     forward_mutex_->lock();
   }
 }
