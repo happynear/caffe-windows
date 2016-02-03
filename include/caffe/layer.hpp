@@ -204,12 +204,22 @@ class Layer {
   }
 
   /**
-   * @brief Set Learnable Parameter
-	 */
+   * @brief Sets Learnable Parameter
+   */
   void SetLearnableWeights(const vector<Blob<Dtype>*>& weights) {
     CHECK_EQ(blobs_.size(), weights.size());
     for(int i = 0; i < weights.size(); ++ i)
       blobs_[i].reset(weights[i]);
+  }
+
+  /**
+   * @brief Gets Learnable Parameter
+   */
+  vector<Blob<Dtype>*> GetLearnableWeights() {
+    vector<Blob<Dtype>*> ans;
+    for(int i = 0; i < blobs_.size(); ++ i)
+      ans.push_back(blobs_[i].get());
+    return ans;
   }
 
   /**
