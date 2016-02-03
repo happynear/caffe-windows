@@ -34,7 +34,7 @@ void ContrastiveLossLayer<Dtype>::Forward_gpu(
       this->layer_param_.contrastive_loss_param().legacy_version();
   Dtype loss(0.0);
   for (int i = 0; i < bottom[0]->num(); ++i) {
-    if (static_cast<int>(bottom[2]->cpu_data()[j]) == static_cast<int>(bottom[3]->cpu_data()[j])) {  // similar pairs
+    if (static_cast<int>(bottom[2]->cpu_data()[i]) == static_cast<int>(bottom[3]->cpu_data()[i])) {  // similar pairs
       loss += dist_sq_.cpu_data()[i];
     } else {  // dissimilar pairs
       if (legacy_version) {
