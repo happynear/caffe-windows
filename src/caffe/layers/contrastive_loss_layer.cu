@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <vector>
 
-#include "caffe/layers/contrastive_loss_layer.hpp"
+#include "caffe/loss_layers.hpp"
 #include "caffe/util/math_functions.hpp"
 
 namespace caffe {
