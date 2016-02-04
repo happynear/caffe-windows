@@ -2,9 +2,9 @@
 #include "caffe/util/db_lmdb.hpp"
 
 #include <sys/stat.h>
-#include <direct.h>
 
 #include <string>
+#include <direct.h>
 
 namespace caffe { namespace db {
 
