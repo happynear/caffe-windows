@@ -47,18 +47,16 @@ class SyncedMemory {
   SyncedMemory()
       : cpu_ptr_(NULL), gpu_ptr_(NULL), size_(0), head_(UNINITIALIZED),
         own_cpu_data_(false), cpu_malloc_use_cuda_(false), own_gpu_data_(false),
-        gpu_device_(-1), strange_cpu_data_(false), strange_gpu_data_(false) {}
+        gpu_device_(-1) {}
   explicit SyncedMemory(size_t size)
       : cpu_ptr_(NULL), gpu_ptr_(NULL), size_(size), head_(UNINITIALIZED),
         own_cpu_data_(false), cpu_malloc_use_cuda_(false), own_gpu_data_(false),
-        gpu_device_(-1), strange_cpu_data_(false), strange_gpu_data_(false) {}
+        gpu_device_(-1) {}
   ~SyncedMemory();
   const void* cpu_data();
-  void set_cpu_data(void* data, bool strange = false);
-  void set_strange_cpu_data(void* data);
+  void set_cpu_data(void* data);
   const void* gpu_data();
-  void set_gpu_data(void* data, bool strange = false);
-  void set_strange_gpu_data(void* data);
+  void set_gpu_data(void* data);
   void* mutable_cpu_data();
   void* mutable_gpu_data();
   enum SyncedHead { UNINITIALIZED, HEAD_AT_CPU, HEAD_AT_GPU, SYNCED };
@@ -80,8 +78,6 @@ class SyncedMemory {
   bool cpu_malloc_use_cuda_;
   bool own_gpu_data_;
   int gpu_device_;
-  bool strange_cpu_data_;
-  bool strange_gpu_data_;
 
   DISABLE_COPY_AND_ASSIGN(SyncedMemory);
 };  // class SyncedMemory

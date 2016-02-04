@@ -5,12 +5,11 @@
 namespace caffe {
 
 SyncedMemory::~SyncedMemory() {
-  if (cpu_ptr_ && own_cpu_data_ && (!strange_cpu_data_)) {
+  if (cpu_ptr_ && own_cpu_data_)
     CaffeFreeHost(cpu_ptr_, cpu_malloc_use_cuda_);
-  }
 
 #ifndef CPU_ONLY
-  if (gpu_ptr_ && own_gpu_data_ && (!strange_gpu_data_)) {
+  if (gpu_ptr_ && own_gpu_data_) {
     int initial_device;
     cudaGetDevice(&initial_device);
     if (gpu_device_ != -1) {
@@ -81,23 +80,13 @@ const void* SyncedMemory::cpu_data() {
   return (const void*)cpu_ptr_;
 }
 
-void SyncedMemory::set_strange_cpu_data(void* data) {
-  set_cpu_data(data, true);
-}
-
-void SyncedMemory::set_strange_gpu_data(void* data) {
-  set_gpu_data(data, true);
-}
-
-void SyncedMemory::set_cpu_data(void* data, bool strange) {
+void SyncedMemory::set_cpu_data(void* data) {
   CHECK(data);
-  if (own_cpu_data_ && (!strange_cpu_data_)) {
+  if (own_cpu_data_)
     CaffeFreeHost(cpu_ptr_, cpu_malloc_use_cuda_);
-  }
   cpu_ptr_ = data;
   head_ = HEAD_AT_CPU;
   own_cpu_data_ = false;
-  strange_cpu_data_ = strange;
 }
 
 const void* SyncedMemory::gpu_data() {
@@ -110,10 +99,10 @@ const void* SyncedMemory::gpu_data() {
 #endif
 }
 
-void SyncedMemory::set_gpu_data(void* data, bool strange) {
+void SyncedMemory::set_gpu_data(void* data) {
 #ifndef CPU_ONLY
   CHECK(data);
-  if (own_gpu_data_ && (!strange_gpu_data_)) {
+  if (own_gpu_data_) {
     int initial_device;
     cudaGetDevice(&initial_device);
     if (gpu_device_ != -1) {
@@ -125,7 +114,6 @@ void SyncedMemory::set_gpu_data(void* data, bool strange) {
   gpu_ptr_ = data;
   head_ = HEAD_AT_GPU;
   own_gpu_data_ = false;
-  strange_gpu_data_ = strange;
 #else
   NO_GPU;
 #endif

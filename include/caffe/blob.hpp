@@ -24,7 +24,7 @@ template <typename Dtype>
 class Blob {
  public:
   Blob()
-       : data_(), diff_(), count_(0), capacity_(0), strangeData_(false) {}
+       : data_(), diff_(), count_(0), capacity_(0) {}
 
   /// @brief Deprecated; use <code>Blob(const vector<int>& shape)</code>.
   explicit Blob(const int num, const int channels, const int height,
@@ -49,7 +49,6 @@ class Blob {
    * propagate the new input shape to higher layers.
    */
   void Reshape(const vector<int>& shape);
-  void ReshapeForStrangeData(const vector<int>& shape);
   void Reshape(const BlobShape& shape);
   void ReshapeLike(const Blob& other);
   inline string shape_string() const {
@@ -219,6 +218,9 @@ class Blob {
 
   const Dtype* cpu_data() const;
   void set_cpu_data(Dtype* data);
+  void set_cpu_diff(Dtype* data);
+  void set_gpu_data(Dtype* data);
+  void set_gpu_diff(Dtype* data);
   const int* gpu_shape() const;
   const Dtype* gpu_data() const;
   const Dtype* cpu_diff() const;
@@ -266,11 +268,6 @@ class Blob {
 
   bool ShapeEquals(const BlobProto& other);
 
-  void SetCpuData(Dtype* data_ptr);
-  void SetCpuGrad(Dtype* data_ptr);
-  void SetGpuData(Dtype* data_ptr);
-  void SetGpuGrad(Dtype* data_ptr);
-
  protected:
   shared_ptr<SyncedMemory> data_;
   shared_ptr<SyncedMemory> diff_;
@@ -278,7 +275,6 @@ class Blob {
   vector<int> shape_;
   int count_;
   int capacity_;
-  bool strangeData_;
 
   DISABLE_COPY_AND_ASSIGN(Blob);
 };  // class Blob

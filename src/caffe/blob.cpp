@@ -20,13 +20,6 @@ void Blob<Dtype>::Reshape(const int num, const int channels, const int height,
 }
 
 template <typename Dtype>
-void Blob<Dtype>::ReshapeForStrangeData(const vector<int>& shape) {
-  Reshape(shape);
-  strangeData_ = true;
-}
-
-
-template <typename Dtype>
 void Blob<Dtype>::Reshape(const vector<int>& shape) {
   CHECK_LE(shape.size(), kMaxBlobAxes);
   count_ = 1;
@@ -45,30 +38,9 @@ void Blob<Dtype>::Reshape(const vector<int>& shape) {
   if (count_ > capacity_) {
     capacity_ = count_;
 
-    CHECK(!strangeData_); // blob with strange(outside) data should have enough capacity. Otherwise pointer of strange data would be invalid 
     data_.reset(new SyncedMemory(capacity_ * sizeof(Dtype)));
     diff_.reset(new SyncedMemory(capacity_ * sizeof(Dtype)));
   }
-}
-
-template <typename Dtype>
-void Blob<Dtype>::SetCpuData(Dtype* data_ptr){
-  data_->set_strange_cpu_data(data_ptr);
-}
-
-template <typename Dtype>
-void Blob<Dtype>::SetCpuGrad(Dtype* data_ptr){
-  diff_->set_strange_cpu_data(data_ptr);
-}
-
-template <typename Dtype>
-void Blob<Dtype>::SetGpuData(Dtype* data_ptr){
-  data_->set_strange_gpu_data(data_ptr);
-}
-
-template <typename Dtype>
-void Blob<Dtype>::SetGpuGrad(Dtype* data_ptr){
-  diff_->set_strange_gpu_data(data_ptr);
 }
 
 template <typename Dtype>
@@ -90,14 +62,14 @@ template <typename Dtype>
 Blob<Dtype>::Blob(const int num, const int channels, const int height,
     const int width)
   // capacity_ must be initialized before calling Reshape
-  : capacity_(0), strangeData_(false) {
+  : capacity_(0) {
   Reshape(num, channels, height, width);
 }
 
 template <typename Dtype>
 Blob<Dtype>::Blob(const vector<int>& shape)
   // capacity_ must be initialized before calling Reshape
-  : capacity_(0), strangeData_(false) {
+  : capacity_(0) {
   Reshape(shape);
 }
 
@@ -117,6 +89,24 @@ template <typename Dtype>
 void Blob<Dtype>::set_cpu_data(Dtype* data) {
   CHECK(data);
   data_->set_cpu_data(data);
+}
+
+template <typename Dtype>
+void Blob<Dtype>::set_gpu_data(Dtype* data) {
+  CHECK(data);
+  data_->set_gpu_data(data);
+}
+
+template <typename Dtype>
+void Blob<Dtype>::set_cpu_diff(Dtype* diff) {
+  CHECK(diff);
+  diff_->set_cpu_data(diff);
+}
+
+template <typename Dtype>
+void Blob<Dtype>::set_gpu_diff(Dtype* diff) {
+  CHECK(diff);
+  diff_->set_gpu_data(diff);
 }
 
 template <typename Dtype>
