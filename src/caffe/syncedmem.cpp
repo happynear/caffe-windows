@@ -5,7 +5,7 @@
 namespace caffe {
 
 SyncedMemory::~SyncedMemory() {
-  if (cpu_ptr_ && own_cpu_data_){
+  if (cpu_ptr_ && own_cpu_data_) {
     CaffeFreeHost(cpu_ptr_, cpu_malloc_use_cuda_);
   }
 
@@ -83,7 +83,7 @@ const void* SyncedMemory::cpu_data() {
 
 void SyncedMemory::set_cpu_data(void* data) {
   CHECK(data);
-  if (own_cpu_data_){
+  if (own_cpu_data_) {
     CaffeFreeHost(cpu_ptr_, cpu_malloc_use_cuda_);
   }
   cpu_ptr_ = data;
