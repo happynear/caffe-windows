@@ -151,19 +151,6 @@ class Layer {
   inline Dtype Forward(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
 
-  inline void Forward_cpu_no_loss(const vector<Blob<Dtype>*>& bottom,
-      const vector<Blob<Dtype>*>& top);
-
-  inline void Forward_gpu_no_loss(const vector<Blob<Dtype>*>& bottom,
-      const vector<Blob<Dtype>*>& top);
-
-  inline void Backward_cpu_no_loss(const vector<Blob<Dtype>*>& top,
-      const vector<bool>& propagate_down,
-      const vector<Blob<Dtype>*>& bottom);
-
-  inline void Backward_gpu_no_loss(const vector<Blob<Dtype>*>& top,
-      const vector<bool>& propagate_down,
-      const vector<Blob<Dtype>*>& bottom);
   /**
    * @brief Given the top blob error gradients, compute the bottom blob error
    *        gradients.
