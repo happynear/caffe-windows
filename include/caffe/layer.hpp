@@ -183,13 +183,6 @@ class Layer {
     return blobs_;
   }
 
-  vector<Blob<Dtype>*> WeightBlobs() {
-    vector<Blob<Dtype>*> wbs;
-    for (int i =0; i < blobs_.size(); ++ i)
-      wbs.push_back(blobs_[i].get());
-    return wbs;
-  }
-
   /**
    * @brief Sets Learnable Parameter
    */
