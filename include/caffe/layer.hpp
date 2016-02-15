@@ -526,40 +526,6 @@ inline Dtype Layer<Dtype>::Forward(const vector<Blob<Dtype>*>& bottom,
 }
 
 template <typename Dtype>
-inline void Layer<Dtype>::Forward_cpu_no_loss(const vector<Blob<Dtype>*>& bottom,
-    const vector<Blob<Dtype>*>& top) {
-  Lock();
-  //(TODO)Haoran: Reshape might be commented...
-  Reshape(bottom, top);
-  Forward_cpu(bottom, top);
-  Unlock();
-}
-
-template <typename Dtype>
-inline void Layer<Dtype>::Forward_gpu_no_loss(const vector<Blob<Dtype>*>& bottom,
-    const vector<Blob<Dtype>*>& top) {
-  Lock();
-  //(TODO)Haoran: Reshape might be commented...
-  Reshape(bottom, top);
-  Forward_gpu(bottom, top);
-  Unlock();
-}
-
-template <typename Dtype>
-inline void Layer<Dtype>::Backward_cpu_no_loss(const vector<Blob<Dtype>*>& top,
-    const vector<bool>& propagate_down,
-    const vector<Blob<Dtype>*>& bottom) {
-  Backward_cpu(top, propagate_down, bottom);
-}
-
-template <typename Dtype>
-inline void Layer<Dtype>::Backward_gpu_no_loss(const vector<Blob<Dtype>*>& top,
-    const vector<bool>& propagate_down,
-    const vector<Blob<Dtype>*>& bottom) {
-  Backward_gpu(top, propagate_down, bottom);
-}
-
-template <typename Dtype>
 inline void Layer<Dtype>::Backward(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down,
     const vector<Blob<Dtype>*>& bottom) {
