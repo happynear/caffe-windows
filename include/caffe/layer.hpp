@@ -184,6 +184,13 @@ class Layer {
   }
 
   /**
+   * @brief get number of weights 
+   */
+  virtual int GetWeightsNumber(){
+    return 0;
+  }
+  
+  /**
    * @brief Sets Learnable Parameter
    */
   void SetLearnableWeights(const vector<Blob<Dtype>*>& weights) {
