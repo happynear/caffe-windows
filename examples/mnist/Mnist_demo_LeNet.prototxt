@@ -66,21 +66,6 @@ layer {
   param {
     lr_mult: 0
   }
-  batch_norm_param {
-    use_global_stats: false
-    moving_average_fraction: 0.9
-  }
-  include: { phase: TRAIN }
-}
-layer {
-  bottom: "conv1"
-  top: "conv1"
-  name: "bn_conv1"
-  type: "BatchNorm"
-  batch_norm_param {
-    use_global_stats: true
-  }
-  include: { phase: TEST }
 }
 layer {
   bottom: "conv1"
@@ -145,21 +130,6 @@ layer {
   param {
     lr_mult: 0
   }
-  batch_norm_param {
-    use_global_stats: false
-    moving_average_fraction: 0.9
-  }
-  include: { phase: TRAIN }
-}
-layer {
-  bottom: "conv2"
-  top: "conv2"
-  name: "bn_conv2"
-  type: "BatchNorm"
-  batch_norm_param {
-    use_global_stats: true
-  }
-  include: { phase: TEST }
 }
 layer {
   bottom: "conv2"
