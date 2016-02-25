@@ -1,5 +1,7 @@
 Forked from https://www.github.com/BVLC/caffe master branch in 2016/02/04 . Next update time may be around 2016/05/01 .
 
+**Good News:** Microsoft has created a repository of caffe windows version in https://github.com/Microsoft/caffe . Their solution may be more flexible and maintainable. I suggest all of you to try it.
+
 I have made a list of some frequently asked questions in [FAQ.md](FAQ.md). If you get confused during configuring, please firstly look up for your question in the [FAQ.md](FAQ.md). This FAQ list is still under construction, I will keep adding questions into it.
 
 Setup step:
