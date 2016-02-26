@@ -1,9 +1,10 @@
 Forked from https://www.github.com/BVLC/caffe master branch in 2016/02/04 . Next update time may be around 2016/05/01 .
 
+**Good News:** Microsoft has created a repository of caffe windows version in https://github.com/Microsoft/caffe . Their solution may be more flexible and maintainable. I suggest all of you to try it.
+
 I have made a list of some frequently asked questions in [FAQ.md](FAQ.md). If you get confused during configuring, please firstly look up for your question in the [FAQ.md](FAQ.md). This FAQ list is still under construction, I will keep adding questions into it.
 
-Setup step:
-======
+## Setup step:
 
 1. Download third-party libraries from [BaiduYun Disk](http://pan.baidu.com/s/1sk3QyyL) or [OneDrive](http://1drv.ms/23KkbTk) and extract the files to `caffe-windows_root/3rdparty/`. **Please don't forget to add the `./3rdparty/bin` folder to your environment variable `PATH`.**
 
@@ -29,13 +30,13 @@ Setup step:
 
 中文安装说明：http://blog.csdn.net/happynear/article/details/45372231
 
-Matlab Wrapper
-======
+### Matlab Wrapper
+
 Just replace the Matlab include and library path defined in the settings and compile.
 **Don't forget to add `./matlab` to your Matlab path.**
 
-Python Wrapper
-======
+### Python Wrapper
+
 Similar with Matlab, replace the python include and library path and compile.
 
 Most of the libraries listed in `./python/requirements.txt` can be installed by `pip install`. However, some of them cannot be installed so easily.
@@ -44,12 +45,12 @@ For protobuf, you may download the codes from https://github.com/google/protobuf
 
 For leveldb, I have created a repository https://github.com/happynear/py-leveldb-windows . Please follow the instructions in `README.md` to install it.
 
-MNIST example
-======
+### MNIST example
+
 Please download the mnist leveldb database from http://pan.baidu.com/s/1mgl9ndu and extract it to `./examples/mnist`. Then double click `./run_mnist.bat` to run the MNIST demo.
 
-Update log
-======
+## Update log
+
 2015/11/09 CuDNN v3 works well now.
 
 2015/09/14 Multi-GPU is supported now. 
@@ -58,14 +59,16 @@ WARNING: When you are using multiple gpus to train a model, please do not direct
 
 You can also press `Ctrl+Break` to save a model snapshot whenever you want during training.
 
-Acknowlegement
-======
-We greatly thank [Yangqing Jia](https://github.com/Yangqing) and [BVLC group](https://www.github.com/BVLC/caffe) for developing Caffe,
+## License and Citation
 
-[@niuzhiheng](https://github.com/niuzhiheng) for his contribution on the first generation of caffe-windows,
+Caffe is released under the [BSD 2-Clause license](https://github.com/BVLC/caffe/blob/master/LICENSE).
+The BVLC reference models are released for unrestricted use.
 
-[@ChenglongChen](https://github.com/ChenglongChen/batch_normalization) for his implementation of Batch Normalization,
+Please cite Caffe in your publications if it helps your research:
 
-[@jackculpepper](https://github.com/jackculpepper/caffe) for his implementation of locally-connected layer,
-
-and all people who have contributed to the caffe user group.
+    @article{jia2014caffe,
+      Author = {Jia, Yangqing and Shelhamer, Evan and Donahue, Jeff and Karayev, Sergey and Long, Jonathan and Girshick, Ross and Guadarrama, Sergio and Darrell, Trevor},
+      Journal = {arXiv preprint arXiv:1408.5093},
+      Title = {Caffe: Convolutional Architecture for Fast Feature Embedding},
+      Year = {2014}
+    }
