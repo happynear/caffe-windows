@@ -1,0 +1,76 @@
+from __future__ import print_function
+from caffe import layers as L, params as P, to_proto
+from caffe.proto import caffe_pb2
+
+# helper function for common structures
+
+def conv_factory(bottom, ks, nout, stride=1, pad=0):
+    conv = L.Convolution(bottom, kernel_size=ks, stride=stride,
+                                num_output=nout, pad=pad, bias_term=False)
+    batch_norm = L.BatchNorm(conv, in_place=True, param=[dict(lr_mult=0, decay_mult=0), dict(lr_mult=0, decay_mult=0), dict(lr_mult=0, decay_mult=0)])
+    scale = L.Scale(batch_norm, bias_term=True, in_place=True)
+    return scale
+
+def conv_factory_relu(bottom, ks, nout, stride=1, pad=0):
+    conv = L.Convolution(bottom, kernel_size=ks, stride=stride,
+                                num_output=nout, pad=pad, bias_term=False)
+    batch_norm = L.BatchNorm(conv, in_place=True, param=[dict(lr_mult=0, decay_mult=0), dict(lr_mult=0, decay_mult=0), dict(lr_mult=0, decay_mult=0)])
+    scale = L.Scale(batch_norm, bias_term=True, in_place=True)
+    relu = L.ReLU(scale, in_place=True)
+    return relu
+
+def residual_factory1(bottom, num_filter):
+    conv1 = conv_factory_relu(bottom, 3, num_filter, 1, 1);
+    conv2 = conv_factory(conv1, 3, num_filter, 1, 1);
+    residual = L.Eltwise(bottom, conv2, operation=P.Eltwise.SUM)
+    relu = L.ReLU(residual, in_place=True)
+    return relu
+
+def residual_factory_proj(bottom, num_filter, stride=2):
+    conv1 = conv_factory_relu(bottom, 3, num_filter, stride, 1);
+    conv2 = conv_factory(conv1, 3, num_filter, 1, 1);
+    proj = conv_factory(bottom, 1, num_filter, stride, 0);
+    residual = L.Eltwise(conv2, proj, operation=P.Eltwise.SUM)
+    relu = L.ReLU(residual, in_place=True)
+    return relu
+
+def max_pool(bottom, ks, stride=1):
+    return L.Pooling(bottom, pool=P.Pooling.MAX, kernel_size=ks, stride=stride)
+
+def resnet(train_lmdb, test_lmdb, batch_size=256, stages=[2, 2, 2, 2], first_output=32, include_acc=False):
+    # now, this code can't recognize include phase, so there will only be a TEST phase data layer
+    data, label = L.Data(source=train_lmdb, backend=P.Data.LMDB, batch_size=batch_size, ntop=2,
+        transform_param=dict(crop_size=227, mean_value=[104, 117, 123], mirror=True),
+        include=dict(phase=getattr(caffe_pb2, 'TRAIN')))
+    data, label = L.Data(source=test_lmdb, backend=P.Data.LMDB, batch_size=batch_size, ntop=2,
+        transform_param=dict(crop_size=227, mean_value=[104, 117, 123], mirror=True),
+        include=dict(phase=getattr(caffe_pb2, 'TEST')))
+
+    # the net itself
+    relu1 = conv_factory_relu(data, 3, 32, stride=2)
+    relu2 = conv_factory_relu(relu1, 3, 32, stride=2)
+    residual = max_pool(relu2, 3, stride=2)
+    
+    for i in stages[1:]:
+        for j in range(i):
+            if j==0:
+                if i==0:
+                    residual = residual_factory_proj(residual, first_output, 1)
+                else:
+                    residual = residual_factory_proj(residual, first_output, 2)
+            else:
+                residual = residual_factory1(residual, first_output)
+        first_output *= 2
+
+    glb_pool = L.Pooling(residual, pool=P.Pooling.AVE, global_pooling=True);
+    fc = L.InnerProduct(glb_pool, num_output=1000)
+    loss = L.SoftmaxWithLoss(fc, label)
+    acc = L.Accuracy(fc, label, include=dict(phase=getattr(caffe_pb2, 'TEST')))
+    return to_proto(loss, acc)
+
+def make_net():
+    with open('residual_train_test.prototxt', 'w') as f:
+        print(resnet('/path/to/caffe-train-lmdb', '/path/to/caffe-val-lmdb'), file=f)
+
+if __name__ == '__main__':
+    make_net()
