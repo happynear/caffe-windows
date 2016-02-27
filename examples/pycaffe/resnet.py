@@ -37,7 +37,7 @@ def residual_factory_proj(bottom, num_filter, stride=2):
 def max_pool(bottom, ks, stride=1):
     return L.Pooling(bottom, pool=P.Pooling.MAX, kernel_size=ks, stride=stride)
 
-def resnet(train_lmdb, test_lmdb, batch_size=256, stages=[2, 2, 2, 2], first_output=32, include_acc=False):
+def resnet(train_lmdb, test_lmdb, batch_size=256, stages=[2, 2, 2, 2], first_output=24, include_acc=False):
     # now, this code can't recognize include phase, so there will only be a TEST phase data layer
     data, label = L.Data(source=train_lmdb, backend=P.Data.LMDB, batch_size=batch_size, ntop=2,
         transform_param=dict(crop_size=227, mean_value=[104, 117, 123], mirror=True),
@@ -47,11 +47,12 @@ def resnet(train_lmdb, test_lmdb, batch_size=256, stages=[2, 2, 2, 2], first_out
         include=dict(phase=getattr(caffe_pb2, 'TEST')))
 
     # the net itself
-    relu1 = conv_factory_relu(data, 3, 32, stride=2)
-    relu2 = conv_factory_relu(relu1, 3, 32, stride=2)
+    relu1 = conv_factory_relu(data, 3, first_output, stride=1, pad=1)
+    relu2 = conv_factory_relu(relu1, 3, first_output, stride=1, pad=1)
     residual = max_pool(relu2, 3, stride=2)
     
     for i in stages[1:]:
+        first_output *= 2
         for j in range(i):
             if j==0:
                 if i==0:
@@ -60,7 +61,6 @@ def resnet(train_lmdb, test_lmdb, batch_size=256, stages=[2, 2, 2, 2], first_out
                     residual = residual_factory_proj(residual, first_output, 2)
             else:
                 residual = residual_factory1(residual, first_output)
-        first_output *= 2
 
     glb_pool = L.Pooling(residual, pool=P.Pooling.AVE, global_pooling=True);
     fc = L.InnerProduct(glb_pool, num_output=1000)
