@@ -59,12 +59,15 @@ layer {
   type: "BatchNorm"
   param {
     lr_mult: 0
+    decay_mult: 0
   } 
   param {
     lr_mult: 0
+    decay_mult: 0
   }
   param {
     lr_mult: 0
+    decay_mult: 0
   }
 }
 layer {
@@ -123,12 +126,15 @@ layer {
   type: "BatchNorm"
   param {
     lr_mult: 0
+    decay_mult: 0
   } 
   param {
     lr_mult: 0
+    decay_mult: 0
   }
   param {
     lr_mult: 0
+    decay_mult: 0
   }
 }
 layer {
