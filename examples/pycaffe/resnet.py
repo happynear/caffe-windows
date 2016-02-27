@@ -6,14 +6,16 @@ from caffe.proto import caffe_pb2
 
 def conv_factory(bottom, ks, nout, stride=1, pad=0):
     conv = L.Convolution(bottom, kernel_size=ks, stride=stride,
-                                num_output=nout, pad=pad, bias_term=False)
+                                num_output=nout, pad=pad, bias_term=False,
+                                param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=1, decay_mult=0)])
     batch_norm = L.BatchNorm(conv, in_place=True, param=[dict(lr_mult=0, decay_mult=0), dict(lr_mult=0, decay_mult=0), dict(lr_mult=0, decay_mult=0)])
     scale = L.Scale(batch_norm, bias_term=True, in_place=True)
     return scale
 
 def conv_factory_relu(bottom, ks, nout, stride=1, pad=0):
     conv = L.Convolution(bottom, kernel_size=ks, stride=stride,
-                                num_output=nout, pad=pad, bias_term=False)
+                                num_output=nout, pad=pad, bias_term=False,
+                                param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=1, decay_mult=0)])
     batch_norm = L.BatchNorm(conv, in_place=True, param=[dict(lr_mult=0, decay_mult=0), dict(lr_mult=0, decay_mult=0), dict(lr_mult=0, decay_mult=0)])
     scale = L.Scale(batch_norm, bias_term=True, in_place=True)
     relu = L.ReLU(scale, in_place=True)
