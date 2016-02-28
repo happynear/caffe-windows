@@ -6,14 +6,14 @@ from caffe.proto import caffe_pb2
 
 def conv_factory(bottom, ks, nout, stride=1, pad=0):
     conv = L.Convolution(bottom, kernel_size=ks, stride=stride,
-                                num_output=nout, pad=pad, bias_term=False)
+                                num_output=nout, pad=pad, bias_term=False, weight_filler=dict(type='msra'))
     batch_norm = L.BatchNorm(conv, in_place=True, param=[dict(lr_mult=0, decay_mult=0), dict(lr_mult=0, decay_mult=0), dict(lr_mult=0, decay_mult=0)])
     scale = L.Scale(batch_norm, bias_term=True, in_place=True)
     return scale
 
 def conv_factory_relu(bottom, ks, nout, stride=1, pad=0):
     conv = L.Convolution(bottom, kernel_size=ks, stride=stride,
-                                num_output=nout, pad=pad, bias_term=False)
+                                num_output=nout, pad=pad, bias_term=False, weight_filler=dict(type='msra'))
     batch_norm = L.BatchNorm(conv, in_place=True, param=[dict(lr_mult=0, decay_mult=0), dict(lr_mult=0, decay_mult=0), dict(lr_mult=0, decay_mult=0)])
     scale = L.Scale(batch_norm, bias_term=True, in_place=True)
     relu = L.ReLU(scale, in_place=True)
@@ -37,7 +37,7 @@ def residual_factory_proj(bottom, num_filter, stride=2):
 def max_pool(bottom, ks, stride=1):
     return L.Pooling(bottom, pool=P.Pooling.MAX, kernel_size=ks, stride=stride)
 
-def resnet(train_lmdb, test_lmdb, batch_size=256, stages=[2, 2, 2, 2], first_output=24, include_acc=False):
+def resnet(train_lmdb, test_lmdb, batch_size=256, stages=[2, 2, 2, 2], first_output=32, include_acc=False):
     # now, this code can't recognize include phase, so there will only be a TEST phase data layer
     data, label = L.Data(source=train_lmdb, backend=P.Data.LMDB, batch_size=batch_size, ntop=2,
         transform_param=dict(crop_size=227, mean_value=[104, 117, 123], mirror=True),
