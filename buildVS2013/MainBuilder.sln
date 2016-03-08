@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "caffe", "MSVC\MainBuilder.vcxproj", "{3FF425A9-4745-4889-B568-4BBCA2016D22}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "compute_image_mean", "compu
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "convert_mnist_data", "convert_mnist_data\convert_mnist_data.vcxproj", "{3A7FC59A-DA9C-4806-998B-66207DD91F7D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "create_cifar10", "create_cifar10\create_cifar10.vcxproj", "{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -142,6 +144,20 @@ Global
 		{3A7FC59A-DA9C-4806-998B-66207DD91F7D}.Release|Win32.Build.0 = Release|Win32
 		{3A7FC59A-DA9C-4806-998B-66207DD91F7D}.Release|x64.ActiveCfg = Release|x64
 		{3A7FC59A-DA9C-4806-998B-66207DD91F7D}.Release|x64.Build.0 = Release|x64
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Debug|Win32.Build.0 = Debug|Win32
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Debug|x64.ActiveCfg = Debug|x64
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Debug|x64.Build.0 = Debug|x64
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Release|Any CPU.ActiveCfg = Release|Win32
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Release|Win32.ActiveCfg = Release|Win32
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Release|Win32.Build.0 = Release|Win32
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Release|x64.ActiveCfg = Release|x64
+		{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

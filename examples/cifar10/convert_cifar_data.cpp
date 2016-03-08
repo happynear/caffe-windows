@@ -8,6 +8,10 @@
 
 #include <fstream>  // NOLINT(readability/streams)
 #include <string>
+#include <stdio.h>
+#if _MSC_VER
+#define snprintf _snprintf
+#endif
 
 #include "boost/scoped_ptr.hpp"
 #include "glog/logging.h"

@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>create_cifar10</ProjectName>
-    <ProjectGuid>{3A7FC59A-DA9C-4806-998B-66207DD91F7D}</ProjectGuid>
+    <ProjectGuid>{B750B2B8-6250-4C10-A7CB-9CBD871ED84B}</ProjectGuid>
     <RootNamespace>MainCaller</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -83,7 +83,7 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>../../examples/mnist/</OutDir>
+    <OutDir>..\..\examples\cifar10</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -166,7 +166,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <AdditionalIncludeDirectories>../../3rdparty/include;../../src;../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;NDEBUG;_CONSOLE;USE_CUDNN;USE_OPENCV;USE_LEVELDB;USE_LMDB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;NDEBUG;_CONSOLE;USE_OPENCV;USE_LEVELDB;USE_LMDB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
@@ -202,9 +202,6 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\examples\mnist\create_cifar10.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\caffelib\caffelib.vcxproj">
       <Project>{63a79297-9cc4-4081-adac-7f40ce965c95}</Project>
       <Private>false</Private>
@@ -213,6 +210,9 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\examples\cifar10\convert_cifar_data.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
