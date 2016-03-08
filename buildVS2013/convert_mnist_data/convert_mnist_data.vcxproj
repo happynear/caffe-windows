@@ -194,7 +194,7 @@
     </CudaCompile>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>compute_20,sm_20;compute_30,sm_30;compute_35,sm_35;compute_50,sm_50;</CodeGeneration>
+      <CodeGeneration>compute_20,sm_20;</CodeGeneration>
     </CudaCompile>
     <PreBuildEvent>
       <Command>
