@@ -7,8 +7,8 @@
 #include "caffe/syncedmem.hpp"
 #include "caffe/util/math_functions.hpp"
 #include "caffe/layers/hotspot_layer.hpp"
-
-#define GAUSSIAN(x0,y0,x,y) 1 / gaussian_std_ / gaussian_std_ * exp(-0.5 * (((x0)-(x)) * ((x0)-(x)) + ((y0)-(y)) * ((y0)-(y))) / gaussian_std_ / gaussian_std_)
+#define CV_PI 3.1415926535897932384626433832795
+#define GAUSSIAN(x0,y0,x,y) 0.5 / gaussian_std_ / gaussian_std_ / CV_PI * exp(-0.5 * (((x0)-(x)) * ((x0)-(x)) + ((y0)-(y)) * ((y0)-(y))) / gaussian_std_ / gaussian_std_)
 
 namespace caffe {
 
@@ -39,6 +39,7 @@ void HotspotLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
     width_ = bottom[1]->width();
   }
   top[0]->Reshape({ bottom[0]->num(), num_point, height_, width_ });
+  top[1]->Reshape({ bottom[0]->num(), 1 });
 }
 
 template <typename Dtype>
@@ -51,6 +52,7 @@ void HotspotLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   const int num = bottom[0]->num();
   Dtype temp;
   for (int n = 0; n < num; n++) {
+    top[1]->mutable_cpu_data()[n] = n;
     for (int i = 0; i < num_point; i++) {
       float p1 = (point_data[n * num_point * 2 + 2 * i] / (Dtype)data_width_ + (mean_removed_ ? 0.5 : 0)) * (Dtype)width_;
       float p2 = (point_data[n * num_point * 2 + 2 * i + 1] / (Dtype)data_height_ + (mean_removed_ ? 0.5 : 0)) * (Dtype)height_;

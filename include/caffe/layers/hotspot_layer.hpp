@@ -28,7 +28,7 @@ namespace caffe {
 
     virtual inline const char* type() const { return "Hotspot"; }
     virtual inline int MinBottomBlobs() const { return 1; }
-    virtual inline int ExactTopBlobs() const { return 1; }
+    virtual inline int ExactTopBlobs() const { return 2; }
 
   protected:
     virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,

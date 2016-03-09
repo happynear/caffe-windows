@@ -7,7 +7,8 @@
 
 #include "caffe/util/math_functions.hpp"
 #include "caffe/layers/hotspot_layer.hpp"
-#define GAUSSIAN(x0,y0,x,y) 1 / gaussian_std / gaussian_std * exp(-0.5 * (((x0)-(x)) * ((x0)-(x)) + ((y0)-(y)) * ((y0)-(y))) / gaussian_std / gaussian_std)
+#define CV_PI 3.1415926535897932384626433832795
+#define GAUSSIAN(x0,y0,x,y) 0.5 / gaussian_std / gaussian_std / CV_PI * exp(-0.5 * (((x0)-(x)) * ((x0)-(x)) + ((y0)-(y)) * ((y0)-(y))) / gaussian_std / gaussian_std)
 
 namespace caffe {
 
@@ -44,6 +45,10 @@ void HotspotLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   const Dtype* point_data = bottom[0]->gpu_data();
   const int num_point = bottom[0]->shape(1) / 2;
   const int num = bottom[0]->num();
+
+  for (int n = 0; n < num; n++) {
+    top[1]->mutable_gpu_data()[n] = n;
+  }
 
   HotspotFoward<Dtype> << <CAFFE_GET_BLOCKS(num * num_point * height_ * width_),
   CAFFE_CUDA_NUM_THREADS >> >(num, num_point, gaussian_std_,
