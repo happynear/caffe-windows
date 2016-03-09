@@ -24,6 +24,8 @@
 #include <string>
 
 #include "caffe/proto/caffe.pb.h"
+#include <../../buildVS2013/convert_mnist_data/strCoding.h>
+
 
 #if defined(USE_LEVELDB) && defined(USE_LMDB)
 
@@ -36,6 +38,8 @@ uint32_t swap_endian(uint32_t val) {
 	val = ((val << 8) & 0xFF00FF00) | ((val >> 8) & 0xFF00FF);
 	return (val << 16) | (val >> 16);
 }
+
+
 
 void convert_dataset(const char* image_filename, const char* label_filename,
 	const char* db_path, const string& db_backend) {
@@ -81,7 +85,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 	{
 		num_items = atoi(label_filename);
 		rows = 22;
-		cols = 22;
+		cols = 44;
 	}
 
 //title:
@@ -129,7 +133,8 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 
 	// Storing to db
 	char label;
-	char* pixels = new char[rows * cols];
+	unsigned char* tpixels = new unsigned char[rows * cols];
+	unsigned char* pixels = new unsigned char[rows * cols];
 	int count = 0;
 	const int kMaxKeyLength = 10;
 	char key_cstr[kMaxKeyLength];
@@ -137,6 +142,13 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 	int mpos=0;
 	int mpos2=0;
 	int label_i = 0;
+	int spos = 0;
+	int spos1 = 0;
+	int empty_line = 0;
+	//string keyword = "´ó¼ÒºÃ,»¶Ó­Äã";
+	strCoding cfm;
+	string Temps = "";
+	string Output = "";
 
 	Datum datum;
 	datum.set_channels(1);
@@ -145,44 +157,116 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 	LOG(INFO) << "A total of " << num_items << " items.";
 	LOG(INFO) << "Rows: " << rows << " Cols: " << cols;
 	string sline;
+	//char sentenc;
 	for (int item_id = 0; item_id < num_items; ++item_id) {
 
 		if (usesummary){
+			sline.clear();
 			getline(image_file, sline, '\n');
 			if (sline.length() < 2)
 				continue;
 			//3:1.92:
 			mpos = sline.find_first_of(':');
 			mpos2 = mpos;
-			if (mpos > 10 || mpos <= 0)
+			if (mpos > 2 || mpos <= 0)
 				continue;
 
 			if (strcmp(sline.substr(0, 5).c_str(), "title") != 0){
-				label_i = stoi(sline.substr(0, mpos));
-				if (sline.find_first_of(':', mpos + 1) < 10); {
+				try{
+					label_i = stoi(sline.substr(0, mpos));
+				}
+				catch (int i){
+					continue;
+				}
+				if (sline.find_first_of(':', mpos + 1) < 22); {
 					mpos2 = sline.find_first_of(':', mpos + 1);
 				}
 			}
 			else
 				label_i = 5;
 
-			mpos = sline.substr(mpos2 + 1).length();
-			if (mpos > rows*cols - 1)
-				mpos = rows*cols - 1;
-			else if (mpos < 10)
+
+			 if (sline.substr(mpos2 + 1).length() < 17)
 			{
-				if (num_items == 99999)//99999 just for testing
-					LOG(INFO) << " item_id:" << item_id <<" label:" << label_i << " str:" << sline.substr(mpos2 + 1) << " mpos2:" << mpos2;
+				if (num_items == 99)//99999 just for testing
+					LOG(INFO) << " item_id:" << item_id << " label:" << label_i << " str:" << sline.substr(mpos2 + 1) << " mpos2:" << mpos2;
 				continue;
 			}
+			 mpos = sline.substr(mpos2 + 1).length();
+			 if (mpos > rows*cols - 1)
+				 mpos = rows*cols - 1;
 
+
+			//cfm.UTF_8ToGB2312(Temps, (char *)sline.substr(mpos2 + 1).data(), strlen(sline.substr(mpos2 + 1).data()));
+			 Temps.clear();
+			 Temps = sline.substr(mpos2 + 1).data();
+			if (num_items == 99)//99999 just for testing
+			{
+				LOG(INFO) << " sline :" << sline.substr(mpos2 + 1).data();
+				//LOG(INFO) << " GB2312 Temps:" << Temps.data();
+			}
+
+			memset(tpixels, 0, rows*cols);
 			memset(pixels, 0, rows*cols);
-			memcpy(pixels, sline.substr(mpos2 + 1).c_str(),  mpos);
+
+			memcpy(tpixels, sline.substr(mpos2 + 1).c_str(), mpos);
+			spos1 = 0;
+			for (spos = 0; spos < rows*cols && spos1 < rows*cols; spos++){
+				
+				if (spos1 > 0){
+					if (spos1 % 2 == 1 && tpixels[spos]>=128)
+					{
+						if ((unsigned char)(tpixels[(spos - 1)])<128)
+						{
+							if (num_items == 99)//99999 just for testing
+							{
+								LOG(INFO) << "tpixels[spos-1]:" << tpixels[spos - 1] << " tpixels[spos ]:" << tpixels[spos];
+							}
+							//pixels[spos1] = tpixels[spos - 1]; 
+							spos1++;
+						}
+					}
+				}
+					/*
+				if (tpixels[spos] & 0x80==0){
+					spos++;
+					if (num_items == 99)//99999 just for testing
+					{
+						LOG(INFO) << "tpixels[spos-1]:" << tpixels[spos - 1] << " tpixels[spos ]:" << tpixels[spos];
+					}
+				}
+				*/
+				
+				
+				if (spos1!=0 && spos1%cols == 0){
+					empty_line++;						
+					spos1 += cols;
+				}
+
+				pixels[spos1] = tpixels[spos];
+				mpos2 = tpixels[spos];
+				spos1++;
+			}
+
+			if (num_items == 99)//99999 just for testing
+			{
+				memset(tpixels, 0, rows*cols);
+				for (spos = 0; spos < rows*cols; spos++){
+					if (pixels[spos] == 0)
+						tpixels[spos] = ' ';
+					else
+						tpixels[spos] = pixels[spos];
+				}
+				LOG(INFO) << "mpos:" << mpos<<" tpixels:" << tpixels;
+				//LOG(INFO) << " tpixels:" << (char *)(tpixels);
+				//LOG(INFO) << " pixels:" << pixels;
+			}
+
 			label =(char) label_i ;
 
 		}
 		else{
-			image_file.read(pixels, rows * cols);
+			image_file.read((char *)pixels, rows * cols);
 			label_file.read(&label, 1);
 		}
 		datum.set_data(pixels, rows*cols);
@@ -262,6 +346,12 @@ int main(int argc, char** argv) {
 	gflags::ParseCommandLineFlags(&argc, &argv, true);
 
 	const string& db_backend = FLAGS_backend;
+	/*
+	argc = 4;
+	argv[1] = "F:\\website\\summary_out2";
+	argv[2] = "99";
+	argv[3] = "F:\\caffe-windows\\examples\\mnist\\mnist-test-leveldb";
+	*/
 
 	if (argc != 4) {
 		gflags::ShowUsageWithFlagsRestrict(argv[0],

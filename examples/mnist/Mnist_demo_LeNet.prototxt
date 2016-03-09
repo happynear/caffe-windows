@@ -7,10 +7,10 @@ layer {
   data_param {
     source: "examples/mnist/mnist-train-leveldb"
     backend: LEVELDB
-    batch_size: 64
+    batch_size: 100
   }
   transform_param {
-    scale: 0.00390625
+    scale: 1
   }
   include: { phase: TRAIN }
 }
@@ -25,7 +25,7 @@ layer {
     batch_size: 100
   }
   transform_param {
-    scale: 0.00390625
+    scale: 1
   }
   include: { phase: TEST }
 }
@@ -42,8 +42,8 @@ layer {
   }
   convolution_param {
     num_output: 20
-    kernel_size: 5
-    stride: 1
+    kernel_size: 2
+    stride: 2
     weight_filler {
       type: "xavier"
     }
@@ -108,8 +108,8 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 50
-    kernel_size: 5
+    num_output: 500
+    kernel_size: 1
     stride: 1
     weight_filler {
       type: "xavier"
