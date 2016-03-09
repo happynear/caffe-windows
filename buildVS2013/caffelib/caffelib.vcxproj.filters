@@ -300,6 +300,9 @@
     <ClCompile Include="..\..\src\caffe\layers\base_data_layer.cpp">
       <Filter>layers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\hotspot_layer.cpp">
+      <Filter>layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\caffe\proto\caffe.pb.h">
@@ -602,6 +605,9 @@
     <ClInclude Include="..\..\include\caffe\net.hpp">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\caffe\layers\hotspot_layer.hpp">
+      <Filter>header\layers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="header">
@@ -827,6 +833,9 @@
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\solvers\nesterov_solver.cu">
       <Filter>solvers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\hotspot_layer.cu">
+      <Filter>layers</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

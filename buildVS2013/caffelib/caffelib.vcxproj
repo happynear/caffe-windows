@@ -245,6 +245,7 @@
     <ClCompile Include="..\..\src\caffe\layers\hdf5_data_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\hdf5_output_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\hinge_loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\hotspot_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\im2col_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\image_data_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\infogain_loss_layer.cpp" />
@@ -355,6 +356,7 @@
     <ClInclude Include="..\..\include\caffe\layers\hdf5_data_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\hdf5_output_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\hinge_loss_layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\layers\hotspot_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\im2col_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\image_data_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\infogain_loss_layer.hpp" />
@@ -443,6 +445,7 @@
     <CudaCompile Include="..\..\src\caffe\layers\gram_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\hdf5_data_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\hdf5_output_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\hotspot_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\im2col_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\inner_product_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\insanity_layer.cu" />

@@ -307,7 +307,7 @@ message ParamSpec {
 // NOTE
 // Update the next available ID when you add a new LayerParameter field.
 //
-// LayerParameter next available layer-specific ID: 143 (last added: scale_param)
+// LayerParameter next available layer-specific ID: 152 (last added: hotspot_param)
 message LayerParameter {
   optional string name = 1; // the layer name
   optional string type = 2; // the layer type
@@ -403,6 +403,7 @@ message LayerParameter {
   optional EltwiseAffineParameter eltwise_affine_param = 145;
   optional SubRegionParameter sub_region_param = 146;
   optional NoiseParameter noise_param = 147;
+  optional HotspotParameter hotspot_param = 151;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1437,4 +1438,13 @@ message NoiseParameter {
   optional float gaussian_std = 1 [default = 0];
   optional float uniform_range = 2 [default = 0];
   optional float bias = 3 [default = 0];
+}
+
+message HotspotParameter {
+  optional float gaussian_std = 1 [default = 1];
+  optional uint32 output_height = 2 [default = 0];
+  optional uint32 output_width = 3 [default = 0];
+  optional uint32 data_height = 4 [default = 0];
+  optional uint32 data_width = 5 [default = 0];
+  optional bool mean_removed = 6 [default = true];
 }

@@ -77,7 +77,7 @@ namespace caffe {
     cv::warpAffine(input_image, temp_, M, cv::Size(new_width, new_height),
                    cv::INTER_LINEAR,
                    cv::BORDER_CONSTANT,
-                   cv::Scalar(123.68, 116.779, 103.939));
+                   cv::Scalar(128));
     for (int j = 0; j < point_count; j++) {
       Dtype x = M.at<float>(0, 0)*points[j * 2] + M.at<float>(0, 1) * points[j * 2 + 1] + M.at<float>(0, 2);
       Dtype y = M.at<float>(1, 0)*points[j * 2] + M.at<float>(1, 1) * points[j * 2 + 1] + M.at<float>(1, 2);
@@ -263,6 +263,9 @@ namespace caffe {
               || prefetch_label[point_id * 2 + 1] < -0.45 * new_height || prefetch_label[point_id * 2 + 1] > 0.45 * new_height) {
             valid_sample = false;
           }
+        }
+        if (!valid_sample) {
+          LOG(INFO) << "skip " << lines_[lines_id_].first;
         }
         // go to the next iter
         lines_id_++;
