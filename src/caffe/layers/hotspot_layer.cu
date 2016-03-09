@@ -46,10 +46,6 @@ void HotspotLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   const int num_point = bottom[0]->shape(1) / 2;
   const int num = bottom[0]->num();
 
-  for (int n = 0; n < num; n++) {
-    top[1]->mutable_gpu_data()[n] = n;
-  }
-
   HotspotFoward<Dtype> << <CAFFE_GET_BLOCKS(num * num_point * height_ * width_),
   CAFFE_CUDA_NUM_THREADS >> >(num, num_point, gaussian_std_,
     data_height_, data_width_, mean_removed_,

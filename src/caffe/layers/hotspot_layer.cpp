@@ -52,7 +52,6 @@ void HotspotLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   const int num = bottom[0]->num();
   Dtype temp;
   for (int n = 0; n < num; n++) {
-    top[1]->mutable_cpu_data()[n] = n;
     for (int i = 0; i < num_point; i++) {
       float p1 = (point_data[n * num_point * 2 + 2 * i] / (Dtype)data_width_ + (mean_removed_ ? 0.5 : 0)) * (Dtype)width_;
       float p2 = (point_data[n * num_point * 2 + 2 * i + 1] / (Dtype)data_height_ + (mean_removed_ ? 0.5 : 0)) * (Dtype)height_;
