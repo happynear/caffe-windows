@@ -39,7 +39,6 @@ void HotspotLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
     width_ = bottom[1]->width();
   }
   top[0]->Reshape({ bottom[0]->num(), num_point, height_, width_ });
-  top[1]->Reshape({ bottom[0]->num(), 1 });
 }
 
 template <typename Dtype>
