@@ -206,7 +206,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 			//cfm.UTF_8ToGB2312(Temps, (char *)sline.substr(mpos2 + 1).data(), strlen(sline.substr(mpos2 + 1).data()));
 			 Temps.clear();
 			 Temps = sline.substr(mpos2 + 1).data();
-			if (num_items == 99)//99999 just for testing
+			if (num_items == 999)//99999 just for testing
 			{
 				LOG(INFO) << " sline :" << sline.substr(mpos2 + 1).data();
 				//LOG(INFO) << " GB2312 Temps:" << Temps.data();
@@ -218,7 +218,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 			memcpy(tpixels, sline.substr(mpos2 + 1).c_str(), mpos);
 			spos1 = 0;
 			for (spos = 0; spos < rows*cols; spos++){
-
+				/*
 				if (spos1 > 0){
 					if (spos1 % 2 == 1 && tpixels[spos] >= 128)
 					{
@@ -233,7 +233,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 						}
 					}
 				}
-				/*
+				
 			if (tpixels[spos] & 0x80==0){
 			spos++;
 			if (num_items == 99)//99999 just for testing
@@ -249,13 +249,14 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 			*/
 				//高字节从B0-F7，低字节从A1-FE
 				//176-247 ，161 - 254  // 72 x 94
-				if (spos1 % 2 == 1 && tpixels[spos] >= 128)
-					if (tpixels[(spos - 1)] > 128){
+				if (tpixels[spos] >= 176)
+					if (tpixels[spos + 1] >= 161){
 						int whigh = tpixels[spos] - 176;
-						int wlow = tpixels[spos - 1] - 161;
-						if (whigh >= 0 && whigh <= 72 && wlow >= 0 && wlow <= 94){
+						int wlow = tpixels[spos + 1] - 161;
+						if (whigh >= 0 && whigh <= rows1 && wlow >= 0 && wlow <= cols1){
 							if (pixels[whigh*cols1 + wlow] < 255){
 								pixels[whigh*cols1 + wlow] += 1;
+								spos++;
 							}
 						}
 					}
@@ -272,11 +273,12 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 				for (spos = 0; spos < rows1*cols1; spos++){
 					if (pixels[spos] > 0){
 						
-						tpixels[spos1++] = (uint8_t)(spos / 256 + 176);
-						tpixels[spos1++] = (uint8_t)((uint32_t)spos & 0x000000FF + 161);
+						tpixels[spos1++] = (uint8_t)(spos / cols1 + 176);
+						tpixels[spos1++] = (uint8_t)((uint8_t)(spos % cols1) + 161);
+						
 					}
 				}
-				LOG(INFO) << "mpos:" << mpos<<" tpixels:" << tpixels;
+				LOG(INFO) << "spos1:" << spos1 << " tpixels:" << tpixels;
 				//LOG(INFO) << " tpixels:" << (char *)(tpixels);
 				//LOG(INFO) << " pixels:" << pixels;
 			}

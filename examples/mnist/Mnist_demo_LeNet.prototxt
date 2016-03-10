@@ -7,7 +7,7 @@ layer {
   data_param {
     source: "examples/mnist/mnist-train-leveldb"
     backend: LEVELDB
-    batch_size: 100
+    batch_size: 400
   }
   transform_param {
     scale: 1
@@ -29,61 +29,11 @@ layer {
   }
   include: { phase: TEST }
 }
-layer {
-  name: "conv1"
-  type: "Convolution"
-  bottom: "data"
-  top: "conv1"
-  param {
-    lr_mult: 1
-  }
-  param {
-    lr_mult: 2
-  }
-  convolution_param {
-    num_output: 6768
-    kernel_size: 1
-    stride: 1
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-    }
-  }
-}
-layer {
-  bottom: "conv1"
-  top: "conv1"
-  name: "bn_conv1"
-  type: "BatchNorm"
-  param {
-    lr_mult: 0
-    decay_mult: 0
-  } 
-  param {
-    lr_mult: 0
-    decay_mult: 0
-  }
-  param {
-    lr_mult: 0
-    decay_mult: 0
-  }
-}
-layer {
-  bottom: "conv1"
-  top: "conv1"
-  name: "scale_conv1"
-  type: "Scale"
-  scale_param {
-    bias_term: true
-  }
-}
-
+ 
 layer {
   name: "ip1"
   type: "InnerProduct"
-  bottom: "conv1"
+  bottom: "data"
   top: "ip1"
   param {
     lr_mult: 1
@@ -92,7 +42,7 @@ layer {
     lr_mult: 2
   }
   inner_product_param {
-    num_output: 600
+    num_output: 3000
     weight_filler {
       type: "xavier"
     }
@@ -129,7 +79,7 @@ layer {
     lr_mult: 2
   }
   inner_product_param {
-    num_output: 4000
+    num_output: 10000
     weight_filler {
       type: "xavier"
     }
