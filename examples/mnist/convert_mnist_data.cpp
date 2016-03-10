@@ -62,6 +62,8 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 	uint32_t num_labels;
 	uint32_t rows;
 	uint32_t cols;
+	uint32_t rows1;
+	uint32_t cols1;
 
 	if (!usesummary)
 	{
@@ -86,6 +88,10 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 		num_items = atoi(label_filename);
 		rows = 22;
 		cols = 44;
+		//高字节从B0-F7，低字节从A1-FE
+		//176-247 ，161 - 254
+		rows1 = 72;
+		cols1 = 94;
 	}
 
 //title:
@@ -134,7 +140,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 	// Storing to db
 	char label;
 	unsigned char* tpixels = new unsigned char[rows * cols];
-	unsigned char* pixels = new unsigned char[rows * cols];
+	unsigned char* pixels = new unsigned char[rows1 * cols1];
 	int count = 0;
 	const int kMaxKeyLength = 10;
 	char key_cstr[kMaxKeyLength];
@@ -152,10 +158,10 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 
 	Datum datum;
 	datum.set_channels(1);
-	datum.set_height(rows);
-	datum.set_width(cols);
+	datum.set_height(rows1);
+	datum.set_width(cols1);
 	LOG(INFO) << "A total of " << num_items << " items.";
-	LOG(INFO) << "Rows: " << rows << " Cols: " << cols;
+	LOG(INFO) << "Rows: " << rows1 << " Cols: " << cols1;
 	string sline;
 	//char sentenc;
 	for (int item_id = 0; item_id < num_items; ++item_id) {
@@ -207,55 +213,68 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 			}
 
 			memset(tpixels, 0, rows*cols);
-			memset(pixels, 0, rows*cols);
+			memset(pixels, 0, rows1*cols1);
 
 			memcpy(tpixels, sline.substr(mpos2 + 1).c_str(), mpos);
 			spos1 = 0;
-			for (spos = 0; spos < rows*cols && spos1 < rows*cols; spos++){
-				
+			for (spos = 0; spos < rows*cols; spos++){
+
 				if (spos1 > 0){
-					if (spos1 % 2 == 1 && tpixels[spos]>=128)
+					if (spos1 % 2 == 1 && tpixels[spos] >= 128)
 					{
-						if ((unsigned char)(tpixels[(spos - 1)])<128)
+						if ((unsigned char)(tpixels[(spos - 1)]) < 128)
 						{
 							if (num_items == 99)//99999 just for testing
 							{
-								LOG(INFO) << "tpixels[spos-1]:" << tpixels[spos - 1] << " tpixels[spos ]:" << tpixels[spos];
+								//LOG(INFO) << "tpixels[spos-1]:" << tpixels[spos - 1] << " tpixels[spos ]:" << tpixels[spos];
 							}
 							//pixels[spos1] = tpixels[spos - 1]; 
 							spos1++;
 						}
 					}
 				}
-					/*
-				if (tpixels[spos] & 0x80==0){
-					spos++;
-					if (num_items == 99)//99999 just for testing
-					{
-						LOG(INFO) << "tpixels[spos-1]:" << tpixels[spos - 1] << " tpixels[spos ]:" << tpixels[spos];
-					}
-				}
-				*/
-				
-				
-				if (spos1!=0 && spos1%cols == 0){
-					empty_line++;						
-					spos1 += cols;
-				}
+				/*
+			if (tpixels[spos] & 0x80==0){
+			spos++;
+			if (num_items == 99)//99999 just for testing
+			{
+			LOG(INFO) << "tpixels[spos-1]:" << tpixels[spos - 1] << " tpixels[spos ]:" << tpixels[spos];
+			}
+			}
 
-				pixels[spos1] = tpixels[spos];
-				mpos2 = tpixels[spos];
+			if (spos1!=0 && spos1%cols == 0){
+			empty_line++;
+			spos1 += cols;
+			}
+			*/
+				//高字节从B0-F7，低字节从A1-FE
+				//176-247 ，161 - 254  // 72 x 94
+				if (spos1 % 2 == 1 && tpixels[spos] >= 128)
+					if (tpixels[(spos - 1)] > 128){
+						int whigh = tpixels[spos] - 176;
+						int wlow = tpixels[spos - 1] - 161;
+						if (whigh >= 0 && whigh <= 72 && wlow >= 0 && wlow <= 94){
+							if (pixels[whigh*cols1 + wlow] < 255){
+								pixels[whigh*cols1 + wlow] += 1;
+							}
+						}
+					}
+
+				//pixels[spos1] = tpixels[spos];
+				//mpos2 = tpixels[spos];
 				spos1++;
 			}
 
-			if (num_items == 99)//99999 just for testing
+			if (num_items == 999)//99999 just for testing
 			{
 				memset(tpixels, 0, rows*cols);
-				for (spos = 0; spos < rows*cols; spos++){
-					if (pixels[spos] == 0)
-						tpixels[spos] = ' ';
-					else
-						tpixels[spos] = pixels[spos];
+				spos1 = 0;
+				for (spos = 0; spos < rows1*cols1; spos++){
+					if (pixels[spos] > 0){
+						
+						tpixels[spos1++] = (uint8_t)(spos / 256 + 176);
+						tpixels[spos1++] = (uint8_t)((uint32_t)spos & 0x000000FF + 161);
+					}
 				}
 				LOG(INFO) << "mpos:" << mpos<<" tpixels:" << tpixels;
 				//LOG(INFO) << " tpixels:" << (char *)(tpixels);
@@ -269,9 +288,9 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 			image_file.read((char *)pixels, rows * cols);
 			label_file.read(&label, 1);
 		}
-		datum.set_data(pixels, rows*cols);
+		datum.set_data(pixels, rows1*cols1);
 		datum.set_label(label);
-		sprintf_s(key_cstr, kMaxKeyLength, "%08d", item_id);
+		sprintf_s(key_cstr, kMaxKeyLength, "%09d", item_id);
 		datum.SerializeToString(&value);
 		string keystr(key_cstr);
 
