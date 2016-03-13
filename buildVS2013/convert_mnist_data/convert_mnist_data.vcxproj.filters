@@ -2,9 +2,5 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\examples\mnist\convert_mnist_data.cpp" />
-    <ClCompile Include="strCoding.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="strCoding.h" />
   </ItemGroup>
 </Project>

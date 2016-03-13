@@ -24,7 +24,7 @@
 #include <string>
 
 #include "caffe/proto/caffe.pb.h"
-#include <../../buildVS2013/convert_mnist_data/strCoding.h>
+//#include <../../buildVS2013/convert_mnist_data/strCoding.h>
 
 
 #if defined(USE_LEVELDB) && defined(USE_LMDB)
@@ -152,7 +152,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 	int spos1 = 0;
 	int empty_line = 0;
 	//string keyword = "´ó¼ÒºÃ,»¶Ó­Äã";
-	strCoding cfm;
+	//strCoding cfm;
 	string Temps = "";
 	string Output = "";
 
@@ -189,7 +189,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 				}
 			}
 			else
-				label_i = 5;
+				continue;
 
 
 			 if (sline.substr(mpos2 + 1).length() < 17)

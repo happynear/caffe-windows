@@ -203,7 +203,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\examples\mnist\convert_mnist_data.cpp" />
-    <ClCompile Include="strCoding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\caffelib\caffelib.vcxproj">
@@ -214,9 +213,6 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="strCoding.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -7,7 +7,7 @@ layer {
   data_param {
     source: "examples/mnist/mnist-train-leveldb"
     backend: LEVELDB
-    batch_size: 400
+    batch_size: 100
   }
   transform_param {
     scale: 1
@@ -42,7 +42,7 @@ layer {
     lr_mult: 2
   }
   inner_product_param {
-    num_output: 3000
+    num_output: 4000
     weight_filler {
       type: "xavier"
     }
@@ -57,15 +57,7 @@ layer {
   bottom: "ip1"
   top: "ip1"
 }
-layer {
-  name: "drop1"
-  type: "Dropout"
-  bottom: "ip1"
-  top: "ip1"
-  dropout_param {
-		dropout_ratio:0.5
-    }
-}
+ 
 
 layer {
   name: "ip12"
@@ -79,7 +71,7 @@ layer {
     lr_mult: 2
   }
   inner_product_param {
-    num_output: 10000
+    num_output: 8000
     weight_filler {
       type: "xavier"
     }
