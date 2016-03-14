@@ -41,13 +41,15 @@ uint32_t swap_endian(uint32_t val) {
 
 
 
-void convert_dataset(const char* image_filename, const char* label_filename,
+void convert_dataset(const char* image_filename, const char* label_filename, const char* limit,
 	const char* db_path, const string& db_backend) {
 	// Open files
 
-	bool usesummary = atoi(label_filename) > 1;// strcmp(label_filename, "summary") == 0;
+	bool usesummary = atoi(limit) > 1;// strcmp(label_filename, "summary") == 0;
 	std::ifstream image_file(image_filename, std::ios::in | std::ios::binary);
 	std::ifstream label_file;
+	int limit_num = atoi(limit);
+	int start_num = atoi(label_filename);
 	if (!usesummary){
 		std::ifstream label_file(label_filename, std::ios::in | std::ios::binary);
 		CHECK(label_file) << "Unable to open file " << label_filename;
@@ -85,7 +87,9 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 	}
 	else
 	{
-		num_items = atoi(label_filename);
+		//start_num = atoi(label_filename);
+		num_items = limit_num;
+		atoi(label_filename);
 		rows = 22;
 		cols = 44;
 		//高字节从B0-F7，低字节从A1-FE
@@ -164,11 +168,13 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 	LOG(INFO) << "Rows: " << rows1 << " Cols: " << cols1;
 	string sline;
 	//char sentenc;
-	for (int item_id = 0; item_id < num_items; ++item_id) {
-
+	for (int item_id = 0; item_id < start_num + num_items; ++item_id) {
+		
 		if (usesummary){
 			sline.clear();
 			getline(image_file, sline, '\n');
+			if (item_id < start_num)
+				continue;
 			if (sline.length() < 2)
 				continue;
 			//3:1.92:
@@ -374,13 +380,13 @@ int main(int argc, char** argv) {
 	argv[3] = "F:\\caffe-windows\\examples\\mnist\\mnist-test-leveldb";
 	*/
 
-	if (argc != 4) {
+	if (argc != 5) {
 		gflags::ShowUsageWithFlagsRestrict(argv[0],
 			"examples/mnist/convert_mnist_data");
 	}
 	else {
 		google::InitGoogleLogging(argv[0]);
-		convert_dataset(argv[1], argv[2], argv[3], db_backend);
+		convert_dataset(argv[1], argv[2], argv[3], argv[4], db_backend);
 	}
 	return 0;
 }

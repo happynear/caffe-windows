@@ -1,13 +1,13 @@
 name: "LeNet"
 layer {
-  name: "mnist"
+  name: "GO"
   type: "Data"
   top: "data"
   top: "label"
   data_param {
-    source: "examples/mnist/mnist-train-leveldb"
+    source: "examples/GO/GO-train-leveldb"
     backend: LEVELDB
-    batch_size: 100
+    batch_size: 200
   }
   transform_param {
     scale: 1
@@ -15,14 +15,14 @@ layer {
   include: { phase: TRAIN }
 }
 layer {
-  name: "mnist"
+  name: "GO"
   type: "Data"
   top: "data"
   top: "label"
   data_param {
-    source: "examples/mnist/mnist-test-leveldb"
+    source: "examples/GO/GO-test-leveldb"
     backend: LEVELDB
-    batch_size: 1
+    batch_size: 100
   }
   transform_param {
     scale: 1
@@ -71,7 +71,7 @@ layer {
     lr_mult: 2
   }
   inner_product_param {
-    num_output: 8000
+    num_output: 2000
     weight_filler {
       type: "xavier"
     }
@@ -107,7 +107,7 @@ layer {
     lr_mult: 2
   }
   inner_product_param {
-    num_output: 20
+    num_output: 361
     weight_filler {
       type: "xavier"
     }

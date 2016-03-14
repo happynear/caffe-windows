@@ -17,7 +17,7 @@ weight_decay: 0.0005
 #gamma: 0.1
 #stepsize: 100000
 lr_policy: "inv"
-gamma: 0.00007
+gamma: 0.0002
 power: 0.75
 # Display every 100 iterations
 display: 20
@@ -28,3 +28,4 @@ snapshot: 500
 snapshot_prefix: "examples/mnist/lenet"
 # solver mode: CPU or GPU
 solver_mode: GPU
+debug_info: true
