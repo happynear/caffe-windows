@@ -666,7 +666,9 @@ void Net<Dtype>::ForwardDebugInfo(const int layer_id) {
 			<< "    [Forward] "
 			<< "Layer " << layer_names_[layer_id]
 			<< ", top blob " << blob_name
-			<< " data: " << data_abs_val_mean;
+			<< " data: " << data_abs_val_mean
+			<< " xx " << (int)round(data_abs_val_mean) % 19 + 1
+			<< " yy " << (int)round(data_abs_val_mean) / 19 + 1;
 	}
   }
   return;

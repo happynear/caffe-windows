@@ -42,7 +42,7 @@ layer {
     lr_mult: 2
   }
   inner_product_param {
-    num_output: 4000
+    num_output: 7700
     weight_filler {
       type: "xavier"
     }
@@ -71,7 +71,7 @@ layer {
     lr_mult: 2
   }
   inner_product_param {
-    num_output: 2000
+    num_output: 2900
     weight_filler {
       type: "xavier"
     }
