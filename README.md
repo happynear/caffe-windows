@@ -1,3 +1,6 @@
+围棋 release 测试 
+https://github.com/youkpan/caffe-windows-1/releases
+
 Forked from https://www.github.com/BVLC/caffe master branch in 2016/02/04 . Next update time may be around 2016/05/01 .
 
 for hayoou.com deep learning.
