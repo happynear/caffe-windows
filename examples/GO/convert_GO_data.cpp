@@ -577,17 +577,23 @@ void convert_dataset(const char* image_filename, const char* label_filename, con
 								xx = 10;
 								yy = 10;
 								memset(tpixels, 0, rows1*cols1);
-								memcpy(tpixels, pixels, rows1*cols1);
+								
 								for (int ii = 0; ii < cols1/2; ii++)
 									for (int jj = 0; jj < rows1; jj++)
+
 										for (int ii2 = cols1 / 2; ii2 < cols1; ii2++)
 											for (int jj2 = 0; jj2 < rows1; jj2++)
-												if (pixels[jj*cols1 + ii] != 1 && pixels[jj2*cols1 + ii2 + cols1 / 2] != 1)
+												if (pixels[jj*cols1 + ii] ==0 && pixels[jj2*cols1 + ii2 + cols1 / 2] ==0)
 												{
+													if (( ii2 % (cols1 / 2) == ii) && jj == jj2)
+														continue;
+													memcpy(tpixels, pixels, rows1*cols1);
+
 													tpixels[jj*cols1 + ii] = 1;
 													tpixels[jj2*cols1 + ii2 + cols1 / 2] = 1;
 													label = jj*cols1 + ii;
 													datum.set_data(tpixels, rows1*cols1);
+
 									datum.set_label(label);
 									sprintf_s(key_cstr, kMaxKeyLength, "%09d", item_id);
 									item_id++;
