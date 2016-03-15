@@ -1,0 +1,1 @@
+.\3rdparty\bin\caffe.exe train --solver=examples\GO\lenet_solver.prototxt  --snapshot=examples\GO\lenet_iter_24000.solverstate

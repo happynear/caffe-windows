@@ -653,22 +653,126 @@ void Net<Dtype>::InputDebugInfo(const int input_id) {
       << "    [Forward] "
       << "Input " << blob_name << " data: " << data_abs_val_mean;
 }
+ 
+
+//template <>
+//float * getdata<float>(const int n, const float* x) {
+//	return x;
+//}
+//
+//template <>
+//float * getdata<float>(const int n, const double* x) {
+//	float tmp[n];
+//	for (int i; i < n; i++)
+//		tmp[i] = (float)x[i];
+//	return tmp;
+//}
+
 
 template <typename Dtype>
 void Net<Dtype>::ForwardDebugInfo(const int layer_id) {
+	static int  data[361];
+	int  order[361];
+	int  order1[361];
+	uint64_t sum=0;
+	int tmp = 0;
+
   for (int top_id = 0; top_id < top_vecs_[layer_id].size(); ++top_id) {
     const Blob<Dtype>& blob = *top_vecs_[layer_id][top_id];
     const string& blob_name = blob_names_[top_id_vecs_[layer_id][top_id]];
-    const Dtype data_abs_val_mean = (blob.asum_data() / blob.count());
+	Dtype data_abs_val_mean=0;
+	Dtype * mdata;
+	//Dtype * mdata1;
+	float fdata;
+
 	if (blob_name == "label")
-	{ 
+	{
+		if (blob.count() > 1)
+		{
+			//LOG_IF(INFO, Caffe::root_solver()) << "check data";
+			if (!blob.data()) { return; }
+			switch (blob.data()->head()) {
+			case SyncedMemory::HEAD_AT_CPU:
+				mdata = (Dtype *)blob.cpu_data();
+				//mdata1 = (Dtype *)mdata;
+				break;
+				//LOG_IF(INFO, Caffe::root_solver()) << "cpu_data";
+			case SyncedMemory::HEAD_AT_GPU:
+			case SyncedMemory::SYNCED:
+#ifndef CPU_ONLY
+			{
+				mdata = (Dtype *)blob.gpu_data();
+				//mdata1 = (Dtype *)mdata;
+				//LOG_IF(INFO, Caffe::root_solver()) << "gpu_data";
+				break;
+			}
+#else
+				NO_GPU;
+#endif
+			case SyncedMemory::UNINITIALIZED:
+				LOG_IF(INFO, Caffe::root_solver()) << "UNINITIALIZED";
+				return;
+			default:
+				LOG(FATAL) << "Unknown SyncedMemory head state: " << blob.data()->head();
+			}
+
+			LOG_IF(INFO, Caffe::root_solver()) << " start sum";
+
+			for (int i = 0; i < blob.count(); i++)
+			{
+				//const int n, const float* x
+				//mdata.next;
+				fdata = (float)mdata[i];
+				data[(int)round(fdata)]++;
+			}
+			//data_abs_val_mean = (int)round(mdata[blob.count()-1]);
+		}
+		else{
+			 Dtype data_abs_val_mean = (blob.asum_data() / blob.count());
+			data[(int)round(data_abs_val_mean)] ++;
+		}
+		for (int i = 0; i < 361; i++)
+		{
+			sum += data[i];
+			order1[i] = i;
+		}
+
+		memcpy(order,data,361);
+		LOG_IF(INFO, Caffe::root_solver()) << " satart order";
+		for (int i = 0; i < 361; i++)
+		{
+			for (int j = i + 1; j < 361; j++)
+			{
+
+				if (order[i] < order[j])
+				{
+					tmp = order[j];
+					order[j] = order[i];
+					order[i] = tmp;
+
+					tmp = order1[j];
+					order1[j] = order1[i];
+					order1[i] = tmp;
+				}
+
+			}
+
+		}
+
 		LOG_IF(INFO, Caffe::root_solver())
-			<< "    [Forward] "
-			<< "Layer " << layer_names_[layer_id]
-			<< ", top blob " << blob_name
-			<< " data: " << data_abs_val_mean
-			<< " xx " << (int)round(data_abs_val_mean) % 19 + 1
-			<< " yy " << (int)round(data_abs_val_mean) / 19 + 1;
+			//<< "    [Forward] "
+			//<< "Layer " << layer_names_[layer_id]
+			//<< ", top blob " << blob_name
+			<< " data_abs_val_mean: " << data_abs_val_mean;
+
+		for (int i = 0; i < 7; i++)
+		{
+
+			LOG_IF(INFO, Caffe::root_solver())
+				<< " data: " << data[order1[i]] << " " << data[order1[i]] * 100 / sum << "% "
+				<< " xx " << (int)round(data_abs_val_mean) % 19 + 1 
+				<< " yy " << (int)round(data_abs_val_mean) / 19 + 1;
+		}
 	}
   }
   return;

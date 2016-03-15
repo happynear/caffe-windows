@@ -7,7 +7,7 @@ layer {
   data_param {
     source: "examples/GO/GO-train-leveldb"
     backend: LEVELDB
-    batch_size: 200
+    batch_size: 100
   }
   transform_param {
     scale: 1
