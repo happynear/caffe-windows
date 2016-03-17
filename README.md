@@ -1,4 +1,10 @@
+围棋 release 测试 
+https://github.com/youkpan/caffe-windows-1/releases
+
 Forked from https://www.github.com/BVLC/caffe master branch in 2016/02/04 . Next update time may be around 2016/05/01 .
+
+for hayoou.com deep learning.
+Changed for gen mnist bat ,and remove USE_CUDNN define.
 
 **Good News:** Microsoft has created a repository of caffe windows version in https://github.com/Microsoft/caffe . Their solution may be more flexible and maintainable. I suggest all of you to try it.
 

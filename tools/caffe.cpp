@@ -48,6 +48,10 @@ DEFINE_string(sighup_effect, "snapshot",
              "Optional; action to take when a SIGHUP signal is received: "
              "snapshot, stop or none.");
 
+DEFINE_string(debug, "false",
+	"is output debug or not "
+	"false");
+
 // A simple registry for caffe commands.
 typedef int (*BrewFunction)();
 typedef std::map<caffe::string, BrewFunction> BrewMap;
@@ -248,7 +252,10 @@ int test() {
   }
   // Instantiate the caffe net.
   Net<float> caffe_net(FLAGS_model, caffe::TEST);
+  if (FLAGS_debug == "true")
+	  caffe_net.set_debug_info(true);
   caffe_net.CopyTrainedLayersFrom(FLAGS_weights);
+
   LOG(INFO) << "Running for " << FLAGS_iterations << " iterations.";
 
   vector<Blob<float>* > bottom_vec;
@@ -256,6 +263,7 @@ int test() {
   vector<float> test_score;
   float loss = 0;
   for (int i = 0; i < FLAGS_iterations; ++i) {
+	  LOG(INFO) << "Batch " << i;
     float iter_loss;
     const vector<Blob<float>*>& result =
         caffe_net.Forward(bottom_vec, &iter_loss);

@@ -653,19 +653,204 @@ void Net<Dtype>::InputDebugInfo(const int input_id) {
       << "    [Forward] "
       << "Input " << blob_name << " data: " << data_abs_val_mean;
 }
+ 
+
+//template <>
+//float * getdata<float>(const int n, const float* x) {
+//	return x;
+//}
+//
+//template <>
+//float * getdata<float>(const int n, const double* x) {
+//	float tmp[n];
+//	for (int i; i < n; i++)
+//		tmp[i] = (float)x[i];
+//	return tmp;
+//}
+template <typename Dtype>
+Dtype * get_mdata(const Blob<Dtype>& blob)
+{
+	Dtype * temp;
+	if (!blob.data()) { return temp; }
+	switch (blob.data()->head()) {
+	case SyncedMemory::HEAD_AT_CPU:
+		return (Dtype *)blob.cpu_data();
+		//mdata1 = (Dtype *)mdata;
+		break;
+		//LOG_IF(INFO, Caffe::root_solver()) << "cpu_data";
+	case SyncedMemory::HEAD_AT_GPU:
+	case SyncedMemory::SYNCED:
+#ifndef CPU_ONLY
+	{
+		return (Dtype *)blob.gpu_data();
+		//mdata1 = (Dtype *)mdata;
+		//LOG_IF(INFO, Caffe::root_solver()) << "gpu_data";
+		break;
+	}
+#else
+		NO_GPU;
+#endif
+	case SyncedMemory::UNINITIALIZED:
+		LOG_IF(INFO, Caffe::root_solver()) << "UNINITIALIZED";
+		return 0;
+	default:
+		LOG(FATAL) << "Unknown SyncedMemory head state: " << blob.data()->head();
+	}
+
+	return temp;
+
+}
 
 template <typename Dtype>
 void Net<Dtype>::ForwardDebugInfo(const int layer_id) {
+	static int  data[361];
+	uint64_t  order[361];
+	uint64_t  order1[361];
+	char tpixels[2000];
+	uint64_t sum=0;
+	int tmp = 0;
+	static bool init = false;
+	static char  qipan[361];
+
+
   for (int top_id = 0; top_id < top_vecs_[layer_id].size(); ++top_id) {
     const Blob<Dtype>& blob = *top_vecs_[layer_id][top_id];
     const string& blob_name = blob_names_[top_id_vecs_[layer_id][top_id]];
-    const Dtype data_abs_val_mean = blob.asum_data() / blob.count();
-    LOG_IF(INFO, Caffe::root_solver())
-        << "    [Forward] "
-        << "Layer " << layer_names_[layer_id]
-        << ", top blob " << blob_name
-        << " data: " << data_abs_val_mean;
+	Dtype data_abs_val_mean=0;
+	Dtype * mdata;
+	Dtype * mdata1;
+	float fdata;
+	//LOG_IF(INFO, Caffe::root_solver())
+	//	<< "    [Forward] "
+	//	<< "Layer " << layer_names_[layer_id]
+	//	<< "Layer id " << layer_id
+	//	<< ", top blob " << blob_name << " size " << blob.count();
+	//[Forward] Layer GOLayer id 0, top blob data size 4115400
+	// [Forward] Layer GOLayer id 0, top blob label size 5700
+ /*Forward] Layer label_GO_1_splitLayer id 1, top blob label_GO_1_split_0 size 5700
+ 722][Forward] Layer label_GO_1_splitLayer id 1, top blob label_GO_1_split_1 size 5700
+ 722][Forward] Layer ip1Layer id 2, top blob ip1 size 43890000
+ 722][Forward] Layer relu1Layer id 3, top blob ip1 size 43890000
+ 722][Forward] Layer ip12Layer id 4, top blob ip12 size 16530000
+ 722][Forward] Layer relu12Layer id 5, top blob ip12 size 16530000
+ 722][Forward] Layer drop12Layer id 6, top blob ip12 size 16530000
+ 722][Forward] Layer ip2Layer id 7, top blob ip2 size 2057700
+ 722][Forward] Layer ip2_ip2_0_splitLayer id 8, top blob ip2_ip2_0_split_0 size 2057700
+ 722][Forward] Layer ip2_ip2_0_splitLayer id 8, top blob ip2_ip2_0_split_1 size 2057700
+ 722][Forward] Layer accuracyLayer id 9, top blob accuracy size 1
+ 722][Forward] Layer lossLayer id 10, top blob loss size 1
+ : 284] Batch 2, accuracy = 0.0207018
+ : 284] Batch 2, loss = 5.77723
+ : 266] Batch 3
+ 722][Forward] Layer GOLayer id 0, top blob data size 4115400
+ 747] spos1:316 tpixels : ja; jb; lb; mb; bb; cb; ib; kb; bc; hc; ic; kc; nc; oc; cc; dc; ec; fc; gc; jc; mc; bd; cd; ed; fd; gd; pd; dd; hd; id; jd; nd; be; ee; ge; qe; re; ce; de; bf; cf; df; ff; hf; of; qf; rf; eg; bg; cg; ch; ph; bh; dh; eh; fh; hh; qh; bi; pi; qi; ci; ri; bj; cj; dj; oj; qj; dk; ck; rk; dl; pl; rl; cl; ml; cm; qm; cn; en; bn; co; go; no; oo; bo; mo; qo; op; bp; cp; dp; ep; lp; np; dq; gq; hq; pq; fq; jq; nq; fr; pr; dr;
+ 722][Forward] Layer GOLayer id 0, top blob label size 5700*/
+	if (blob_name == "data")//&& GOLayer == 0 && layer_names_[layer_id]=="GOLayer")
+	{
+		if (!init)
+		{
+			init = true;
+			mdata1 = get_mdata(blob);
+
+			memset(tpixels, 0, 2000);
+			int spos1 = 0;
+			for (int spos = 0; spos < 19 * 38; spos++){
+				if (round(mdata1[spos]) > 0){
+					qipan[spos / 38 * 19 + spos % 19] = 1;
+					tpixels[spos1++] = (uint8_t)((uint8_t)(spos % 19) + 'a');//xx
+					tpixels[spos1++] = (uint8_t)((uint8_t)(spos / 38) + 'a');//yy
+
+					tpixels[spos1++] = ';';
+				}
+			}
+			tpixels[spos1++] = 0;
+			//LOG(INFO) << "spos1:" << spos1 << " tpixels:" << tpixels;
+		}
+	}
+
+	if (blob_name == "label")
+	{
+		if (blob.count() > 1)
+		{
+			//LOG_IF(INFO, Caffe::root_solver()) << "check data";
+			LOG_IF(INFO, Caffe::root_solver()) << " start sum";
+			mdata = get_mdata(blob);
+			for (int i = 0; i < blob.count(); i++)
+			{
+				//const int n, const float* x
+				//mdata.next;
+				
+				fdata = (float)mdata[i];
+				data[(int)round(fdata)]++;
+			}
+			//data_abs_val_mean = (int)round(mdata[blob.count()-1]);
+		}
+		else{
+			 Dtype data_abs_val_mean = (blob.asum_data() / blob.count());
+			data[(int)round(data_abs_val_mean)] ++;
+		}
+		for (int i = 0; i < 361; i++)
+		{
+			sum += data[i];
+			order1[i] = i;
+			order[i] = data[i];
+			//if (round(mdata1[i / 38 + i % 19]) > 0 || round(mdata1[i / 38 + i % 19 + 19]) > 0)
+			if (qipan[i]>0)
+			{
+				order[i] = 0;
+			}
+		}
+
+		//memcpy(order,data,361);
+		LOG_IF(INFO, Caffe::root_solver()) << " satart order";
+		for (int i = 0; i < 361; i++)
+		{
+			for (int j = i + 1; j < 361; j++)
+			{
+
+				if (order[i] < order[j])
+				{
+					tmp = order[j];
+					order[j] = order[i];
+					order[i] = tmp;
+
+					tmp = order1[j];
+					order1[j] = order1[i];
+					order1[i] = tmp;
+				}
+
+			}
+
+		}
+		//delete[] order;
+
+		LOG_IF(INFO, Caffe::root_solver())
+			//<< "    [Forward] "
+			//<< "Layer " << layer_names_[layer_id]
+			//<< ", top blob " << blob_name
+			<< " data_abs_val_mean: " << data_abs_val_mean;
+
+		for (int i = 0; i < 70; i++)
+		{
+			int xx = (order1[i]) % 19 + 1;
+			int yy = 19- ((order1[i]) / 19 );
+			char aa = xx + 'A';
+			if (xx<9)
+				aa = xx-1 + 'A';
+			else
+				aa = xx-9 + 'J';
+
+			LOG_IF(INFO, Caffe::root_solver())
+				<< " data: " << (float)data[order1[i]] << " " << (float)data[order1[i]] * 100 / sum << "% "
+				//<< "order:" << order[i]
+				<< " P:" << aa <<" "<<yy
+				<< " xx " << (int)round(order1[i]) % 19 + 1
+				<< " yy " << (int)round(order1[i]) / 19 + 1;
+		}
+		//delete[] order1;
+	}
   }
+  return;
   for (int param_id = 0; param_id < layers_[layer_id]->blobs().size();
        ++param_id) {
     const Blob<Dtype>& blob = *layers_[layer_id]->blobs()[param_id];

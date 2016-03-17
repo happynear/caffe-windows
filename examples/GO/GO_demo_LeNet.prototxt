@@ -1,0 +1,135 @@
+name: "LeNet"
+layer {
+  name: "GO"
+  type: "Data"
+  top: "data"
+  top: "label"
+  data_param {
+    source: "examples/GO/GO-train-leveldb"
+    backend: LEVELDB
+    batch_size: 100
+  }
+  transform_param {
+    scale: 1
+  }
+  include: { phase: TRAIN }
+}
+layer {
+  name: "GO"
+  type: "Data"
+  top: "data"
+  top: "label"
+  data_param {
+    source: "examples/GO/GO-test-leveldb"
+    backend: LEVELDB
+    batch_size: 100
+  }
+  transform_param {
+    scale: 1
+  }
+  include: { phase: TEST }
+}
+ 
+layer {
+  name: "ip1"
+  type: "InnerProduct"
+  bottom: "data"
+  top: "ip1"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 7700
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "ip1"
+  top: "ip1"
+}
+ 
+
+layer {
+  name: "ip12"
+  type: "InnerProduct"
+  bottom: "ip1"
+  top: "ip12"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 2900
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu12"
+  type: "ReLU"
+  bottom: "ip12"
+  top: "ip12"
+}
+layer {
+  name: "drop12"
+  type: "Dropout"
+  bottom: "ip12"
+  top: "ip12"
+  dropout_param {
+		dropout_ratio:0.5
+    }
+}
+layer {
+  name: "ip2"
+  type: "InnerProduct"
+  bottom: "ip12"
+  top: "ip2"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 361
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "ip2"
+  bottom: "label"
+  top: "accuracy"
+  include {
+    phase: TEST
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "ip2"
+  bottom: "label"
+  top: "loss"
+}
