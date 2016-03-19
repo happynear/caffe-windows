@@ -1,6 +1,4 @@
-Forked from https://www.github.com/BVLC/caffe master branch in 2016/02/04 . Next update time may be around 2016/05/01 .
-
-**Good News:** Microsoft has created a repository of caffe windows version in https://github.com/Microsoft/caffe . Their solution may be more flexible and maintainable. I suggest all of you to try it.
+**News:** Now the offical caffe has merged the windows fork maintained by Microsoft: https://github.com/BVLC/caffe/tree/windows . I think it is time to turn your code to the official version. This repository will be used for my personal research in the future. Thank you all guys who has been making contribution to the windows version of Caffe! People who do research in Facial Analysis or Visualization may continue to follow my repository. I will keep updating layers and scripts used by these two areas. 
 
 I have made a list of some frequently asked questions in [FAQ.md](FAQ.md). If you get confused during configuring, please firstly look up for your question in the [FAQ.md](FAQ.md). This FAQ list is still under construction, I will keep adding questions into it.
 
