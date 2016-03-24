@@ -1,0 +1,89 @@
+name: "landmark_attribute"
+layer {
+  name: "data"
+  type: "MultiLabelImageData"
+  top: "data"
+  top: "label"
+  image_data_param {
+    source: "G:\\celebrity\\list_landmark_attr_train.txt"
+	root_folder: "G:\\celebrity\\img_celeba\\"
+    is_color: false
+    batch_size: 50
+    face_transform: true
+    max_shear_ratio: 0
+    max_aspect_ratio: 0.1
+    max_rotate_angle: 10
+    min_random_scale: 0.8
+    max_random_scale: 1.2
+	max_random_shift: 10
+    face_point_num: 5
+	new_height: 60
+	new_width: 60
+	shuffle: true
+  }
+  transform_param { 
+	mean_value: 128
+  }
+  include: { phase: TRAIN }
+}
+layer {
+  name: "data"
+  type: "MultiLabelImageData"
+  top: "data"
+  top: "label"
+  image_data_param {
+    source: "G:\\celebrity\\list_landmark_attr_test.txt"
+	root_folder: "G:\\celebrity\\img_celeba\\"
+    is_color: true
+    batch_size: 50
+    face_transform: true
+    max_shear_ratio: 0
+    max_aspect_ratio: 0
+    max_rotate_angle: 0
+    min_random_scale: 1
+    max_random_scale: 1
+	max_random_shift: 5
+    face_point_num: 5
+	new_height: 60
+	new_width: 60
+	shuffle: true
+  }
+  transform_param { 
+	mean_value: 128
+  }
+  include: { phase: TEST }
+}
+layer {
+  name: "slice_label"
+  type: "Slice"
+  bottom: "label"
+  top: "landmark_label"
+  top: "atrribute_label"
+  slice_param {
+    slice_point: 10
+	axis: 1
+  }
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "data"
+  top: "pool1"
+  pooling_param {
+    pool: AVE
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "hotspot"
+  type: "Hotspot"
+  bottom: "landmark_label"
+  bottom: "data"
+  top: "hotspot"
+  hotspot_param {
+    data_height: 60
+    data_width: 60
+    gaussian_std: 1
+  }
+}
