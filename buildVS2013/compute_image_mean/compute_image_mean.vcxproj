@@ -181,7 +181,7 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalLibraryDirectories>../../3rdparty/lib;..\..\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>caffelib.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;cudart.lib;cublas.lib;curand.lib;libprotobuf.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;opencv_world300.lib;shlwapi.lib;leveldb.lib;cublas_device.lib;cuda.lib;libglog.lib;lmdb.lib;cudnn.lib;libopenblas.dll.a;libgflags.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>caffelib.lib;ntdll.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;cudart.lib;cublas.lib;curand.lib;libprotobuf.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;opencv_world300.lib;shlwapi.lib;leveldb.lib;cublas_device.lib;cuda.lib;libglog.lib;lmdb.lib;cudnn.lib;libopenblas.dll.a;libgflags.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
     </Link>
