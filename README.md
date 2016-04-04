@@ -1,8 +1,8 @@
-**News:** Now the offical caffe has merged the windows fork maintained by Microsoft: https://github.com/BVLC/caffe/tree/windows . 
+**News:** Now the offical caffe has merged the windows fork maintained by [Microsoft](https://github.com/microsoft/caffe): https://github.com/BVLC/caffe/tree/windows . 
 
-I think it is time to turn your code to the official version. This repository, `caffe-windows`, will be used for my personal research in the future. Thank you all guys who has been making contribution to the windows version of Caffe! 
+I think it is time to turn your code to the official version. This repository, `caffe-windows`, will be used for my personal research in the future. Thank you all guys who have been making contribution to the windows version of Caffe! 
 
-People who do research in Facial Analysis or Visualization may continue to follow my repository. I will keep updating layers and scripts used by these two areas. 
+People who do research in Facial Analysis or Visualization may continue to follow my repository. I will keep updating layers and scripts of these two areas. 
 
 I have made a list of some frequently asked questions in [FAQ.md](FAQ.md). If you get confused during configuring, please firstly look up for your question in the [FAQ.md](FAQ.md). This FAQ list is still under construction, I will keep adding questions into it.
 
