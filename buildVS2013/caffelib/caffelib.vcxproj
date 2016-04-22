@@ -196,8 +196,9 @@
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <CodeGeneration>compute_35,sm_35;</CodeGeneration>
-      <FastMath>true</FastMath>
-      <AdditionalCompilerOptions>-O2</AdditionalCompilerOptions>
+      <FastMath>false</FastMath>
+      <AdditionalCompilerOptions>
+      </AdditionalCompilerOptions>
     </CudaCompile>
     <PreBuildEvent>
       <Command>
