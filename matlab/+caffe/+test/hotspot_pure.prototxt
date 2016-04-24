@@ -84,6 +84,6 @@ layer {
   hotspot_param {
     data_height: 60
     data_width: 60
-    gaussian_std: 1
+    gaussian_std: 2
   }
 }

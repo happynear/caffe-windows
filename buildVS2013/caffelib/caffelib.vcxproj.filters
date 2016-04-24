@@ -303,6 +303,12 @@
     <ClCompile Include="..\..\src\caffe\layers\hotspot_layer.cpp">
       <Filter>layers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\crop_layer.cpp">
+      <Filter>layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\input_layer.cpp">
+      <Filter>layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\caffe\proto\caffe.pb.h">
@@ -835,6 +841,9 @@
       <Filter>solvers</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\hotspot_layer.cu">
+      <Filter>layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\crop_layer.cu">
       <Filter>layers</Filter>
     </CudaCompile>
   </ItemGroup>

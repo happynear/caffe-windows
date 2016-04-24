@@ -45,7 +45,7 @@ layer {
     kernel_size: 5
     stride: 1
     weight_filler {
-      type: "xavier"
+      type: "msra"
     }
     bias_filler {
       type: "constant"
@@ -80,6 +80,12 @@ layer {
   }
 }
 layer {
+  name: "relu_conv1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
   name: "pool1"
   type: "Pooling"
   bottom: "conv1"
@@ -90,12 +96,7 @@ layer {
     stride: 2
   }
 }
-layer {
-  name: "relu_pool1"
-  type: "ReLU"
-  bottom: "pool1"
-  top: "pool1"
-}
+
 layer {
   name: "conv2"
   type: "Convolution"
@@ -112,7 +113,7 @@ layer {
     kernel_size: 5
     stride: 1
     weight_filler {
-      type: "xavier"
+      type: "msra"
     }
     bias_filler {
       type: "constant"
@@ -147,6 +148,12 @@ layer {
   }
 }
 layer {
+  name: "relu_conv2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+layer {
   name: "pool2"
   type: "Pooling"
   bottom: "conv2"
@@ -157,12 +164,7 @@ layer {
     stride: 2
   }
 }
-layer {
-  name: "relu_pool2"
-  type: "ReLU"
-  bottom: "pool2"
-  top: "pool2"
-}
+
 layer {
   name: "ip1"
   type: "InnerProduct"

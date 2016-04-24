@@ -191,14 +191,15 @@
       </Command>
     </PostBuildEvent>
     <CudaCompile>
-      <CudaRuntime>Shared</CudaRuntime>
+      <CudaRuntime>Static</CudaRuntime>
     </CudaCompile>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>compute_35,sm_35;</CodeGeneration>
+      <CodeGeneration>compute_30,sm_30;</CodeGeneration>
       <FastMath>false</FastMath>
       <AdditionalCompilerOptions>
       </AdditionalCompilerOptions>
+      <AdditionalOptions>-Xcudafe "--diag_suppress=exception_spec_override_incompat --diag_suppress=useless_using_declaration --diag_suppress=field_without_dll_interface" -D_SCL_SECURE_NO_WARNINGS -DGFLAGS_DLL_DECL= %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
     <PreBuildEvent>
       <Command>
@@ -225,6 +226,7 @@
     <ClCompile Include="..\..\src\caffe\layers\concat_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\contrastive_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\conv_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\crop_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\cudnn_conv_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\cudnn_lcn_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\cudnn_lrn_layer.cpp" />
@@ -253,6 +255,7 @@
     <ClCompile Include="..\..\src\caffe\layers\image_data_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\infogain_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\inner_product_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\input_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\insanity_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\local_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\log_layer.cpp" />
@@ -429,6 +432,7 @@
     <CudaCompile Include="..\..\src\caffe\layers\concat_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\contrastive_loss_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\conv_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\crop_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\cudnn_conv_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\cudnn_lcn_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\cudnn_lrn_layer.cu" />

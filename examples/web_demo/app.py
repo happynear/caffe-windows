@@ -14,8 +14,7 @@ from PIL import Image
 import cStringIO as StringIO
 import urllib
 import exifutil
-import sys
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + '/../../python')
+
 import caffe
 
 REPO_DIRNAME = os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../..')
@@ -140,7 +139,7 @@ class ImagenetClassifier(object):
             ])
         self.labels = labels_df.sort('synset_id')['name'].values
 
-        self.bet = cPickle.load(open(bet_file, 'rb'))
+        self.bet = cPickle.load(open(bet_file))
         # A bias to prefer children nodes in single-chain paths
         # I am setting the value to 0.1 as a quick, simple model.
         # We could use better psychological models here...
