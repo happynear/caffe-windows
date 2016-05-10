@@ -48,6 +48,7 @@ message FillerParameter {
   optional float max = 4 [default = 1]; // the max value in uniform filler
   optional float mean = 5 [default = 0]; // the mean value in Gaussian filler
   optional float std = 6 [default = 1]; // the std value in Gaussian filler
+  optional float alpha = 9 [default = 0]; // the alpha in equation 15 of <Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification>
   // The expected number of non-zero output weights for a given input in
   // Gaussian filler -- the default -1 means don't perform sparsification.
   optional int32 sparse = 7 [default = -1];
@@ -402,6 +403,15 @@ message LayerParameter {
   optional ThresholdParameter threshold_param = 128;
   optional TileParameter tile_param = 138;
   optional WindowDataParameter window_data_param = 129;
+  optional BNParameter bn_param = 200;
+  optional LocalParameter local_param = 201;
+  optional InsanityParameter insanity_param = 202;
+  optional TripletLossParameter triplet_loss_param = 203;
+  optional ROIPoolingParameter roi_pooling_param = 204;
+  optional EltwiseAffineParameter eltwise_affine_param = 205;
+  optional SubRegionParameter sub_region_param = 206;
+  optional NoiseParameter noise_param = 207;
+  optional HotspotParameter hotspot_param = 208;
 }
 
 // Message that stores parameters used to apply transformation
@@ -783,6 +793,16 @@ message ImageDataParameter {
   optional uint32 new_width = 10 [default = 0];
   // Specify if the images are color or gray
   optional bool is_color = 11 [default = true];
+  // Affine transform parameters
+  optional bool face_transform = 13 [default = false];
+  optional float max_shear_ratio = 14 [default = 0];
+  optional float max_aspect_ratio = 15 [default = 0];
+  optional float max_rotate_angle = 16 [default = 0];
+  optional float min_random_scale = 17 [default = 1];
+  optional float max_random_scale = 18 [default = 1];
+  optional uint32 max_random_shift = 19 [default = 0];
+  optional bool face_mirror = 20 [default = false];
+  optional uint32 face_point_num = 21 [default = 0];
   // DEPRECATED. See TransformationParameter. For data pre-processing, we can do
   // simple scaling and subtracting the data mean, if provided. Note that the
   // mean subtraction is always carried out before scaling.
@@ -1229,6 +1249,14 @@ message V1LayerParameter {
     TANH = 23;
     WINDOW_DATA = 24;
     THRESHOLD = 31;
+    LOCAL = 41;
+    BN = 42;
+    NORMALIZE = 43;
+    INSANITY = 44;
+    TRIPLET_LOSS = 45;
+    ROIPOOLING = 46;
+    BATCH_NORM = 47;
+    ELTWISE_AFFINE = 48;
   }
   optional LayerType type = 5;
   repeated BlobProto blobs = 6;
@@ -1272,6 +1300,15 @@ message V1LayerParameter {
   optional TransformationParameter transform_param = 36;
   optional LossParameter loss_param = 42;
   optional V0LayerParameter layer = 1;
+  optional BNParameter bn_param = 43;
+  optional LocalParameter local_param = 44;
+  optional PReLUParameter prelu_param = 45;
+  optional InsanityParameter insanity_param = 46;
+  optional TripletLossParameter triplet_loss_param = 47;
+  optional ROIPoolingParameter roi_pooling_param = 48;
+  optional EltwiseAffineParameter eltwise_affine_param = 49;
+  optional SubRegionParameter sub_region_param = 50;
+  optional NoiseParameter noise_param = 51;
 }
 
 // DEPRECATED: V0LayerParameter is the old way of specifying layer parameters
@@ -1368,6 +1405,30 @@ message V0LayerParameter {
   optional HDF5OutputParameter hdf5_output_param = 1001;
 }
 
+message TripletLossParameter {
+  //margin for negative triplet
+  optional float margin = 1 [default = 1.0];
+}
+
+// Message that stores parameters used by ROIPoolingLayer
+message ROIPoolingParameter {
+  // Pad, kernel size, and stride are all given as a single value for equal
+  // dimensions in height and width or as Y, X pairs.
+  optional uint32 pooled_h = 1 [default = 0]; // The pooled output height
+  optional uint32 pooled_w = 2 [default = 0]; // The pooled output width
+  // Multiplicative spatial scale factor to translate ROI coords from their
+  // input scale to the scale used when pooling
+  optional float spatial_scale = 3 [default = 1];
+}
+
+message InsanityParameter {
+  // Insanity, or Randomized Leaky Rectified Linear Unit, described in
+  // Bing Xu, Naiyan Wang, Tianqi Chen, Mu Li,
+  // Empirical Evaluation of Rectified Activations in Convolution Network
+  
+  optional float lb = 1 [default = 5.];
+  optional float ub = 2 [default = 10.];
+}
 message PReLUParameter {
   // Parametric ReLU described in K. He et al, Delving Deep into Rectifiers:
   // Surpassing Human-Level Performance on ImageNet Classification, 2015.
@@ -1376,4 +1437,57 @@ message PReLUParameter {
   optional FillerParameter filler = 1;
   // Whether or not slope paramters are shared across channels.
   optional bool channel_shared = 2 [default = false];
+}
+// Message that stores parameters used by BNLayer
+message BNParameter {
+  optional FillerParameter scale_filler = 1; // The filler for the scale
+  optional FillerParameter shift_filler = 2; // The filler for the shift
+  optional float var_eps = 3 [default = 1e-10]; // The epsilon added to variance
+  optional bool moving_average = 4 [default = true]; // whether or not using moving average for inference
+  optional float decay = 5 [default = 0.95]; // The decay factor for moving average
+}
+
+// Message that stores parameters used by LocalLayer
+message LocalParameter {
+  optional uint32 num_output = 1; // The number of outputs for the layer
+  optional bool bias_term = 2 [default = true]; // whether to have bias terms
+  optional uint32 pad = 3 [default = 0]; // The padding size
+  optional uint32 kernel_size = 4; // The kernel size
+  optional uint32 stride = 6 [default = 1]; // The stride
+  optional FillerParameter weight_filler = 7; // The filler for the weight
+  optional FillerParameter bias_filler = 8; // The filler for the bias
+}
+
+message EltwiseAffineParameter {
+
+  // Initial value of a_i. Default is a_i=1.0 for all i.
+  optional FillerParameter slope_filler = 1;
+
+  optional FillerParameter bias_filler = 2;
+
+  // Whether or not slope paramters are shared across channels.
+  optional bool channel_shared = 3 [default = false];
+}
+
+message SubRegionParameter {
+  optional uint32 region_height = 1;
+  optional uint32 region_width = 2;
+  optional uint32 data_height = 3;
+  optional uint32 data_width = 4;
+  optional uint32 as_dim = 5 [default = 1];
+}
+
+message NoiseParameter {
+  optional float gaussian_std = 1 [default = 0];
+  optional float uniform_range = 2 [default = 0];
+  optional float bias = 3 [default = 0];
+}
+
+message HotspotParameter {
+  optional float gaussian_std = 1 [default = 1];
+  optional uint32 output_height = 2 [default = 0];
+  optional uint32 output_width = 3 [default = 0];
+  optional uint32 data_height = 4 [default = 0];
+  optional uint32 data_width = 5 [default = 0];
+  optional bool mean_removed = 6 [default = true];
 }

@@ -19,7 +19,7 @@ if %IS_CPU_ONLY_BUILD% == true (
         if "%CUDNN_PATH%" == "" (
             copy /y "%CUDA_TOOLKIT_BIN_DIR%\cudnn*.dll" "%OUTPUT_DIR%"
         ) else (
-            copy /y "%CUDNN_PATH%\cuda\bin\cudnn*.dll" "%OUTPUT_DIR%"
+            copy /y "%CUDNN_PATH%\bin\cudnn*.dll" "%OUTPUT_DIR%"
         )
     ) else (
         echo BinplaceCudaDependencies : cuDNN isn't enabled.
