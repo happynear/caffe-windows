@@ -33,6 +33,10 @@ void AccuracyLayer<Dtype>::Reshape(
       << "e.g., if label axis == 1 and prediction shape is (N, C, H, W), "
       << "label count (number of labels) must be N*H*W, "
       << "with integer values in {0, 1, ..., C-1}.";
+  if (bottom.size() == 3) {
+    CHECK_EQ(outer_num_ * inner_num_, bottom[2]->count())
+      << "Number of loss weights must match number of label.";
+  }
   vector<int> top_shape(0);  // Accuracy is a scalar; 0 axes.
   top[0]->Reshape(top_shape);
   if (top.size() > 1) {
@@ -63,6 +67,9 @@ void AccuracyLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
     for (int j = 0; j < inner_num_; ++j) {
       const int label_value =
           static_cast<int>(bottom_label[i * inner_num_ + j]);
+      if (bottom.size() == 3 && bottom[2]->cpu_data()[i * inner_num_ + j] == 0) {
+        continue;
+      }
       if (has_ignore_label_ && label_value == ignore_label_) {
         continue;
       }

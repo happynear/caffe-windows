@@ -245,6 +245,22 @@ void Solver<Dtype>::Step(int iters) {
               << score_index++ << ": " << output_name << " = "
               << result_vec[k] << loss_msg_stream.str();
         }
+        string gradient_norm = "layer blob norm:";
+        for (int k = 0; k < net_->blob_names().size(); k++) {
+          if (net_->blob_names()[k].find("Convolution") != string::npos
+              || net_->blob_names()[k].find("InnerProduct") != string::npos) {
+            gradient_norm += std::to_string(net_->blobs()[k]->asum_diff() / net_->blobs()[k]->count()) + " ";
+          }
+        }
+        if (gradient_norm.size() > 20) LOG(INFO) << gradient_norm;
+        string weight_gradient_norm = "weight blob norm:";
+        for (int k = 0; k < net_->layers().size(); k++) {
+          if (strstr(net_->layers()[k]->type(), "Convolution") != NULL
+              || strstr(net_->layers()[k]->type(), "InnerProduct") != NULL) {
+            weight_gradient_norm += std::to_string(net_->layers()[k]->blobs()[0]->asum_diff() / net_->layers()[k]->blobs()[0]->count()) + " ";
+          }
+        }
+        if (weight_gradient_norm.size() > 20) LOG(INFO) << weight_gradient_norm;
       }
     }
     for (int i = 0; i < callbacks_.size(); ++i) {
