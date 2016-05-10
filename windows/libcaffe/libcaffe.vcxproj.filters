@@ -267,9 +267,6 @@
     <ClCompile Include="..\..\src\caffe\layers\neuron_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\parameter_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\pooling_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
@@ -522,9 +519,6 @@
       <Filter>include\layers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\caffe\layers\neuron_layer.hpp">
-      <Filter>include\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\parameter_layer.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\caffe\layers\pooling_layer.hpp">
