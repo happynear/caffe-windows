@@ -86,7 +86,7 @@ void InsanityLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
     for (int i = 0; i < count; ++i) {
       bottom_diff[i] = top_diff[i] * ((bottom_data[i] > 0)
-          + (bottom_data[i] <= 0) / slope_data[i]);
+          + (Dtype)(bottom_data[i] <= 0) / slope_data[i]);
     }
   }
 }
