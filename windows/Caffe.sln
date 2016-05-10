@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcaffe", "libcaffe\libcaffe.vcxproj", "{A9ACEF83-7B63-4574-A554-89CE869EA141}"
 EndProject
@@ -46,11 +46,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{E2EF
 	ProjectSection(SolutionItems) = preProject
 		scripts\BinplaceCudaDependencies.cmd = scripts\BinplaceCudaDependencies.cmd
 		scripts\FixGFlagsNaming.cmd = scripts\FixGFlagsNaming.cmd
+		scripts\MatlabPostBuild.cmd = scripts\MatlabPostBuild.cmd
+		scripts\MatlabPreBuild.cmd = scripts\MatlabPreBuild.cmd
 		scripts\ProtoCompile.cmd = scripts\ProtoCompile.cmd
 		scripts\PythonPostBuild.cmd = scripts\PythonPostBuild.cmd
 		scripts\PythonPreBuild.cmd = scripts\PythonPreBuild.cmd
-		scripts\MatlabPostBuild.cmd = scripts\MatlabPostBuild.cmd
-		scripts\MatlabPreBuild.cmd = scripts\MatlabPreBuild.cmd
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "caffe.managed", "caffe.managed\caffe.managed.vcxproj", "{350020CA-75B9-425E-85CA-DD8CF8CFBA9B}"
@@ -68,6 +68,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "upgrade_net_proto_text", "upgrade_net_proto_text\upgrade_net_proto_text.vcxproj", "{4E201A07-4464-4ECF-8D5E-6B7E3B2D896B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "upgrade_solver_proto_text", "upgrade_solver_proto_text\upgrade_solver_proto_text.vcxproj", "{E1185C4E-1AEA-4E0E-BE85-2671E065016A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "caffeDLL", "caffeDLL\caffeDLL.vcxproj", "{48E1BAE6-F9E1-4E9A-A3A1-75C1B2D1B12E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -139,6 +141,10 @@ Global
 		{E1185C4E-1AEA-4E0E-BE85-2671E065016A}.Debug|x64.Build.0 = Debug|x64
 		{E1185C4E-1AEA-4E0E-BE85-2671E065016A}.Release|x64.ActiveCfg = Release|x64
 		{E1185C4E-1AEA-4E0E-BE85-2671E065016A}.Release|x64.Build.0 = Release|x64
+		{48E1BAE6-F9E1-4E9A-A3A1-75C1B2D1B12E}.Debug|x64.ActiveCfg = Debug|x64
+		{48E1BAE6-F9E1-4E9A-A3A1-75C1B2D1B12E}.Debug|x64.Build.0 = Debug|x64
+		{48E1BAE6-F9E1-4E9A-A3A1-75C1B2D1B12E}.Release|x64.ActiveCfg = Release|x64
+		{48E1BAE6-F9E1-4E9A-A3A1-75C1B2D1B12E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
