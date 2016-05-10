@@ -412,6 +412,7 @@ message LayerParameter {
   optional SubRegionParameter sub_region_param = 206;
   optional NoiseParameter noise_param = 207;
   optional HotspotParameter hotspot_param = 208;
+  optional PredictBoxParameter predict_box_param = 209;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1490,4 +1491,12 @@ message HotspotParameter {
   optional uint32 data_height = 4 [default = 0];
   optional uint32 data_width = 5 [default = 0];
   optional bool mean_removed = 6 [default = true];
+}
+
+message PredictBoxParameter {
+  optional uint32 stride = 1 [default = 2];
+  optional uint32 receptive_field = 2 [default = 12];
+  optional bool nms = 3 [default = true];
+  optional bool output_vector = 4 [default = true];
+  optional float positive_thresh = 5 [default = 0.5];
 }
