@@ -56,6 +56,9 @@
     <PostBuildEvent>
       <Command>"$(ScriptsDir)\FixGFlagsNaming.cmd" "$(OutDir)" $(Configuration)</Command>
     </PostBuildEvent>
+    <ClCompile>
+      <PreprocessorDefinitions>NDEBUG;CAFFEBINDING_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\libcaffe\libcaffe.vcxproj">
