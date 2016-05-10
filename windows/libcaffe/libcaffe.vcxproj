@@ -153,6 +153,7 @@
     <ClCompile Include="..\..\src\caffe\layers\parameter_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\pooling_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\power_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\predict_box_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\prelu_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\reduction_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\relu_layer.cpp" />
@@ -260,6 +261,7 @@
     <ClInclude Include="..\..\include\caffe\layers\parameter_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\pooling_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\power_layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\layers\predict_box_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\prelu_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\python_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\reduction_layer.hpp" />
