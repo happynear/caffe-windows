@@ -69,7 +69,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "upgrade_net_proto_text", "u
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "upgrade_solver_proto_text", "upgrade_solver_proto_text\upgrade_solver_proto_text.vcxproj", "{E1185C4E-1AEA-4E0E-BE85-2671E065016A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "caffeDLL", "caffeDLL\caffeDLL.vcxproj", "{48E1BAE6-F9E1-4E9A-A3A1-75C1B2D1B12E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "caffe.binding", "caffe.binding\caffe.binding.vcxproj", "{48E1BAE6-F9E1-4E9A-A3A1-75C1B2D1B12E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
