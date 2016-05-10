@@ -38,6 +38,7 @@ class MemoryDataLayer : public BaseDataLayer<Dtype> {
   //  will be given to Blob, which is mutable
   void Reset(Dtype* data, Dtype* label, int n);
   void set_batch_size(int new_size);
+  void set_spatial_size(int new_height, int new_width);
 
   int batch_size() { return batch_size_; }
   int channels() { return channels_; }
