@@ -1,5 +1,7 @@
 #if defined(_MSC_VER)
+#include <boost/date_time.hpp>
 #include <process.h>
+#include <direct.h>
 #define getpid() _getpid()
 #endif
 
@@ -43,18 +45,42 @@ int64_t cluster_seedgen(void) {
   seed = std::abs(((s * 181) * ((pid - 83) * 359)) % 104729);
   return seed;
 }
-
+#ifdef _MSC_VER
+void initGlog() {
+  FLAGS_log_dir = ".\\log\\";
+  _mkdir(FLAGS_log_dir.c_str());
+  std::string LOG_INFO_FILE;
+  std::string LOG_WARNING_FILE;
+  std::string LOG_ERROR_FILE;
+  std::string LOG_FATAL_FILE;
+  std::string now_time = boost::posix_time::to_iso_extended_string(boost::posix_time::second_clock::local_time());
+  now_time[13] = '-';
+  now_time[16] = '-';
+  LOG_INFO_FILE = FLAGS_log_dir + "INFO" + now_time + ".txt";
+  google::SetLogDestination(google::GLOG_INFO, LOG_INFO_FILE.c_str());
+  LOG_WARNING_FILE = FLAGS_log_dir + "WARNING" + now_time + ".txt";
+  google::SetLogDestination(google::GLOG_WARNING, LOG_WARNING_FILE.c_str());
+  LOG_ERROR_FILE = FLAGS_log_dir + "ERROR" + now_time + ".txt";
+  google::SetLogDestination(google::GLOG_ERROR, LOG_ERROR_FILE.c_str());
+  LOG_FATAL_FILE = FLAGS_log_dir + "FATAL" + now_time + ".txt";
+  google::SetLogDestination(google::GLOG_FATAL, LOG_FATAL_FILE.c_str());
+}
+#endif
 
 void GlobalInit(int* pargc, char*** pargv) {
   // Google flags.
   ::gflags::ParseCommandLineFlags(pargc, pargv, true);
+  
+  // Windows port of glogs doesn't have this function built
+#if !defined(_MSC_VER)
   // Google logging.
   ::google::InitGoogleLogging(*(pargv)[0]);
   // Provide a backtrace on segfault.
-
-  // Windows port of glogs doesn't have this function built
-#if !defined(_MSC_VER)
   ::google::InstallFailureSignalHandler();
+#else
+  initGlog();
+  // Google logging.
+  ::google::InitGoogleLogging(*(pargv)[0]);
 #endif
 }
 
