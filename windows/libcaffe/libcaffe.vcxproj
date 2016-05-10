@@ -80,7 +80,7 @@
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <CodeGeneration>$(CudaArchitecture)</CodeGeneration>
-      <AdditionalOptions>-Xcudafe "--diag_suppress=exception_spec_override_incompat --diag_suppress=useless_using_declaration --diag_suppress=field_without_dll_interface" -D_SCL_SECURE_NO_WARNINGS -DGFLAGS_DLL_DECL= </AdditionalOptions>
+      <AdditionalOptions>-Xcompiler "/wd 4819" -Xcudafe "--diag_suppress=exception_spec_override_incompat --diag_suppress=useless_using_declaration --diag_suppress=field_without_dll_interface" -D_SCL_SECURE_NO_WARNINGS -DGFLAGS_DLL_DECL= </AdditionalOptions>
     </CudaCompile>
     <ClCompile>
       <DisableSpecificWarnings>4661;4005;4812;4715;%(DisableSpecificWarnings)</DisableSpecificWarnings>
