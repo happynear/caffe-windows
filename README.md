@@ -1,13 +1,22 @@
-# Windows Caffe
+# Caffe
 
-**This is an experimental, Microsoft-led branch by Pavle Josipovic (@pavlejosipovic). It is a work-in-progress.**
+[![Travis Build Status](https://api.travis-ci.org/Microsoft/caffe.svg?branch=master)](https://travis-ci.org/Microsoft/caffe) Travis (Linux build)
 
-This branch of Caffe ports the framework to Windows.
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/58wvckt0rcqtwnr5/branch/master?svg=true)] (https://ci.appveyor.com/project/pavlejosipovic/caffe-3a30a) AppVeyor (Windows build)
 
-[![Travis Build Status](https://api.travis-ci.org/BVLC/caffe.svg?branch=windows)](https://travis-ci.org/BVLC/caffe) Travis (Linux build)
+[![License](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/128eg95svel2a2xs?svg=true)]
-(https://ci.appveyor.com/project/pavlejosipovic/caffe-v45qi) AppVeyor (Windows build)
+Caffe is a deep learning framework made with expression, speed, and modularity in mind.
+It is developed by the Berkeley Vision and Learning Center ([BVLC](http://bvlc.eecs.berkeley.edu)) and community contributors.
+
+Check out the [project site](http://caffe.berkeleyvision.org) for all the details like
+
+- [DIY Deep Learning for Vision with Caffe](https://docs.google.com/presentation/d/1UeKXVgRvvxg9OUdh_UiC5G71UMscNPlvArsWER41PsU/edit#slide=id.p)
+- [Tutorial Documentation](http://caffe.berkeleyvision.org/tutorial/)
+- [BVLC reference models](http://caffe.berkeleyvision.org/model_zoo.html) and the [community model zoo](https://github.com/BVLC/caffe/wiki/Model-Zoo)
+- [Installation instructions](http://caffe.berkeleyvision.org/installation.html)
+
+and step-by-step examples.
 
 ## Windows Setup
 **Requirements**: Visual Studio 2013
@@ -60,6 +69,16 @@ After you have built solution with Matlab support, in order to use it you have t
 ### Build
 Now, you should be able to build `.\windows\Caffe.sln`
 
-## Further Details
+## License and Citation
 
-Refer to the BVLC/caffe master branch README for all other details such as license, citation, and so on.
+Caffe is released under the [BSD 2-Clause license](https://github.com/BVLC/caffe/blob/master/LICENSE).
+The BVLC reference models are released for unrestricted use.
+
+Please cite Caffe in your publications if it helps your research:
+
+    @article{jia2014caffe,
+      Author = {Jia, Yangqing and Shelhamer, Evan and Donahue, Jeff and Karayev, Sergey and Long, Jonathan and Girshick, Ross and Guadarrama, Sergio and Darrell, Trevor},
+      Journal = {arXiv preprint arXiv:1408.5093},
+      Title = {Caffe: Convolutional Architecture for Fast Feature Embedding},
+      Year = {2014}
+    }
