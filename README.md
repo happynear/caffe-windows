@@ -8,7 +8,7 @@ I have made a list of some frequently asked questions in [FAQ.md](FAQ.md). If yo
 
 ## Setup step:
 
-1. Download third-party libraries from [BaiduYun Disk](http://pan.baidu.com/s/1eStyfrc) or [OneDrive](https://onedrive.live.com/redir?resid=A7AB61436C858EB9!1132&authkey=!ADcB9acqOBEE1Vg&ithint=file%2crar) and extract the files to `caffe-windows_root/3rdparty/`. **Please don't forget to add the `./3rdparty/bin` folder to your environment variable `PATH`.**
+1. Download third-party libraries from [BaiduYun Disk](http://pan.baidu.com/s/1eStyfrc) or [OneDrive](https://onedrive.live.com/redir?resid=A7AB61436C858EB9!1145&authkey=!AHlCN80o3Rx3n3E&ithint=file%2crar) and extract the files to `caffe-windows_root/3rdparty/`. **Please don't forget to add the `./3rdparty/bin` folder to your environment variable `PATH`.**
 
 2. Run `./src/caffe/proto/extract_proto.bat` to create `caffe.pb.h`, `caffe.pb.cc` and `caffe_pb2.py`.
 
