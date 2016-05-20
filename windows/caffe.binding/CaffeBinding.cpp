@@ -34,7 +34,7 @@ std::vector<DataBlob> CaffeBinding::Forward(std::vector<cv::Mat> input_image, in
   data_layer_ptr->AddMatVector(input_image, labels);
   const std::vector<Blob<float>*>& net_output = net_[net_id]->ForwardPrefilled();
   std::vector<DataBlob> result;
-  for (auto&& net_blob : net_output) {
+  for (auto& net_blob : net_output) {
     DataBlob blob = { net_blob->cpu_data(), net_blob->shape() };
     result.push_back(blob);
   }
@@ -42,7 +42,7 @@ std::vector<DataBlob> CaffeBinding::Forward(std::vector<cv::Mat> input_image, in
 }
 
 CaffeBinding::~CaffeBinding() {
-  for (auto&& net : net_) {
+  for (auto& net : net_) {
     delete net;
   }
 }
