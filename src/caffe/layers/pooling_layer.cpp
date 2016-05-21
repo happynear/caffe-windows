@@ -2,8 +2,11 @@
 #include <cfloat>
 #include <vector>
 
-#include "caffe/layers/pooling_layer.hpp"
+#include "caffe/common.hpp"
+#include "caffe/layer.hpp"
+#include "caffe/syncedmem.hpp"
 #include "caffe/util/math_functions.hpp"
+#include "caffe/layers/pooling_layer.hpp"
 
 namespace caffe {
 
@@ -68,11 +71,25 @@ void PoolingLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
     CHECK(this->layer_param_.pooling_param().pool()
         == PoolingParameter_PoolMethod_AVE
         || this->layer_param_.pooling_param().pool()
-        == PoolingParameter_PoolMethod_MAX)
-        << "Padding implemented only for average and max pooling.";
+        == PoolingParameter_PoolMethod_MAX
+        || this->layer_param_.pooling_param().pool()
+        == PoolingParameter_PoolMethod_DEF
+        || this->layer_param_.pooling_param().pool()
+        == PoolingParameter_PoolMethod_DEF_ALL
+        || this->layer_param_.pooling_param().pool()
+        == PoolingParameter_PoolMethod_DEF_ALL2
+        || this->layer_param_.pooling_param().pool()
+        == PoolingParameter_PoolMethod_DEF_ALL3
+        || this->layer_param_.pooling_param().pool()
+        == PoolingParameter_PoolMethod_DEF_ALL4
+        || this->layer_param_.pooling_param().pool()
+        == PoolingParameter_PoolMethod_LOWRES)
+         << "Padding implemented only for average and max pooling.";
     CHECK_LT(pad_h_, kernel_h_);
     CHECK_LT(pad_w_, kernel_w_);
   }
+//  LOG(INFO)<<"this is the end in pool_setup";
+  Flag_ = true;
 }
 
 template <typename Dtype>
@@ -104,7 +121,8 @@ void PoolingLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
     CHECK_LT((pooled_width_ - 1) * stride_w_, width_ + pad_w_);
   }
   top[0]->Reshape(bottom[0]->num(), channels_, pooled_height_,
-      pooled_width_);
+      pooled_width_);// set output mapsize
+  //top[0]->NonNeg_ = true;
   if (top.size() > 1) {
     top[1]->ReshapeLike(*top[0]);
   }
@@ -120,6 +138,225 @@ void PoolingLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
     rand_idx_.Reshape(bottom[0]->num(), channels_, pooled_height_,
       pooled_width_);
   }
+
+  kernel_size_ = kernel_h_;
+  stride_ = stride_h_;
+  pad_ = pad_h_;
+  channels_ = bottom[0]->channels();
+
+  if ( (this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_DEF) && Flag_ )//set flag in layer_setup
+  {
+	 // LOG(INFO) << "Deformation layer setup";
+	  blobl_a_min_ = this->layer_param_.pooling_param().blobs_a_min();  //read from prototxt, set the mininum of [c1 c2 c3 c4]
+      N_ = width_ * height_;   //the input mapsize
+      // for deformation layer
+      this->blobs_.resize(1); // This blos stores the defw1-defw4
+      this->blobs_[0].reset(new Blob<Dtype>(1, 1, channels_, 4));   //for [c1 c2 c3 c4]
+      
+      Dtype* defw = this->blobs_[0]->mutable_cpu_data();
+      LOG(INFO) << "top_buffer_.Reshape" << bottom[0]->num() <<" " << channels_ <<" "<< height_ <<" "<< width_;
+      
+      top_buffer_.Reshape(bottom[0]->num(), channels_, height_, width_);   //blob data
+      LOG(INFO) << "blobl_a_min_:" << blobl_a_min_;
+/*       LOG(INFO) << "top_buffer_.mutable_cpu_data";     
+      Dtype* top_buffer_data = top_buffer_.mutable_cpu_data();*/
+      
+      dh_.Reshape(bottom[0]->num(), channels_, 1, 1);   //use to represent the dx
+      dv_.Reshape(bottom[0]->num(), channels_, 1, 1);   //dy, which use to calculate the gradient in bp
+      Iv_.resize((N_ * channels_*bottom[0]->num() ));     // use to represent the distance in dt
+      Ih_.resize((N_ * channels_*bottom[0]->num() ));
+      tmpIx_.resize((N_ ));              //use in dt, first calculate horizontal, vertical
+      tmpIy_.resize((N_ ));
+      defh_.resize((channels_ ));   //   use to represent the part location? yes or no
+      defv_.resize((channels_ ));   //
+      defp_.resize((channels_ ));  //    h*height + v
+      Mdt_.resize((N_));                 //    to save the results in dt
+      tmpM_.resize(N_);                 //use in LOW_Res
+/*      Iv_.reset(new SyncedMemory(N_ * channels_*bottom[0]->num() * sizeof(int)));
+      Ih_.reset(new SyncedMemory(N_ * channels_*bottom[0]->num() * sizeof(int)));
+      tmpIx_.reset(new SyncedMemory(N_ * sizeof(int)));
+      tmpIy_.reset(new SyncedMemory(N_ * sizeof(int)));
+      defh_.reset(new SyncedMemory(channels_ * sizeof(int)));
+      defv_.reset(new SyncedMemory(channels_ * sizeof(int)));
+      defp_.reset(new SyncedMemory(channels_ * sizeof(int)));
+      Mdt_.reset(new SyncedMemory(N_ * sizeof(Dtype)));
+      tmpM_.reset(new SyncedMemory(N_ * sizeof(Dtype)));
+*/      parts_num_ = 9;     // part
+      CHECK_EQ(parts_num_, 9);
+      CHECK_EQ(channels_ % parts_num_, 0);
+     for (int p = 0; p < parts_num_/3; ++p)
+      {
+          // 0 1
+          // 2 3
+          hpos_[p*3] = floor((p*height_)/3) + 1;  // save the part start location
+          hpos_[p*3+1] = floor((p*height_)/3) + 1;
+          hpos_[p*3+2] = floor((p*height_)/3) + 1;
+          vpos_[p*3] = 0 + 1;
+          vpos_[p*3+1] = floor((1*width_)/3) + 1;
+          vpos_[p*3+2] = floor((2*width_)/3)  + 1;
+      }
+    /*hpos_[0] = 2;
+    hpos_[1] = 2;
+    vpos_[0] = 2;
+    vpos_[1] = 4;    
+    hpos_[2] = 4;
+    hpos_[3] = 4;
+    vpos_[2] = 2;
+    vpos_[3] = 4;*/     
+    int* defh = defh_.data();
+    int* defv = defv_.data();
+    int* defp = defp_.data();
+/*    
+      int* defh = reinterpret_cast<int*>(defh_->mutable_cpu_data());
+      int* defv = reinterpret_cast<int*>(defv_->mutable_cpu_data());
+      int* defp = reinterpret_cast<int*>(defp_->mutable_cpu_data());
+ */
+/*     defw1_.resize(channels_);
+      defw2_.resize(channels_);
+      defw3_.resize(channels_);
+      defw4_.resize(channels_);*/
+      for (int c = 0; c < channels_; c++)
+      {
+          int c1 = c % parts_num_;
+          defh[c] = hpos_[c1];   //select one part
+          defv[c] = vpos_[c1];
+//          LOG(INFO) << "hpos_[" <<c <<"]: " << hpos_[c1]<< " vpos_[" <<c <<"]: " << vpos_[c1] << " width_:" << width_;
+          defp[c] = defh[c1] * width_+defv[c1];  // calculate the positon, which will be used in find the proper postion to get data
+//          LOG(INFO) << "defp[" <<c1 <<"]: " << defp[c1];
+          defw[c*4+0] = blobl_a_min_; // it is same as setting in matlab
+          defw[c*4+1] = Dtype(0);
+          defw[c*4+2] = blobl_a_min_;
+          defw[c*4+3] = Dtype(0);
+      }
+      LOG(INFO) << "setup defw:" << defw[0*4+0] << ", "<< defw[0*4+1]<< ", " << defw[0*4+2]<< ", " << defw[0*4+3];
+      pooled_width_ = 1;
+      pooled_height_ = 1;
+      top[0]->Reshape(bottom[0]->num(), channels_, pooled_height_,
+              pooled_width_);
+  }
+  else
+  { 
+      if (Flag_)
+      {   
+	  if ( (this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_DEF_ALL) || (this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_DEF_ALL2) || (this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_DEF_ALL3) || (this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_DEF_ALL4))
+	  {
+		  if(this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_DEF_ALL){
+			  pooled_height_ = pooled_height_ -1;
+			  pooled_width_ = pooled_width_ -1;
+		  }
+
+
+                //  LOG(INFO)<<"this is the start in pool_reshape";
+		  int Nparam;
+//		  LOG(INFO) << "Deformation layer 2 setup";
+		  blobl_a_min_ = this->layer_param_.pooling_param().blobs_a_min();
+		  N_ = width_ * height_;  //each map size
+		  // for deformation layer
+//		  LOG(INFO) << "resize";
+		  this->blobs_.resize(1); // This blos stores the defw1-defw4
+		  
+          if ( (this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_DEF_ALL3) || (this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_DEF_ALL4) )
+			  Nparam = kernel_size_*kernel_size_;     //set kernel size
+		  else
+			  Nparam = 4;
+          
+//		  LOG(INFO) << "reset: "<<channels_ <<", " << Nparam;
+		  this->blobs_[0].reset(new Blob<Dtype>(1, 1, channels_, Nparam));   //used to represent defw
+		  
+//		  LOG(INFO) << "Reshape mutable_cpu_data ";
+		  Dtype* defw = this->blobs_[0]->mutable_cpu_data();
+//		  LOG(INFO) << "top_buffer_.Reshape" << bottom[0]->num() <<" " << channels_ <<" "<< height_ <<" "<< width_;
+		  
+//		  LOG(INFO) << "Reshape 1 ";
+		  top_buffer_.Reshape(bottom[0]->num(), channels_, height_, width_);
+//		  LOG(INFO) << "blobl_a_min_:" << blobl_a_min_;
+//		  LOG(INFO) << "Nparam:" << Nparam << "channels:" << channels_ << "pooled_height_: " << pooled_height_ << "pooled_width_:" << pooled_width_;
+//		  LOG(INFO) << "Reshape 2";
+          dh_.Reshape(bottom[0]->num(), channels_, pooled_height_, pooled_width_);
+		  dv_.Reshape(bottom[0]->num(), channels_, pooled_height_, pooled_width_);
+//		  dh2_.Reshape(bottom[0]->num(), channels_, pooled_height_, pooled_width_);
+//		  dv2_.Reshape(bottom[0]->num(), channels_, pooled_height_, pooled_width_);
+
+        //  LOG(INFO)<<"this is the start 2 in pool_reshape";
+          if ( (this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_DEF_ALL3) || (this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_DEF_ALL4))
+          {
+//              Iv_.resize((channels_*bottom[0]->num()*pooled_height_*pooled_width_ ));
+              Ih_.resize((channels_*bottom[0]->num()*pooled_height_*pooled_width_ ));   //
+          }
+          else
+          {
+              Iv_.resize((channels_*bottom[0]->num()*height_*width_ ));   //each point in  inputmap
+              Ih_.resize((channels_*bottom[0]->num()*height_*width_ ));
+          }
+	//  LOG(INFO)<<"this is the start 3 in pool_reshape";
+//		  LOG(INFO) << "tmpIx_";
+		  tmpIx_.resize((N_ ));  // for one map, n = width * height
+		  tmpIy_.resize((N_ ));
+		  defh_.resize((channels_ )); // part location
+		  defv_.resize((channels_ ));
+		  defp_.resize((channels_ ));
+		  Mdt_.resize((N_));
+		  tmpM_.resize(N_);
+
+		  LOG(INFO) << "setting defw" << " blobl_a_min_:" << blobl_a_min_;
+		  if ( (this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_DEF_ALL3) || (this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_DEF_ALL4) )
+			  for (int c = 0; c < channels_; c++)
+			  {
+				  int defwidx = 0;
+				  int center = kernel_size_/2;
+				  for (int kh=0; kh<kernel_size_; kh++)
+					  for (int kv=0; kv<kernel_size_; kv++)
+					  {
+                          if (blobl_a_min_ > 0)
+                              defw[c*Nparam+defwidx] = -blobl_a_min_* ( (kh-center)*(kh-center) + (kv-center)*(kv-center) );
+                          else
+                              defw[c*Nparam+defwidx] = 0;
+						  defwidx++;
+					  }
+//				  for (int parami = 0; parami < Nparam; ++parami)
+//					  defw[c*Nparam+parami] = Dtype(0);
+//		  LOG(INFO) << "defwidx: " <<defwidx;
+			  }
+		  else
+			  for (int c = 0; c < channels_; c++)
+			  {
+				  /*			  int c1 = c % parts_num_;
+				  defh[c] = hpos_[c1];
+				  defv[c] = vpos_[c1];
+				  //          LOG(INFO) << "hpos_[" <<c <<"]: " << hpos_[c1]<< " vpos_[" <<c <<"]: " << vpos_[c1] << " width_:" << width_;
+				  defp[c] = defh[c1] * width_+defv[c1];
+				  //          LOG(INFO) << "defp[" <<c1 <<"]: " << defp[c1];*/				  
+				  defw[c*4+0] = blobl_a_min_;
+				  defw[c*4+1] = Dtype(0);
+				  defw[c*4+2] = blobl_a_min_;
+				  defw[c*4+3] = Dtype(0);
+			  }
+
+		  LOG(INFO) << "setup defw:" << defw[0*4+0] << ", "<< defw[0*4+1]<< ", " << defw[0*4+2]<< ", " << defw[0*4+3];
+//		  top[0]->Reshape(bottom[0]->num(), channels_, pooled_height_,
+//				  pooled_width_);
+		  top[0]->Reshape(bottom[0]->num(), pooled_height_ * pooled_width_ , 1, 1);
+	  }
+	  else
+	  {
+		  if ( (this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_LOWRES) )
+		  {
+			  CHECK_EQ(channels_, 3)  << "PoolingLayer LOWRES only takes 3 channels";
+			  N_ = width_ * height_;
+			  tmpM_.resize(N_*channels_);
+			  top[0]->Reshape(bottom[0]->num(), channels_*2+1, pooled_height_,
+			  pooled_width_);
+		  }
+		  else
+		  {
+			  top[0]->Reshape(bottom[0]->num(), channels_, pooled_height_,
+			  pooled_width_);
+		  }
+	  }
+      }
+  }
+  Flag_ = false;
+
 }
 
 // TODO(Yangqing): Is there a faster way to do pooling in the channel-first
@@ -303,6 +540,297 @@ void PoolingLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     break;
   default:
     LOG(FATAL) << "Unknown pooling method.";
+  }
+}
+
+#define INF 1E20
+static inline int square(int x) { return x*x; }
+
+template <typename Dtype>
+void max_filter_1d(const Dtype *vals, Dtype *out_vals, int *I, 
+                          int step, int n, Dtype a, Dtype b, int s) {
+  for (int i = 0; i < n; i++) {
+    Dtype max_val = -INF;
+    int argmax     = 0;
+    int first      = max(0, i-s);
+    int last       = min(n-1, i+s);
+    for (int j = first; j <= last; j++) {
+      Dtype val = *(vals + j*step) - a*square(i-j) - b*(i-j);
+      if (val > max_val) {
+        max_val = val;
+        argmax  = j;
+      }
+    }
+    *(out_vals + i*step) = max_val;
+    *(I + i*step) = argmax;
+  }
+}
+
+
+template <typename Dtype>
+void max_filter_1d(Dtype *vals, Dtype *out_vals, int *I, 
+                          int step, int n, Dtype a, Dtype b, int s) {
+  for (int i = 0; i < n; i++) {
+    Dtype max_val = -INF;
+    int argmax     = 0;
+    int first      = max(0, i-s);
+    int last       = min(n-1, i+s);
+    for (int j = first; j <= last; j++) {
+      Dtype val = *(vals + j*step) - a*square(i-j) - b*(i-j);
+      if (val > max_val) {
+        max_val = val;
+        argmax  = j;
+      }
+    }
+    *(out_vals + i*step) = max_val;
+    *(I + i*step) = argmax;
+  }
+}
+
+template <typename Dtype>
+void dt1d(Dtype *src, Dtype *dst, int *ptr, int step, int n, Dtype a, Dtype b, int * v, Dtype *z) {
+  int k = 0;
+  v[0] = 0;
+  z[0] = -INF;
+  z[1] = +INF;
+  for (int q = 1; q <= n-1; q++) {
+    Dtype s = ((src[q*step] - src[v[k]*step]) - b*(q - v[k]) + a*(square(q) - square(v[k]))) / (2*a*(q-v[k]));
+    while (s <= z[k]) {
+      // Update pointer
+      k--;
+      s  = ((src[q*step] - src[v[k]*step]) - b*(q - v[k]) + a*(square(q) - square(v[k]))) / (2*a*(q-v[k]));
+    }
+    k++;
+    v[k]   = q;
+    z[k]   = s;
+    z[k+1] = +INF;
+  }
+
+   k = 0;
+   for (int q = 0; q <= n-1; q++) {
+     while (z[k+1] < q)
+       k++;
+     dst[q*step] = a*square(q-v[k]) + b*(q-v[k]) + src[v[k]*step];
+     ptr[q*step] = v[k];
+  }
+
+}
+
+
+
+template <typename Dtype>
+void dt1d(const Dtype *src, Dtype *dst, int *ptr, int step, int n, Dtype a, Dtype b, int * v, Dtype *z) {
+  int k = 0;
+  v[0] = 0;
+  z[0] = -INF;
+  z[1] = +INF;
+  for (int q = 1; q <= n-1; q++) {
+    Dtype s = ((src[q*step] - src[v[k]*step]) - b*(q - v[k]) + a*(square(q) - square(v[k]))) / (2*a*(q-v[k]));
+    while (s <= z[k]) {
+      // Update pointer
+      k--;
+      s  = ((src[q*step] - src[v[k]*step]) - b*(q - v[k]) + a*(square(q) - square(v[k]))) / (2*a*(q-v[k]));
+    }
+    k++;
+    v[k]   = q;
+    z[k]   = s;
+    z[k+1] = +INF;
+  }
+
+   k = 0;
+   for (int q = 0; q <= n-1; q++) {
+     while (z[k+1] < q)
+       k++;
+     dst[q*step] = a*square(q-v[k]) + b*(q-v[k]) + src[v[k]*step];
+     ptr[q*step] = v[k];
+  }
+
+}
+
+
+
+
+template <typename Dtype>
+void PoolingLayer<Dtype>::dt(int dims0, int dims1, const Dtype * vals, Dtype av, Dtype bv, Dtype ah, Dtype bh, int n, int ch) { 
+
+  // Read in deformation coefficients, negating to define a cost
+  // Read in offsets for output grid, fixing MATLAB 0-1 indexing
+/*  const int *dims = mxGetDimensions(prhs[0]);
+  double *vals = (double *)mxGetPr(prhs[0]);
+  double ax = mxGetScalar(prhs[1]);
+  double bx = mxGetScalar(prhs[2]);
+  double ay = mxGetScalar(prhs[3]);
+  double by = mxGetScalar(prhs[4]);
+  
+  mxArray *mxM = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
+  mxArray *mxIx = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
+  mxArray *mxIy = mxCreateNumericArray(2, dims, mxINT32_CLASS, mxREAL);
+  double *M = (double *)mxGetPr(mxM);
+  int32_t *Ix_ = (int32_t *)mxGetPr(mxIx);
+  int32_t *Iy_ = (int32_t *)mxGetPr(mxIy);
+
+  double *tmpM_ = (double *)mxCalloc(dims[0]*dims[1], sizeof(double));
+  int32_t *tmpIx = (int32_t *)mxCalloc(dims[0]*dims[1], sizeof(int32_t));
+  int32_t *tmpIy = (int32_t *)mxCalloc(dims[0]*dims[1], sizeof(int32_t));*/
+  Dtype* tmpM = tmpM_.data();
+  Dtype* Mdt = Mdt_.data();
+  int* tmpIy = tmpIy_.data();
+  int* tmpIx = tmpIx_.data();
+  int* Ih = Ih_.data();
+  int* Iv = Iv_.data();
+  int maxdim = dims0;
+  if (dims0 < dims1)
+	  maxdim = dims1;
+  int   *vp = new int[maxdim];
+  Dtype *zp = new Dtype[maxdim+1];
+
+/*
+  Dtype* tmpM =
+       reinterpret_cast<Dtype*>(tmpM_->mutable_cpu_data());
+  int* tmpIy =
+       reinterpret_cast<int*>(tmpIy_->mutable_cpu_data());
+  int* tmpIx =
+       reinterpret_cast<int*>(tmpIx_->mutable_cpu_data());
+  Dtype* Mdt =
+       reinterpret_cast<Dtype*>(Mdt_->mutable_cpu_data());
+ 
+  int* Ih = reinterpret_cast<int*>(Ih_->mutable_cpu_data());
+  int* Iv = reinterpret_cast<int*>(Iv_->mutable_cpu_data());
+*/
+  Ih = Ih + (n*channels_+ch)*dims0*dims1;
+  Iv = Iv + (n*channels_+ch)*dims0*dims1;
+//LOG(INFO) << "dt 1, "<< n <<", " << dims0 <<", " <<dims1 <<", "<<ch;
+ // if (n==0)
+//	  LOG(INFO) << "dt 1, "<< dims0 <<", " << av <<", " <<bv <<"," << n <<"," <<ch <<"," << Ih[0]<<","<< vals[0];
+if (this->layer_param_.pooling_param().pool() == PoolingParameter_PoolMethod_DEF)
+{
+  for (int h = 0; h < dims1; h++)
+      //for each vertical location, scan horizontally
+    dt1d(vals+h*dims0, tmpM+h*dims0, tmpIy+h*dims0, 1, dims0, -av, -bv, vp, zp);  
+  for (int v = 0; v < dims0; v++)
+      //for each horizontal location, scan vertically
+    dt1d(tmpM+v, Mdt+v, tmpIx+v, dims0, dims1, -ah, -bh, vp, zp);
+}
+else
+{
+  for (int h = 0; h < dims1; h++)
+      //for each vertical location, scan horizontally
+    max_filter_1d(vals+h*dims0, tmpM+h*dims0, tmpIy+h*dims0, 1, dims0, -av, -bv, kernel_size_);  
+  for (int v = 0; v < dims0; v++)
+      //for each horizontal location, scan vertically
+    max_filter_1d(tmpM+v, Mdt+v, tmpIx+v, dims0, dims1, -ah, -bh, kernel_size_);
+}
+  delete [] vp;
+  delete [] zp;
+  // get argmins 
+//  if (n==0)
+//LOG(INFO) << "dt 3"<< "," << Mdt[0] << "," << tmpIx[0];
+  for (int h = 0; h < dims1; h++) {
+    for (int v = 0; v < dims0; v++) {
+      int p = h*dims0+v;
+//LOG(INFO) << "dt 3.1:" << h <<", "<< v<<", " << p;
+//LOG(INFO) << tmpIx[p];
+//LOG(INFO) << Iv[p];
+      Ih[p] = tmpIx[p]; // store the best in vertical direction
+//LOG(INFO) << "dt 3.2";
+      Iv[p] = tmpIy[v+tmpIx[p]*dims0]; // store the best in horizontal direction
+    }
+  }
+//LOG(INFO) << "dt 4";
+/*
+  mxFree(tmpM);
+  mxFree(tmpIx);
+  mxFree(tmpIy);
+  plhs[0] = mxM;
+  plhs[1] = mxIx;
+  plhs[2] = mxIy;*/
+
+
+}
+
+
+
+#define	round(x)	((x-floor(x))>0.5 ? ceil(x) : floor(x))
+
+// reduce(im) resizes im to half its size, using a 5-tap binomial filter for anti-aliasing
+// (see Burt & Adelson's Laplacian Pyramid paper)
+
+// reduce each column
+// result is transposed, so we can apply it twice for a complete reduction
+template <typename Dtype>
+void PoolingLayer<Dtype>::reduce1dtran(Dtype *src, int sheight, Dtype *dst, int dheight, 
+		  int width, int chan) {
+  // resize each column of each color channel
+  //bzero(dst, chan*width*dheight*sizeof(double));
+  memset(dst, 0, chan*width*dheight*sizeof(Dtype));
+  int y;
+  Dtype *s, *d;
+
+  for (int c = 0; c < chan; c++) {
+    for (int x = 0; x < width; x++) {
+      s  = src + c*width*sheight + x*sheight;
+      d  = dst + c*dheight*width + x;
+
+      // First row
+      *d = s[0]*.6875 + s[1]*.2500 + s[2]*.0625;      
+
+      for (y = 1; y < dheight-2; y++) {	
+	s += 2;
+	d += width;
+	*d = s[-2]*0.0625 + s[-1]*.25 + s[0]*.375 + s[1]*.25 + s[2]*.0625;
+      }
+
+      // Last two rows
+      s += 2;
+      d += width;
+      if (dheight*2 <= sheight) {
+	*d = s[-2]*0.0625 + s[-1]*.25 + s[0]*.375 + s[1]*.25 + s[2]*.0625;
+      } else {
+	*d = s[1]*.3125 + s[0]*.3750 + s[-1]*.2500 + s[-2]*.0625;
+      }
+      s += 2;
+      d += width;
+      *d = s[0]*.6875 + s[-1]*.2500 + s[-2]*.0625;
+    }
+  }
+}
+
+template <typename Dtype>
+void PoolingLayer<Dtype>::reduce1dtran(const Dtype *src, int sheight, Dtype *dst, int dheight, 
+		  int width, int chan) {
+  // resize each column of each color channel
+  //bzero(dst, chan*width*dheight*sizeof(double));
+  memset(dst, 0, chan*width*dheight*sizeof(Dtype));
+  int y;
+  Dtype *d;
+  const Dtype *s;
+
+  for (int c = 0; c < chan; c++) {
+    for (int x = 0; x < width; x++) {
+      s  = src + c*width*sheight + x*sheight;
+      d  = dst + c*dheight*width + x;
+
+      // First row
+      *d = s[0]*.6875 + s[1]*.2500 + s[2]*.0625;      
+
+      for (y = 1; y < dheight-2; y++) {	
+	s += 2;
+	d += width;
+	*d = s[-2]*0.0625 + s[-1]*.25 + s[0]*.375 + s[1]*.25 + s[2]*.0625;
+      }
+
+      // Last two rows
+      s += 2;
+      d += width;
+      if (dheight*2 <= sheight) {
+	*d = s[-2]*0.0625 + s[-1]*.25 + s[0]*.375 + s[1]*.25 + s[2]*.0625;
+      } else {
+	*d = s[1]*.3125 + s[0]*.3750 + s[-1]*.2500 + s[-2]*.0625;
+      }
+      s += 2;
+      d += width;
+      *d = s[0]*.6875 + s[-1]*.2500 + s[-2]*.0625;
+    }
   }
 }
 

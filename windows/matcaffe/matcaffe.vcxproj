@@ -47,10 +47,12 @@
       <DisableSpecificWarnings>4003</DisableSpecificWarnings>
     </ClCompile>
     <PreBuildEvent>
-      <Command>"$(ScriptsDir)\MatlabPreBuild.cmd" "$(SolutionDir)" "$(OutDir)"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>"$(ScriptsDir)\MatlabPostBuild.cmd" "$(SolutionDir)" "$(OutDir)"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <Link>
       <ModuleDefinitionFile>matcaffe.def</ModuleDefinitionFile>
@@ -97,6 +99,9 @@
     <OriginalBuildTargets>$(BuildDependsOn)</OriginalBuildTargets>
     <BuildDependsOn>OriginalBuild;SkipBuild</BuildDependsOn>
     <NuGetPackageImportStamp>5d60c5dd</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(BuildDir)\..\matlab\+caffe\private\</OutDir>
   </PropertyGroup>
   <Target Name="OriginalBuild" Condition="'$(MatlabSupport)'=='true'" DependsOnTargets="$(OriginalBuildTargets)" />
   <Target Name="SkipBuild" Condition="'$(MatlabSupport)'!='true'">

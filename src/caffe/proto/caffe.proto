@@ -906,6 +906,12 @@ message PoolingParameter {
     MAX = 0;
     AVE = 1;
     STOCHASTIC = 2;
+    DEF = 3;
+    DEF_ALL = 4;
+    DEF_ALL2 = 5;
+    DEF_ALL3 = 6;
+    DEF_ALL4 = 7;
+    LOWRES = 8;
   }
   optional PoolMethod pool = 1 [default = MAX]; // The pooling method
   // Pad, kernel size, and stride are all given as a single value for equal
@@ -928,6 +934,8 @@ message PoolingParameter {
   // If global_pooling then it will pool over the size of the bottom by doing
   // kernel_h = bottom->height and kernel_w = bottom->width
   optional bool global_pooling = 12 [default = false];
+  optional float blobs_lr = 13;
+  optional float blobs_a_min = 14 [default = 0.0001];
 }
 
 message PowerParameter {
