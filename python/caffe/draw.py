@@ -10,7 +10,16 @@ Caffe network visualization: draw the NetParameter protobuffer.
 """
 
 from caffe.proto import caffe_pb2
-import pydot
+
+"""
+pydot is not supported under python 3 and pydot2 doesn't work properly.
+pydotplus works nicely (pip install pydotplus)
+"""
+try:
+    # Try to load pydotplus
+    import pydotplus as pydot
+except ImportError:
+    import pydot
 
 # Internal layer and blob styles.
 LAYER_STYLE_DEFAULT = {'shape': 'record',
@@ -133,7 +142,7 @@ def get_pydot_graph(caffe_net, rankdir, label_edges=True):
     -------
     pydot graph object
     """
-    pydot_graph = pydot.Dot(caffe_net.name,
+    pydot_graph = pydot.Dot(caffe_net.name if caffe_net.name else 'Net',
                             graph_type='digraph',
                             rankdir=rankdir)
     pydot_nodes = {}
