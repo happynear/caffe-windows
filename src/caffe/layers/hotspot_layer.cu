@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "thrust/device_vector.h"
-#include "device_atomic_functions.hpp"
 
 #include "caffe/util/math_functions.hpp"
 #include "caffe/layers/hotspot_layer.hpp"

@@ -105,3 +105,6 @@ MANIFEST-*
 *.lib
 matlab/+caffe/+test/
 *.exp
+packages
+*.db
+*.opendb

@@ -32,7 +32,7 @@ void SoftmaxWithLossLayer<Dtype>::LayerSetUp(
     CHECK_GE(hard_ratio_, 0);
     CHECK_LE(hard_ratio_, 1);
   }
-  has_class_weight_ = !this->layer_param_.softmax_param().class_weight().empty();
+  has_class_weight_ = (this->layer_param_.softmax_param().class_weight_size() != 0);
   softmax_axis_ =
     bottom[0]->CanonicalAxisIndex(this->layer_param_.softmax_param().axis());
   if (has_class_weight_) {
