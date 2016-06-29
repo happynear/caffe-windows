@@ -43,6 +43,11 @@ std::vector<DataBlob> CaffeBinding::Forward(std::vector<cv::Mat> input_image, in
 
 CaffeBinding::~CaffeBinding() {
   for (auto& net : net_) {
-    delete net;
+    try {
+      delete net;
+    }
+    catch (...) {
+
+    }
   }
 }

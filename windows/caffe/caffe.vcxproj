@@ -60,17 +60,6 @@
     <ClCompile Include="..\..\tools\caffe.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\packages\jQuery.2.1.1\tools\jquery-2.1.1.intellisense.js" />
-    <None Include="..\packages\jQuery.3.0.0.1\tools\jquery-3.0.0.intellisense.js" />
-    <None Include="Scripts\jquery-3.0.0.js" />
-    <None Include="Scripts\jquery-3.0.0.min.js" />
-    <None Include="Scripts\jquery-3.0.0.min.map" />
-    <None Include="Scripts\jquery-3.0.0.slim.js" />
-    <None Include="Scripts\jquery-3.0.0.slim.min.js" />
-    <None Include="Scripts\jquery-3.0.0.slim.min.map" />
-    <None Include="Scripts\nugetexample.js" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\libcaffe\libcaffe.vcxproj">
       <Project>{a9acef83-7b63-4574-a554-89ce869ea141}</Project>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
