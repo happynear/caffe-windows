@@ -110,7 +110,7 @@
             <GenerateDebugInformation>true</GenerateDebugInformation>
             <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
             <OptimizeReferences>true</OptimizeReferences>
-            <AdditionalDependencies>leveldb.lib;libopenblas.dll.a;Advapi32.lib;Shlwapi.lib;lmdb.lib;opencv_world300.lib;libprotobuf.lib;glog.lib;gflags.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;$(AdditionalDependencies)</AdditionalDependencies>
+            <AdditionalDependencies>leveldb.lib;libopenblas.dll.a;Advapi32.lib;Shlwapi.lib;lmdb.lib;opencv_world310.lib;libprotobuf.lib;glog.lib;gflags.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;$(AdditionalDependencies)</AdditionalDependencies>
         </Link>
     </ItemDefinitionGroup>
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,6 +118,7 @@
             <Optimization>Disabled</Optimization>
             <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
             <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+        <AdditionalDependencies>leveldbd.lib;libopenblas.dll.a;Advapi32.lib;Shlwapi.lib;lmdbd.lib;opencv_world310d.lib;libprotobufd.lib;glogd.lib;gflagsd.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;$(AdditionalDependencies)</AdditionalDependencies>
         </ClCompile>
         <Link>
             <GenerateDebugInformation>true</GenerateDebugInformation>
