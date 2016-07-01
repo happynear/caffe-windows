@@ -183,18 +183,6 @@ void BaseConvolutionLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
 }
 
 template <typename Dtype>
-int BaseConvolutionLayer<Dtype>::GetWeightsNumber(){
-  if (this->blobs_.size() > 0)
-    return this->blobs_.size();
-  else {
-    if (this->layer_param_.convolution_param().bias_term())
-      return 2;
-    else
-      return 1;
-  }
-}
-
-template <typename Dtype>
 void BaseConvolutionLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
   const int first_spatial_axis = channel_axis_ + 1;

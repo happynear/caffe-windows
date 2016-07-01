@@ -55,18 +55,6 @@ void InnerProductLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
 }
 
 template <typename Dtype>
-int InnerProductLayer<Dtype>::GetWeightsNumber(){
-  if (this->blobs_.size() > 0)
-    return this->blobs_.size();
-  else {
-    if (this->layer_param_.convolution_param().bias_term())
-      return 2;
-    else
-      return 1;
-  }
-}
-
-template <typename Dtype>
 void InnerProductLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
   // Figure out the dimensions
