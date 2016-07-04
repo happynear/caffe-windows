@@ -19,7 +19,7 @@ Check out the [project site](http://caffe.berkeleyvision.org) for all the detail
 and step-by-step examples.
 
 ## Windows Setup
-**Requirements**: Visual Studio 2013
+**Requirements**: Visual Studio 2015, third party libraries: http://pan.baidu.com/s/1bo0IoGZ .
 
 ### Pre-Build Steps
 Copy `.\windows\CommonSettings.props.example` to `.\windows\CommonSettings.props`
