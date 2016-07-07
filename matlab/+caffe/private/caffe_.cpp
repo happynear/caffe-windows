@@ -549,11 +549,9 @@ void initGlog() {
   if (is_log_inited) return;
   string log_dir = ".\\log\\";
   _mkdir(log_dir.c_str());
-  std::string now_time = boost::posix_time::to_iso_extended_string(boost::posix_time::second_clock::local_time());
-  now_time[13] = '-';
-  now_time[16] = '-';
-  string log_file = log_dir + "INFO" + now_time + ".txt";
+  string log_file = log_dir + "INFO";
   const char* log_base_filename = log_file.c_str();
+  ::google::SetLogFilenameExtension(".txt");
   ::google::SetLogDestination(0, log_base_filename);
   ::google::protobuf::SetLogHandler(&protobuf_log_handler);
   ::google::InitGoogleLogging("caffe_mex");

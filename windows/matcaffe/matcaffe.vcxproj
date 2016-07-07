@@ -13,6 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7173D611-3A7A-4F07-943A-727C6862E8D5}</ProjectGuid>
     <RootNamespace>matcaffe</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">
@@ -79,7 +80,8 @@
     <BuildDependsOn>OriginalBuild;SkipBuild</BuildDependsOn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(BuildDir)\..\matlab\+caffe\private\</OutDir>
+    <OutDir>$(SolutionDir)\..\matlab\+caffe\private\</OutDir>
+    <IntDir>$(SolutionDir)\..\matlab\+caffe\private\</IntDir>
   </PropertyGroup>
   <Target Name="OriginalBuild" Condition="'$(MatlabSupport)'=='true'" DependsOnTargets="$(OriginalBuildTargets)" />
   <Target Name="SkipBuild" Condition="'$(MatlabSupport)'!='true'">
