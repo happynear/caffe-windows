@@ -372,9 +372,6 @@
     <ClCompile Include="..\..\src\caffe\layers\predict_box_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\wider_face_data_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\recurrent_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
@@ -382,6 +379,9 @@
       <Filter>src\layers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\lstm_unit_layer.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\fcn_data_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
   </ItemGroup>

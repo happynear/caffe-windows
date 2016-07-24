@@ -173,7 +173,7 @@
     <ClCompile Include="..\..\src\caffe\layers\tile_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\transformer_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\triplet_loss_layer.cpp" />
-    <ClCompile Include="..\..\src\caffe\layers\wider_face_data_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\fcn_data_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\window_data_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layer_factory.cpp" />
     <ClCompile Include="..\..\src\caffe\net.cpp" />

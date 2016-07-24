@@ -259,8 +259,8 @@ namespace caffe {
 
         valid_sample = true;
         for (int point_id = 0; point_id < image_data_param.face_point_num(); ++point_id) {
-          if (prefetch_label[point_id * 2] < -0.45 * new_width || prefetch_label[point_id * 2] > 0.45 * new_width
-              || prefetch_label[point_id * 2 + 1] < -0.45 * new_height || prefetch_label[point_id * 2 + 1] > 0.45 * new_height) {
+          if (prefetch_label[item_id * label_count + point_id * 2] < -0.45 * new_width || prefetch_label[item_id * label_count + point_id * 2] > 0.45 * new_width
+              || prefetch_label[item_id * label_count + point_id * 2 + 1] < -0.45 * new_height || prefetch_label[item_id * label_count + point_id * 2 + 1] > 0.45 * new_height) {
             valid_sample = false;
           }
         }
