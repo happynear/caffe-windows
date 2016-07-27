@@ -86,6 +86,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\3rdparty\HoG\gradientMex.cpp" />
     <ClCompile Include="..\..\src\caffe\blob.cpp" />
     <ClCompile Include="..\..\src\caffe\common.cpp" />
     <ClCompile Include="..\..\src\caffe\data_reader.cpp" />
@@ -122,6 +123,7 @@
     <ClCompile Include="..\..\src\caffe\layers\embed_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\euclidean_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\exp_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\fcn_accuracy_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\filter_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\flatten_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\gram_layer.cpp" />
@@ -240,6 +242,7 @@
     <ClInclude Include="..\..\include\caffe\layers\embed_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\euclidean_loss_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\exp_layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\layers\fcn_accuracy_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\filter_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\flatten_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\hdf5_data_layer.hpp" />
@@ -304,6 +307,10 @@
     <ClInclude Include="..\..\include\caffe\util\rng.hpp" />
     <ClInclude Include="..\..\include\caffe\util\signal_handler.h" />
     <ClInclude Include="..\..\include\caffe\util\upgrade_proto.hpp" />
+    <ClInclude Include="..\..\src\3rdparty\HoG\fhog.hpp" />
+    <ClInclude Include="..\..\src\3rdparty\HoG\gradientMex.h" />
+    <ClInclude Include="..\..\src\3rdparty\HoG\sse.hpp" />
+    <ClInclude Include="..\..\src\3rdparty\HoG\wrappers.hpp" />
   </ItemGroup>
   <ItemGroup Condition="'$(CpuOnlyBuild)'=='false'">
     <CudaCompile Include="..\..\src\caffe\layers\absval_layer.cu" />

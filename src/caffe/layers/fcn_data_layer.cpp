@@ -15,6 +15,7 @@
 #include "caffe/util/io.hpp"
 #include "caffe/util/math_functions.hpp"
 #include "caffe/util/rng.hpp"
+//#include "../../3rdparty/HoG/fhog.hpp"
 
 using namespace cv;
 using namespace std;
@@ -34,6 +35,20 @@ namespace caffe {
     const int new_width = image_data_param.new_width();
     const bool is_color = image_data_param.is_color();
     string root_folder = image_data_param.root_folder();
+    FCNDataParameter fcn_data_param = this->layer_param_.fcn_data_param();
+    template_size = cv::Size(fcn_data_param.template_w(), fcn_data_param.template_h());
+    expand_left = fcn_data_param.expand_left();
+    expand_right = fcn_data_param.expand_right();
+    expand_top = fcn_data_param.expand_top();
+    expand_bottom = fcn_data_param.expand_bottom();
+    roi_multiply = cv::Size(fcn_data_param.roi_multiply_w(), fcn_data_param.roi_multiply_h());
+    scale_step = fcn_data_param.scale_step();
+    scale_step_num = fcn_data_param.scale_step_num();
+    gaussian_size = cv::Size(fcn_data_param.gaussian_size_w(), fcn_data_param.gaussian_size_h());
+    gaussian_std_h = fcn_data_param.gaussian_std_h();
+    gaussian_std_w = fcn_data_param.gaussian_size_w();
+    use_hog = fcn_data_param.use_hog();
+    hog_cell_size = fcn_data_param.hog_cell_size();
 
     CHECK((new_height == 0 && new_width == 0) ||
           (new_height > 0 && new_width > 0)) << "Current implementation requires "
@@ -85,12 +100,17 @@ namespace caffe {
                                       new_height, new_width, is_color);
     CHECK(cv_img.data) << "Could not load " << image_rect_list[image_id].first;
 
-    target_temp = Mat::zeros(7, 7, CV_32FC1);
-    target_temp.at<float>(Point(3, 3)) = 1.0f;
-    cv::GaussianBlur(target_temp, target_temp, Size(7, 7), 2, 3);
-    target_temp /= target_temp.at<float>(Point(3, 3));
-    target_wheel_size = Size2d((double)template_size.width / (1.0 + expand_left + expand_right), (double)template_size.height / (1 + expand_top));
+    target_temp = Mat::zeros(gaussian_size, CV_32FC1);
+    target_temp.at<float>(Point(gaussian_size.width / 2, gaussian_size.height/2)) = 1.0f;
+    cv::GaussianBlur(target_temp, target_temp, gaussian_size, gaussian_std_w, gaussian_std_h);
+    target_temp /= target_temp.at<float>(Point(gaussian_size.width / 2, gaussian_size.height / 2));
+    target_wheel_size = Size2d((double)template_size.width / (1.0 + expand_left + expand_right),
+      (double)template_size.height / (1 + expand_top + expand_bottom));
     target_roi_size = Size(template_size.width * roi_multiply.width, template_size.height * roi_multiply.height);
+    if (use_hog) {
+      target_roi_size.width /= hog_cell_size;
+      target_roi_size.height /= hog_cell_size;
+    }
     target_heatmap_size = Size(target_roi_size.width - template_size.width + 1, target_roi_size.height - template_size.height + 1);
 
     // Use data_transformer to infer the expected blob shape from a cv_image.
@@ -99,7 +119,7 @@ namespace caffe {
     // Reshape prefetch_data and top[0] according to the batch_size.
     const int batch_size = image_data_param.batch_size();
     CHECK_GT(batch_size, 0) << "Positive batch size required";
-    top_shape[0] = batch_size * 5;
+    top_shape[0] = batch_size * scale_step_num;
     for (int i = 0; i < this->PREFETCH_COUNT; ++i) {
       this->prefetch_[i].data_.Reshape(top_shape);
     }
@@ -109,7 +129,7 @@ namespace caffe {
       << top[0]->channels() << "," << top[0]->height() << ","
       << top[0]->width();
     // label
-    vector<int> label_shape = { batch_size * 5, 2, target_heatmap_size.height, target_heatmap_size.width };
+    vector<int> label_shape = { batch_size * scale_step_num, 2, target_heatmap_size.height, target_heatmap_size.width };
     top[1]->Reshape(label_shape);
     for (int i = 0; i < this->PREFETCH_COUNT; ++i) {
       this->prefetch_[i].label_.Reshape(label_shape);
@@ -139,6 +159,7 @@ namespace caffe {
     const int new_width = image_data_param.new_width();
     const bool is_color = image_data_param.is_color();
     string root_folder = image_data_param.root_folder();
+    //FHoG hog;
 
     // Reshape according to the first image of each batch
     // on single input batches allows for inputs of varying dimension.
@@ -149,9 +170,9 @@ namespace caffe {
     vector<int> top_shape = { 1, 1, target_roi_size.height, target_roi_size.width };
     this->transformed_data_.Reshape(top_shape);
     // Reshape batch according to the batch_size.
-    top_shape[0] = batch_size * 5;
+    top_shape[0] = batch_size * scale_step_num;
     batch->data_.Reshape(top_shape);
-    vector<int> label_shape = { batch_size * 5, 2, target_heatmap_size.height, target_heatmap_size.width };
+    vector<int> label_shape = { batch_size * scale_step_num, 2, target_heatmap_size.height, target_heatmap_size.width };
     batch->label_.Reshape(label_shape);
 
     Dtype* prefetch_data = batch->data_.mutable_cpu_data();
@@ -178,6 +199,7 @@ namespace caffe {
         wheel_rect.y += (wheel_rect.height - refined_h) / 2;
         wheel_rect.height = refined_h;
         double base_scale = wheel_rect.height / target_wheel_size.height;
+        int all_non_zero_count = 0;
         for (int s = -(scale_step_num - 1) / 2; s <= (scale_step_num - 1) / 2; s++) {
           double scale_factor = pow(scale_step, s);
           double scale = base_scale * scale_factor;
@@ -189,7 +211,7 @@ namespace caffe {
           Rect2d expanded_scaled_wheel_rect = Rect2d(scaled_wheel_rect.x - scaled_wheel_rect.width * expand_left,
             scaled_wheel_rect.y - scaled_wheel_rect.height * expand_top,
             scaled_wheel_rect.width * (1 + expand_left + expand_right),
-            scaled_wheel_rect.height * (1 + expand_top));
+            scaled_wheel_rect.height * (1 + expand_top + expand_bottom));
 
           Rect integer_template_rect = Rect(floor(expanded_scaled_wheel_rect.x + 0.5), floor(expanded_scaled_wheel_rect.y + 0.5),
             floor(expanded_scaled_wheel_rect.width + 0.5), floor(expanded_scaled_wheel_rect.height + 0.5));
@@ -229,25 +251,37 @@ namespace caffe {
 
           target_map = Mat::zeros(target_heatmap_size, CV_32FC1);
           target_map.at<float>(Point(template_ground_truth.x, template_ground_truth.y)) = 1.0f;
-          cv::GaussianBlur(target_map, target_map, Size(7, 7), 2, 3);
-          double ideal_max_value = target_temp.at<float>(Point(3, 3 + s));
+          cv::GaussianBlur(target_map, target_map, gaussian_size, gaussian_std_w, gaussian_std_h);
+          double ideal_max_value = target_temp.at<float>(Point(gaussian_size.width / 2, gaussian_size.height / 2 + s));
           double max_val, min_val;
           cv::minMaxLoc(target_map, &min_val, &max_val);
           target_map *= ideal_max_value / max_val;
-          int offset_data = batch->data_.offset(item_id * 5 + s + (scale_step_num - 1) / 2);
+          int offset_data = batch->data_.offset(item_id * scale_step_num + s + (scale_step_num - 1) / 2);
           this->transformed_data_.set_cpu_data(prefetch_data + offset_data);
           this->data_transformer_->Transform(target_input_image, &(this->transformed_data_));
 
-          int offset_label = batch->label_.offset(item_id * 5 + s + (scale_step_num - 1) / 2);
+          int offset_label = batch->label_.offset(item_id * scale_step_num + s + (scale_step_num - 1) / 2);
           for (int i = 0; i < target_map.cols; i++) {
             for (int j = 0; j < target_map.rows; j++) {
               float value = target_map.at<float>(Point(i, j));
               prefetch_label[offset_label + target_map.cols *j + i] = value;
-              if (value > 0) {
-                prefetch_label[offset_label + target_map.cols * target_map.rows + target_map.cols *j + i] = 1.0f;
+              if (value > 0.5) {
+                prefetch_label[offset_label + target_map.cols * target_map.rows + target_map.cols *j + i] = Dtype(1.0);
+                all_non_zero_count++;
               }
               else {
-                prefetch_label[offset_label + target_map.cols * target_map.rows + target_map.cols *j + i] = 7.0f*7.0f / (float)(target_map.cols * target_map.rows);
+                prefetch_label[offset_label + target_map.cols * target_map.rows + target_map.cols *j + i] = Dtype(0.0);
+              }
+            }
+          }
+        }
+        for (int s = -(scale_step_num - 1) / 2; s <= (scale_step_num - 1) / 2; s++) {
+          int offset_label = batch->label_.offset(item_id * scale_step_num + s + (scale_step_num - 1) / 2);
+          for (int i = 0; i < target_map.cols; i++) {
+            for (int j = 0; j < target_map.rows; j++) {
+              float value = prefetch_label[offset_label + target_map.cols *j + i];
+              if (prefetch_label[offset_label + target_map.cols * target_map.rows + target_map.cols *j + i] < Dtype(0.01)) {
+                prefetch_label[offset_label + target_map.cols * target_map.rows + target_map.cols *j + i] = (Dtype)all_non_zero_count / (Dtype)(target_map.cols * target_map.rows * scale_step_num - all_non_zero_count);
               }
             }
           }

@@ -416,6 +416,7 @@ message LayerParameter {
   optional PredictBoxParameter predict_box_param = 209;
   optional MILDataParameter mil_data_param = 0x004d4944; //"MID"
   optional MILParameter mil_param = 0x004d494c; //"MIL"
+  optional FCNDataParameter fcn_data_param = 210;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1160,6 +1161,8 @@ message SoftmaxParameter {
   optional int32 axis = 2 [default = 1];
   optional float hard_ratio = 3 [default = 1];
   repeated float class_weight = 4;
+  optional int32 hard_mining_label = 5;
+  optional float cutting_point = 6;
 }
 
 message TanHParameter {
@@ -1572,4 +1575,23 @@ message PredictBoxParameter {
   optional bool nms = 3 [default = true];
   optional bool output_vector = 4 [default = true];
   optional float positive_thresh = 5 [default = 0.5];
+}
+
+message FCNDataParameter {
+  optional uint32 template_h = 1 [default = 48];
+  optional uint32 template_w = 2 [default = 42];
+  optional float expand_left = 3 [default = 0.25];
+  optional float expand_right = 4 [default = 0.25];
+  optional float expand_top = 5 [default = 0.5];
+  optional float expand_bottom = 6 [default = 0.25];
+  optional float roi_multiply_h = 7 [default = 5.0];
+  optional float roi_multiply_w = 8 [default = 5.0];
+  optional float scale_step = 9 [default = 1.1];
+  optional int32 scale_step_num = 10 [default = 5];
+  optional int32 gaussian_size_h = 11 [default = 7];
+  optional int32 gaussian_size_w = 12 [default = 7];
+  optional float gaussian_std_h = 13 [default = 1.5];
+  optional float gaussian_std_w = 14 [default = 1.5];
+  optional bool use_hog = 15 [default = false];
+  optional int32 hog_cell_size = 16 [default = 4];
 }

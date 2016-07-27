@@ -32,6 +32,17 @@ void SoftmaxWithLossLayer<Dtype>::LayerSetUp(
     CHECK_GE(hard_ratio_, 0);
     CHECK_LE(hard_ratio_, 1);
   }
+  has_cutting_point_ =
+    this->layer_param_.softmax_param().has_cutting_point();
+  if (has_cutting_point_) {
+    cutting_point_ = this->layer_param_.softmax_param().cutting_point();
+    CHECK_GE(cutting_point_, 0);
+    CHECK_LE(cutting_point_, 1);
+  }
+  has_hard_mining_label_ = this->layer_param_.softmax_param().has_hard_mining_label();
+  if (has_hard_mining_label_) {
+    hard_mining_label_ = this->layer_param_.softmax_param().hard_mining_label();
+  }
   has_class_weight_ = (this->layer_param_.softmax_param().class_weight_size() != 0);
   softmax_axis_ =
     bottom[0]->CanonicalAxisIndex(this->layer_param_.softmax_param().axis());

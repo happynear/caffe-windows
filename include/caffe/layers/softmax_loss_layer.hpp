@@ -124,12 +124,16 @@ class SoftmaxWithLossLayer : public LossLayer<Dtype> {
   int ignore_label_;
   bool has_hard_ratio_;
   float hard_ratio_;
+  bool has_hard_mining_label_;
+  int hard_mining_label_;
   bool has_class_weight_;
   Blob<Dtype> class_weight_;
   Blob<Dtype> counts_;
   Blob<Dtype> loss_;
   /// How to normalize the output loss.
   LossParameter_NormalizationMode normalization_;
+  bool has_cutting_point_;
+  Dtype cutting_point_;
 
   int softmax_axis_, outer_num_, inner_num_;
 };
