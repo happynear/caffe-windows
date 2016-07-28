@@ -15,7 +15,7 @@
 #include "caffe/util/io.hpp"
 #include "caffe/util/math_functions.hpp"
 #include "caffe/util/rng.hpp"
-//#include "../../3rdparty/HoG/fhog.hpp"
+#include "../../3rdparty/HoG/fhog.hpp"
 
 using namespace cv;
 using namespace std;
@@ -46,7 +46,7 @@ namespace caffe {
     scale_step_num = fcn_data_param.scale_step_num();
     gaussian_size = cv::Size(fcn_data_param.gaussian_size_w(), fcn_data_param.gaussian_size_h());
     gaussian_std_h = fcn_data_param.gaussian_std_h();
-    gaussian_std_w = fcn_data_param.gaussian_size_w();
+    gaussian_std_w = fcn_data_param.gaussian_std_w();
     use_hog = fcn_data_param.use_hog();
     hog_cell_size = fcn_data_param.hog_cell_size();
 
@@ -107,14 +107,15 @@ namespace caffe {
     target_wheel_size = Size2d((double)template_size.width / (1.0 + expand_left + expand_right),
       (double)template_size.height / (1 + expand_top + expand_bottom));
     target_roi_size = Size(template_size.width * roi_multiply.width, template_size.height * roi_multiply.height);
+    target_featuremap_size = target_roi_size;
     if (use_hog) {
-      target_roi_size.width /= hog_cell_size;
-      target_roi_size.height /= hog_cell_size;
+      target_featuremap_size.width /= hog_cell_size;
+      target_featuremap_size.height /= hog_cell_size;
     }
-    target_heatmap_size = Size(target_roi_size.width - template_size.width + 1, target_roi_size.height - template_size.height + 1);
+    target_heatmap_size = Size(target_featuremap_size.width - template_size.width + 1, target_featuremap_size.height - template_size.height + 1);
 
     // Use data_transformer to infer the expected blob shape from a cv_image.
-    vector<int> top_shape = {1, 1, target_roi_size.height, target_roi_size.width};
+    vector<int> top_shape = { 1, use_hog ? 31 : 1, target_featuremap_size.height, target_featuremap_size.width };
     this->transformed_data_.Reshape(top_shape);
     // Reshape prefetch_data and top[0] according to the batch_size.
     const int batch_size = image_data_param.batch_size();
@@ -159,7 +160,7 @@ namespace caffe {
     const int new_width = image_data_param.new_width();
     const bool is_color = image_data_param.is_color();
     string root_folder = image_data_param.root_folder();
-    //FHoG hog;
+    FHoG hog;
 
     // Reshape according to the first image of each batch
     // on single input batches allows for inputs of varying dimension.
@@ -167,7 +168,7 @@ namespace caffe {
       0, 0, is_color);
     CHECK(cv_img.data) << "Could not load " << image_rect_list[image_id].first;
     // Use data_transformer to infer the expected blob shape from a cv_img.
-    vector<int> top_shape = { 1, 1, target_roi_size.height, target_roi_size.width };
+    vector<int> top_shape = { 1, use_hog ? 31 : 1, target_featuremap_size.height, target_featuremap_size.width };
     this->transformed_data_.Reshape(top_shape);
     // Reshape batch according to the batch_size.
     top_shape[0] = batch_size * scale_step_num;
@@ -244,10 +245,10 @@ namespace caffe {
           resize(image(ROI), target_input_image, target_roi_size);
           double image_scale_rate = target_roi_size.width / ROI.width;
           Rect2d template_ground_truth = wheel_wrt_roi;
-          template_ground_truth.x *= image_scale_rate;
-          template_ground_truth.y *= image_scale_rate;
-          template_ground_truth.width *= image_scale_rate;
-          template_ground_truth.height *= image_scale_rate;
+          template_ground_truth.x *= image_scale_rate / hog_cell_size;
+          template_ground_truth.y *= image_scale_rate / hog_cell_size;
+          template_ground_truth.width *= image_scale_rate / hog_cell_size;
+          template_ground_truth.height *= image_scale_rate / hog_cell_size;
 
           target_map = Mat::zeros(target_heatmap_size, CV_32FC1);
           target_map.at<float>(Point(template_ground_truth.x, template_ground_truth.y)) = 1.0f;
@@ -258,7 +259,24 @@ namespace caffe {
           target_map *= ideal_max_value / max_val;
           int offset_data = batch->data_.offset(item_id * scale_step_num + s + (scale_step_num - 1) / 2);
           this->transformed_data_.set_cpu_data(prefetch_data + offset_data);
-          this->data_transformer_->Transform(target_input_image, &(this->transformed_data_));
+          if (use_hog) {
+            target_input_image.convertTo(target_input_image, CV_32FC1);
+            vector<Mat> hog_feature = hog.extract(target_input_image, 2, hog_cell_size, 9);
+            CHECK_EQ(hog_feature.size(), top_shape[1]) << "Please check hog feature channels.";
+            CHECK_EQ(hog_feature[0].rows, top_shape[2])<< "Please check hog feature height.";
+            CHECK_EQ(hog_feature[0].cols, top_shape[3]) << "Please check hog feature width.";
+            for (int c = 0; c < hog_feature.size(); c++) {
+              for (int i = 0; i < hog_feature[0].cols; i++) {
+                for (int j = 0; j < hog_feature[0].rows; j++) {
+                  this->transformed_data_.mutable_cpu_data()[target_map.cols * target_map.rows * c + target_map.cols *j + i]
+                    = hog_feature[c].at<float>(Point(i, j));
+                }
+              }
+            }
+          }
+          else {
+            this->data_transformer_->Transform(target_input_image, &(this->transformed_data_));
+          }
 
           int offset_label = batch->label_.offset(item_id * scale_step_num + s + (scale_step_num - 1) / 2);
           for (int i = 0; i < target_map.cols; i++) {

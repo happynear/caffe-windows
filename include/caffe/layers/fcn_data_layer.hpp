@@ -55,6 +55,7 @@ namespace caffe {
     cv::Mat target_temp;
     cv::Size2d target_wheel_size;
     cv::Size target_roi_size;
+    cv::Size target_featuremap_size;
     cv::Size target_heatmap_size;
     bool use_hog;
     int hog_cell_size;
