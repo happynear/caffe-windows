@@ -1594,4 +1594,5 @@ message FCNDataParameter {
   optional float gaussian_std_w = 14 [default = 1.5];
   optional bool use_hog = 15 [default = false];
   optional int32 hog_cell_size = 16 [default = 4];
+  optional float min_iou = 17 [default = 0.8];
 }

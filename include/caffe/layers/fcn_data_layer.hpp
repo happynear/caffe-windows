@@ -53,12 +53,14 @@ namespace caffe {
     cv::Size gaussian_size = cv::Size(7, 7);
     double gaussian_std_h = 1.5, gaussian_std_w = 1.5;
     cv::Mat target_temp;
-    cv::Size2d target_wheel_size;
-    cv::Size target_roi_size;
-    cv::Size target_featuremap_size;
-    cv::Size target_heatmap_size;
+    cv::Size2d object_size_on_image;
+    cv::Size2d object_size_on_output;
+    cv::Size roi_size_on_image;
+    cv::Size output_featuremap_size;
+    cv::Size output_heatmap_size;
     bool use_hog;
     int hog_cell_size;
+    Dtype min_iou;
   };
 
 }  // namespace caffe

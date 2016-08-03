@@ -40,20 +40,30 @@ namespace caffe {
     const Dtype* bottom_data = bottom[0]->cpu_data();
     const Dtype* bottom_label = bottom[1]->cpu_data();
     int count = 0;
+    Dtype max_val;
+    int max_n = 0, max_c = 0, max_h = 0, max_w = 0;
     for (int n = 0; n < bottom[0]->num(); n++) {
+      if (n % top_k_ == 0) {
+        max_val = -std::numeric_limits<Dtype>::max();
+        max_h = 0;
+        max_w = 0;
+        max_n = 0;
+      }
       for (int c = 0; c < bottom[0]->channels(); c++) {
-        Dtype max_val = -std::numeric_limits<Dtype>::max();
-        int max_h = 0, max_w = 0;
         for (int h = 0; h < bottom[0]->height(); h++) {
           for (int w = 0; w < bottom[0]->width(); w++) {
             if (bottom_data[bottom[0]->offset(n, c, h, w)] > max_val) {
               max_val = bottom_data[bottom[0]->offset(n, c, h, w)];
               max_h = h;
               max_w = w;
+              max_c = c;
+              max_n = n % top_k_;
             }
           }
         }
-        if (bottom_label[bottom[1]->offset(n, c, max_h, max_w)] > 0) accuracy += (Dtype)1.0;
+      }
+      if (n % top_k_ == top_k_ - 1) {
+        if (max_n == (top_k_ - 1) / 2 && bottom_label[bottom[1]->offset(max_n, max_c, max_h, max_w)] > 0) accuracy += (Dtype)1.0;
         count++;
       }
     }
