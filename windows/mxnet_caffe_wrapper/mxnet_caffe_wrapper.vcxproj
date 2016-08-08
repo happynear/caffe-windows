@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{76A65602-4101-4137-BCAB-0492EA4CDCD4}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <RootNamespace>caffe</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="Exists('$(SolutionDir)\CommonSettings.props')">
+    <Import Project="..\CommonSettings.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Label="ExtensionSettings" Condition="'$(CpuOnlyBuild)'=='false'">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA $(CudaVersion).props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(MXNetRoot)\windows\x64\Release</OutDir>
+    <TargetName>libmxnet</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <AdditionalDependencies>libcaffe.lib;$(CudaDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <CudaCompile>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <CodeGeneration>$(CudaArchitecture)</CodeGeneration>
+      <GenerateLineInfo>true</GenerateLineInfo>
+      <AdditionalOptions>-Xcudafe "--diag_suppress=exception_spec_override_incompat --diag_suppress=useless_using_declaration --diag_suppress=field_without_dll_interface" -D_SCL_SECURE_NO_WARNINGS -DGFLAGS_DLL_DECL= </AdditionalOptions>
+    </CudaCompile>
+    <PostBuildEvent>
+      <Command>"$(ScriptsDir)\FixGFlagsNaming.cmd" "$(OutDir)" $(Configuration)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Link>
+      <AdditionalDependencies>libcaffe.lib;static_mxnet.lib;$(CudaDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>$(MXNetRoot)\windows\x64\Release</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <CudaCompile>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <CodeGeneration>$(CudaArchitecture)</CodeGeneration>
+      <AdditionalOptions>-Xcompiler "/wd 4819" -Xcudafe "--diag_suppress=exception_spec_override_incompat --diag_suppress=useless_using_declaration --diag_suppress=field_without_dll_interface" -D_SCL_SECURE_NO_WARNINGS -DGFLAGS_DLL_DECL= </AdditionalOptions>
+    </CudaCompile>
+    <ClCompile>
+      <PreprocessorDefinitions>NDEBUG;MSHADOW_FORCE_STREAM;MXNET_USE_OPENCV;MSHADOW_USE_CUDNN=1;MXNET_USE_THREADED_ENGINE;MSHADOW_USE_CBLAS=1;MSHADOW_USE_MKL=0;USE_STATIC_MKL=0;DMLC_USE_CXX11;MSHADOW_IN_CXX11;DMLC_USE_PS=1;MXNET_USE_DIST_KVSTORE=0;MXNET_EXPORTS;GLOG_NO_ABBREVIATED_SEVERITIES;mxnet_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(MXNetRoot)\mshadow;$(MXNetRoot)\include;$(MXNetRoot)/dmlc-core/include</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4819;4005</DisableSpecificWarnings>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\mxnet\dmlc-core\windows\dmlc\dmlc.vcxproj">
+      <Project>{6e6dda36-69ba-4555-ba88-10166b11f2d2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\mxnet\windows\static_mxnet\static_mxnet.vcxproj">
+      <Project>{63a79297-9cc4-4081-adac-7f40ce965c95}</Project>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <ProjectReference Include="..\libcaffe\libcaffe.vcxproj">
+      <Project>{a9acef83-7b63-4574-a554-89ce869ea141}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MXNetRoot)\plugin\caffe\caffe_blob.h" />
+    <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_common.h" />
+    <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_fieldentry.h" />
+    <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_loss-inl.h" />
+    <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_op-inl.h" />
+    <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_stream.h" />
+    <ClInclude Include="..\..\..\mxnet\src\c_api\c_api_error.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_blob.cc" />
+    <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_common.cc" />
+    <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_loss.cc" />
+    <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_op.cc" />
+    <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_stream.cc" />
+    <ClCompile Include="..\..\..\mxnet\src\c_api\c_api.cc" />
+    <ClCompile Include="..\..\..\mxnet\src\c_api\c_api_error.cc" />
+    <ClCompile Include="..\..\..\mxnet\src\c_api\c_predict_api.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="..\..\..\mxnet\plugin\caffe\caffe_loss.cu" />
+    <CudaCompile Include="..\..\..\mxnet\plugin\caffe\caffe_op.cu" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(SolutionDir)\CommonSettings.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Condition="'$(CpuOnlyBuild)'=='false'" Project="$(VCTargetsPath)\BuildCustomizations\CUDA $(CudaVersion).targets" />
+  </ImportGroup>
+</Project>

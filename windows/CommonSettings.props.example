@@ -15,6 +15,7 @@
         <!-- NOTE: If Matlab support is enabled, MatlabDir (below) needs to be
          set to the root of your Matlab installation. -->
         <MatlabSupport>true</MatlabSupport>
+        <MXNetSupport>true</MXNetSupport>
         <CudaDependencies></CudaDependencies>
         <BoostIncludeFolder>$(SolutionDir)thirdparty\Boost</BoostIncludeFolder>
         <BoostLibraryFolder>$(SolutionDir)thirdparty\Boost\lib64-msvc-14.0</BoostLibraryFolder>
@@ -27,6 +28,7 @@
         <LMDBRoot>$(SolutionDir)thirdparty\LMDB</LMDBRoot>
         <OpenBLASRoot>$(SolutionDir)thirdparty\OpenBLAS</OpenBLASRoot>
         <LevelDBRoot>$(SolutionDir)thirdparty\LEVELDB</LevelDBRoot>
+        <MXNetRoot>D:\deepLearning\mxnet</MXNetRoot>
 
       <!-- Set CUDA architecture suitable for your GPU.
          Setting proper architecture is important to mimize your run and compile time. -->
