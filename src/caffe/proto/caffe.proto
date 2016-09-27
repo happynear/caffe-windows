@@ -886,6 +886,7 @@ message MemoryDataParameter {
   optional uint32 channels = 2;
   optional uint32 height = 3;
   optional uint32 width = 4;
+  optional bool transpose = 5 [default = true];
 }
 
 message MVNParameter {
@@ -1575,6 +1576,7 @@ message PredictBoxParameter {
   optional bool nms = 3 [default = true];
   optional bool output_vector = 4 [default = true];
   optional float positive_thresh = 5 [default = 0.5];
+  optional bool bbreg_exp = 6 [default = true];
 }
 
 message FCNDataParameter {

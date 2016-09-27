@@ -15,6 +15,7 @@ void MemoryDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
   channels_ = this->layer_param_.memory_data_param().channels();
   height_ = this->layer_param_.memory_data_param().height();
   width_ = this->layer_param_.memory_data_param().width();
+  transpose_ = this->layer_param_.memory_data_param().transpose();
   size_ = channels_ * height_ * width_;
   CHECK_GT(batch_size_ * size_, 0) <<
       "batch_size, channels, height, and width must be specified and"
@@ -74,14 +75,19 @@ void MemoryDataLayer<Dtype>::AddMatVector(const vector<cv::Mat>& mat_vector,
   batch_size_ = num;
   height_ = mat_vector[0].rows;
   width_ = mat_vector[0].cols;
+  if (!transpose_) {
+    std::swap(height_, width_);
+  }
   int crop_size = this->transform_param_.crop_size();
   if (crop_size > 0)
     added_data_.Reshape(num, channels_, crop_size, crop_size);
-  else
+  else {
     added_data_.Reshape(num, channels_, height_, width_);
+  }
+    
   added_label_.Reshape(num, 1, 1, 1);
   // Apply data transformations (mirror, scale, crop...)
-  this->data_transformer_->Transform(mat_vector, &added_data_);
+  this->data_transformer_->Transform(mat_vector, &added_data_, transpose_);
   // Copy Labels
   Dtype* top_label = added_label_.mutable_cpu_data();
   for (int item_id = 0; item_id < num; ++item_id) {

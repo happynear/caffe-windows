@@ -58,6 +58,7 @@ class PredictBoxLayer : public Layer<Dtype> {
   bool bounding_box_regression_;
   bool output_vector_;
   Dtype positive_thresh_;
+  bool bounding_box_exp_;
 };
 
 }  // namespace caffe

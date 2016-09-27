@@ -19,6 +19,7 @@ void PredictBoxLayer<Dtype>::LayerSetUp(
   //output_vector_ = predict_box_param.output_vector();
   output_vector_ = (top.size() == 2);
   positive_thresh_ = predict_box_param.positive_thresh();
+  bounding_box_exp_ = predict_box_param.bbreg_exp();
 }
 
 template <typename Dtype>
@@ -69,8 +70,16 @@ void PredictBoxLayer<Dtype>::Forward_cpu(
           if (bounding_box_regression_) {
             bb_data[top[0]->offset(n, 0, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)] * receptive_field_;
             bb_data[top[0]->offset(n, 1, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)] * receptive_field_;
-            bb_data[top[0]->offset(n, 2, y, x)] *= exp(bottom[1]->cpu_data()[bottom[1]->offset(n, 2, y, x)]);
-            bb_data[top[0]->offset(n, 3, y, x)] *= exp(bottom[1]->cpu_data()[bottom[1]->offset(n, 3, y, x)]);
+            if (bounding_box_exp_) {
+              bb_data[top[0]->offset(n, 2, y, x)] *= exp(bottom[1]->cpu_data()[bottom[1]->offset(n, 2, y, x)]);
+              bb_data[top[0]->offset(n, 3, y, x)] *= exp(bottom[1]->cpu_data()[bottom[1]->offset(n, 3, y, x)]);
+            }
+            else {
+              bb_data[top[0]->offset(n, 2, y, x)] +=
+                (bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)] + bottom[1]->cpu_data()[bottom[1]->offset(n, 3, y, x)]) * receptive_field_;
+              bb_data[top[0]->offset(n, 3, y, x)] +=
+                (bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)] + bottom[1]->cpu_data()[bottom[1]->offset(n, 2, y, x)]) * receptive_field_;
+            }
           }
           count++;
         }

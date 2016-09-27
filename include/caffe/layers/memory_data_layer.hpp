@@ -57,6 +57,7 @@ class MemoryDataLayer : public BaseDataLayer<Dtype> {
   Blob<Dtype> added_data_;
   Blob<Dtype> added_label_;
   bool has_new_data_;
+  bool transpose_;
 };
 
 }  // namespace caffe
