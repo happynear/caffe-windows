@@ -417,6 +417,7 @@ message LayerParameter {
   optional MILDataParameter mil_data_param = 0x004d4944; //"MID"
   optional MILParameter mil_param = 0x004d494c; //"MIL"
   optional FCNDataParameter fcn_data_param = 210;
+  optional CenterLossParameter center_loss_param = 211;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1597,4 +1598,13 @@ message FCNDataParameter {
   optional bool use_hog = 15 [default = false];
   optional int32 hog_cell_size = 16 [default = 4];
   optional float min_iou = 17 [default = 0.8];
+}
+
+message CenterLossParameter {
+  optional uint32 num_output = 1; // The number of outputs for the layer
+  optional FillerParameter center_filler = 2; // The filler for the centers
+  // The first axis to be lumped into a single inner product computation;
+  // all preceding axes are retained in the output.
+  // May be negative to index from the end (e.g., -1 for the last axis).
+  optional int32 axis = 3 [default = 1];
 }

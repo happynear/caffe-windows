@@ -396,6 +396,9 @@
     <ClCompile Include="..\..\src\3rdparty\HoG\gradientMex.cpp">
       <Filter>3rdparty\HoG</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\center_loss_layer.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\caffe\proto\caffe.pb.h">
@@ -719,6 +722,9 @@
     <ClInclude Include="..\..\src\3rdparty\HoG\fhog.hpp">
       <Filter>3rdparty\HoG</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\caffe\layers\center_loss_layer.hpp">
+      <Filter>include\layers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\..\src\caffe\layers\contrastive_loss_layer.cu">
@@ -926,6 +932,9 @@
       <Filter>cu\layers</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\lstm_unit_layer.cu">
+      <Filter>cu\layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\center_loss_layer.cu">
       <Filter>cu\layers</Filter>
     </CudaCompile>
   </ItemGroup>

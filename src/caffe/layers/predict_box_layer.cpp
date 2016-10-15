@@ -68,17 +68,19 @@ void PredictBoxLayer<Dtype>::Forward_cpu(
           bb_data[top[0]->offset(n, 3, y, x)] = receptive_field_ ;
           bb_data[top[0]->offset(n, 4, y, x)] = score_data[bottom[0]->offset(n, 1, y, x)];
           if (bounding_box_regression_) {
-            bb_data[top[0]->offset(n, 0, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)] * receptive_field_;
-            bb_data[top[0]->offset(n, 1, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)] * receptive_field_;
             if (bounding_box_exp_) {
+              bb_data[top[0]->offset(n, 0, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)] * receptive_field_;
+              bb_data[top[0]->offset(n, 1, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)] * receptive_field_;
               bb_data[top[0]->offset(n, 2, y, x)] *= exp(bottom[1]->cpu_data()[bottom[1]->offset(n, 2, y, x)]);
               bb_data[top[0]->offset(n, 3, y, x)] *= exp(bottom[1]->cpu_data()[bottom[1]->offset(n, 3, y, x)]);
             }
             else {
+              bb_data[top[0]->offset(n, 0, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)] * receptive_field_;
+              bb_data[top[0]->offset(n, 1, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)] * receptive_field_;
               bb_data[top[0]->offset(n, 2, y, x)] +=
-                (bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)] + bottom[1]->cpu_data()[bottom[1]->offset(n, 3, y, x)]) * receptive_field_;
+                (bottom[1]->cpu_data()[bottom[1]->offset(n, 2, y, x)] - bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)]) * receptive_field_;
               bb_data[top[0]->offset(n, 3, y, x)] +=
-                (bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)] + bottom[1]->cpu_data()[bottom[1]->offset(n, 2, y, x)]) * receptive_field_;
+                (bottom[1]->cpu_data()[bottom[1]->offset(n, 3, y, x)] - bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)]) * receptive_field_;
             }
           }
           count++;
