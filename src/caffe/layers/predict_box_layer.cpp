@@ -44,6 +44,7 @@ void PredictBoxLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   if (output_vector_) {
     top[1]->Reshape({ bottom[0]->num(), 1, 5 });//will be modified on the fly.
   }
+  counter_.Reshape({ bottom[0]->num(),1,bottom[0]->height(),bottom[0]->width() });
 }
 
 template <typename Dtype>

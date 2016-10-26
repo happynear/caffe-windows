@@ -937,5 +937,8 @@
     <CudaCompile Include="..\..\src\caffe\layers\center_loss_layer.cu">
       <Filter>cu\layers</Filter>
     </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\predict_box_layer.cu">
+      <Filter>cu\layers</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>
