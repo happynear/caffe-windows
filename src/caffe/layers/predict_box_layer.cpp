@@ -75,12 +75,12 @@ void PredictBoxLayer<Dtype>::Forward_cpu(
               bb_data[top[0]->offset(n, 3, y, x)] *= exp(bottom[1]->cpu_data()[bottom[1]->offset(n, 3, y, x)]);
             }
             else {
-              bb_data[top[0]->offset(n, 0, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)] * receptive_field_;
-              bb_data[top[0]->offset(n, 1, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)] * receptive_field_;
+              bb_data[top[0]->offset(n, 0, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)] * receptive_field_;
+              bb_data[top[0]->offset(n, 1, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)] * receptive_field_;
               bb_data[top[0]->offset(n, 2, y, x)] +=
-                (bottom[1]->cpu_data()[bottom[1]->offset(n, 2, y, x)] - bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)]) * receptive_field_;
-              bb_data[top[0]->offset(n, 3, y, x)] +=
                 (bottom[1]->cpu_data()[bottom[1]->offset(n, 3, y, x)] - bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)]) * receptive_field_;
+              bb_data[top[0]->offset(n, 3, y, x)] +=
+                (bottom[1]->cpu_data()[bottom[1]->offset(n, 2, y, x)] - bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)]) * receptive_field_;
             }
           }
           count++;

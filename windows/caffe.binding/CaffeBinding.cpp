@@ -25,20 +25,32 @@ int CaffeBinding::AddNet(string model_definition, string weights, int gpu_id) {
   return net_.size() - 1;
 }
 
-std::vector<DataBlob> CaffeBinding::Forward(std::vector<cv::Mat> input_image, int net_id) {
+std::unordered_map<std::string, DataBlob> caffe::CaffeBinding::Forward(int net_id) {
+  const std::vector<Blob<float>*>& net_output = net_[net_id]->ForwardPrefilled();
+  std::unordered_map<std::string, DataBlob> result;
+  for (int n = 0; n < net_output.size(); n++) {
+    DataBlob blob = { net_output[n]->cpu_data(), net_output[n]->shape(), net_[net_id]->blob_names()[net_[net_id]->output_blob_indices()[n]] };
+    result[blob.name] = blob;
+  }
+  return result;
+}
+
+std::unordered_map<std::string, DataBlob> CaffeBinding::Forward(std::vector<cv::Mat> input_image, int net_id) {
   //std::vector<cv::Mat> datum_vector;
   //datum_vector.push_back(input_image);
   std::vector<int> labels;
   labels.push_back(1);
-  MemoryDataLayer<float>* data_layer_ptr = (MemoryDataLayer<float>*)&(*net_[net_id]->layers()[0]);
+  auto data_layer_ptr = static_pointer_cast<MemoryDataLayer<float>, Layer<float>>(net_[net_id]->layers()[0]);
+  //MemoryDataLayer<float>* data_layer_ptr = (MemoryDataLayer<float>*)&(*net_[net_id]->layers()[0]);
   data_layer_ptr->AddMatVector(input_image, labels);
-  const std::vector<Blob<float>*>& net_output = net_[net_id]->ForwardPrefilled();
-  std::vector<DataBlob> result;
-  for (auto& net_blob : net_output) {
-    DataBlob blob = { net_blob->cpu_data(), net_blob->shape() };
-    result.push_back(blob);
-  }
-  return result;
+  return Forward(net_id);
+}
+
+void caffe::CaffeBinding::SetMemoryDataLayer(std::string layer_name, std::vector<cv::Mat> input_image, int net_id) {
+  std::vector<int> labels;
+  labels.push_back(1);
+  auto data_layer_ptr = static_pointer_cast<MemoryDataLayer<float>, Layer<float>>(net_[net_id]->layer_by_name(layer_name));
+  data_layer_ptr->AddMatVector(input_image, labels);
 }
 
 CaffeBinding::~CaffeBinding() {
