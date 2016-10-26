@@ -62,7 +62,8 @@ namespace caffe {
       int s = index % spatial_dim;
       int h = s / width;
       int w = s % width;
-      if (score_data[(((n * 2 + 1) * height + h) * width) + w] > positive_thresh_ && score_data[(((n * 2 + 1) * height + h) * width) + w] > nms_data[(((n * 2 + 1) * height + h) * width) + w]) {
+      if (score_data[(((n * 2 + 1) * height + h) * width) + w] > positive_thresh_ &&
+          score_data[(((n * 2 + 1) * height + h) * width) + w] > nms_data[(((n * 2 + 1) * height + h) * width) + w] - 1e-6) {
         bb_data[(((n * 5 + 0) * height + h) * width) + w] = w * stride_;
         bb_data[(((n * 5 + 1) * height + h) * width) + w] = h * stride_;
         bb_data[(((n * 5 + 2) * height + h) * width) + w] = receptive_field_;
