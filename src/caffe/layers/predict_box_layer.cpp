@@ -86,6 +86,13 @@ void PredictBoxLayer<Dtype>::Forward_cpu(
           }
           count++;
         }
+        else {
+          bb_data[top[0]->offset(n, 0, y, x)] = Dtype(0);
+          bb_data[top[0]->offset(n, 1, y, x)] = Dtype(0);
+          bb_data[top[0]->offset(n, 2, y, x)] = Dtype(0);
+          bb_data[top[0]->offset(n, 3, y, x)] = Dtype(0);
+          bb_data[top[0]->offset(n, 4, y, x)] = Dtype(0);
+        }
       }
     }
   }
@@ -101,7 +108,7 @@ void PredictBoxLayer<Dtype>::Forward_cpu(
             top[1]->mutable_cpu_data()[i * 5 + 1] = bb_data[top[0]->offset(0, 1, y, x)];
             top[1]->mutable_cpu_data()[i * 5 + 2] = bb_data[top[0]->offset(0, 2, y, x)];
             top[1]->mutable_cpu_data()[i * 5 + 3] = bb_data[top[0]->offset(0, 3, y, x)];
-            top[1]->mutable_cpu_data()[i * 5 + 4] = score_data[bottom[0]->offset(0, 1, y, x)];
+            top[1]->mutable_cpu_data()[i * 5 + 4] = bb_data[top[0]->offset(0, 4, y, x)];
             i++;
           }
         }

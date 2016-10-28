@@ -74,7 +74,7 @@ void MemoryDataLayer<Dtype>::AddMatVector(const vector<cv::Mat>& mat_vector,
   batch_size_ = num;
   height_ = mat_vector[0].rows;
   width_ = mat_vector[0].cols;
-  if (!transpose_) {
+  if (transpose_) {
     std::swap(height_, width_);
   }
   int crop_size = this->transform_param_.crop_size();

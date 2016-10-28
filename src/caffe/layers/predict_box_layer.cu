@@ -140,7 +140,7 @@ void PredictBoxLayer<Dtype>::Forward_gpu(
             top[1]->mutable_cpu_data()[i * 5 + 1] = bb_data_cpu[((1 * output_height + y) * output_width) + x];
             top[1]->mutable_cpu_data()[i * 5 + 2] = bb_data_cpu[((2 * output_height + y) * output_width) + x];
             top[1]->mutable_cpu_data()[i * 5 + 3] = bb_data_cpu[((3 * output_height + y) * output_width) + x];
-            top[1]->mutable_cpu_data()[i * 5 + 4] = score_data_cpu[((1 * output_height + y) * output_width) + x];
+            top[1]->mutable_cpu_data()[i * 5 + 4] = bb_data_cpu[((4 * output_height + y) * output_width) + x];
             i++;
           }
         }
