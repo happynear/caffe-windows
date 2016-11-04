@@ -89,7 +89,7 @@ void MemoryDataLayer<Dtype>::AddMatVector(const vector<cv::Mat>& mat_vector,
   this->data_transformer_->Transform(mat_vector, &added_data_, transpose_);
   // Copy Labels
   Dtype* top_label = added_label_.mutable_cpu_data();
-  for (int item_id = 0; item_id < num; ++item_id) {
+  for (int item_id = 0; item_id < num && item_id < labels.size(); ++item_id) {
     top_label[item_id] = labels[item_id];
   }
   // num_images == batch_size_
