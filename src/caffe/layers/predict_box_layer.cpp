@@ -14,8 +14,9 @@ void PredictBoxLayer<Dtype>::LayerSetUp(
   stride_ = predict_box_param.stride();
   receptive_field_ = predict_box_param.receptive_field();
   //nms_ = predict_box_param.nms();
-  bounding_box_regression_ = (bottom.size() == 2);
-  nms_ = (bottom.size() == 3);
+  bounding_box_regression_ = (bottom.size() >= 2);
+  nms_ = (bottom.size() == 3 && bottom[2]->channels() == 2);
+  use_stitch_ = (bottom.size() == 3 && bottom[2]->channels() == 3);
   //output_vector_ = predict_box_param.output_vector();
   output_vector_ = (top.size() == 2);
   positive_thresh_ = predict_box_param.positive_thresh();
@@ -36,6 +37,13 @@ void PredictBoxLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   if (nms_) {
     CHECK_EQ(bottom[0]->num(), bottom[2]->num());
     CHECK_EQ(bottom[0]->channels(), bottom[2]->channels());
+    CHECK_EQ(bottom[0]->height(), bottom[2]->height());
+    CHECK_EQ(bottom[0]->width(), bottom[2]->width());
+  }
+
+  if (use_stitch_) {
+    CHECK_EQ(bottom[0]->num(), bottom[2]->num());
+    CHECK_EQ(bottom[2]->channels(), 3);
     CHECK_EQ(bottom[0]->height(), bottom[2]->height());
     CHECK_EQ(bottom[0]->width(), bottom[2]->width());
   }
@@ -63,25 +71,29 @@ void PredictBoxLayer<Dtype>::Forward_cpu(
         if ((!nms_ && score_data[bottom[0]->offset(n, 1, y, x)] > positive_thresh_) ||
             (nms_ && score_data[bottom[0]->offset(n, 1, y, x)] > positive_thresh_ && 
             score_data[bottom[0]->offset(n, 1, y, x)] > bottom[2]->cpu_data()[bottom[2]->offset(n, 1, y, x)] - 1e-5)) {
-          bb_data[top[0]->offset(n, 0, y, x)] = x * stride_;
-          bb_data[top[0]->offset(n, 1, y, x)] = y * stride_;
-          bb_data[top[0]->offset(n, 2, y, x)] = receptive_field_;
-          bb_data[top[0]->offset(n, 3, y, x)] = receptive_field_ ;
+          if (use_stitch_ && bottom[2]->cpu_data()[bottom[2]->offset(n, 2, y, x)] == 0) continue;
+          Dtype bias_x = use_stitch_ ? bottom[2]->cpu_data()[bottom[2]->offset(n, 0, y, x)] : 0;
+          Dtype bias_y = use_stitch_ ? bottom[2]->cpu_data()[bottom[2]->offset(n, 1, y, x)] : 0;
+          Dtype real_receptive_field = use_stitch_ ? bottom[2]->cpu_data()[bottom[2]->offset(n, 2, y, x)] : receptive_field_;
+          bb_data[top[0]->offset(n, 0, y, x)] = (Dtype(x * stride_) - bias_x) / Dtype(12) * real_receptive_field;
+          bb_data[top[0]->offset(n, 1, y, x)] = (Dtype(y * stride_) - bias_y) / Dtype(12) * real_receptive_field;
+          bb_data[top[0]->offset(n, 2, y, x)] = real_receptive_field;
+          bb_data[top[0]->offset(n, 3, y, x)] = real_receptive_field;
           bb_data[top[0]->offset(n, 4, y, x)] = score_data[bottom[0]->offset(n, 1, y, x)];
           if (bounding_box_regression_) {
             if (bounding_box_exp_) {
-              bb_data[top[0]->offset(n, 0, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)] * receptive_field_;
-              bb_data[top[0]->offset(n, 1, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)] * receptive_field_;
+              bb_data[top[0]->offset(n, 0, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)] * real_receptive_field;
+              bb_data[top[0]->offset(n, 1, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)] * real_receptive_field;
               bb_data[top[0]->offset(n, 2, y, x)] *= exp(bottom[1]->cpu_data()[bottom[1]->offset(n, 2, y, x)]);
               bb_data[top[0]->offset(n, 3, y, x)] *= exp(bottom[1]->cpu_data()[bottom[1]->offset(n, 3, y, x)]);
             }
             else {
-              bb_data[top[0]->offset(n, 0, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)] * receptive_field_;
-              bb_data[top[0]->offset(n, 1, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)] * receptive_field_;
+              bb_data[top[0]->offset(n, 0, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)] * real_receptive_field;
+              bb_data[top[0]->offset(n, 1, y, x)] += bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)] * real_receptive_field;
               bb_data[top[0]->offset(n, 2, y, x)] +=
-                (bottom[1]->cpu_data()[bottom[1]->offset(n, 3, y, x)] - bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)]) * receptive_field_;
+                (bottom[1]->cpu_data()[bottom[1]->offset(n, 3, y, x)] - bottom[1]->cpu_data()[bottom[1]->offset(n, 1, y, x)]) * real_receptive_field;
               bb_data[top[0]->offset(n, 3, y, x)] +=
-                (bottom[1]->cpu_data()[bottom[1]->offset(n, 2, y, x)] - bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)]) * receptive_field_;
+                (bottom[1]->cpu_data()[bottom[1]->offset(n, 2, y, x)] - bottom[1]->cpu_data()[bottom[1]->offset(n, 0, y, x)]) * real_receptive_field;
             }
           }
           count++;
@@ -103,7 +115,7 @@ void PredictBoxLayer<Dtype>::Forward_cpu(
       int i = 0;
       for (int x = 0; x < output_width; x++) {
         for (int y = 0; y < output_height; y++) {
-          if (score_data[bottom[0]->offset(0, 1, y, x)] > positive_thresh_) {
+          if (bb_data[top[0]->offset(0, 4, y, x)] > positive_thresh_) {
             top[1]->mutable_cpu_data()[i * 5] = bb_data[top[0]->offset(0, 0, y, x)];
             top[1]->mutable_cpu_data()[i * 5 + 1] = bb_data[top[0]->offset(0, 1, y, x)];
             top[1]->mutable_cpu_data()[i * 5 + 2] = bb_data[top[0]->offset(0, 2, y, x)];

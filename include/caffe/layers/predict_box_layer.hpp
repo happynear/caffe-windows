@@ -66,6 +66,7 @@ class PredictBoxLayer : public Layer<Dtype> {
   Dtype positive_thresh_;
   bool bounding_box_exp_;
   Blob<Dtype> counter_;
+  bool use_stitch_;
 };
 
 }  // namespace caffe

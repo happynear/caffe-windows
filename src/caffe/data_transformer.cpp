@@ -252,7 +252,7 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
   //  std::swap(height, width);
   //}
 
-  CHECK(cv_img.depth() == CV_8U) << "Image data type must be unsigned byte";
+  //CHECK(cv_img.depth() == CV_8U) << "Image data type must be unsigned byte";
 
   const Dtype scale = param_.scale();
   const bool do_mirror = param_.mirror() && Rand(2);
@@ -313,10 +313,12 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
   CHECK(cv_cropped_img.data);
 
   Dtype* transformed_data = transformed_blob->mutable_cpu_data();
+  bool is_float_data = cv_cropped_img.depth() == CV_32F;
   int top_index;
   if (transpose) {
     for (int w = 0; w < width; ++w) {
       const uchar* ptr = cv_cropped_img.ptr<uchar>(w);
+      const float* float_ptr = cv_cropped_img.ptr<float>(w);
       int img_index = 0;
       for (int h = 0; h < height; ++h) {
         for (int c = img_channels - 1; c >= 0; --c) {
@@ -327,7 +329,8 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
             top_index = (c * height + h) * width + w;
           }
           // int top_index = (c * height + h) * width + w;
-          Dtype pixel = static_cast<Dtype>(ptr[img_index++]); //cv_cropped_img.at<cv::Vec3b>(cv::Point(h, w))[img_channels - 1 - c]
+          Dtype pixel = static_cast<Dtype>(is_float_data ? float_ptr[img_index] : ptr[img_index]);
+          img_index++;
           if (has_mean_file) {
             int mean_index;
             mean_index = (c * img_height + h_off + h) * img_width + w_off + w;
@@ -350,6 +353,7 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
   else {
     for (int h = 0; h < height; ++h) {
       const uchar* ptr = cv_cropped_img.ptr<uchar>(h);
+      const float* float_ptr = cv_cropped_img.ptr<float>(h);
       int img_index = 0;
       for (int w = 0; w < width; ++w) {
         for (int c = 0; c < img_channels; ++c) {
@@ -360,7 +364,8 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
             top_index = (c * height + h) * width + w;
           }
           // int top_index = (c * height + h) * width + w;
-          Dtype pixel = static_cast<Dtype>(ptr[img_index++]);
+          Dtype pixel = static_cast<Dtype>(is_float_data ? float_ptr[img_index] : ptr[img_index]);
+          img_index++;
           if (has_mean_file) {
             int mean_index;
             mean_index = (c * img_height + h_off + h) * img_width + w_off + w;
