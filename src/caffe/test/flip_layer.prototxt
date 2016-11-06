@@ -1,0 +1,24 @@
+name: "Test_Flip_Layer"
+layer {
+  name: "data"
+  type: "ImageData"
+  top: "data"
+  top: "label"
+  image_data_param {
+    source: "E:/datasets/casia-maxpy-clean/CASIA-maxpy-clean-aligned-rigid/list.txt"
+    root_folder: "E:/datasets/casia-maxpy-clean/CASIA-maxpy-clean-aligned-rigid/"
+    batch_size: 16
+    shuffle: true
+  }
+}
+
+layer {
+  name: "flip_data"
+  type: "Flip"
+  bottom: "data"
+  top: "flip_data"
+  flip_param {
+    flip_width: true
+    flip_height: false
+  }
+}

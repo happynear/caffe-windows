@@ -418,6 +418,7 @@ message LayerParameter {
   optional MILParameter mil_param = 0x004d494c; //"MIL"
   optional FCNDataParameter fcn_data_param = 210;
   optional CenterLossParameter center_loss_param = 211;
+  optional FlipParameter flip_param = 212;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1607,4 +1608,9 @@ message CenterLossParameter {
   // all preceding axes are retained in the output.
   // May be negative to index from the end (e.g., -1 for the last axis).
   optional int32 axis = 3 [default = 1];
+}
+
+message FlipParameter {
+  optional bool flip_width = 1 [default = true];
+  optional bool flip_height = 2 [default = false];
 }
