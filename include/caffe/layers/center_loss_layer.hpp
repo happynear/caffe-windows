@@ -41,6 +41,7 @@ namespace caffe {
     Blob<Dtype> distance_;
     Blob<Dtype> variation_sum_;
     Blob<int> count_;
+    string distance_type_;
   };
 
 }  // namespace caffe

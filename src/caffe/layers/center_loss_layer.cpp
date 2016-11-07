@@ -10,6 +10,7 @@ namespace caffe {
   void CenterLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
                                           const vector<Blob<Dtype>*>& top) {
     const int num_output = this->layer_param_.center_loss_param().num_output();
+    distance_type_ = this->layer_param_.center_loss_param().distance_type();
     N_ = num_output;
     const int axis = bottom[0]->CanonicalAxisIndex(
       this->layer_param_.center_loss_param().axis());
@@ -67,9 +68,20 @@ namespace caffe {
       caffe_sub(K_, bottom_data + i * K_,
                 center + label_value * K_, distance_data + i * K_);
     }
-    Dtype dot = caffe_cpu_dot(M_ * K_, distance_.cpu_data(),
-                              distance_.cpu_data());
-    Dtype loss = dot / M_ / Dtype(2);
+    Dtype dot;
+    Dtype loss;
+    if (distance_type_ == "L1") {
+      dot = caffe_cpu_asum(M_ * K_, distance_.cpu_data());
+      loss = dot / M_;
+    }
+    else if (distance_type_ == "L2") {
+      dot = caffe_cpu_dot(M_ * K_, distance_.cpu_data(),
+                          distance_.cpu_data());
+      loss = dot / M_ / Dtype(2);
+    }
+    else {
+      LOG(FATAL) << "distance_type must be L1 or L2!";
+    }
     top[0]->mutable_cpu_data()[0] = loss;
   }
 
@@ -85,6 +97,10 @@ namespace caffe {
       int* count_data = count_.mutable_cpu_data();
 
       const Dtype* distance_data = distance_.cpu_data();
+
+      if (distance_type_ == "L1") {
+        caffe_cpu_sign(M_ * K_, distance_data, distance_.mutable_cpu_data());
+      }
 
       // \sum_{y_i==j}
       caffe_set(N_ * K_, (Dtype)0., variation_sum_.mutable_cpu_data());
