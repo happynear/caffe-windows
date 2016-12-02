@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{01f97fa0-408c-4fb5-892f-e66acd59d079}</ProjectGuid>
+    <ProjectHome>..\</ProjectHome>
+    <StartupFile>examples\pycaffe\resnet.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+    <InterpreterVersion />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="CMakeLists.txt" />
+    <Content Include="docs\CMakeLists.txt" />
+    <Content Include="docs\images\caffeine-icon.png" />
+    <Content Include="docs\images\GitHub-Mark-64px.png" />
+    <Content Include="docs\stylesheets\pygment_trac.css" />
+    <Content Include="docs\stylesheets\reset.css" />
+    <Content Include="docs\stylesheets\styles.css" />
+    <Content Include="docs\tutorial\fig\backward.jpg" />
+    <Content Include="docs\tutorial\fig\forward.jpg" />
+    <Content Include="docs\tutorial\fig\forward_backward.png" />
+    <Content Include="docs\tutorial\fig\layer.jpg" />
+    <Content Include="docs\tutorial\fig\logreg.jpg" />
+    <Content Include="docs\_layouts\default.html" />
+    <Content Include="examples\CMakeLists.txt" />
+    <Content Include="examples\finetune_flickr_style\style_names.txt" />
+    <Content Include="examples\images\cat gray.jpg" />
+    <Content Include="examples\images\cat.jpg" />
+    <Content Include="examples\images\cat_gray.jpg" />
+    <Content Include="examples\images\fish-bike.jpg" />
+    <Content Include="examples\web_demo\requirements.txt" />
+    <Content Include="examples\web_demo\templates\index.html" />
+    <Content Include="log\INFO20160808-162110.174248.txt" />
+    <Content Include="matlab\CMakeLists.txt" />
+    <Content Include="python\CMakeLists.txt" />
+    <Content Include="python\requirements.txt" />
+    <Content Include="src\caffe\CMakeLists.txt" />
+    <Content Include="src\caffe\test\CMakeLists.txt" />
+    <Content Include="src\caffe\test\test_data\sample_data_list.txt" />
+    <Content Include="src\caffe\test\test_data\solver_data_list.txt" />
+    <Content Include="src\gtest\CMakeLists.txt" />
+    <Content Include="tools\CMakeLists.txt" />
+    <Content Include="windows\packages\jQuery.3.0.0.1\Content\Scripts\jquery-3.0.0-vsdoc.js" />
+    <Content Include="windows\packages\jQuery.3.0.0.1\Content\Scripts\jquery-3.0.0.js" />
+    <Content Include="windows\packages\jQuery.3.0.0.1\Content\Scripts\jquery-3.0.0.min.js" />
+    <Content Include="windows\packages\jQuery.3.0.0.1\Content\Scripts\jquery-3.0.0.slim.js" />
+    <Content Include="windows\packages\jQuery.3.0.0.1\Content\Scripts\jquery-3.0.0.slim.min.js" />
+    <Content Include="windows\packages\jQuery.3.0.0.1\Tools\jquery-3.0.0.intellisense.js" />
+    <Content Include="windows\packages\SampleDependency.1.0.0\content\Scripts\nugetexample.js" />
+    <Content Include="windows\thirdparty\Boost\boost\geometry\util\readme.txt" />
+    <Content Include="windows\thirdparty\Boost\boost\spirit\home\support\char_encoding\unicode\DerivedCoreProperties.txt" />
+    <Content Include="windows\thirdparty\Boost\boost\spirit\home\support\char_encoding\unicode\PropList.txt" />
+    <Content Include="windows\thirdparty\Boost\boost\spirit\home\support\char_encoding\unicode\Scripts.txt" />
+    <Content Include="windows\thirdparty\Boost\boost\spirit\home\support\char_encoding\unicode\UnicodeData.txt" />
+    <Content Include="windows\thirdparty\HDF5\USING_CMake_Examples.txt" />
+    <Content Include="windows\thirdparty\HDF5\USING_HDF5_CMake.txt" />
+    <Content Include="windows\thirdparty\HDF5\USING_HDF5_VS.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Build\x64\Release\pycaffe\caffe\classifier.py" />
+    <Compile Include="Build\x64\Release\pycaffe\caffe\coord_map.py" />
+    <Compile Include="Build\x64\Release\pycaffe\caffe\detector.py" />
+    <Compile Include="Build\x64\Release\pycaffe\caffe\draw.py" />
+    <Compile Include="Build\x64\Release\pycaffe\caffe\io.py" />
+    <Compile Include="Build\x64\Release\pycaffe\caffe\net_spec.py" />
+    <Compile Include="Build\x64\Release\pycaffe\caffe\proto\caffe_pb2.py" />
+    <Compile Include="Build\x64\Release\pycaffe\caffe\proto\__init__.py" />
+    <Compile Include="Build\x64\Release\pycaffe\caffe\pycaffe.py" />
+    <Compile Include="Build\x64\Release\pycaffe\caffe\__init__.py" />
+    <Compile Include="Build\x64\Release\pycaffe\classify.py" />
+    <Compile Include="Build\x64\Release\pycaffe\detect.py" />
+    <Compile Include="Build\x64\Release\pycaffe\draw_net.py" />
+    <Compile Include="examples\finetune_flickr_style\assemble_data.py" />
+    <Compile Include="examples\pycaffe\caffenet.py" />
+    <Compile Include="examples\pycaffe\face-resnet.py" />
+    <Compile Include="examples\pycaffe\InceptionResNetV1.py" />
+    <Compile Include="examples\pycaffe\InceptionResNetV2.py" />
+    <Compile Include="examples\pycaffe\layers\pascal_multilabel_datalayers.py" />
+    <Compile Include="examples\pycaffe\layers\pyloss.py" />
+    <Compile Include="examples\pycaffe\resnet.py" />
+    <Compile Include="examples\pycaffe\tools.py" />
+    <Compile Include="examples\web_demo\app.py" />
+    <Compile Include="examples\web_demo\exifutil.py" />
+    <Compile Include="python\caffe\classifier.py" />
+    <Compile Include="python\caffe\coord_map.py" />
+    <Compile Include="python\caffe\detector.py" />
+    <Compile Include="python\caffe\draw.py" />
+    <Compile Include="python\caffe\io.py" />
+    <Compile Include="python\caffe\net_spec.py" />
+    <Compile Include="python\caffe\pycaffe.py" />
+    <Compile Include="python\caffe\test\test_coord_map.py" />
+    <Compile Include="python\caffe\test\test_io.py" />
+    <Compile Include="python\caffe\test\test_layer_type_list.py" />
+    <Compile Include="python\caffe\test\test_net.py" />
+    <Compile Include="python\caffe\test\test_net_spec.py" />
+    <Compile Include="python\caffe\test\test_python_layer.py" />
+    <Compile Include="python\caffe\test\test_python_layer_with_param_str.py" />
+    <Compile Include="python\caffe\test\test_solver.py" />
+    <Compile Include="python\caffe\__init__.py" />
+    <Compile Include="python\classify.py" />
+    <Compile Include="python\detect.py" />
+    <Compile Include="python\draw_net.py" />
+    <Compile Include="scripts\copy_notebook.py" />
+    <Compile Include="scripts\cpp_lint.py" />
+    <Compile Include="scripts\download_model_binary.py" />
+    <Compile Include="src\caffe\test\test_data\generate_sample_data.py" />
+    <Compile Include="tools\extra\extract_seconds.py" />
+    <Compile Include="tools\extra\parse_log.py" />
+    <Compile Include="tools\extra\resize_and_crop_images.py" />
+    <Compile Include="tools\extra\summarize.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Build\" />
+    <Folder Include="Build\x64\" />
+    <Folder Include="Build\x64\Release\" />
+    <Folder Include="Build\x64\Release\pycaffe" />
+    <Folder Include="Build\x64\Release\pycaffe\caffe" />
+    <Folder Include="Build\x64\Release\pycaffe\caffe\proto" />
+    <Folder Include="docs" />
+    <Folder Include="docs\images" />
+    <Folder Include="docs\stylesheets" />
+    <Folder Include="docs\tutorial\" />
+    <Folder Include="docs\tutorial\fig" />
+    <Folder Include="docs\_layouts" />
+    <Folder Include="examples" />
+    <Folder Include="examples\finetune_flickr_style" />
+    <Folder Include="examples\images" />
+    <Folder Include="examples\pycaffe" />
+    <Folder Include="examples\pycaffe\layers" />
+    <Folder Include="examples\web_demo" />
+    <Folder Include="examples\web_demo\templates" />
+    <Folder Include="log" />
+    <Folder Include="matlab" />
+    <Folder Include="python" />
+    <Folder Include="python\caffe" />
+    <Folder Include="python\caffe\test" />
+    <Folder Include="scripts" />
+    <Folder Include="src\" />
+    <Folder Include="src\caffe" />
+    <Folder Include="src\caffe\test" />
+    <Folder Include="src\caffe\test\test_data" />
+    <Folder Include="src\gtest" />
+    <Folder Include="tools" />
+    <Folder Include="tools\extra" />
+    <Folder Include="windows\" />
+    <Folder Include="windows\packages\" />
+    <Folder Include="windows\packages\jQuery.3.0.0.1\" />
+    <Folder Include="windows\packages\jQuery.3.0.0.1\Content\" />
+    <Folder Include="windows\packages\jQuery.3.0.0.1\Content\Scripts" />
+    <Folder Include="windows\packages\jQuery.3.0.0.1\Tools" />
+    <Folder Include="windows\packages\SampleDependency.1.0.0\" />
+    <Folder Include="windows\packages\SampleDependency.1.0.0\content\" />
+    <Folder Include="windows\packages\SampleDependency.1.0.0\content\Scripts" />
+    <Folder Include="windows\thirdparty\" />
+    <Folder Include="windows\thirdparty\Boost\" />
+    <Folder Include="windows\thirdparty\Boost\boost\" />
+    <Folder Include="windows\thirdparty\Boost\boost\geometry\" />
+    <Folder Include="windows\thirdparty\Boost\boost\geometry\util" />
+    <Folder Include="windows\thirdparty\Boost\boost\spirit\" />
+    <Folder Include="windows\thirdparty\Boost\boost\spirit\home\" />
+    <Folder Include="windows\thirdparty\Boost\boost\spirit\home\support\" />
+    <Folder Include="windows\thirdparty\Boost\boost\spirit\home\support\char_encoding\" />
+    <Folder Include="windows\thirdparty\Boost\boost\spirit\home\support\char_encoding\unicode" />
+    <Folder Include="windows\thirdparty\HDF5" />
+  </ItemGroup>
+  <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
+</Project>
