@@ -191,13 +191,13 @@ class MSRAFiller : public Filler<Dtype> {
     CHECK(blob->count());
     int fan_in = blob->count() / blob->num();
     int fan_out = blob->count() / blob->channels();
-    Dtype n = fan_in;  // default to fan_in
+    Dtype n = fan_out;  // default to fan_in
     if (this->filler_param_.variance_norm() ==
         FillerParameter_VarianceNorm_AVERAGE) {
       n = (fan_in + fan_out) / Dtype(2);
     } else if (this->filler_param_.variance_norm() ==
-        FillerParameter_VarianceNorm_FAN_OUT) {
-      n = fan_out;
+        FillerParameter_VarianceNorm_FAN_IN) {
+      n = fan_in;
     }
     Dtype alpha = this->filler_param_.alpha();
     Dtype std = sqrt(Dtype(2) / n / (1 + alpha * alpha));

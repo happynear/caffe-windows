@@ -1627,6 +1627,7 @@ message CenterLossParameter {
   // all preceding axes are retained in the output.
   // May be negative to index from the end (e.g., -1 for the last axis).
   optional int32 axis = 3 [default = 1];
+  optional string distance_type = 29 [default = "L2"];
 }
 
 message FlipParameter {

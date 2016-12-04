@@ -56,8 +56,18 @@ namespace caffe {
                                   this->blobs_[0]->gpu_data(),
                                   distance_.mutable_gpu_data());
     Dtype dot;
-    caffe_gpu_dot(M_ * K_, distance_.gpu_data(), distance_.gpu_data(), &dot);
-    Dtype loss = dot / M_ / Dtype(2);
+    Dtype loss;
+    if (distance_type_ == "L1") {
+      caffe_gpu_asum(M_ * K_, distance_.gpu_data(), &dot);
+      loss = dot / M_;
+    }
+    else if(distance_type_ == "L2"){
+      caffe_gpu_dot(M_ * K_, distance_.gpu_data(), distance_.gpu_data(), &dot);
+      loss = dot / M_ / Dtype(2);
+    }
+    else {
+      LOG(FATAL) << "distance_type must be L1 or L2!";
+    }
     top[0]->mutable_cpu_data()[0] = loss;
   }
   template <typename Dtype>
@@ -68,6 +78,9 @@ namespace caffe {
     caffe_gpu_set(N_, 0, count_.mutable_gpu_data());
     caffe_gpu_set(N_ * K_, (Dtype)0., this->blobs_[0]->mutable_gpu_diff());
     int nthreads = M_ * K_;
+    if (distance_type_ == "L1") {
+      caffe_gpu_sign(M_ * K_, distance_.gpu_data(), distance_.mutable_gpu_data());
+    }
     Compute_variation_sum_gpu<Dtype> << < CAFFE_GET_BLOCKS(nthreads),
       CAFFE_CUDA_NUM_THREADS >> >(nthreads, K_, bottom[1]->gpu_data(),
                                   distance_.gpu_data(),
