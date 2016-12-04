@@ -76,7 +76,6 @@ namespace caffe {
                                             const vector<Blob<Dtype>*>& bottom) {
     caffe_gpu_set(N_ * K_, (Dtype)0., variation_sum_.mutable_gpu_data());
     caffe_gpu_set(N_, 0, count_.mutable_gpu_data());
-    caffe_gpu_set(N_ * K_, (Dtype)0., this->blobs_[0]->mutable_gpu_diff());
     int nthreads = M_ * K_;
     if (distance_type_ == "L1") {
       caffe_gpu_sign(M_ * K_, distance_.gpu_data(), distance_.mutable_gpu_data());
