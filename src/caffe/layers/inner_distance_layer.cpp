@@ -6,6 +6,8 @@
 
 namespace caffe {
 
+#define sign(x) (Dtype(0) < (x)) - ((x) < Dtype(0))
+
 template <typename Dtype>
 void InnerDistanceLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
@@ -90,7 +92,29 @@ void InnerDistanceLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   caffe_cpu_gemm<Dtype>(CblasNoTrans, transpose_ ? CblasNoTrans : CblasTrans,
       M_, N_, K_, (Dtype)1.,
       bottom_data, weight, (Dtype)0., top_data);
-
+  if (distance_type_ == "L2") {//tanspose = false, TODO: transpose = true
+    for (int m = 0; m < M_; m++) {
+      for (int n = 0; n < N_; n++) {
+        top_data[m * N_ + n] = Dtype(0);
+        for (int k = 0; k < K_; k++) {
+          top_data[m * N_ + n] += (bottom_data[m * K_ + k] - weight[n * K_ + k]) * (bottom_data[m * K_ + k] - weight[n * K_ + k]);
+        }
+      }
+    }
+  }
+  else if (distance_type_ == "L1") {
+    for (int m = 0; m < M_; m++) {
+      for (int n = 0; n < N_; n++) {
+        top_data[m * N_ + n] = Dtype(0);
+        for (int k = 0; k < K_; k++) {
+          top_data[m * N_ + n] += abs(bottom_data[m * K_ + k] - weight[n * K_ + k]);
+        }
+      }
+    }
+  }
+  else {
+    NOT_IMPLEMENTED;
+  }
   if (bias_term_) {
     caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, M_, N_, 1, (Dtype)1.,
         bias_multiplier_.cpu_data(),
@@ -102,20 +126,32 @@ template <typename Dtype>
 void InnerDistanceLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down,
     const vector<Blob<Dtype>*>& bottom) {
+  const Dtype* top_diff = top[0]->cpu_diff();
+  const Dtype* bottom_data = bottom[0]->cpu_data();
+  const Dtype* weight = this->blobs_[0]->cpu_data();
   if (this->param_propagate_down_[0]) {
-    const Dtype* top_diff = top[0]->cpu_diff();
-    const Dtype* bottom_data = bottom[0]->cpu_data();
+    Dtype* weight_diff = this->blobs_[0]->mutable_cpu_diff();
     // Gradient with respect to weight
-    if (transpose_) {
-      caffe_cpu_gemm<Dtype>(CblasTrans, CblasNoTrans,
-          K_, N_, M_,
-          (Dtype)1., bottom_data, top_diff,
-          (Dtype)1., this->blobs_[0]->mutable_cpu_diff());
-    } else {
-      caffe_cpu_gemm<Dtype>(CblasTrans, CblasNoTrans,
-          N_, K_, M_,
-          (Dtype)1., top_diff, bottom_data,
-          (Dtype)1., this->blobs_[0]->mutable_cpu_diff());
+    if (distance_type_ == "L2") {
+      for (int n = 0; n < N_; n++) {
+        for (int k = 0; k < K_; k++) {
+          for (int m = 0; m < M_; m++) {
+            weight_diff[n * K_ + k] += top_diff[m * N_ + n] * (weight[n * K_ + k] - bottom_data[m * K_ + k]);
+          }
+        }
+      }
+    }
+    else if (distance_type_ == "L1") {
+      for (int n = 0; n < N_; n++) {
+        for (int k = 0; k < K_; k++) {
+          for (int m = 0; m < M_; m++) {
+            weight_diff[n * K_ + k] += top_diff[m * N_ + n] * sign(weight[n * K_ + k] - bottom_data[m * K_ + k]);
+          }
+        }
+      }
+    }
+    else {
+      NOT_IMPLEMENTED;
     }
   }
   if (bias_term_ && this->param_propagate_down_[1]) {
@@ -126,18 +162,27 @@ void InnerDistanceLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
         this->blobs_[1]->mutable_cpu_diff());
   }
   if (propagate_down[0]) {
-    const Dtype* top_diff = top[0]->cpu_diff();
-    // Gradient with respect to bottom data
-    if (transpose_) {
-      caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasTrans,
-          M_, K_, N_,
-          (Dtype)1., top_diff, this->blobs_[0]->cpu_data(),
-          (Dtype)0., bottom[0]->mutable_cpu_diff());
-    } else {
-      caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans,
-          M_, K_, N_,
-          (Dtype)1., top_diff, this->blobs_[0]->cpu_data(),
-          (Dtype)0., bottom[0]->mutable_cpu_diff());
+    Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
+    if (distance_type_ == "L2") {
+      for (int m = 0; m < M_; m++) {
+        for (int k = 0; k < K_; k++) {
+          for (int n = 0; n < N_; n++) {
+            bottom_diff[m * K_ + k] += top_diff[m * N_ + n] * (bottom_data[m * K_ + k] - weight[n * K_ + k]);
+          }
+        }
+      }
+    }
+    else if (distance_type_ == "L1") {
+      for (int m = 0; m < M_; m++) {
+        for (int k = 0; k < K_; k++) {
+          for (int n = 0; n < N_; n++) {
+            bottom_diff[m * K_ + k] += top_diff[m * N_ + n] * sign(bottom_data[m * K_ + k] - weight[n * K_ + k]);
+          }
+        }
+      }
+    }
+    else {
+      NOT_IMPLEMENTED;
     }
   }
 }
