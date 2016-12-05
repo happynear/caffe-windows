@@ -136,7 +136,7 @@ void InnerDistanceLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
       for (int n = 0; n < N_; n++) {
         for (int k = 0; k < K_; k++) {
           for (int m = 0; m < M_; m++) {
-            weight_diff[n * K_ + k] += top_diff[m * N_ + n] * (weight[n * K_ + k] - bottom_data[m * K_ + k]);
+            weight_diff[n * K_ + k] += top_diff[m * N_ + n] * (weight[n * K_ + k] - bottom_data[m * K_ + k]) * Dtype(2);
           }
         }
       }
@@ -167,7 +167,7 @@ void InnerDistanceLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
       for (int m = 0; m < M_; m++) {
         for (int k = 0; k < K_; k++) {
           for (int n = 0; n < N_; n++) {
-            bottom_diff[m * K_ + k] += top_diff[m * N_ + n] * (bottom_data[m * K_ + k] - weight[n * K_ + k]);
+            bottom_diff[m * K_ + k] += top_diff[m * N_ + n] * (bottom_data[m * K_ + k] - weight[n * K_ + k]) * Dtype(2);
           }
         }
       }

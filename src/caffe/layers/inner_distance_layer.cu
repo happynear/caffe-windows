@@ -71,7 +71,7 @@ __global__ void inner_distance_backward_L2(const int M_, const int N_, const int
     int m = index / K_;
     int k = index % K_;
     for (int n = 0; n < N_; ++n) {
-      bottom_diff[index] += top_diff[m * N_ + n] * (bottom_data[m * K_ + k] - weight[n * K_ + k]);
+      bottom_diff[index] += top_diff[m * N_ + n] * (bottom_data[m * K_ + k] - weight[n * K_ + k]) * Dtype(2);
     }
   }
 }
