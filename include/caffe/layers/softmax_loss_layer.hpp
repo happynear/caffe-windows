@@ -134,6 +134,7 @@ class SoftmaxWithLossLayer : public LossLayer<Dtype> {
   LossParameter_NormalizationMode normalization_;
   bool has_cutting_point_;
   Dtype cutting_point_;
+  std::string normalize_type_;
 
   int softmax_axis_, outer_num_, inner_num_;
 };

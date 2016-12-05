@@ -288,6 +288,8 @@ namespace caffe {
 	public:
 		explicit NormalizeLayer(const LayerParameter& param)
 			: Layer<Dtype>(param) {}
+    virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+                            const vector<Blob<Dtype>*>& top);
 		virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
 			const vector<Blob<Dtype>*>& top);
 
@@ -306,6 +308,7 @@ namespace caffe {
 			const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
 		Blob<Dtype> sum_multiplier_, norm_, squared_;
+    std::string normalize_type_;
 	};
 
 	/**

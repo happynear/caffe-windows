@@ -1185,6 +1185,7 @@ message SoftmaxParameter {
   repeated float class_weight = 4;
   optional int32 hard_mining_label = 5;
   optional float cutting_point = 6;
+  optional string normalize_type = 7 [default="Softmax"];
 }
 
 message TanHParameter {

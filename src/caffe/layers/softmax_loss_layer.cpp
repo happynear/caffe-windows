@@ -11,14 +11,31 @@ template <typename Dtype>
 void SoftmaxWithLossLayer<Dtype>::LayerSetUp(
     const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top) {
   LossLayer<Dtype>::LayerSetUp(bottom, top);
-  LayerParameter softmax_param(this->layer_param_);
-  softmax_param.set_type("Softmax");
-  softmax_layer_ = LayerRegistry<Dtype>::CreateLayer(softmax_param);
-  softmax_bottom_vec_.clear();
-  softmax_bottom_vec_.push_back(bottom[0]);
-  softmax_top_vec_.clear();
-  softmax_top_vec_.push_back(&prob_);
-  softmax_layer_->SetUp(softmax_bottom_vec_, softmax_top_vec_);
+  normalize_type_ =
+    this->layer_param_.softmax_param().normalize_type();
+  if (normalize_type_ == "Softmax") {
+    LayerParameter softmax_param(this->layer_param_);
+    softmax_param.set_type("Softmax");
+    softmax_layer_ = LayerRegistry<Dtype>::CreateLayer(softmax_param);
+    softmax_bottom_vec_.clear();
+    softmax_bottom_vec_.push_back(bottom[0]);
+    softmax_top_vec_.clear();
+    softmax_top_vec_.push_back(&prob_);
+    softmax_layer_->SetUp(softmax_bottom_vec_, softmax_top_vec_);
+  }
+  else if(normalize_type_ == "L2" || normalize_type_ == "L1") {
+    LayerParameter normalize_param(this->layer_param_);
+    normalize_param.set_type("Normalize");
+    softmax_layer_ = LayerRegistry<Dtype>::CreateLayer(normalize_param);
+    softmax_bottom_vec_.clear();
+    softmax_bottom_vec_.push_back(bottom[0]);
+    softmax_top_vec_.clear();
+    softmax_top_vec_.push_back(&prob_);
+    softmax_layer_->SetUp(softmax_bottom_vec_, softmax_top_vec_);
+  }
+  else {
+    NOT_IMPLEMENTED;
+  }
 
   has_ignore_label_ =
     this->layer_param_.loss_param().has_ignore_label();
