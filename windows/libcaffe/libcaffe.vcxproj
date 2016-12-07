@@ -128,6 +128,7 @@
     <ClCompile Include="..\..\src\caffe\layers\filter_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\flatten_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\flip_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\general_constrastive_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\gram_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\hdf5_data_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\hdf5_output_layer.cpp" />

@@ -1,0 +1,24 @@
+name: "Test_InnerDistance_Layer"
+input: "data"
+input_dim: 2
+input_dim: 10
+input_dim: 1
+input_dim: 1
+
+input: "label"
+input_dim: 2
+input_dim: 1
+input_dim: 1
+input_dim: 1
+force_backward: true
+
+layer {
+  name: "ip1"
+  type: "SoftmaxWithLoss"
+  bottom: "data"
+  bottom: "label"
+  top: "ip1"
+  contrastive_loss_param{
+    margin: 1
+  }
+}

@@ -46,6 +46,8 @@ class InnerDistanceLayer : public Layer<Dtype> {
   Blob<Dtype> bias_multiplier_;
   bool transpose_;  ///< if true, assume transposed weights
   std::string distance_type_;
+  bool normalize_;
+  Blob<Dtype> weight_norm_;
 };
 
 }  // namespace caffe

@@ -1,0 +1,17 @@
+name: "Test_InnerDistance_Layer"
+input: "data"
+input_dim: 1
+input_dim: 512
+input_dim: 16
+input_dim: 16
+force_backward: true
+
+layer {
+  name: "ip1"
+  type: "Normalize"
+  bottom: "data"
+  top: "ip1"
+  softmax_param {
+    normalize_type: "L2"
+  }
+}

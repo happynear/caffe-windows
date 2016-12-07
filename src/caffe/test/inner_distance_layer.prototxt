@@ -1,0 +1,31 @@
+name: "Test_InnerDistance_Layer"
+input: "data"
+input_dim: 2
+input_dim: 100
+input_dim: 1
+input_dim: 1
+force_backward: true
+
+layer {
+  name: "ip1"
+  type: "InnerDistance"
+  bottom: "data"
+  top: "ip1"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_distance_param {
+    num_output: 3
+    distance_type: "L2"
+    weight_filler {
+      type: "gaussian"
+      std: 1
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}

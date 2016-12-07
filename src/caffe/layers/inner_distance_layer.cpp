@@ -15,6 +15,7 @@ void InnerDistanceLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   bias_term_ = this->layer_param_.inner_distance_param().bias_term();
   transpose_ = this->layer_param_.inner_distance_param().transpose();
   distance_type_ = this->layer_param_.inner_distance_param().distance_type();
+  normalize_ = this->layer_param_.inner_distance_param().normalize();
   N_ = num_output;
   const int axis = bottom[0]->CanonicalAxisIndex(
       this->layer_param_.inner_distance_param().axis());
@@ -81,6 +82,11 @@ void InnerDistanceLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
     bias_multiplier_.Reshape(bias_shape);
     caffe_set(M_, Dtype(1), bias_multiplier_.mutable_cpu_data());
   }
+  if (normalize_) {
+    vector<int> weight_norm_shape(1, N_);
+    weight_norm_.Reshape(weight_norm_shape);
+    caffe_set(M_, Dtype(0), weight_norm_.mutable_cpu_data());
+  }
 }
 
 template <typename Dtype>
@@ -89,9 +95,16 @@ void InnerDistanceLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   const Dtype* bottom_data = bottom[0]->cpu_data();
   Dtype* top_data = top[0]->mutable_cpu_data();
   const Dtype* weight = this->blobs_[0]->cpu_data();
-  caffe_cpu_gemm<Dtype>(CblasNoTrans, transpose_ ? CblasNoTrans : CblasTrans,
-      M_, N_, K_, (Dtype)1.,
-      bottom_data, weight, (Dtype)0., top_data);
+
+  if (normalize_) {
+    Dtype* mutable_weight = this->blobs_[0]->mutable_cpu_data();
+    Dtype sum_sq;
+    for (int n = 0; n < N_; n++) {
+      sum_sq = caffe_cpu_dot(K_, weight + n*K_, weight + n*K_);
+      caffe_scal<Dtype>(K_, Dtype(1) / sqrt(sum_sq), mutable_weight + n*K_);
+    }
+  }
+
   if (distance_type_ == "L2") {//tanspose = false, TODO: transpose = true
     for (int m = 0; m < M_; m++) {
       for (int n = 0; n < N_; n++) {
@@ -163,6 +176,7 @@ void InnerDistanceLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
   }
   if (propagate_down[0]) {
     Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
+    caffe_set<Dtype>(M_ * K_, 0, bottom_diff);
     if (distance_type_ == "L2") {
       for (int m = 0; m < M_; m++) {
         for (int k = 0; k < K_; k++) {
