@@ -8,8 +8,10 @@ namespace caffe {
 template <typename Dtype>
 void GeneralContrastiveLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
                                                const vector<Blob<Dtype>*>& top) {
+  LossLayer<Dtype>::LayerSetUp(bottom, top);
   CHECK_GE(bottom.size(), 2);
-  margin = this->layer_param_.contrastive_loss_param().margin();
+  positive_margin_ = this->layer_param_.general_contrastive_loss_param().positive_margin();
+  negative_margin_ = this->layer_param_.general_contrastive_loss_param().negative_margin();
 }
 
 template <typename Dtype>
@@ -27,7 +29,11 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
     for (int j = 0; j < dim; ++j) {
       if (j != static_cast<int>(label[i])) {
         bottom_diff[i * dim + j] = std::max(
-          Dtype(0), margin - bottom_diff[i * dim + j]);
+          Dtype(0), negative_margin_ - bottom_diff[i * dim + j]);
+      }
+      else {
+        bottom_diff[i * dim + j] = std::max(
+          Dtype(0), bottom_diff[i * dim + j] - positive_margin_);
       }
     }
   }
@@ -53,10 +59,15 @@ void GeneralContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>
     for (int i = 0; i < num; ++i) {
       for (int j = 0; j < dim; ++j) {
         if (j == static_cast<int>(label[i])) {
-          bottom_diff[i * dim + j] = 1;
+          if (bottom_data[i * dim + j] > positive_margin_) {
+            bottom_diff[i * dim + j] = 1;
+          }
+          else {
+            bottom_diff[i * dim + j] = 0;
+          }
         }
         else {
-          if (bottom_data[i * dim + j] < margin) {
+          if (bottom_data[i * dim + j] < negative_margin_) {
             bottom_diff[i * dim + j] = -1;
           }
           else{

@@ -98,7 +98,8 @@ class GeneralContrastiveLossLayer : public LossLayer<Dtype> {
   virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
-  Dtype margin;
+  Dtype positive_margin_;
+  Dtype negative_margin_;
 };
 
 
