@@ -85,7 +85,7 @@ void InnerDistanceLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   if (normalize_) {
     vector<int> weight_norm_shape(1, N_);
     weight_norm_.Reshape(weight_norm_shape);
-    caffe_set(M_, Dtype(0), weight_norm_.mutable_cpu_data());
+    caffe_set(N_, Dtype(0), weight_norm_.mutable_cpu_data());
   }
 }
 
@@ -100,7 +100,7 @@ void InnerDistanceLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
     Dtype* mutable_weight = this->blobs_[0]->mutable_cpu_data();
     Dtype sum_sq;
     for (int n = 0; n < N_; n++) {
-      sum_sq = caffe_cpu_dot(K_, weight + n*K_, weight + n*K_);
+      sum_sq = caffe_cpu_dot(K_, weight + n*K_, weight + n*K_) + 1e-6;
       caffe_scal<Dtype>(K_, Dtype(1) / sqrt(sum_sq), mutable_weight + n*K_);
     }
   }
