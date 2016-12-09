@@ -17,6 +17,7 @@ void AccuracyLayer<Dtype>::LayerSetUp(
   if (has_ignore_label_) {
     ignore_label_ = this->layer_param_.accuracy_param().ignore_label();
   }
+  min_is_better_ = this->layer_param_.accuracy_param().min_is_better();
 }
 
 template <typename Dtype>
@@ -82,9 +83,17 @@ void AccuracyLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
         bottom_data_vector.push_back(std::make_pair(
             bottom_data[i * dim + k * inner_num_ + j], k));
       }
-      std::partial_sort(
+      if (min_is_better_) {
+        std::partial_sort(
+          bottom_data_vector.begin(), bottom_data_vector.begin() + top_k_,
+          bottom_data_vector.end(), std::less<std::pair<Dtype, int> >());
+      }
+      else {
+        std::partial_sort(
           bottom_data_vector.begin(), bottom_data_vector.begin() + top_k_,
           bottom_data_vector.end(), std::greater<std::pair<Dtype, int> >());
+      }
+      
       // check if true label is in top k predictions
       for (int k = 0; k < top_k_; k++) {
         if (bottom_data_vector[k].second == label_value) {

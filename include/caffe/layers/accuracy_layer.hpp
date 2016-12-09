@@ -90,6 +90,8 @@ class AccuracyLayer : public Layer<Dtype> {
   int ignore_label_;
   /// Keeps counts of the number of samples per class.
   Blob<Dtype> nums_buffer_;
+  //inverse the sort order.
+  bool min_is_better_;
 };
 
 }  // namespace caffe

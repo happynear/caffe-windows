@@ -421,6 +421,7 @@ message LayerParameter {
   optional FlipParameter flip_param = 212;
   optional InnerDistanceParameter inner_distance_param = 213;
   optional NormalizeParameter normalize_param = 214;
+  optional GeneralContrastiveParameter general_contrastive_loss_param = 215;
 }
 
 // Message that stores parameters used to apply transformation
@@ -491,6 +492,8 @@ message AccuracyParameter {
 
   // If specified, ignore instances with the given label.
   optional int32 ignore_label = 3;
+
+  optional bool min_is_better = 4 [default = false];
 }
 
 message ArgMaxParameter {
@@ -1640,4 +1643,9 @@ message FlipParameter {
 
 message NormalizeParameter {
   optional string normalize_type = 1 [default = "L2"];
+}
+
+message GeneralContrastiveParameter {
+  optional float positive_margin = 1 [default = 1.0];
+  optional float negative_margin = 2 [default = 1.0];
 }
