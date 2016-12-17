@@ -74,7 +74,6 @@ distribute/*
 python/caffe/proto/
 cmake_build
 .cmake_build
-3rdparty
 bin
 *.sdf
 *.opensdf
@@ -110,8 +109,5 @@ MANIFEST-*
 *.jpg
 *.bmp
 *.png
-
-3rdparty2013
-3rdparty2012
 
 Inceptionism

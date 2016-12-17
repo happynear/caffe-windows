@@ -8,8 +8,8 @@
 #include "caffe/blob.hpp"
 #include "caffe/common.hpp"
 #include "caffe/layer.hpp"
-#include "caffe/neuron_layers.hpp"
-#include "caffe/loss_layers.hpp"
+#include "caffe/layers/loss_layer.hpp"
+#include "caffe/layers/neuron_layer.hpp"
 #include "caffe/proto/caffe.pb.h"
 
 namespace caffe {
@@ -239,75 +239,46 @@ namespace caffe {
 		bool has_weights_;
 	};
 
-	template <typename Dtype>
-	class TripletLossLayer : public LossLayer<Dtype> {
-	public:
-		explicit TripletLossLayer(const LayerParameter& param)
-			: LossLayer<Dtype>(param), diff_() {}
-		virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
-			const vector<Blob<Dtype>*>& top);
+  /* Yuanyang adding triplet loss layer */
+  /* *
+  * * @brief Computes the triplet loss
+  * */
+  template <typename Dtype>
+  class TripletLossLayer : public LossLayer<Dtype> {
+  public:
+    explicit TripletLossLayer(const LayerParameter& param) : LossLayer<Dtype>(param) {}
+    virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>&top);
+    virtual inline int ExactNumBottomBlobs() const { return 3; }
+    virtual inline const char* type() const { return "TripletLoss"; }
+    /* *
+    * * Unlike most loss layers, in the TripletLossLayer we can backpropagate
+    * * to the first three inputs.
+    * */
+    virtual inline bool AllowForceBackward(const int bottom_index) const {
+      return bottom_index != 3;
+    }
+  protected:
+    virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top);
+    virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top);
+    virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+                              const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+    virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+                              const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
-		virtual inline int ExactNumBottomBlobs() const { return 3; }
-		virtual inline const char* type() const { return "TripletLoss"; }
-		/**
-		* Unlike most loss layers, in the TripletLossLayer we can backpropagate
-		* to the first three inputs.
-		*/
-		virtual inline bool AllowForceBackward(const int bottom_index) const {
-			return bottom_index != 5;
-		}
+    Blob<Dtype> diff_ap_;  // cached for backward pass
+    Blob<Dtype> diff_an_;  // cached for backward pass
+    Blob<Dtype> diff_pn_;  // cached for backward pass
 
-	protected:
-		/// @copydoc TripletLossLayer
-		virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
-			const vector<Blob<Dtype>*>& top);
-		virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
-			const vector<Blob<Dtype>*>& top);
+    Blob<Dtype> diff_sq_ap_;  // cached for backward pass
+    Blob<Dtype> diff_sq_an_;  // tmp storage for gpu forward pass
 
-		/**
-		* @brief Computes the Triplet error gradient w.r.t. the inputs.
-		*
-		* Computes the gradients with respect to the two input vectors (bottom[0] and
-		* bottom[1]), but not the similarity label (bottom[2]).
-		*
-		* @param top output Blob vector (length 1), providing the error gradient with
-		*      respect to the outputs
-		*   -# @f$ (1 \times 1 \times 1 \times 1) @f$
-		*      This Blob's diff will simply contain the loss_weight* @f$ \lambda @f$,
-		*      as @f$ \lambda @f$ is the coefficient of this layer's output
-		*      @f$\ell_i@f$ in the overall Net loss
-		*      @f$ E = \lambda_i \ell_i + \mbox{other loss terms}@f$; hence
-		*      @f$ \frac{\partial E}{\partial \ell_i} = \lambda_i @f$.
-		*      (*Assuming that this top Blob is not used as a bottom (input) by any
-		*      other layer of the Net.)
-		* @param propagate_down see Layer::Backward.
-		* @param bottom input Blob vector (length 2)
-		*   -# @f$ (N \times C \times 1 \times 1) @f$
-		*      the features @f$a@f$; Backward fills their diff with
-		*      gradients if propagate_down[0]
-		*   -# @f$ (N \times C \times 1 \times 1) @f$
-		*      the features @f$b@f$; Backward fills their diff with gradients if
-		*      propagate_down[1]
-		*/
-		virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
-			const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
-		virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
-			const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+    Blob<Dtype> dist_sq_ap_;  // cached for backward pass
+    Blob<Dtype> dist_sq_an_;  // cached for backward pass
 
-		Blob<Dtype> diff_;  // cached for backward pass
-		Blob<Dtype> diff_pos;
-		Blob<Dtype> diff_neg;
-		Blob<Dtype> diff_par;
-		Blob<Dtype> dist_sq_;  // cached for backward pass
-		Blob<Dtype> dist_sq_pos;
-		Blob<Dtype> dist_sq_neg;
-		Blob<Dtype> dist_sq_par;
-		Blob<Dtype> diff_sq_;  // tmp storage for gpu forward pass
-		Blob<Dtype> diff_sq_pos;
-		Blob<Dtype> diff_sq_neg;
-		Blob<Dtype> diff_sq_par;
-		Blob<Dtype> summer_vec_;  // tmp storage for gpu forward pass
-	};
+    Blob<Dtype> summer_vec_;  // tmp storage for gpu forward pass
+    Blob<Dtype> dist_binary_;  // tmp storage for gpu forward pass
+
+  };
 
 	/**
 	* @brief Normalizes input.
@@ -378,14 +349,14 @@ namespace caffe {
 	* TODO(dox): thorough documentation for Forward, Backward, and proto params.
 	*/
 	template <typename Dtype>
-	class CovarianceLayer : public Layer<Dtype> {
+	class GramLayer : public Layer<Dtype> {
 	public:
-		explicit CovarianceLayer(const LayerParameter& param)
+    explicit GramLayer(const LayerParameter& param)
 			: Layer<Dtype>(param) {}
 		virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
 			const vector<Blob<Dtype>*>& top);
 
-		virtual inline const char* type() const { return "Covariance"; }
+		virtual inline const char* type() const { return "Gram"; }
 		virtual inline int ExactNumBottomBlobs() const { return 1; }
 		virtual inline int MinTopBlobs() const { return 1; }
 
@@ -399,6 +370,155 @@ namespace caffe {
 		virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
 			const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 	};
+
+  /**
+  * @brief
+  */
+  template <typename Dtype>
+  class EltwiseAffineLayer : public NeuronLayer<Dtype> {
+  public:
+    /**
+    * @param param provides EltwiseAffineParameter EltwiseAffine_param,
+    *     with EltwiseAffineLayer options:
+    *   - slope_filler (\b optional, FillerParameter,
+    *     default {'type': constant 'value':1.0001}).
+    *   - bias_filler (\b optional, FillerParameter,
+    *     default {'type': constant 'value':0.0001}).
+    *   - channel_shared (\b optional, default false).
+    *     slopes and biases are shared across channels.
+    */
+    explicit EltwiseAffineLayer(const LayerParameter& param)
+      : NeuronLayer<Dtype>(param) {}
+
+    virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+                            const vector<Blob<Dtype>*>& top);
+
+    virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+                         const vector<Blob<Dtype>*>& top);
+
+    virtual inline const char* type() const { return "EltwiseAffine"; }
+
+  protected:
+    /**
+    * @param bottom input Blob vector (length 1)
+    *   -# @f$ (N \times C \times ...) @f$
+    *      the inputs @f$ x @f$
+    * @param top output Blob vector (length 1)
+    *   -# @f$ (N \times C \times ...) @f$
+    *      the computed outputs for each channel @f$i@f$ @f$
+    *        y_i = a_i x_i + b_i
+    *      @f$.
+    */
+    virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+                             const vector<Blob<Dtype>*>& top);
+    virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+                             const vector<Blob<Dtype>*>& top);
+
+    /**
+    * @brief Computes the error gradient w.r.t. the EltwiseAffine inputs.
+    *
+    * @param top output Blob vector (length 1), providing the error gradient with
+    *      respect to the outputs
+    *   -# @f$ (N \times C \times ...) @f$
+    *      containing error gradients @f$ \frac{\partial E}{\partial y} @f$
+    *      with respect to computed outputs @f$ y @f$
+    * @param propagate_down see Layer::Backward.
+    * @param bottom input Blob vector (length 1)
+    *   -# @f$ (N \times C \times ...) @f$
+    *      the inputs @f$ x @f$; For each channel @f$i@f$, backward fills their
+    *      diff with gradients @f$
+    *        \frac{\partial E}{\partial x_i} = \left\{
+    *        \begin{array}{lr}
+    *            a_i \frac{\partial E}{\partial y_i}
+    *        \end{array} \right.
+    *      @f$.
+    *      If param_propagate_down_[0] is true, it fills the diff with gradients
+    *      @f$
+    *        \frac{\partial E}{\partial a_i} = \left\{
+    *        \begin{array}{lr}
+    *            \sum_{x_i} x_i \frac{\partial E}{\partial y_i}
+    *        \end{array} \right.
+    *      @f$.
+    *      If param_propagate_down_[1] is true, it fills the diff with gradients
+    *      @f$
+    *        \frac{\partial E}{\partial b_i} = \left\{
+    *        \begin{array}{lr}
+    *             frac{\partial E}{\partial y_i}
+    *        \end{array} \right.
+    *      @f$.
+    */
+    virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+                              const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+    virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+                              const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+
+    bool channel_shared_;
+    Blob<Dtype> multiplier_;  // dot multiplier for backward computation of params
+    Blob<Dtype> bias_multiplier_;
+    Blob<Dtype> backward_buff_;  // temporary buffer for backward computation
+    Blob<Dtype> bottom_memory_;  // memory for in-place computation
+  };
+
+  /**
+  * @brief Get the sub-region features around some specific points
+  *
+  * TODO(dox): thorough documentation for Forward, Backward, and proto params.
+  */
+  template <typename Dtype>
+  class SubRegionLayer : public Layer<Dtype> {
+  public:
+    explicit SubRegionLayer(const LayerParameter& param)
+      : Layer<Dtype>(param) {}
+
+    virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+                            const vector<Blob<Dtype>*>& top);
+
+    virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+                         const vector<Blob<Dtype>*>& top);
+
+    virtual inline const char* type() const { return "SubRegion"; }
+    virtual inline int ExactNumBottomBlobs() const { return 3; }
+    virtual inline int MinTopBlobs() const { return 1; }
+
+  protected:
+    virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+                             const vector<Blob<Dtype>*>& top);
+    virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+                             const vector<Blob<Dtype>*>& top);
+    virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+                              const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+    virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+                              const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+
+    int height_;
+    int width_;
+    int data_height_;
+    int data_width_;
+    int as_dim_;
+  };
+
+  /**
+  * @brief Add noise.
+  */
+  template <typename Dtype>
+  class NoiseLayer : public NeuronLayer<Dtype> {
+  public:
+    explicit NoiseLayer(const LayerParameter& param)
+      : NeuronLayer<Dtype>(param) {}
+
+    virtual inline const char* type() const { return "Noise"; }
+
+  protected:
+    virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+                             const vector<Blob<Dtype>*>& top);
+    virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+                             const vector<Blob<Dtype>*>& top);
+    virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+                              const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+    virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
+                              const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+
+  };
 
 }  // namespace caffe
 

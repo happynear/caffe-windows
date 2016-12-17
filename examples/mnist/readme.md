@@ -41,11 +41,13 @@ Currently, we will read the MNIST data from the lmdb we created earlier in the d
     layer {
       name: "mnist"
       type: "Data"
+      transform_param {
+        scale: 0.00390625
+      }
       data_param {
         source: "mnist_train_lmdb"
         backend: LMDB
         batch_size: 64
-        scale: 0.00390625
       }
       top: "data"
       top: "label"
@@ -283,5 +285,5 @@ and you will be using CPU for training. Isn't that easy?
 
 MNIST is a small dataset, so training with GPU does not really introduce too much benefit due to communication overheads. On larger datasets with more complex models, such as ImageNet, the computation speed difference will be more significant.
 
-### How to reduce the learning rate a fixed steps?
+### How to reduce the learning rate at fixed steps?
 Look at lenet_multistep_solver.prototxt

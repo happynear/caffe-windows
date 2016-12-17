@@ -4,20 +4,25 @@ input_dim: 1
 input_dim: 3
 input_dim: 224
 input_dim: 224
-layers {
+force_backward: true
+layer {
   name: "conv1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "data"
   top: "conv1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 64
+    pad: 3
     kernel_size: 7
     stride: 2
-    pad: 3
     weight_filler {
       type: "gaussian"
       std: 0.015
@@ -28,15 +33,15 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu1"
-  type: RELU
+  type: "ReLU"
   bottom: "conv1"
   top: "conv1"
 }
-layers {
+layer {
   name: "pool1"
-  type: POOLING
+  type: "Pooling"
   bottom: "conv1"
   top: "pool1"
   pooling_param {
@@ -46,9 +51,9 @@ layers {
     pad: 0
   }
 }
-layers {
+layer {
   name: "norm1"
-  type: LRN
+  type: "LRN"
   bottom: "pool1"
   top: "norm1"
   lrn_param {
@@ -57,15 +62,19 @@ layers {
     beta: 0.75
   }
 }
-layers {
+layer {
   name: "reduction2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "norm1"
   top: "reduction2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 64
     pad: 0
@@ -80,21 +89,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_reduction2"
-  type: RELU
+  type: "ReLU"
   bottom: "reduction2"
   top: "reduction2"
 }
-layers {
+layer {
   name: "conv2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "reduction2"
   top: "conv2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 192
     pad: 1
@@ -110,15 +123,15 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu2"
-  type: RELU
+  type: "ReLU"
   bottom: "conv2"
   top: "conv2"
 }
-layers {
+layer {
   name: "norm2"
-  type: LRN
+  type: "LRN"
   bottom: "conv2"
   top: "norm2"
   lrn_param {
@@ -127,9 +140,9 @@ layers {
     beta: 0.75
   }
 }
-layers {
+layer {
   name: "pool2"
-  type: POOLING
+  type: "Pooling"
   bottom: "norm2"
   top: "pool2"
   pooling_param {
@@ -139,16 +152,19 @@ layers {
     pad: 0
   }
 }
-# Inception module 1 ***************
-layers {
+layer {
   name: "icp1_reduction1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "pool2"
   top: "icp1_reduction1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 96
     pad: 0
@@ -162,21 +178,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp1_reduction1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp1_reduction1"
   top: "icp1_reduction1"
 }
-layers {
+layer {
   name: "icp1_reduction2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "pool2"
   top: "icp1_reduction2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 16
     pad: 0
@@ -190,15 +210,15 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp1_reduction2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp1_reduction2"
   top: "icp1_reduction2"
 }
-layers {
+layer {
   name: "icp1_pool"
-  type: POOLING
+  type: "Pooling"
   bottom: "pool2"
   top: "icp1_pool"
   pooling_param {
@@ -208,16 +228,19 @@ layers {
     pad: 1
   }
 }
-# ***********
-layers {
+layer {
   name: "icp1_out0"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "pool2"
   top: "icp1_out0"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 64
     pad: 0
@@ -231,21 +254,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp1_out0"
-  type: RELU
+  type: "ReLU"
   bottom: "icp1_out0"
   top: "icp1_out0"
 }
-layers {
+layer {
   name: "icp1_out1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp1_reduction1"
   top: "icp1_out1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 128
     pad: 1
@@ -260,21 +287,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp1_out1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp1_out1"
   top: "icp1_out1"
 }
-layers {
+layer {
   name: "icp1_out2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp1_reduction2"
   top: "icp1_out2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 32
     pad: 2
@@ -289,21 +320,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp1_out2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp1_out2"
   top: "icp1_out2"
 }
-layers {
+layer {
   name: "icp1_out3"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp1_pool"
   top: "icp1_out3"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 32
     pad: 0
@@ -317,33 +352,34 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp1_out3"
-  type: RELU
+  type: "ReLU"
   bottom: "icp1_out3"
   top: "icp1_out3"
 }
-# Concat them together
-layers {
+layer {
   name: "icp2_in"
-  type: CONCAT
+  type: "Concat"
   bottom: "icp1_out0"
   bottom: "icp1_out1"
   bottom: "icp1_out2"
   bottom: "icp1_out3"
   top: "icp2_in"
 }
-
-# Inception module 2 ***************
-layers {
+layer {
   name: "icp2_reduction1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp2_in"
   top: "icp2_reduction1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 128
     pad: 0
@@ -357,21 +393,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp2_reduction1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp2_reduction1"
   top: "icp2_reduction1"
 }
-layers {
+layer {
   name: "icp2_reduction2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp2_in"
   top: "icp2_reduction2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 32
     pad: 0
@@ -385,15 +425,15 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp2_reduction2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp2_reduction2"
   top: "icp2_reduction2"
 }
-layers {
+layer {
   name: "icp2_pool"
-  type: POOLING
+  type: "Pooling"
   bottom: "icp2_in"
   top: "icp2_pool"
   pooling_param {
@@ -403,16 +443,19 @@ layers {
     pad: 1
   }
 }
-# ***********
-layers {
+layer {
   name: "icp2_out0"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp2_in"
   top: "icp2_out0"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 128
     pad: 0
@@ -426,21 +469,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp2_out0"
-  type: RELU
+  type: "ReLU"
   bottom: "icp2_out0"
   top: "icp2_out0"
 }
-layers {
+layer {
   name: "icp2_out1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp2_reduction1"
   top: "icp2_out1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 192
     pad: 1
@@ -455,21 +502,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp2_out1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp2_out1"
   top: "icp2_out1"
 }
-layers {
+layer {
   name: "icp2_out2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp2_reduction2"
   top: "icp2_out2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 96
     pad: 2
@@ -484,21 +535,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp2_out2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp2_out2"
   top: "icp2_out2"
 }
-layers {
+layer {
   name: "icp2_out3"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp2_pool"
   top: "icp2_out3"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 64
     pad: 0
@@ -512,25 +567,24 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp2_out3"
-  type: RELU
+  type: "ReLU"
   bottom: "icp2_out3"
   top: "icp2_out3"
 }
-# Concat them together
-layers {
+layer {
   name: "icp2_out"
-  type: CONCAT
+  type: "Concat"
   bottom: "icp2_out0"
   bottom: "icp2_out1"
   bottom: "icp2_out2"
   bottom: "icp2_out3"
   top: "icp2_out"
 }
-layers {
+layer {
   name: "icp3_in"
-  type: POOLING
+  type: "Pooling"
   bottom: "icp2_out"
   top: "icp3_in"
   pooling_param {
@@ -540,17 +594,19 @@ layers {
     pad: 0
   }
 }
-
-# Inception module 3 ***************
-layers {
+layer {
   name: "icp3_reduction1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp3_in"
   top: "icp3_reduction1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 96
     pad: 0
@@ -564,21 +620,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp3_reduction1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp3_reduction1"
   top: "icp3_reduction1"
 }
-layers {
+layer {
   name: "icp3_reduction2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp3_in"
   top: "icp3_reduction2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 16
     pad: 0
@@ -592,15 +652,15 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp3_reduction2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp3_reduction2"
   top: "icp3_reduction2"
 }
-layers {
+layer {
   name: "icp3_pool"
-  type: POOLING
+  type: "Pooling"
   bottom: "icp3_in"
   top: "icp3_pool"
   pooling_param {
@@ -610,16 +670,19 @@ layers {
     pad: 1
   }
 }
-# ***********
-layers {
+layer {
   name: "icp3_out0"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp3_in"
   top: "icp3_out0"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 192
     pad: 0
@@ -633,21 +696,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp3_out0"
-  type: RELU
+  type: "ReLU"
   bottom: "icp3_out0"
   top: "icp3_out0"
 }
-layers {
+layer {
   name: "icp3_out1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp3_reduction1"
   top: "icp3_out1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 208
     pad: 1
@@ -662,21 +729,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp3_out1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp3_out1"
   top: "icp3_out1"
 }
-layers {
+layer {
   name: "icp3_out2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp3_reduction2"
   top: "icp3_out2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 48
     pad: 2
@@ -691,21 +762,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp3_out2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp3_out2"
   top: "icp3_out2"
 }
-layers {
+layer {
   name: "icp3_out3"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp3_pool"
   top: "icp3_out3"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 64
     pad: 0
@@ -719,27 +794,24 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp3_out3"
-  type: RELU
+  type: "ReLU"
   bottom: "icp3_out3"
   top: "icp3_out3"
 }
-# Concat them together
-layers {
+layer {
   name: "icp3_out"
-  type: CONCAT
+  type: "Concat"
   bottom: "icp3_out0"
   bottom: "icp3_out1"
   bottom: "icp3_out2"
   bottom: "icp3_out3"
   top: "icp3_out"
 }
-
-# first classification branch ************
-layers {
+layer {
   name: "cls1_pool"
-  type: POOLING
+  type: "Pooling"
   bottom: "icp3_out"
   top: "cls1_pool"
   pooling_param {
@@ -747,18 +819,21 @@ layers {
     kernel_size: 5
     stride: 3
     pad: 0
-    # this padding is somewhat special
   }
 }
-layers {
+layer {
   name: "cls1_reduction"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "cls1_pool"
   top: "cls1_reduction"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 128
     pad: 0
@@ -772,21 +847,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_cls1_reduction"
-  type: RELU
+  type: "ReLU"
   bottom: "cls1_reduction"
   top: "cls1_reduction"
 }
-layers {
+layer {
   name: "cls1_fc1"
-  type: INNER_PRODUCT
+  type: "InnerProduct"
   bottom: "cls1_reduction"
   top: "cls1_fc1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   inner_product_param {
     num_output: 1024
     weight_filler {
@@ -799,30 +878,34 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_cls1_fc1"
-  type: RELU
+  type: "ReLU"
   bottom: "cls1_fc1"
   top: "cls1_fc1"
 }
-layers {
+layer {
   name: "cls1_drop"
-  type: DROPOUT
+  type: "Dropout"
   bottom: "cls1_fc1"
   top: "cls1_fc1"
   dropout_param {
     dropout_ratio: 0.7
   }
 }
-layers {
+layer {
   name: "cls1_fc2"
-  type: INNER_PRODUCT
+  type: "InnerProduct"
   bottom: "cls1_fc1"
   top: "cls1_fc2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   inner_product_param {
     num_output: 1000
     weight_filler {
@@ -835,23 +918,19 @@ layers {
     }
   }
 }
-#layers {
-#  name: "loss1"
-#  type: SOFTMAX
-#  bottom: "cls1_fc2"
-#  top: "loss1"
-#}
-
-# Inception module 4 ***************
-layers {
+layer {
   name: "icp4_reduction1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp3_out"
   top: "icp4_reduction1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 112
     pad: 0
@@ -865,21 +944,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp4_reduction1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp4_reduction1"
   top: "icp4_reduction1"
 }
-layers {
+layer {
   name: "icp4_reduction2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp3_out"
   top: "icp4_reduction2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 24
     pad: 0
@@ -893,15 +976,15 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp4_reduction2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp4_reduction2"
   top: "icp4_reduction2"
 }
-layers {
+layer {
   name: "icp4_pool"
-  type: POOLING
+  type: "Pooling"
   bottom: "icp3_out"
   top: "icp4_pool"
   pooling_param {
@@ -911,16 +994,19 @@ layers {
     pad: 1
   }
 }
-# ***********
-layers {
+layer {
   name: "icp4_out0"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp3_out"
   top: "icp4_out0"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 160
     pad: 0
@@ -934,21 +1020,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp4_out0"
-  type: RELU
+  type: "ReLU"
   bottom: "icp4_out0"
   top: "icp4_out0"
 }
-layers {
+layer {
   name: "icp4_out1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp4_reduction1"
   top: "icp4_out1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 224
     pad: 1
@@ -963,21 +1053,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp4_out1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp4_out1"
   top: "icp4_out1"
 }
-layers {
+layer {
   name: "icp4_out2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp4_reduction2"
   top: "icp4_out2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 64
     pad: 2
@@ -992,21 +1086,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp4_out2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp4_out2"
   top: "icp4_out2"
 }
-layers {
+layer {
   name: "icp4_out3"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp4_pool"
   top: "icp4_out3"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 64
     pad: 0
@@ -1020,33 +1118,34 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp4_out3"
-  type: RELU
+  type: "ReLU"
   bottom: "icp4_out3"
   top: "icp4_out3"
 }
-# Concat them together
-layers {
+layer {
   name: "icp4_out"
-  type: CONCAT
+  type: "Concat"
   bottom: "icp4_out0"
   bottom: "icp4_out1"
   bottom: "icp4_out2"
   bottom: "icp4_out3"
   top: "icp4_out"
 }
-
-# Inception module 5 ***************
-layers {
+layer {
   name: "icp5_reduction1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp4_out"
   top: "icp5_reduction1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 128
     pad: 0
@@ -1060,21 +1159,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp5_reduction1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp5_reduction1"
   top: "icp5_reduction1"
 }
-layers {
+layer {
   name: "icp5_reduction2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp4_out"
   top: "icp5_reduction2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 24
     pad: 0
@@ -1088,15 +1191,15 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp5_reduction2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp5_reduction2"
   top: "icp5_reduction2"
 }
-layers {
+layer {
   name: "icp5_pool"
-  type: POOLING
+  type: "Pooling"
   bottom: "icp4_out"
   top: "icp5_pool"
   pooling_param {
@@ -1106,16 +1209,19 @@ layers {
     pad: 1
   }
 }
-# ***********
-layers {
+layer {
   name: "icp5_out0"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp4_out"
   top: "icp5_out0"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 128
     pad: 0
@@ -1129,21 +1235,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp5_out0"
-  type: RELU
+  type: "ReLU"
   bottom: "icp5_out0"
   top: "icp5_out0"
 }
-layers {
+layer {
   name: "icp5_out1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp5_reduction1"
   top: "icp5_out1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 256
     pad: 1
@@ -1158,21 +1268,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp5_out1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp5_out1"
   top: "icp5_out1"
 }
-layers {
+layer {
   name: "icp5_out2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp5_reduction2"
   top: "icp5_out2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 64
     pad: 2
@@ -1187,21 +1301,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp5_out2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp5_out2"
   top: "icp5_out2"
 }
-layers {
+layer {
   name: "icp5_out3"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp5_pool"
   top: "icp5_out3"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 64
     pad: 0
@@ -1215,33 +1333,34 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp5_out3"
-  type: RELU
+  type: "ReLU"
   bottom: "icp5_out3"
   top: "icp5_out3"
 }
-# Concat them together
-layers {
+layer {
   name: "icp5_out"
-  type: CONCAT
+  type: "Concat"
   bottom: "icp5_out0"
   bottom: "icp5_out1"
   bottom: "icp5_out2"
   bottom: "icp5_out3"
   top: "icp5_out"
 }
-
-# Inception module 6 ***************
-layers {
+layer {
   name: "icp6_reduction1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp5_out"
   top: "icp6_reduction1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 144
     pad: 0
@@ -1255,21 +1374,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp6_reduction1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp6_reduction1"
   top: "icp6_reduction1"
 }
-layers {
+layer {
   name: "icp6_reduction2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp5_out"
   top: "icp6_reduction2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 32
     pad: 0
@@ -1283,15 +1406,15 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp6_reduction2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp6_reduction2"
   top: "icp6_reduction2"
 }
-layers {
+layer {
   name: "icp6_pool"
-  type: POOLING
+  type: "Pooling"
   bottom: "icp5_out"
   top: "icp6_pool"
   pooling_param {
@@ -1301,16 +1424,19 @@ layers {
     pad: 1
   }
 }
-# ***********
-layers {
+layer {
   name: "icp6_out0"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp5_out"
   top: "icp6_out0"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 112
     pad: 0
@@ -1324,21 +1450,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp6_out0"
-  type: RELU
+  type: "ReLU"
   bottom: "icp6_out0"
   top: "icp6_out0"
 }
-layers {
+layer {
   name: "icp6_out1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp6_reduction1"
   top: "icp6_out1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 288
     pad: 1
@@ -1353,21 +1483,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp6_out1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp6_out1"
   top: "icp6_out1"
 }
-layers {
+layer {
   name: "icp6_out2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp6_reduction2"
   top: "icp6_out2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 64
     pad: 2
@@ -1382,21 +1516,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp6_out2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp6_out2"
   top: "icp6_out2"
 }
-layers {
+layer {
   name: "icp6_out3"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp6_pool"
   top: "icp6_out3"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 64
     pad: 0
@@ -1410,27 +1548,24 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp6_out3"
-  type: RELU
+  type: "ReLU"
   bottom: "icp6_out3"
   top: "icp6_out3"
 }
-# Concat them together
-layers {
+layer {
   name: "icp6_out"
-  type: CONCAT
+  type: "Concat"
   bottom: "icp6_out0"
   bottom: "icp6_out1"
   bottom: "icp6_out2"
   bottom: "icp6_out3"
   top: "icp6_out"
 }
-
-# second classification branch ************
-layers {
+layer {
   name: "cls2_pool"
-  type: POOLING
+  type: "Pooling"
   bottom: "icp6_out"
   top: "cls2_pool"
   pooling_param {
@@ -1438,18 +1573,21 @@ layers {
     kernel_size: 5
     stride: 3
     pad: 0
-    # this padding is somewhat special
   }
 }
-layers {
+layer {
   name: "cls2_reduction"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "cls2_pool"
   top: "cls2_reduction"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 128
     pad: 0
@@ -1463,21 +1601,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_cls2_reduction"
-  type: RELU
+  type: "ReLU"
   bottom: "cls2_reduction"
   top: "cls2_reduction"
 }
-layers {
+layer {
   name: "cls2_fc1"
-  type: INNER_PRODUCT
+  type: "InnerProduct"
   bottom: "cls2_reduction"
   top: "cls2_fc1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   inner_product_param {
     num_output: 1024
     weight_filler {
@@ -1490,30 +1632,34 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_cls2_fc1"
-  type: RELU
+  type: "ReLU"
   bottom: "cls2_fc1"
   top: "cls2_fc1"
 }
-layers {
+layer {
   name: "cls2_drop"
-  type: DROPOUT
+  type: "Dropout"
   bottom: "cls2_fc1"
   top: "cls2_fc1"
   dropout_param {
     dropout_ratio: 0.7
   }
 }
-layers {
+layer {
   name: "cls2_fc2"
-  type: INNER_PRODUCT
+  type: "InnerProduct"
   bottom: "cls2_fc1"
   top: "cls2_fc2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   inner_product_param {
     num_output: 1000
     weight_filler {
@@ -1526,23 +1672,19 @@ layers {
     }
   }
 }
-#layers {
-#  name: "loss2"
-#  type: SOFTMAX
-#  bottom: "cls2_fc2"
-#  top: "loss2"
-#}
-
-# Inception module 7 ***************
-layers {
+layer {
   name: "icp7_reduction1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp6_out"
   top: "icp7_reduction1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 160
     pad: 0
@@ -1556,21 +1698,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp7_reduction1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp7_reduction1"
   top: "icp7_reduction1"
 }
-layers {
+layer {
   name: "icp7_reduction2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp6_out"
   top: "icp7_reduction2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 32
     pad: 0
@@ -1584,15 +1730,15 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp7_reduction2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp7_reduction2"
   top: "icp7_reduction2"
 }
-layers {
+layer {
   name: "icp7_pool"
-  type: POOLING
+  type: "Pooling"
   bottom: "icp6_out"
   top: "icp7_pool"
   pooling_param {
@@ -1602,16 +1748,19 @@ layers {
     pad: 1
   }
 }
-# ***********
-layers {
+layer {
   name: "icp7_out0"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp6_out"
   top: "icp7_out0"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 256
     pad: 0
@@ -1625,21 +1774,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp7_out0"
-  type: RELU
+  type: "ReLU"
   bottom: "icp7_out0"
   top: "icp7_out0"
 }
-layers {
+layer {
   name: "icp7_out1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp7_reduction1"
   top: "icp7_out1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 320
     pad: 1
@@ -1654,21 +1807,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp7_out1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp7_out1"
   top: "icp7_out1"
 }
-layers {
+layer {
   name: "icp7_out2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp7_reduction2"
   top: "icp7_out2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 128
     pad: 2
@@ -1683,21 +1840,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp7_out2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp7_out2"
   top: "icp7_out2"
 }
-layers {
+layer {
   name: "icp7_out3"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp7_pool"
   top: "icp7_out3"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 128
     pad: 0
@@ -1711,25 +1872,24 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp7_out3"
-  type: RELU
+  type: "ReLU"
   bottom: "icp7_out3"
   top: "icp7_out3"
 }
-# Concat them together
-layers {
+layer {
   name: "icp7_out"
-  type: CONCAT
+  type: "Concat"
   bottom: "icp7_out0"
   bottom: "icp7_out1"
   bottom: "icp7_out2"
   bottom: "icp7_out3"
   top: "icp7_out"
 }
-layers {
+layer {
   name: "icp8_in"
-  type: POOLING
+  type: "Pooling"
   bottom: "icp7_out"
   top: "icp8_in"
   pooling_param {
@@ -1740,15 +1900,20 @@ layers {
   }
 }
 # Inception module 8 ***************
-layers {
+
+layer {
   name: "icp8_reduction1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp8_in"
   top: "icp8_reduction1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 160
     pad: 0
@@ -1762,21 +1927,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp8_reduction1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp8_reduction1"
   top: "icp8_reduction1"
 }
-layers {
+layer {
   name: "icp8_reduction2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp8_in"
   top: "icp8_reduction2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 32
     pad: 0
@@ -1790,15 +1959,15 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp8_reduction2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp8_reduction2"
   top: "icp8_reduction2"
 }
-layers {
+layer {
   name: "icp8_pool"
-  type: POOLING
+  type: "Pooling"
   bottom: "icp8_in"
   top: "icp8_pool"
   pooling_param {
@@ -1808,16 +1977,19 @@ layers {
     pad: 1
   }
 }
-# ***********
-layers {
+layer {
   name: "icp8_out0"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp8_in"
   top: "icp8_out0"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 256
     pad: 0
@@ -1831,21 +2003,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp8_out0"
-  type: RELU
+  type: "ReLU"
   bottom: "icp8_out0"
   top: "icp8_out0"
 }
-layers {
+layer {
   name: "icp8_out1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp8_reduction1"
   top: "icp8_out1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 320
     pad: 1
@@ -1860,21 +2036,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp8_out1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp8_out1"
   top: "icp8_out1"
 }
-layers {
+layer {
   name: "icp8_out2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp8_reduction2"
   top: "icp8_out2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 128
     pad: 2
@@ -1889,21 +2069,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp8_out2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp8_out2"
   top: "icp8_out2"
 }
-layers {
+layer {
   name: "icp8_out3"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp8_pool"
   top: "icp8_out3"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 128
     pad: 0
@@ -1917,33 +2101,34 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp8_out3"
-  type: RELU
+  type: "ReLU"
   bottom: "icp8_out3"
   top: "icp8_out3"
 }
-# Concat them together
-layers {
+layer {
   name: "icp8_out"
-  type: CONCAT
+  type: "Concat"
   bottom: "icp8_out0"
   bottom: "icp8_out1"
   bottom: "icp8_out2"
   bottom: "icp8_out3"
   top: "icp8_out"
 }
-
-# Inception module 9 ***************
-layers {
+layer {
   name: "icp9_reduction1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp8_out"
   top: "icp9_reduction1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 192
     pad: 0
@@ -1957,21 +2142,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp9_reduction1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp9_reduction1"
   top: "icp9_reduction1"
 }
-layers {
+layer {
   name: "icp9_reduction2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp8_out"
   top: "icp9_reduction2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 48
     pad: 0
@@ -1985,15 +2174,15 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp9_reduction2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp9_reduction2"
   top: "icp9_reduction2"
 }
-layers {
+layer {
   name: "icp9_pool"
-  type: POOLING
+  type: "Pooling"
   bottom: "icp8_out"
   top: "icp9_pool"
   pooling_param {
@@ -2003,16 +2192,19 @@ layers {
     pad: 1
   }
 }
-# ***********
-layers {
+layer {
   name: "icp9_out0"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp8_out"
   top: "icp9_out0"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 384
     pad: 0
@@ -2026,21 +2218,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp9_out0"
-  type: RELU
+  type: "ReLU"
   bottom: "icp9_out0"
   top: "icp9_out0"
 }
-layers {
+layer {
   name: "icp9_out1"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp9_reduction1"
   top: "icp9_out1"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 384
     pad: 1
@@ -2055,21 +2251,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp9_out1"
-  type: RELU
+  type: "ReLU"
   bottom: "icp9_out1"
   top: "icp9_out1"
 }
-layers {
+layer {
   name: "icp9_out2"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp9_reduction2"
   top: "icp9_out2"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 128
     pad: 2
@@ -2084,21 +2284,25 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp9_out2"
-  type: RELU
+  type: "ReLU"
   bottom: "icp9_out2"
   top: "icp9_out2"
 }
-layers {
+layer {
   name: "icp9_out3"
-  type: CONVOLUTION
+  type: "Convolution"
   bottom: "icp9_pool"
   top: "icp9_out3"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
   convolution_param {
     num_output: 128
     pad: 0
@@ -2112,16 +2316,15 @@ layers {
     }
   }
 }
-layers {
+layer {
   name: "relu_icp9_out3"
-  type: RELU
+  type: "ReLU"
   bottom: "icp9_out3"
   top: "icp9_out3"
 }
-# Concat them together
-layers {
+layer {
   name: "icp9_out"
-  type: CONCAT
+  type: "Concat"
   bottom: "icp9_out0"
   bottom: "icp9_out1"
   bottom: "icp9_out2"
@@ -2130,9 +2333,9 @@ layers {
 }
 
 # third classification branch
-layers {
+layer {
   name: "cls3_pool"
-  type: POOLING
+  type: "Pooling"
   bottom: "icp9_out"
   top: "cls3_pool"
   pooling_param {
@@ -2143,24 +2346,20 @@ layers {
     # This padding is somewhat special
   }
 }
-layers {
+layer {
   name: "cls3_drop"
-  type: DROPOUT
+  type: "Dropout"
   bottom: "cls3_pool"
   top: "cls3_pool"
   dropout_param {
     dropout_ratio: 0.4
   }
 }
-layers {
+layer {
   name: "cls3_fc"
-  type: INNER_PRODUCT
+  type: "InnerProduct"
   bottom: "cls3_pool"
   top: "cls3_fc"
-  blobs_lr: 1
-  blobs_lr: 2
-  weight_decay: 1
-  weight_decay: 0
   inner_product_param {
     num_output: 1000
     weight_filler {
@@ -2173,9 +2372,9 @@ layers {
     }
   }
 }
-#layers {
+#layer {
 #  name: "loss3"
-#  type: SOFTMAX
+#  type: "Softmax"
 #  bottom: "cls3_fc"
 #  top: "loss3"
 #}

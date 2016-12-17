@@ -22,8 +22,9 @@ DEFINE_string(backend, "lmdb",
         "The backend {leveldb, lmdb} containing the images");
 
 int main(int argc, char** argv) {
-  
+  //::google::InitGoogleLogging(argv[0]);
 
+#ifdef USE_OPENCV
 #ifndef GFLAGS_GFLAGS_H_
   namespace gflags = google;
 #endif
@@ -115,5 +116,8 @@ int main(int argc, char** argv) {
     }
     LOG(INFO) << "mean_value channel [" << c << "]:" << mean_values[c] / dim;
   }
+#else
+  LOG(FATAL) << "This tool requires OpenCV; compile with USE_OPENCV.";
+#endif  // USE_OPENCV
   return 0;
 }

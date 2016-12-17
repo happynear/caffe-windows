@@ -1,5 +1,5 @@
 # The train/test net protocol buffer definition
-net: "examples/mnist/Mnist_demo_LeNet.prototxt"
+net: "examples/mnist/lenet_train_test.prototxt"
 # test_iter specifies how many forward passes the test should carry out.
 # In the case of MNIST, we have test batch size 100 and 100 test iterations,
 # covering the full 10,000 testing images.
@@ -9,9 +9,7 @@ test_interval: 500
 # The base learning rate, momentum and the weight decay of the network.
 base_lr: 0.01
 momentum: 0.9
-#solver_type: ADAGRAD
 weight_decay: 0.0005
-#weight_decay: 0.0005
 # The learning rate policy
 lr_policy: "inv"
 gamma: 0.0001

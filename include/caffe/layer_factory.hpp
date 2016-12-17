@@ -44,6 +44,7 @@
 #include <vector>
 
 #include "caffe/common.hpp"
+#include "caffe/layer.hpp"
 #include "caffe/proto/caffe.pb.h"
 
 namespace caffe {
@@ -65,8 +66,8 @@ class LayerRegistry {
   // Adds a creator.
   static void AddCreator(const string& type, Creator creator) {
     CreatorRegistry& registry = Registry();
-    /*CHECK_EQ(registry.count(type), 0)
-        << "Layer type " << type << " already registered.";*/
+    CHECK_EQ(registry.count(type), 0)
+        << "Layer type " << type << " already registered.";
     registry[type] = creator;
   }
 
