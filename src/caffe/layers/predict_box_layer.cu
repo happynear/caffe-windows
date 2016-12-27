@@ -18,41 +18,42 @@ namespace caffe {
       int s = index % spatial_dim;
       int h = s / width;
       int w = s % width;
-      if (score_data[(((n * 2 + 1) * height + h) * width) + w] > positive_thresh_ &&
-          !(use_stitch_ && stitch_data[(((n * 2 + 2) * height + h) * width) + w] == 0)) {
-        Dtype bias_x = use_stitch_ ? stitch_data[(((n * 2 + 0) * height + h) * width) + w] : 0;
-        Dtype bias_y = use_stitch_ ? stitch_data[(((n * 2 + 1) * height + h) * width) + w] : 0;
-        Dtype real_receptive_field = use_stitch_ ? stitch_data[(((n * 2 + 2) * height + h) * width) + w] : receptive_field_;
-        bb_data[(((n * 5 + 0) * height + h) * width) + w] = (Dtype(w * stride_) - bias_x) / Dtype(12) * real_receptive_field;
-        bb_data[(((n * 5 + 1) * height + h) * width) + w] = (Dtype(h * stride_) - bias_y) / Dtype(12) * real_receptive_field;
-        bb_data[(((n * 5 + 2) * height + h) * width) + w] = real_receptive_field;
-        bb_data[(((n * 5 + 3) * height + h) * width) + w] = real_receptive_field;
-        bb_data[(((n * 5 + 4) * height + h) * width) + w] = score_data[(((n * 2 + 1) * height + h) * width) + w];
+      if (score_data[((n * 2 + 1) * height + h) * width + w] > positive_thresh_ &&
+          score_data[((n * 2 + 1) * height + h) * width + w] < 1 + 1e-6 &&
+          !(use_stitch_ && stitch_data[((n * 2 + 2) * height + h) * width + w] == 0)) {
+        Dtype bias_x = use_stitch_ ? stitch_data[((n * 2 + 0) * height + h) * width + w] : 0;
+        Dtype bias_y = use_stitch_ ? stitch_data[((n * 2 + 1) * height + h) * width + w] : 0;
+        Dtype real_receptive_field = use_stitch_ ? stitch_data[((n * 2 + 2) * height + h) * width + w] : receptive_field_;
+        bb_data[((n * 5 + 0) * height + h) * width + w] = (Dtype(w * stride_) - bias_x) / Dtype(12) * real_receptive_field;
+        bb_data[((n * 5 + 1) * height + h) * width + w] = (Dtype(h * stride_) - bias_y) / Dtype(12) * real_receptive_field;
+        bb_data[((n * 5 + 2) * height + h) * width + w] = real_receptive_field;
+        bb_data[((n * 5 + 3) * height + h) * width + w] = real_receptive_field;
+        bb_data[((n * 5 + 4) * height + h) * width + w] = score_data[((n * 2 + 1) * height + h) * width + w];
         if (bounding_box_regression_) {
           if (bounding_box_exp_) {
-            bb_data[(((n * 5 + 0) * height + h) * width) + w] += bbr_data[(((n * 4 + 0) * height + h) * width) + w] * real_receptive_field;
-            bb_data[(((n * 5 + 1) * height + h) * width) + w] += bbr_data[(((n * 4 + 1) * height + h) * width) + w] * real_receptive_field;
-            bb_data[(((n * 5 + 2) * height + h) * width) + w] *= exp(bbr_data[(((n * 4 + 2) * height + h) * width) + w]);
-            bb_data[(((n * 5 + 3) * height + h) * width) + w] *= exp(bbr_data[(((n * 4 + 3) * height + h) * width) + w]);
+            bb_data[((n * 5 + 0) * height + h) * width + w] += bbr_data[((n * 4 + 0) * height + h) * width + w] * real_receptive_field;
+            bb_data[((n * 5 + 1) * height + h) * width + w] += bbr_data[((n * 4 + 1) * height + h) * width + w] * real_receptive_field;
+            bb_data[((n * 5 + 2) * height + h) * width + w] *= exp(bbr_data[((n * 4 + 2) * height + h) * width + w]);
+            bb_data[((n * 5 + 3) * height + h) * width + w] *= exp(bbr_data[((n * 4 + 3) * height + h) * width + w]);
           }
           else {
-            bb_data[(((n * 5 + 0) * height + h) * width) + w] += bbr_data[(((n * 4 + 1) * height + h) * width) + w] * real_receptive_field;
-            bb_data[(((n * 5 + 1) * height + h) * width) + w] += bbr_data[(((n * 4 + 0) * height + h) * width) + w] * real_receptive_field;
-            bb_data[(((n * 5 + 2) * height + h) * width) + w] +=
-              (bbr_data[(((n * 4 + 3) * height + h) * width) + w] - bbr_data[(((n * 4 + 1) * height + h) * width) + w]) * real_receptive_field;
-            bb_data[(((n * 5 + 3) * height + h) * width) + w] +=
-              (bbr_data[(((n * 4 + 2) * height + h) * width) + w] - bbr_data[(((n * 4 + 0) * height + h) * width) + w]) * real_receptive_field;
+            bb_data[((n * 5 + 0) * height + h) * width + w] += bbr_data[((n * 4 + 1) * height + h) * width + w] * real_receptive_field;
+            bb_data[((n * 5 + 1) * height + h) * width + w] += bbr_data[((n * 4 + 0) * height + h) * width + w] * real_receptive_field;
+            bb_data[((n * 5 + 2) * height + h) * width + w] +=
+              (bbr_data[((n * 4 + 3) * height + h) * width + w] - bbr_data[((n * 4 + 1) * height + h) * width + w]) * real_receptive_field;
+            bb_data[((n * 5 + 3) * height + h) * width + w] +=
+              (bbr_data[((n * 4 + 2) * height + h) * width + w] - bbr_data[((n * 4 + 0) * height + h) * width + w]) * real_receptive_field;
           }
         }
-        counter_[((n * height + h) * width) + w] = 1;
+        counter_[(n * height + h) * width + w] = 1;
       }
       else {
-        bb_data[(((n * 5 + 0) * height + h) * width) + w] = 0;
-        bb_data[(((n * 5 + 1) * height + h) * width) + w] = 0;
-        bb_data[(((n * 5 + 2) * height + h) * width) + w] = 0;
-        bb_data[(((n * 5 + 3) * height + h) * width) + w] = 0;
-        bb_data[(((n * 5 + 4) * height + h) * width) + w] = 0;
-        counter_[((n * height + h) * width) + w] = 0;
+        bb_data[((n * 5 + 0) * height + h) * width + w] = 0;
+        bb_data[((n * 5 + 1) * height + h) * width + w] = 0;
+        bb_data[((n * 5 + 2) * height + h) * width + w] = 0;
+        bb_data[((n * 5 + 3) * height + h) * width + w] = 0;
+        bb_data[((n * 5 + 4) * height + h) * width + w] = 0;
+        counter_[(n * height + h) * width + w] = 0;
       }
     }
   }
@@ -67,38 +68,39 @@ namespace caffe {
       int s = index % spatial_dim;
       int h = s / width;
       int w = s % width;
-      if (score_data[(((n * 2 + 1) * height + h) * width) + w] > positive_thresh_ &&
-          score_data[(((n * 2 + 1) * height + h) * width) + w] > nms_data[(((n * 2 + 1) * height + h) * width) + w] - 1e-6) {
-        bb_data[(((n * 5 + 0) * height + h) * width) + w] = w * stride_;
-        bb_data[(((n * 5 + 1) * height + h) * width) + w] = h * stride_;
-        bb_data[(((n * 5 + 2) * height + h) * width) + w] = receptive_field_;
-        bb_data[(((n * 5 + 3) * height + h) * width) + w] = receptive_field_;
-        bb_data[(((n * 5 + 4) * height + h) * width) + w] = score_data[(((n * 2 + 1) * height + h) * width) + w];
+      if (score_data[((n * 2 + 1) * height + h) * width + w] > positive_thresh_ &&
+          score_data[((n * 2 + 1) * height + h) * width + w] < 1 + 1e-6 &&
+          score_data[((n * 2 + 1) * height + h) * width + w] > nms_data[((n * 2 + 1) * height + h) * width + w] - 1e-6) {
+        bb_data[((n * 5 + 0) * height + h) * width + w] = w * stride_;
+        bb_data[((n * 5 + 1) * height + h) * width + w] = h * stride_;
+        bb_data[((n * 5 + 2) * height + h) * width + w] = receptive_field_;
+        bb_data[((n * 5 + 3) * height + h) * width + w] = receptive_field_;
+        bb_data[((n * 5 + 4) * height + h) * width + w] = score_data[((n * 2 + 1) * height + h) * width + w];
         if (bounding_box_regression_) {
           if (bounding_box_exp_) {
-            bb_data[(((n * 5 + 0) * height + h) * width) + w] += bbr_data[(((n * 4 + 0) * height + h) * width) + w] * receptive_field_;
-            bb_data[(((n * 5 + 1) * height + h) * width) + w] += bbr_data[(((n * 4 + 1) * height + h) * width) + w] * receptive_field_;
-            bb_data[(((n * 5 + 2) * height + h) * width) + w] *= exp(bbr_data[(((n * 4 + 2) * height + h) * width) + w]);
-            bb_data[(((n * 5 + 3) * height + h) * width) + w] *= exp(bbr_data[(((n * 4 + 3) * height + h) * width) + w]);
+            bb_data[((n * 5 + 0) * height + h) * width + w] += bbr_data[((n * 4 + 0) * height + h) * width + w] * receptive_field_;
+            bb_data[((n * 5 + 1) * height + h) * width + w] += bbr_data[((n * 4 + 1) * height + h) * width + w] * receptive_field_;
+            bb_data[((n * 5 + 2) * height + h) * width + w] *= exp(bbr_data[((n * 4 + 2) * height + h) * width + w]);
+            bb_data[((n * 5 + 3) * height + h) * width + w] *= exp(bbr_data[((n * 4 + 3) * height + h) * width + w]);
           }
           else {
-            bb_data[(((n * 5 + 0) * height + h) * width) + w] += bbr_data[(((n * 4 + 1) * height + h) * width) + w] * receptive_field_;
-            bb_data[(((n * 5 + 1) * height + h) * width) + w] += bbr_data[(((n * 4 + 0) * height + h) * width) + w] * receptive_field_;
-            bb_data[(((n * 5 + 2) * height + h) * width) + w] +=
-              (bbr_data[(((n * 4 + 3) * height + h) * width) + w] - bbr_data[(((n * 4 + 1) * height + h) * width) + w]) * receptive_field_;
-            bb_data[(((n * 5 + 3) * height + h) * width) + w] +=
-              (bbr_data[(((n * 4 + 2) * height + h) * width) + w] - bbr_data[(((n * 4 + 0) * height + h) * width) + w]) * receptive_field_;
+            bb_data[((n * 5 + 0) * height + h) * width + w] += bbr_data[((n * 4 + 1) * height + h) * width + w] * receptive_field_;
+            bb_data[((n * 5 + 1) * height + h) * width + w] += bbr_data[((n * 4 + 0) * height + h) * width + w] * receptive_field_;
+            bb_data[((n * 5 + 2) * height + h) * width + w] +=
+              (bbr_data[((n * 4 + 3) * height + h) * width + w] - bbr_data[((n * 4 + 1) * height + h) * width + w]) * receptive_field_;
+            bb_data[((n * 5 + 3) * height + h) * width + w] +=
+              (bbr_data[((n * 4 + 2) * height + h) * width + w] - bbr_data[((n * 4 + 0) * height + h) * width + w]) * receptive_field_;
           }
         }
-        counter_[((n * height + h) * width) + w] = 1;
+        counter_[(n * height + h) * width + w] = 1;
       }
       else {
-        bb_data[(((n * 5 + 0) * height + h) * width) + w] = 0;
-        bb_data[(((n * 5 + 1) * height + h) * width) + w] = 0;
-        bb_data[(((n * 5 + 2) * height + h) * width) + w] = 0;
-        bb_data[(((n * 5 + 3) * height + h) * width) + w] = 0;
-        bb_data[(((n * 5 + 4) * height + h) * width) + w] = 0;
-        counter_[((n * height + h) * width) + w] = 0;
+        bb_data[((n * 5 + 0) * height + h) * width + w] = 0;
+        bb_data[((n * 5 + 1) * height + h) * width + w] = 0;
+        bb_data[((n * 5 + 2) * height + h) * width + w] = 0;
+        bb_data[((n * 5 + 3) * height + h) * width + w] = 0;
+        bb_data[((n * 5 + 4) * height + h) * width + w] = 0;
+        counter_[(n * height + h) * width + w] = 0;
       }
     }
   }
@@ -141,12 +143,12 @@ void PredictBoxLayer<Dtype>::Forward_gpu(
       int i = 0;
       for (int x = 0; x < output_width; x++) {
         for (int y = 0; y < output_height; y++) {
-          if (bb_data_cpu[((4 * output_height + y) * output_width) + x] > positive_thresh_) {
-            top[1]->mutable_cpu_data()[i * 5 + 0] = bb_data_cpu[((0 * output_height + y) * output_width) + x];
-            top[1]->mutable_cpu_data()[i * 5 + 1] = bb_data_cpu[((1 * output_height + y) * output_width) + x];
-            top[1]->mutable_cpu_data()[i * 5 + 2] = bb_data_cpu[((2 * output_height + y) * output_width) + x];
-            top[1]->mutable_cpu_data()[i * 5 + 3] = bb_data_cpu[((3 * output_height + y) * output_width) + x];
-            top[1]->mutable_cpu_data()[i * 5 + 4] = bb_data_cpu[((4 * output_height + y) * output_width) + x];
+          if (bb_data_cpu[(4 * output_height + y) * output_width + x] > positive_thresh_) {
+            top[1]->mutable_cpu_data()[i * 5 + 0] = bb_data_cpu[(0 * output_height + y) * output_width + x];
+            top[1]->mutable_cpu_data()[i * 5 + 1] = bb_data_cpu[(1 * output_height + y) * output_width + x];
+            top[1]->mutable_cpu_data()[i * 5 + 2] = bb_data_cpu[(2 * output_height + y) * output_width + x];
+            top[1]->mutable_cpu_data()[i * 5 + 3] = bb_data_cpu[(3 * output_height + y) * output_width + x];
+            top[1]->mutable_cpu_data()[i * 5 + 4] = bb_data_cpu[(4 * output_height + y) * output_width + x];
             i++;
           }
         }
