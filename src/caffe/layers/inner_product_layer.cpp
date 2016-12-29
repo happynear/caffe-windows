@@ -12,6 +12,7 @@ void InnerProductLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   const int num_output = this->layer_param_.inner_product_param().num_output();
   bias_term_ = this->layer_param_.inner_product_param().bias_term();
   transpose_ = this->layer_param_.inner_product_param().transpose();
+  normalize_ = this->layer_param_.inner_product_param().normalize();
   N_ = num_output;
   const int axis = bottom[0]->CanonicalAxisIndex(
       this->layer_param_.inner_product_param().axis());
@@ -78,6 +79,11 @@ void InnerProductLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
     bias_multiplier_.Reshape(bias_shape);
     caffe_set(M_, Dtype(1), bias_multiplier_.mutable_cpu_data());
   }
+  if (normalize_) {
+    vector<int> weight_norm_shape(1, N_);
+    weight_norm_.Reshape(weight_norm_shape);
+    caffe_set(N_, Dtype(0), weight_norm_.mutable_cpu_data());
+  }
 }
 
 template <typename Dtype>
@@ -86,6 +92,14 @@ void InnerProductLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   const Dtype* bottom_data = bottom[0]->cpu_data();
   Dtype* top_data = top[0]->mutable_cpu_data();
   const Dtype* weight = this->blobs_[0]->cpu_data();
+  if (normalize_) {
+    Dtype* mutable_weight = this->blobs_[0]->mutable_cpu_data();
+    Dtype sum_sq;
+    for (int n = 0; n < N_; n++) {
+      sum_sq = caffe_cpu_dot(K_, weight + n*K_, weight + n*K_) + 1e-6;
+      caffe_scal<Dtype>(K_, Dtype(1) / sqrt(sum_sq), mutable_weight + n*K_);
+    }
+  }
   caffe_cpu_gemm<Dtype>(CblasNoTrans, transpose_ ? CblasNoTrans : CblasTrans,
       M_, N_, K_, (Dtype)1.,
       bottom_data, weight, (Dtype)0., top_data);

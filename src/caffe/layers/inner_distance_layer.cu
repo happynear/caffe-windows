@@ -9,6 +9,29 @@ namespace caffe {
 #define sign(x) (Dtype(0) < (x)) - ((x) < Dtype(0))
 
   template <typename Dtype>
+  __global__ void kernel_channel_dot(const int num, const int dim,
+                                     const Dtype* data_1, const Dtype* data_2,
+                                     Dtype* channel_dot) {
+    CUDA_KERNEL_LOOP(index, num) {
+      Dtype dot = 0;
+      for (int d = 0; d < dim; ++d) {
+        dot += data_1[index * dim + d] * data_2[index * dim + d];
+      }
+      channel_dot[index] = dot;
+    }
+  }
+
+  template <typename Dtype>
+  __global__ void kernel_channel_scal(const int num, const int dim,
+                                      const Dtype* norm_data,
+                                      Dtype* input_output_data) {
+    CUDA_KERNEL_LOOP(index, num * dim) {
+      int n = index / dim;
+      input_output_data[index] *= norm_data[n];
+    }
+  }
+
+  template <typename Dtype>
   __global__ void inner_distance_forward_L2(const int M_, const int N_, const int K_,
                                      const Dtype* bottom_data, const Dtype* weight, Dtype* top_data) {
     CUDA_KERNEL_LOOP(index, M_ * N_) {
@@ -42,6 +65,19 @@ void InnerDistanceLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   const Dtype* bottom_data = bottom[0]->gpu_data();
   Dtype* top_data = top[0]->mutable_gpu_data();
   const Dtype* weight = this->blobs_[0]->gpu_data();
+
+  if (normalize_) {
+    Dtype* mutable_weight = this->blobs_[0]->mutable_gpu_data();
+    Dtype* weight_norm_data = weight_norm_.mutable_gpu_data();
+    // NOLINT_NEXT_LINE(whitespace/operators)
+    kernel_channel_dot<Dtype> << <CAFFE_GET_BLOCKS(N_),
+      CAFFE_CUDA_NUM_THREADS >> >(N_, K_, weight, weight, weight_norm_data);
+    caffe_gpu_powx(N_, weight_norm_data, Dtype(-0.5), weight_norm_data);
+    // NOLINT_NEXT_LINE(whitespace/operators)
+    kernel_channel_scal<Dtype> << <CAFFE_GET_BLOCKS(N_ * K_),
+      CAFFE_CUDA_NUM_THREADS >> >(N_, K_, weight_norm_data, mutable_weight);
+  }
+
   if (distance_type_ == "L2") {
     // NOLINT_NEXT_LINE(whitespace/operators)
     inner_distance_forward_L2<Dtype> <<<CAFFE_GET_BLOCKS(M_ * N_),
@@ -90,47 +126,12 @@ __global__ void inner_distance_backward_L1(const int M_, const int N_, const int
 }
 
 template <typename Dtype>
-__global__ void kernel_channel_dot(const int num, const int dim,
-                                   const Dtype* data_1, const Dtype* data_2,
-                                   Dtype* channel_dot) {
-  CUDA_KERNEL_LOOP(index, num) {
-    Dtype dot = 0;
-    for (int d = 0; d < dim; ++d) {
-      dot += data_1[index * dim + d] * data_2[index * dim + d];
-    }
-    channel_dot[index] = dot;
-  }
-}
-
-template <typename Dtype>
-__global__ void kernel_channel_scal(const int num, const int dim,
-                                    const Dtype* norm_data,
-                                    Dtype* input_output_data) {
-  CUDA_KERNEL_LOOP(index, num * dim) {
-    int n = index / dim;
-    input_output_data[index] *= norm_data[n];
-  }
-}
-
-template <typename Dtype>
 void InnerDistanceLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down,
     const vector<Blob<Dtype>*>& bottom) {
   const Dtype* top_diff = top[0]->gpu_diff();
   const Dtype* bottom_data = bottom[0]->gpu_data();
   const Dtype* weight = this->blobs_[0]->gpu_data();
-
-  if (normalize_) {
-    Dtype* mutable_weight = this->blobs_[0]->mutable_gpu_data();
-    Dtype* weight_norm_data = weight_norm_.mutable_gpu_data();
-    // NOLINT_NEXT_LINE(whitespace/operators)
-    kernel_channel_dot<Dtype> << <CAFFE_GET_BLOCKS(N_),
-      CAFFE_CUDA_NUM_THREADS >> >(N_, K_, weight, weight, weight_norm_data);
-    caffe_gpu_powx(N_, weight_norm_data, Dtype(-0.5), weight_norm_data);
-    // NOLINT_NEXT_LINE(whitespace/operators)
-    kernel_channel_scal<Dtype> << <CAFFE_GET_BLOCKS(N_ * K_),
-      CAFFE_CUDA_NUM_THREADS >> >(N_, K_, weight_norm_data, mutable_weight);
-  }
 
   if (this->param_propagate_down_[0]) {
     Dtype* weight_diff = this->blobs_[0]->mutable_gpu_diff();

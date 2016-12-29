@@ -75,7 +75,7 @@ void NormalizeLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     caffe_gpu_powx(num*channels*spatial_dim, bottom_data, Dtype(2), square_data);
     // NOLINT_NEXT_LINE(whitespace/operators)
     kernel_channel_sum<Dtype> << <CAFFE_GET_BLOCKS(num*spatial_dim),
-      CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, 1e-6, square_data, norm_data);
+      CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, 1e-12, square_data, norm_data);
     caffe_gpu_powx(num * spatial_dim, norm_data, Dtype(-0.5), norm_data);
     // NOLINT_NEXT_LINE(whitespace/operators)
     kernel_channel_scale<Dtype> << <CAFFE_GET_BLOCKS(num*channels*spatial_dim),

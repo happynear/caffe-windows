@@ -127,6 +127,7 @@ void PredictBoxLayer<Dtype>::Forward_cpu(
       }
     }
     else {
+      top[1]->Reshape({ bottom[0]->num(), 1, 5 });
       caffe_set<Dtype>(top[1]->count(), 0, top[1]->mutable_cpu_data());
     }
   }

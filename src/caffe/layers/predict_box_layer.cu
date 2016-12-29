@@ -155,6 +155,7 @@ void PredictBoxLayer<Dtype>::Forward_gpu(
       }
     }
     else {
+      top[1]->Reshape({ bottom[0]->num(), 1, 5 });
       caffe_gpu_set<Dtype>(top[1]->count(), 0, top[1]->mutable_gpu_data());
     }
   }
