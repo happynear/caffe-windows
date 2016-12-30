@@ -61,7 +61,12 @@ class GeneralContrastiveLossLayer : public LossLayer<Dtype> {
       : LossLayer<Dtype>(param) {}
   virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
                           const vector<Blob<Dtype>*>& top);
+  virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+                       const vector<Blob<Dtype>*>& top);
   virtual inline const char* type() const { return "GeneralContrastiveLoss"; }
+  virtual inline int ExactNumTopBlobs() const { return -1; }
+  virtual inline int MinTopBlobs() const { return 1; }
+  virtual inline int MaxTopBlobs() const { return 2; }
 
  protected:
   /// @copydoc HingeLossLayer
@@ -100,6 +105,8 @@ class GeneralContrastiveLossLayer : public LossLayer<Dtype> {
 
   Dtype positive_margin_;
   Dtype negative_margin_;
+  Dtype positive_weight_;
+  Dtype negative_weight_;
 };
 
 
