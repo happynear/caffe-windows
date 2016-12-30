@@ -126,6 +126,32 @@ __global__ void inner_distance_backward_L1(const int M_, const int N_, const int
 }
 
 template <typename Dtype>
+__global__ void inner_distance_weight_backward_L2(const int M_, const int N_, const int K_,
+                                           const Dtype* bottom_data, const Dtype* weight, const Dtype* top_diff,
+                                           Dtype* weight_diff) {
+  CUDA_KERNEL_LOOP(index, N_ * K_) {
+    int n = index / K_;
+    int k = index % K_;
+    for (int m = 0; m < M_; ++m) {
+      weight_diff[index] += top_diff[m * N_ + n] * (weight[index] - bottom_data[m * K_ + k]) * Dtype(2);
+    }
+  }
+}
+
+template <typename Dtype>
+__global__ void inner_distance_weight_backward_L1(const int M_, const int N_, const int K_,
+                                           const Dtype* bottom_data, const Dtype* weight, const Dtype* top_diff,
+                                           Dtype* weight_diff) {
+  CUDA_KERNEL_LOOP(index, N_ * K_) {
+    int n = index / K_;
+    int k = index % K_;
+    for (int m = 0; m < M_; ++m) {
+      weight_diff[index] += top_diff[m * N_ + n] * sign(weight[index] - bottom_data[m * K_ + k]);
+    }
+  }
+}
+
+template <typename Dtype>
 void InnerDistanceLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down,
     const vector<Blob<Dtype>*>& bottom) {
@@ -138,15 +164,15 @@ void InnerDistanceLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     // Gradient with respect to weight
     if (distance_type_ == "L2") {
       // NOLINT_NEXT_LINE(whitespace/operators)
-      inner_distance_backward_L2<Dtype> << <CAFFE_GET_BLOCKS(N_ * K_),
-        CAFFE_CUDA_NUM_THREADS >> > (N_, M_, K_,
-                                     weight, bottom_data, top_diff, weight_diff);
+      inner_distance_weight_backward_L2<Dtype> << <CAFFE_GET_BLOCKS(N_ * K_),
+        CAFFE_CUDA_NUM_THREADS >> > (M_, N_, K_,
+                                     bottom_data, weight, top_diff, weight_diff);
     }
     else if (distance_type_ == "L1") {
       // NOLINT_NEXT_LINE(whitespace/operators)
-      inner_distance_backward_L1<Dtype> << <CAFFE_GET_BLOCKS(N_ * K_),
-        CAFFE_CUDA_NUM_THREADS >> > (N_, M_, K_,
-                                     weight, bottom_data, top_diff, weight_diff);
+      inner_distance_weight_backward_L1<Dtype> << <CAFFE_GET_BLOCKS(N_ * K_),
+        CAFFE_CUDA_NUM_THREADS >> > (M_, N_, K_,
+                                     bottom_data, weight, top_diff, weight_diff);
     }
     else {
       NOT_IMPLEMENTED;
