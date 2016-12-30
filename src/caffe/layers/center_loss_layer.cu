@@ -42,7 +42,7 @@ namespace caffe {
       int m = index / K;
       int k = index % K;
       const int n = static_cast<int>(label[m]);
-      center_diff[n * K + k] = variation_sum[n * K + k]
+      center_diff[n * K + k] += variation_sum[n * K + k]
         / (count[n] + (Dtype)1.);
     }
   }

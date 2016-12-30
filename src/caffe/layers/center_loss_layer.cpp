@@ -116,7 +116,7 @@ namespace caffe {
         const int n = static_cast<int>(label[m]);
         caffe_cpu_axpby(K_, (Dtype)1. / (count_data[n] + (Dtype)1.),
                         variation_sum_data + n * K_,
-                        (Dtype)0., center_diff + n * K_);
+                        (Dtype)1., center_diff + n * K_);
       }
     }
     // Gradient with respect to bottom data
