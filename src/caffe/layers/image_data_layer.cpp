@@ -120,7 +120,7 @@ void ImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
     for (int i = 0; i < this->PREFETCH_COUNT; ++i) {
       this->prefetch_[i].weight_.Reshape(label_shape);
     }
-    output_weights_ = true;
+    this->output_weights_ = true;
   }
 }
 
@@ -163,7 +163,7 @@ void ImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
   Dtype* prefetch_data = batch->data_.mutable_cpu_data();
   Dtype* prefetch_label = batch->label_.mutable_cpu_data();
   Dtype* prefetch_weight;
-  if (output_weights_) {
+  if (this->output_weights_) {
     prefetch_weight = batch->weight_.mutable_cpu_data();
   }
 
@@ -185,7 +185,7 @@ void ImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
     trans_time += timer.MicroSeconds();
 
     prefetch_label[item_id] = lines_[lines_id_].second;
-    if (output_weights_) {
+    if (this->output_weights_) {
       prefetch_weight[item_id] = class_weights_[lines_[lines_id_].second];
     }
     // go to the next iter
