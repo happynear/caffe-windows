@@ -112,6 +112,7 @@ void SGDSolver<Dtype>::ApplyUpdate() {
     Regularize(param_id);
     ComputeUpdateValue(param_id, rate);
   }
+#ifdef _MSC_VER
   if (this->param_.display() && this->iter_ % this->param_.display() == 0) {
     string gradient_norm = "layer blob norm:";
     for (int k = 0; k < this->net_->blob_names().size(); k++) {
@@ -138,6 +139,7 @@ void SGDSolver<Dtype>::ApplyUpdate() {
     }
     if (weight_gradient_norm.size() > 20) LOG(INFO) << weight_gradient_norm;
   }
+#endif
   this->net_->Update();
 }
 
