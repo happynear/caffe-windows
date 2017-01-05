@@ -270,7 +270,6 @@ public:
   virtual void Fill(Blob<Dtype>* blob) {
     CHECK(blob->count());
     int fan_in = blob->count() / blob->num();
-    int fan_out = blob->count() / blob->channels();
     int n = fan_in;  // default to fan_in
     caffe_rng_gaussian<Dtype>(blob->count(), Dtype(0), 1,
                               blob->mutable_cpu_data());

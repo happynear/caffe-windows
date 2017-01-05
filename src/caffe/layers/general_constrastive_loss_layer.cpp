@@ -95,7 +95,7 @@ void GeneralContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>
         }
         else {
           if (bottom_data[i * dim + j] < negative_margin_) {
-            Dtype distance_fix = std::min(Dtype(1), (negative_margin_ - bottom_data[i * dim + j]) / (bottom_data[i * dim + j] + Dtype(1e-6)));
+            Dtype distance_fix = 1;// std::min(Dtype(1), (negative_margin_ - bottom_data[i * dim + j]) / (bottom_data[i * dim + j] + Dtype(1e-6)));
             bottom_diff[i * dim + j] = -negative_weight_ * distance_fix;
             negative_sum += negative_weight_ * distance_fix;
           }
