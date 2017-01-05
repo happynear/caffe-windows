@@ -112,6 +112,32 @@ void SGDSolver<Dtype>::ApplyUpdate() {
     Regularize(param_id);
     ComputeUpdateValue(param_id, rate);
   }
+  if (this->param_.display() && this->iter_ % this->param_.display() == 0) {
+    string gradient_norm = "layer blob norm:";
+    for (int k = 0; k < this->net_->blob_names().size(); k++) {
+      if (this->net_->blob_names()[k].find("Convolution") != string::npos
+          || this->net_->blob_names()[k].find("InnerProduct") != string::npos
+          || this->net_->blob_names()[k].find("conv") != string::npos
+          || this->net_->blob_names()[k].find("fc") != string::npos
+          || this->net_->blob_names()[k].find("ip") != string::npos) {
+        gradient_norm += std::to_string(this->net_->blobs()[k]->asum_diff() / this->net_->blobs()[k]->count()) + " ";
+      }
+    }
+    if (gradient_norm.size() > 20) LOG(INFO) << gradient_norm;
+    string weight_gradient_norm = "weight diff/data:";
+    for (int k = 0; k < this->net_->layers().size(); k++) {
+      if (strstr(this->net_->layers()[k]->type(), "Convolution") != NULL
+          || strstr(this->net_->layers()[k]->type(), "InnerProduct") != NULL
+          || strstr(this->net_->layers()[k]->type(), "InnerDistance") != NULL) {
+        Blob<Dtype> diff_data_ratio;
+        diff_data_ratio.ReshapeLike(*this->net_->layers()[k]->blobs()[0]);
+        caffe_div(this->net_->layers()[k]->blobs()[0]->count(), this->net_->layers()[k]->blobs()[0]->cpu_diff(),
+                  this->net_->layers()[k]->blobs()[0]->cpu_data(), diff_data_ratio.mutable_cpu_data());
+        weight_gradient_norm += std::to_string(diff_data_ratio.asum_data() / diff_data_ratio.count()) + " ";
+      }
+    }
+    if (weight_gradient_norm.size() > 20) LOG(INFO) << weight_gradient_norm;
+  }
   this->net_->Update();
 }
 
