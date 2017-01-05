@@ -422,6 +422,7 @@ message LayerParameter {
   optional InnerDistanceParameter inner_distance_param = 213;
   optional NormalizeParameter normalize_param = 214;
   optional GeneralContrastiveParameter general_contrastive_loss_param = 215;
+  optional GeneralTripletParameter general_triplet_loss_param = 216;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1651,4 +1652,10 @@ message GeneralContrastiveParameter {
   optional float negative_margin = 2 [default = 1.0];
   optional float positive_weight = 3 [default = 1.0];
   optional float negative_weight = 4 [default = 1.0];
+  optional float normalize_negative = 5 [default = 0.0];
+}
+
+message GeneralTripletParameter {
+  optional float margin = 1 [default = 0.2];
+  optional bool add_center_loss = 2 [default = true];
 }
