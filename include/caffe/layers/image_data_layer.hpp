@@ -30,7 +30,8 @@ class ImageDataLayer : public BasePrefetchingDataLayer<Dtype> {
 
   virtual inline const char* type() const { return "ImageData"; }
   virtual inline int ExactNumBottomBlobs() const { return 0; }
-  virtual inline int ExactNumTopBlobs() const { return 2; }
+  virtual inline int ExactNumTopBlobs() const { return -1; }
+  virtual inline int MaxTopBlobs() const { return 3; }
 
  protected:
   shared_ptr<Caffe::RNG> prefetch_rng_;
@@ -39,6 +40,8 @@ class ImageDataLayer : public BasePrefetchingDataLayer<Dtype> {
 
   vector<std::pair<std::string, int> > lines_;
   int lines_id_;
+  vector<int> num_samples_;
+  vector<Dtype> class_weights_;
 };
 
 

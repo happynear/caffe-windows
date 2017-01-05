@@ -40,13 +40,37 @@ void ImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
   string line;
   size_t pos;
   int label;
+  lines_.clear();
+  int max_label = 0;
   while (std::getline(infile, line)) {
     pos = line.find_last_of(' ');
     label = atoi(line.substr(pos + 1).c_str());
     lines_.push_back(std::make_pair(line.substr(0, pos), label));
+    if (label > max_label) max_label = label;
   }
 
   CHECK(!lines_.empty()) << "File is empty";
+
+  if (top.size() == 3) {
+    num_samples_ = vector<int>(max_label + 1);
+    class_weights_ = vector<Dtype>(max_label + 1);
+    for (auto l : lines_) {
+      num_samples_[l.second]++;
+    }
+    Dtype mean_sample_num = (Dtype)lines_.size() / (Dtype)(max_label + 1);
+    Dtype min_weight = 9999, max_weight = 0;
+    for (int i = 0; i < num_samples_.size(); i++) {
+      if (num_samples_[i] > 0) {
+        class_weights_[i] = mean_sample_num / num_samples_[i];
+        if (class_weights_[i] < min_weight) min_weight = class_weights_[i];
+        if (class_weights_[i] > max_weight) max_weight = class_weights_[i];
+      }
+      else {
+        class_weights_[i] = 1;
+      }
+    }
+    LOG(INFO) << "label weight min:" << min_weight << " max:" << max_weight;
+  }
 
   if (this->layer_param_.image_data_param().shuffle()) {
     // randomly shuffle data
@@ -91,6 +115,13 @@ void ImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
   for (int i = 0; i < this->PREFETCH_COUNT; ++i) {
     this->prefetch_[i].label_.Reshape(label_shape);
   }
+  if (top.size() == 3) {
+    top[2]->Reshape(label_shape);
+    for (int i = 0; i < this->PREFETCH_COUNT; ++i) {
+      this->prefetch_[i].weight_.Reshape(label_shape);
+    }
+    output_weights_ = true;
+  }
 }
 
 template <typename Dtype>
@@ -131,6 +162,10 @@ void ImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
 
   Dtype* prefetch_data = batch->data_.mutable_cpu_data();
   Dtype* prefetch_label = batch->label_.mutable_cpu_data();
+  Dtype* prefetch_weight;
+  if (output_weights_) {
+    prefetch_weight = batch->weight_.mutable_cpu_data();
+  }
 
   // datum scales
   const int lines_size = lines_.size();
@@ -150,6 +185,9 @@ void ImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
     trans_time += timer.MicroSeconds();
 
     prefetch_label[item_id] = lines_[lines_id_].second;
+    if (output_weights_) {
+      prefetch_weight[item_id] = class_weights_[lines_[lines_id_].second];
+    }
     // go to the next iter
     lines_id_++;
     if (lines_id_ >= lines_size) {

@@ -14,6 +14,8 @@ void GeneralContrastiveLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& 
   negative_margin_ = this->layer_param_.general_contrastive_loss_param().negative_margin();
   positive_weight_ = this->layer_param_.general_contrastive_loss_param().positive_weight();
   negative_weight_ = this->layer_param_.general_contrastive_loss_param().negative_weight();
+  need_normalize_negative_ = this->layer_param_.general_contrastive_loss_param().has_normalize_negative();
+  negative_gradient_norm_ = this->layer_param_.general_contrastive_loss_param().normalize_negative();
 }
 
 template <typename Dtype>
@@ -56,7 +58,7 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
     }
   }
   Dtype* loss = top[0]->mutable_cpu_data();
-  loss[0] = caffe_cpu_asum(count, bottom_diff) / weighted_count;
+  loss[0] = caffe_cpu_asum(count, bottom_diff) / num;
   if (top.size() >= 2) {
     Dtype* distances = top[1]->mutable_cpu_data();
     distances[0] = positive_distance / num;
@@ -79,6 +81,8 @@ void GeneralContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>
     int count = bottom[0]->count();
     int dim = count / num;
 
+    Dtype negative_sum = Dtype(0);
+
     for (int i = 0; i < num; ++i) {
       for (int j = 0; j < dim; ++j) {
         if (j == static_cast<int>(label[i])) {
@@ -91,7 +95,9 @@ void GeneralContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>
         }
         else {
           if (bottom_data[i * dim + j] < negative_margin_) {
-            bottom_diff[i * dim + j] = -negative_weight_;
+            Dtype distance_fix = std::min(Dtype(1), (negative_margin_ - bottom_data[i * dim + j]) / (bottom_data[i * dim + j] + Dtype(1e-6)));
+            bottom_diff[i * dim + j] = -negative_weight_ * distance_fix;
+            negative_sum += negative_weight_ * distance_fix;
           }
           else{
             bottom_diff[i * dim + j] = 0;
@@ -100,9 +106,36 @@ void GeneralContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>
       }
     }
 
+    if (need_normalize_negative_) {
+      negative_sum = abs(negative_sum) / negative_gradient_norm_ / num;
+
+      if (negative_sum > positive_weight_) {
+        for (int i = 0; i < num; ++i) {
+          for (int j = 0; j < dim; ++j) {
+            if (j != static_cast<int>(label[i])) {
+              bottom_diff[i * dim + j] /= negative_sum;
+            }
+          }
+        }
+      }
+    } 
+
     const Dtype loss_weight = top[0]->cpu_diff()[0];
-    Dtype weighted_count = num * (abs(positive_weight_) + (dim - 1)*abs(negative_weight_));
-    caffe_scal(count, loss_weight / weighted_count, bottom_diff);
+    //Dtype weighted_count = num * (abs(positive_weight_) + (dim - 1)*abs(negative_weight_));
+    if (bottom.size() == 3) {
+      Dtype weight_sum = Dtype(0);
+      for (int i = 0; i < num; ++i) {
+        weight_sum += bottom[2]->cpu_data()[i];
+      }
+      weight_sum /= num;
+      for (int i = 0; i < num; ++i) {
+        for (int j = 0; j < dim; ++j) {
+          bottom_diff[i * dim + j] *= bottom[2]->cpu_data()[i] / weight_sum;
+        }
+      }
+    }
+    
+    caffe_scal(count, loss_weight / num, bottom_diff);
   }
 }
 
