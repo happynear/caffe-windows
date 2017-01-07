@@ -275,7 +275,7 @@ public:
                               blob->mutable_cpu_data());
     Dtype sum_sq;
     for (int i = 0; i < blob->num(); i++) {
-      sum_sq = caffe_cpu_dot(n, blob->cpu_data() + i * n, blob->cpu_data() + i * n);
+      sum_sq = caffe_cpu_dot(n, blob->cpu_data() + i * n, blob->cpu_data() + i * n) + 1e-12;
       caffe_cpu_scale<Dtype>(n, Dtype(1.0) / sqrt(sum_sq), blob->cpu_data() + i * n, blob->mutable_cpu_data() + i * n);
     }
     CHECK_EQ(this->filler_param_.sparse(), -1)
