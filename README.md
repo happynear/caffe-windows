@@ -49,7 +49,7 @@ For leveldb, I have created a repository https://github.com/happynear/py-leveldb
 
 ### MNIST example
 
-Please download the mnist leveldb database from http://pan.baidu.com/s/1mgl9ndu and extract it to `./examples/mnist`. Then double click `./run_mnist.bat` to run the MNIST demo.
+Please download the mnist leveldb database from https://pan.baidu.com/s/1mgl9ndu and extract it to `./examples/mnist`. Then double click `./run_mnist.bat` to run the MNIST demo.
 
 ## Update log
 
