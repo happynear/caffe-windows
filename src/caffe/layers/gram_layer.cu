@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "thrust/device_vector.h"
-#include "device_atomic_functions.hpp"
 
 #include "caffe/layer.hpp"
 #include "caffe/util/math_functions.hpp"
@@ -26,15 +25,6 @@ namespace caffe {
   }
 
   template <typename Dtype>
-  __global__ void FixDiagDiff(const int num, Dtype* in_out,int channel) {
-    CUDA_KERNEL_LOOP(index, num*channel) {
-      int n = index / channel;
-      int s = index % channel;
-      in_out[n*channel*channel + s*channel + s] *= 2;
-    }
-  }
-
-  template <typename Dtype>
   void GramLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
     const Dtype* bottom_data = bottom[0]->gpu_data();
@@ -43,13 +33,14 @@ namespace caffe {
     int num = bottom[0]->shape(0);
     int channel = bottom[0]->shape(1);
     int spatial_dim = bottom[0]->shape(2) * bottom[0]->shape(3);
-
-    FixDiagDiff<Dtype> << <CAFFE_GET_BLOCKS(num*channel), CAFFE_CUDA_NUM_THREADS >> >(
-      num, top_diff, channel);
     
     for (int n=0; n < num; n++){
       caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, channel, spatial_dim, channel,
-        1 / (Dtype)spatial_dim / (Dtype)channel, top_diff + n * channel * channel, bottom_data + n * spatial_dim * channel, Dtype(0), bottom_diff + n * spatial_dim * channel);
+        1 / (Dtype)spatial_dim / (Dtype)channel, top_diff + n * channel * channel, bottom_data + n * spatial_dim * channel,
+                            Dtype(0), bottom_diff + n * spatial_dim * channel);
+      caffe_gpu_gemm<Dtype>(CblasTrans, CblasNoTrans, channel, spatial_dim, channel,
+                            1 / (Dtype)spatial_dim / (Dtype)channel, top_diff + n * channel * channel, bottom_data + n * spatial_dim * channel,
+                            Dtype(1), bottom_diff + n * spatial_dim * channel);
     }
   }
 
