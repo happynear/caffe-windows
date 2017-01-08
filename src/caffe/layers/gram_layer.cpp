@@ -41,21 +41,14 @@ namespace caffe {
     int num = bottom[0]->shape(0);
     int channel = bottom[0]->shape(1);
     int spatial_dim = bottom[0]->shape(2) * bottom[0]->shape(3);
-    for (int n = 0; n < num; n++) {
-      for (int i = 0; i < channel; i++) {
-        top_diff[n*channel*channel + i*channel + i] *= 2;//diag diff should multiply by 2. See ./src/caffe/test/gradient_check.m
-        /*for (int j = 0; j < channel; j++) {//Add symmetric diff
-          if (top_diff[n*channel*channel + i*channel + j] != 0) {
-            top_diff[n*channel*channel + j*channel + i] = top_diff[n*channel*channel + i*channel + j];
-            std::cout << "(" << n << "," << i << "," << j << ") " << top_diff[n*channel*channel + i*channel + j] << "," << top_diff[n*channel*channel + j*channel + i]<<std::endl;
-          }
-        }*/
-      }
-    }
 
     for (int n = 0; n < num; n++) {
       caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, channel, spatial_dim, channel,
-        1 / (Dtype)spatial_dim / (Dtype)channel, top_diff + n * channel * channel, bottom_data + n * spatial_dim * channel, Dtype(0), bottom_diff + n * spatial_dim * channel);
+                            1 / (Dtype)spatial_dim / (Dtype)channel, top_diff + n * channel * channel, bottom_data + n * spatial_dim * channel,
+                            Dtype(0), bottom_diff + n * spatial_dim * channel);
+      caffe_cpu_gemm<Dtype>(CblasTrans, CblasNoTrans, channel, spatial_dim, channel,
+                            1 / (Dtype)spatial_dim / (Dtype)channel, top_diff + n * channel * channel, bottom_data + n * spatial_dim * channel,
+                            Dtype(1), bottom_diff + n * spatial_dim * channel);
     }
   }
 
