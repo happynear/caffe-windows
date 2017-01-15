@@ -171,6 +171,8 @@
     <ClCompile Include="..\..\src\caffe\layers\smooth_L1_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\softmax_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\softmax_loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\soft_contrastive_loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\soft_truncation_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\split_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\spp_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\subregion_layer.cpp" />
@@ -283,6 +285,8 @@
     <ClInclude Include="..\..\include\caffe\layers\slice_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\softmax_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\softmax_loss_layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\layers\soft_contrastive_loss_layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\layers\soft_truncation_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\split_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\spp_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\tanh_layer.hpp" />
@@ -392,6 +396,7 @@
     <CudaCompile Include="..\..\src\caffe\layers\recurrent_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\roi_pooling_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\smooth_L1_loss_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\soft_truncation_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\subregion_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\transformer_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\triplet_loss_layer.cu" />

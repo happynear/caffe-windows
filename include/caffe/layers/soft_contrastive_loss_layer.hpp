@@ -55,15 +55,15 @@ namespace caffe {
  * HingeLossLayer).
  */
 template <typename Dtype>
-class GeneralContrastiveLossLayer : public LossLayer<Dtype> {
+class SoftContrastiveLossLayer : public LossLayer<Dtype> {
  public:
-  explicit GeneralContrastiveLossLayer(const LayerParameter& param)
+  explicit SoftContrastiveLossLayer(const LayerParameter& param)
       : LossLayer<Dtype>(param) {}
   virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
                           const vector<Blob<Dtype>*>& top);
   virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
                        const vector<Blob<Dtype>*>& top);
-  virtual inline const char* type() const { return "GeneralContrastiveLoss"; }
+  virtual inline const char* type() const { return "SoftContrastiveLoss"; }
   virtual inline int ExactNumBottomBlobs() const { return -1; }
   virtual inline int ExactNumTopBlobs() const { return -1; }
   virtual inline int MinTopBlobs() const { return 1; }
@@ -108,9 +108,9 @@ class GeneralContrastiveLossLayer : public LossLayer<Dtype> {
   Dtype negative_margin_;
   Dtype positive_weight_;
   Dtype negative_weight_;
-  bool need_normalize_negative_;
-  Dtype negative_gradient_norm_;
+  Dtype exponent_scale_;
   Dtype positive_outlier_thresh_;
+  Blob<Dtype> sum_exp_;
 };
 
 
