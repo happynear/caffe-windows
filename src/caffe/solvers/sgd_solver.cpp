@@ -114,17 +114,31 @@ void SGDSolver<Dtype>::ApplyUpdate() {
   }
 #ifdef _MSC_VER
   if (this->param_.display() && this->iter_ % this->param_.display() == 0) {
-    string gradient_norm = "layer blob norm:";
-    for (int k = 0; k < this->net_->blob_names().size(); k++) {
-      if (this->net_->blob_names()[k].find("Convolution") != string::npos
-          || this->net_->blob_names()[k].find("InnerProduct") != string::npos
-          || this->net_->blob_names()[k].find("conv") != string::npos
-          || this->net_->blob_names()[k].find("fc") != string::npos
-          || this->net_->blob_names()[k].find("ip") != string::npos) {
-        gradient_norm += std::to_string(this->net_->blobs()[k]->asum_diff() / this->net_->blobs()[k]->count()) + " ";
+    //string gradient_norm = "layer blob norm:";
+    //for (int k = 0; k < this->net_->blob_names().size(); k++) {
+    //  if (this->net_->blob_names()[k].find("Convolution") != string::npos
+    //      || this->net_->blob_names()[k].find("InnerProduct") != string::npos
+    //      || this->net_->blob_names()[k].find("conv") != string::npos
+    //      || this->net_->blob_names()[k].find("fc") != string::npos
+    //      || this->net_->blob_names()[k].find("ip") != string::npos) {
+    //    gradient_norm += std::to_string(this->net_->blobs()[k]->asum_diff() / this->net_->blobs()[k]->count()) + " ";
+    //  }
+    //}
+    //if (gradient_norm.size() > 20) LOG(INFO) << gradient_norm;
+    string scale_layers = "scale layer:";
+    for (int k = 0; k < this->net_->layers().size(); k++) {
+      if (strstr(this->net_->layers()[k]->type(), "Scale") != NULL) {
+        scale_layers += std::to_string(this->net_->layers()[k]->blobs()[0]->asum_data() / this->net_->layers()[k]->blobs()[0]->count()) + " ";
       }
     }
-    if (gradient_norm.size() > 20) LOG(INFO) << gradient_norm;
+    if (scale_layers.size() > 20) LOG(INFO) << scale_layers;
+    string prelu_layers = "prelu slope:";
+    for (int k = 0; k < this->net_->layers().size(); k++) {
+      if (strstr(this->net_->layers()[k]->type(), "PReLU") != NULL) {
+        prelu_layers += std::to_string(this->net_->layers()[k]->blobs()[0]->asum_data() / this->net_->layers()[k]->blobs()[0]->count()) + " ";
+      }
+    }
+    if (prelu_layers.size() > 20) LOG(INFO) << prelu_layers;
     string weight_gradient_norm = "weight diff/data:";
     for (int k = 0; k < this->net_->layers().size(); k++) {
       if (strstr(this->net_->layers()[k]->type(), "Convolution") != NULL
