@@ -10,12 +10,13 @@ void SoftContrastiveLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bot
                                                const vector<Blob<Dtype>*>& top) {
   LossLayer<Dtype>::LayerSetUp(bottom, top);
   CHECK_GE(bottom.size(), 2);
-  positive_margin_ = this->layer_param_.general_contrastive_loss_param().positive_margin();
-  negative_margin_ = this->layer_param_.general_contrastive_loss_param().negative_margin();
-  positive_weight_ = this->layer_param_.general_contrastive_loss_param().positive_weight();
-  negative_weight_ = this->layer_param_.general_contrastive_loss_param().negative_weight();
+  positive_margin_ = this->layer_param_.soft_contrastive_loss_param().positive_margin();
+  negative_margin_ = this->layer_param_.soft_contrastive_loss_param().negative_margin();
+  positive_weight_ = this->layer_param_.soft_contrastive_loss_param().positive_weight();
+  negative_weight_ = this->layer_param_.soft_contrastive_loss_param().negative_weight();
   positive_outlier_thresh_ = this->layer_param_.general_contrastive_loss_param().positive_outlier_thresh();
   exponent_scale_ = this->layer_param_.soft_contrastive_loss_param().negative_weight();
+  square_ = this->layer_param_.soft_contrastive_loss_param().square();
 }
 
 template <typename Dtype>
@@ -49,19 +50,35 @@ void SoftContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bo
     for (int j = 0; j < dim; ++j) {
       if (j != static_cast<int>(label[i])) {
         if (bottom_data[i * dim + j] < negative_margin_) {
-          bottom_diff[i * dim + j] = (negative_margin_ - bottom_data[i * dim + j]) * negative_weight_;//exp(negative_margin_ - bottom_data[i * dim + j]);
-          sum_exp_data[i] += exp((negative_margin_ - bottom_data[i * dim + j]) * exponent_scale_);
-          negative_distance += negative_margin_ - bottom_data[i * dim + j];
+          if (square_) {
+            bottom_diff[i * dim + j] = (negative_margin_ - bottom_data[i * dim + j]) * (negative_margin_ - bottom_data[i * dim + j]) * negative_weight_;
+            sum_exp_data[i] += exp((negative_margin_ - bottom_data[i * dim + j]) * (negative_margin_ - bottom_data[i * dim + j]) * exponent_scale_);
+            negative_distance += negative_margin_ - bottom_data[i * dim + j];
+          }
+          else {
+            bottom_diff[i * dim + j] = (negative_margin_ - bottom_data[i * dim + j]) * negative_weight_;//exp(negative_margin_ - bottom_data[i * dim + j]);
+            sum_exp_data[i] += exp((negative_margin_ - bottom_data[i * dim + j]) * exponent_scale_);
+            negative_distance += negative_margin_ - bottom_data[i * dim + j];
+          }
         }
         else {
           bottom_diff[i * dim + j] = 0;
         }
       }
       else {
-        Dtype truncated_value = std::min(positive_outlier_thresh_, std::max(Dtype(0), bottom_data[i * dim + j] - positive_margin_));
-        bottom_diff[i * dim + j] = truncated_value * positive_weight_;
-        positive_distance += truncated_value;
-        loss[0] += bottom_diff[i * dim + j];
+        if (square_) {
+          Dtype truncated_value = std::min(positive_outlier_thresh_, std::max(Dtype(0), bottom_data[i * dim + j] - positive_margin_));
+          positive_distance += truncated_value;
+          truncated_value *= truncated_value;
+          bottom_diff[i * dim + j] = truncated_value * positive_weight_;
+          loss[0] += bottom_diff[i * dim + j];
+        }
+        else {
+          Dtype truncated_value = std::min(positive_outlier_thresh_, std::max(Dtype(0), bottom_data[i * dim + j] - positive_margin_));
+          bottom_diff[i * dim + j] = truncated_value * positive_weight_;
+          positive_distance += truncated_value;
+          loss[0] += bottom_diff[i * dim + j];
+        }
       }
     }
     if(sum_exp_data[i] > 0) loss[0] += log(sum_exp_data[i]);
@@ -99,7 +116,12 @@ void SoftContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& t
       for (int j = 0; j < dim; ++j) {
         if (j == static_cast<int>(label[i])) {
           if (bottom_data[i * dim + j] > positive_margin_ && bottom_data[i * dim + j] < positive_outlier_thresh_) {
-            bottom_diff[i * dim + j] = positive_weight_;
+            if (square_) {
+              bottom_diff[i * dim + j] = bottom_data[i * dim + j] * positive_weight_;
+            }
+            else {
+              bottom_diff[i * dim + j] = positive_weight_;
+            }
           }
           else {
             bottom_diff[i * dim + j] = 0;
@@ -107,7 +129,13 @@ void SoftContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& t
         }
         else {
           if (bottom_data[i * dim + j] < negative_margin_) {
-            bottom_diff[i * dim + j] = -negative_weight_ * exp((negative_margin_ - bottom_data[i * dim + j]) * exponent_scale_) / sum_exp_data[i];
+            if (square_) {
+              bottom_diff[i * dim + j] = (bottom_data[i * dim + j] - negative_margin_) * negative_weight_ *
+                exp((negative_margin_ - bottom_data[i * dim + j]) * (negative_margin_ - bottom_data[i * dim + j]) * exponent_scale_) / sum_exp_data[i];
+            }
+            else {
+              bottom_diff[i * dim + j] = -negative_weight_ * exp((negative_margin_ - bottom_data[i * dim + j]) * exponent_scale_) / sum_exp_data[i];
+            }
           }
           else {
             bottom_diff[i * dim + j] = 0;

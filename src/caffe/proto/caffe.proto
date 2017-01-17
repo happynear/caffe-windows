@@ -425,6 +425,7 @@ message LayerParameter {
   optional SoftContrastiveParameter soft_contrastive_loss_param = 216;
   optional GeneralTripletParameter general_triplet_loss_param = 217;
   optional SoftTruncationParameter soft_truncation_param = 218;
+  optional TrainableDataParameter trainable_data_param = 219;
 }
 
 // Message that stores parameters used to apply transformation
@@ -527,7 +528,7 @@ message BatchNormParameter {
   // across the batch.
   optional bool use_global_stats = 1;
   // How much does the moving average decay each iteration?
-  optional float moving_average_fraction = 2 [default = .999];
+  optional float moving_average_fraction = 2 [default = .99];
   // Small value to add to the variance estimate so that we don't divide by
   // zero.
   optional float eps = 3 [default = 1e-5];
@@ -1657,6 +1658,8 @@ message GeneralContrastiveParameter {
   optional float negative_weight = 4 [default = 1.0];
   optional float normalize_negative = 5 [default = 0.0];
   optional float positive_outlier_thresh = 6 [default = 4.0];
+  optional bool square = 7 [default = false];
+  optional bool max_negative_only = 8 [default = false];
 }
 
 message SoftContrastiveParameter {
@@ -1665,6 +1668,7 @@ message SoftContrastiveParameter {
   optional float positive_weight = 3 [default = 1.0];
   optional float negative_weight = 4 [default = 1.0];
   optional float exponent_scale = 5 [default = 1.0];
+  optional bool square = 6 [default = false];
 }
 
 message GeneralTripletParameter {
@@ -1674,4 +1678,10 @@ message GeneralTripletParameter {
 
 message SoftTruncationParameter {
   optional float c = 1 [default = 2];
+}
+
+message TrainableDataParameter {
+  repeated uint32 shape = 1;
+  optional FillerParameter blob_filler = 2;
+  optional uint32 num_copy = 3 [default = 1];
 }

@@ -111,6 +111,7 @@ class SoftContrastiveLossLayer : public LossLayer<Dtype> {
   Dtype exponent_scale_;
   Dtype positive_outlier_thresh_;
   Blob<Dtype> sum_exp_;
+  bool square_;
 };
 
 
