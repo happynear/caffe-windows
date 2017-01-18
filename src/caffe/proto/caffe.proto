@@ -1660,6 +1660,7 @@ message GeneralContrastiveParameter {
   optional float positive_outlier_thresh = 6 [default = 4.0];
   optional bool square = 7 [default = false];
   optional bool max_negative_only = 8 [default = false];
+  optional bool max_positive_only = 9 [default = false];
 }
 
 message SoftContrastiveParameter {

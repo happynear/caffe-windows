@@ -18,6 +18,7 @@ void GeneralContrastiveLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& 
   negative_gradient_norm_ = this->layer_param_.general_contrastive_loss_param().normalize_negative();
   positive_outlier_thresh_ = this->layer_param_.general_contrastive_loss_param().positive_outlier_thresh();
   max_negative_only_ = this->layer_param_.general_contrastive_loss_param().max_negative_only();
+  max_positive_only_ = this->layer_param_.general_contrastive_loss_param().max_positive_only();
 }
 
 template <typename Dtype>
@@ -50,13 +51,13 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
   max_positive_index_ = 0;
 
   for (int i = 0; i < num; ++i) {
-    if(max_negative_only_) max_negative_index_data[i] = -FLT_MAX;
+    if(max_negative_only_) max_negative_index_data[i] = 0;
     for (int j = 0; j < dim; ++j) {
       if (j == static_cast<int>(label[i])) {
         Dtype truncated_value = std::min(positive_outlier_thresh_, std::max(Dtype(0), bottom_data[i * dim + j] - positive_margin_));
         bottom_diff[i * dim + j] = truncated_value * positive_weight_;
         positive_distance += truncated_value;
-        if (max_negative_only_ && bottom_diff[i * dim + j] < bottom_diff[max_positive_index_*dim + static_cast<int>(label[max_positive_index_])]) {
+        if (max_positive_only_ && bottom_diff[i * dim + j] < bottom_diff[max_positive_index_*dim + static_cast<int>(label[max_positive_index_])]) {
           max_positive_index_ = i;
         }
       }
@@ -76,13 +77,19 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
       }
     }
   }
+  if (max_positive_only_) {
+    for (int i = 0; i < num; ++i) {
+      for (int j = 0; j < dim; ++j) {
+        if (j == static_cast<int>(label[i]) && i != max_positive_index_) {
+          bottom_diff[i*dim + j] = 0;
+        }
+      }
+    }
+  }
   if (max_negative_only_) {
     for (int i = 0; i < num; ++i) {
       for (int j = 0; j < dim; ++j) {
         if (j != static_cast<int>(label[i]) && j != max_negative_index_data[i]) {
-          bottom_diff[i*dim + j] = 0;
-        }
-        if (j == static_cast<int>(label[i]) && i != max_positive_index_) {
           bottom_diff[i*dim + j] = 0;
         }
       }
@@ -119,7 +126,8 @@ void GeneralContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>
     for (int i = 0; i < num; ++i) {
       for (int j = 0; j < dim; ++j) {
         if (j == static_cast<int>(label[i])) {
-          if (bottom_data[i * dim + j] > positive_margin_ && bottom_data[i * dim + j] < positive_outlier_thresh_) {
+          if (bottom_data[i * dim + j] > positive_margin_ && bottom_data[i * dim + j] < positive_outlier_thresh_
+              && !(max_positive_only_ && i != max_positive_index_)) {
             bottom_diff[i * dim + j] = positive_weight_;
           }
           else {
