@@ -1,5 +1,5 @@
-#ifndef CAFFE_INNER_PRODUCT_LAYER_HPP_
-#define CAFFE_INNER_PRODUCT_LAYER_HPP_
+#ifndef CAFFE_TRAINABLE_DATA_LAYER_HPP_
+#define CAFFE_TRAINABLE_DATA_LAYER_HPP_
 
 #include <vector>
 
@@ -10,27 +10,28 @@
 namespace caffe {
 
 /**
- * @brief Use L1 or L2 distance to replace the dot product in InnerProduct
- * layer.
+ * @brief Computes a sum of two input Blobs, with the shape of the latter Blob
+ *        "broadcast" to match the shape of the former. Equivalent to tiling
+ *        the latter Blob, then computing the elementwise sum.
  *
- * TODO(dox): thorough documentation for Forward, Backward, and proto params.
+ * The second input may be omitted, in which case it's learned as a parameter
+ * of the layer. Note: in case bias and scaling are desired, both operations can
+ * be handled by `ScaleLayer` configured with `bias_term: true`.
  */
 template <typename Dtype>
-class InnerDistanceLayer : public Layer<Dtype> {
+class TrainableDataLayer : public Layer<Dtype> {
  public:
-  explicit InnerDistanceLayer(const LayerParameter& param)
+  explicit TrainableDataLayer(const LayerParameter& param)
       : Layer<Dtype>(param) {}
   virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
   virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
 
-  virtual inline const char* type() const { return "InnerDistance"; }
-  virtual inline int MinNumBottomBlobs() const { return 1; }
-  virtual inline int MaxNumBottomBlobs() const { return 3; }
+  virtual inline const char* type() const { return "TrainableData"; }
+  virtual inline int ExactBottomBlobs() const { return 0; }
   virtual inline int ExactNumTopBlobs() const { return 1; }
 
- protected:
   virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
   virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
@@ -39,18 +40,10 @@ class InnerDistanceLayer : public Layer<Dtype> {
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
-
-  int M_;
-  int K_;
-  int N_;
-  bool bias_term_;
-  Blob<Dtype> bias_multiplier_;
-  bool transpose_;  ///< if true, assume transposed weights
-  std::string distance_type_;
-  bool normalize_;
-  Blob<Dtype> weight_norm_;
 };
+
+
 
 }  // namespace caffe
 
-#endif  // CAFFE_INNER_DISTANCE_LAYER_HPP_
+#endif  // CAFFE_TRAINABLE_DATA_LAYER_HPP_

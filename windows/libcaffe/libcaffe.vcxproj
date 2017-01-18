@@ -179,6 +179,7 @@
     <ClCompile Include="..\..\src\caffe\layers\tanh_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\threshold_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\tile_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\trainable_data_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\transformer_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\triplet_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\fcn_data_layer.cpp" />
@@ -292,6 +293,7 @@
     <ClInclude Include="..\..\include\caffe\layers\tanh_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\threshold_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\tile_layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\layers\trainable_data_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\wider_face_data_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\window_data_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layer_factory.hpp" />
@@ -398,6 +400,7 @@
     <CudaCompile Include="..\..\src\caffe\layers\smooth_L1_loss_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\soft_truncation_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\subregion_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\trainable_data_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\transformer_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\triplet_loss_layer.cu" />
   </ItemGroup>
