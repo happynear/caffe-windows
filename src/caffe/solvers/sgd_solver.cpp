@@ -113,7 +113,7 @@ void SGDSolver<Dtype>::ApplyUpdate() {
     ComputeUpdateValue(param_id, rate);
   }
 #ifdef _MSC_VER
-  if (this->param_.display() && this->iter_ % this->param_.display() == 0) {
+  if (Caffe::root_solver() && this->param_.display() && this->iter_ % this->param_.display() == 0) {
     //string gradient_norm = "layer blob norm:";
     //for (int k = 0; k < this->net_->blob_names().size(); k++) {
     //  if (this->net_->blob_names()[k].find("Convolution") != string::npos
