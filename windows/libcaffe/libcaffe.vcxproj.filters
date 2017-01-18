@@ -114,9 +114,6 @@
     <ClCompile Include="..\..\src\caffe\parallel.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\caffe\data_reader.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\caffe\util\blocking_queue.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
@@ -672,9 +669,6 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\caffe\common.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\data_reader.hpp">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\caffe\data_transformer.hpp">

@@ -129,8 +129,8 @@ namespace caffe {
     const int batch_size = image_data_param.batch_size();
     CHECK_GT(batch_size, 0) << "Positive batch size required";
     top_shape[0] = batch_size * scale_step_num;
-    for (int i = 0; i < this->PREFETCH_COUNT; ++i) {
-      this->prefetch_[i].data_.Reshape(top_shape);
+    for (int i = 0; i < this->prefetch_.size(); ++i) {
+      this->prefetch_[i]->data_.Reshape(top_shape);
     }
     top[0]->Reshape(top_shape);
 
@@ -140,8 +140,8 @@ namespace caffe {
     // label
     vector<int> label_shape = { batch_size * scale_step_num, 2, output_heatmap_size.height, output_heatmap_size.width };
     top[1]->Reshape(label_shape);
-    for (int i = 0; i < this->PREFETCH_COUNT; ++i) {
-      this->prefetch_[i].label_.Reshape(label_shape);
+    for (int i = 0; i < this->prefetch_.size(); ++i) {
+      this->prefetch_[i]->label_.Reshape(label_shape);
     }
   }
 

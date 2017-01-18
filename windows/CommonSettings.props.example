@@ -6,6 +6,7 @@
         <!--NOTE: CpuOnlyBuild and UseCuDNN flags can't be set at the same time.-->
         <CpuOnlyBuild>false</CpuOnlyBuild>
         <UseCuDNN>true</UseCuDNN>
+        <UseNCCL>true</UseNCCL>
         <CudaVersion>8.0</CudaVersion>
         <!-- NOTE: If Python support is enabled, PythonDir (below) needs to be
          set to the root of your Python installation. If your Python installation
@@ -28,14 +29,15 @@
         <LMDBRoot>$(SolutionDir)thirdparty\LMDB</LMDBRoot>
         <OpenBLASRoot>$(SolutionDir)thirdparty\OpenBLAS</OpenBLASRoot>
         <LevelDBRoot>$(SolutionDir)thirdparty\LEVELDB</LevelDBRoot>
+        <NCCLRoot>$(SolutionDir)thirdparty\NCCL</NCCLRoot>
         <MXNetRoot>D:\deepLearning\mxnet</MXNetRoot>
 
       <!-- Set CUDA architecture suitable for your GPU.
          Setting proper architecture is important to mimize your run and compile time. -->
-        <CudaArchitecture>compute_30,sm_30;</CudaArchitecture>
+        <CudaArchitecture>compute_60,sm_60;</CudaArchitecture>
 
         <!-- CuDNN 3 and 4 are supported -->
-        <CuDnnPath>D:\CUDA8\CuDNNv5</CuDnnPath>
+        <CuDnnPath>D:\CUDA\CuDNNv5</CuDnnPath>
         <ScriptsDir>$(SolutionDir)\scripts</ScriptsDir>
     </PropertyGroup>
     <PropertyGroup Condition="'$(CpuOnlyBuild)'=='false'">
@@ -50,6 +52,14 @@
         <IncludePath>$(CuDnnPath)\include;$(IncludePath)</IncludePath>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(UseNCCL)'=='true'">
+      <CudaDependencies>nccl.lib;$(CudaDependencies)</CudaDependencies>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(UseNCCL)'=='true' And $(NCCLRoot)!=''">
+      <LibraryPath>$(NCCLRoot)\lib;$(LibraryPath)</LibraryPath>
+      <IncludePath>$(NCCLRoot)\include;$(IncludePath)</IncludePath>
+    </PropertyGroup>
+
     <PropertyGroup>
         <OutDir>$(BuildDir)\$(Platform)\$(Configuration)\</OutDir>
         <IntDir>$(BuildDir)\Int\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
@@ -59,7 +69,7 @@
         <IncludePath>$(SolutionDir)..\include;$(SolutionDir)..\include\caffe\proto;$(CUDA_PATH)\include;$(BoostIncludeFolder);$(HDF5Root)\include;$(GFlagsRoot)\include;$(GLogRoot)\include;$(ProtobufRoot)\include;$(OpenCVRoot)\include;$(LMDBRoot)\include;$(OpenBLASRoot)\include;$(LevelDBRoot)\include;$(IncludePath)</IncludePath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(PythonSupport)'=='true'">
-        <PythonDir>D:\Python27\</PythonDir>
+        <PythonDir>D:\Anaconda2\</PythonDir>
         <LibraryPath>$(PythonDir)\libs;$(LibraryPath)</LibraryPath>
         <IncludePath>$(PythonDir)\include;$(IncludePath)</IncludePath>
     </PropertyGroup>
@@ -95,7 +105,7 @@
         <ClCompile>
             <MinimalRebuild>false</MinimalRebuild>
             <MultiProcessorCompilation>true</MultiProcessorCompilation>
-            <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;USE_OPENCV;USE_LEVELDB;USE_LMDB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+            <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;USE_OPENCV;USE_LEVELDB;USE_LMDB;USE_NCCL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
             <TreatWarningAsError>true</TreatWarningAsError>
         </ClCompile>
     </ItemDefinitionGroup>
