@@ -127,14 +127,16 @@ void SGDSolver<Dtype>::ApplyUpdate() {
     //if (gradient_norm.size() > 20) LOG(INFO) << gradient_norm;
     string scale_layers = "scale layer:";
     for (int k = 0; k < this->net_->layers().size(); k++) {
-      if (strstr(this->net_->layers()[k]->type(), "Scale") != NULL) {
+      if (strstr(this->net_->layers()[k]->type(), "Scale") != NULL
+          && this->net_->layers()[k]->blobs().size() > 0) {
         scale_layers += std::to_string(this->net_->layers()[k]->blobs()[0]->asum_data() / this->net_->layers()[k]->blobs()[0]->count()) + " ";
       }
     }
     if (scale_layers.size() > 20) LOG(INFO) << scale_layers;
     string prelu_layers = "prelu slope:";
     for (int k = 0; k < this->net_->layers().size(); k++) {
-      if (strstr(this->net_->layers()[k]->type(), "PReLU") != NULL) {
+      if (strstr(this->net_->layers()[k]->type(), "PReLU") != NULL
+          && this->net_->layers()[k]->blobs().size() > 0) {
         prelu_layers += std::to_string(this->net_->layers()[k]->blobs()[0]->asum_data() / this->net_->layers()[k]->blobs()[0]->count()) + " ";
       }
     }
@@ -144,11 +146,13 @@ void SGDSolver<Dtype>::ApplyUpdate() {
       if (strstr(this->net_->layers()[k]->type(), "Convolution") != NULL
           || strstr(this->net_->layers()[k]->type(), "InnerProduct") != NULL
           || strstr(this->net_->layers()[k]->type(), "InnerDistance") != NULL) {
-        Blob<Dtype> diff_data_ratio;
-        diff_data_ratio.ReshapeLike(*this->net_->layers()[k]->blobs()[0]);
-        caffe_div(this->net_->layers()[k]->blobs()[0]->count(), this->net_->layers()[k]->blobs()[0]->cpu_diff(),
-                  this->net_->layers()[k]->blobs()[0]->cpu_data(), diff_data_ratio.mutable_cpu_data());
-        weight_gradient_norm += std::to_string(diff_data_ratio.asum_data() / diff_data_ratio.count()) + " ";
+        if (this->net_->layers()[k]->blobs().size() > 0) {
+          Blob<Dtype> diff_data_ratio;
+          diff_data_ratio.ReshapeLike(*this->net_->layers()[k]->blobs()[0]);
+          caffe_div(this->net_->layers()[k]->blobs()[0]->count(), this->net_->layers()[k]->blobs()[0]->cpu_diff(),
+                    this->net_->layers()[k]->blobs()[0]->cpu_data(), diff_data_ratio.mutable_cpu_data());
+          weight_gradient_norm += std::to_string(diff_data_ratio.asum_data() / diff_data_ratio.count()) + " ";
+        }
       }
     }
     if (weight_gradient_norm.size() > 20) LOG(INFO) << weight_gradient_norm;
