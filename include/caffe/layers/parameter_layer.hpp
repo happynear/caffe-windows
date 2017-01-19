@@ -20,6 +20,8 @@ class ParameterLayer : public Layer<Dtype> {
       this->blobs_.resize(1);
       this->blobs_[0].reset(new Blob<Dtype>());
       this->blobs_[0]->Reshape(this->layer_param_.parameter_param().shape());
+      shared_ptr<Filler<Dtype> > filler(GetFiller<Dtype>(this->layer_param_.parameter_param().blob_filler()));
+      filler->Fill(this->blobs_[0].get());
     }
     top[0]->Reshape(this->layer_param_.parameter_param().shape());
   }

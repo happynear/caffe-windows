@@ -940,6 +940,7 @@ message MVNParameter {
 
 message ParameterParameter {
   optional BlobShape shape = 1;
+  optional FillerParameter blob_filler = 2;
 }
 
 message PoolingParameter {
