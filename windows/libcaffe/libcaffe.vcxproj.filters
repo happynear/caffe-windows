@@ -997,5 +997,8 @@
     <CudaCompile Include="..\..\src\caffe\util\nms.cu">
       <Filter>cu\util</Filter>
     </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\parameter_layer.cu">
+      <Filter>cu\layers</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>
