@@ -19,7 +19,7 @@ Check out the [project site](http://caffe.berkeleyvision.org) for all the detail
 and step-by-step examples.
 
 ## Windows Setup
-**Requirements**: Visual Studio 2015 update 1(don't use update >=2), CUDA 8.0, third party libraries: https://pan.baidu.com/s/1mhZgDeS . Please extract the archive into `./windows/thirdparty/`.
+**Requirements**: Visual Studio 2015 update 1, CUDA 8.0, third party libraries: https://pan.baidu.com/s/1mhZgDeS . Please extract the archive into `./windows/thirdparty/`.
 
 ### Pre-Build Steps
 Copy `.\windows\CommonSettings.props.example` to `.\windows\CommonSettings.props`
@@ -30,12 +30,12 @@ Python support is disabled by default, but can be enabled via `.\windows\CommonS
 3rd party dependencies required by Caffe are automatically resolved via NuGet.
 
 ### CUDA
-Download `CUDA Toolkit 7.5` [from nVidia website](https://developer.nvidia.com/cuda-toolkit).
+Download `CUDA Toolkit 8.0` [from nVidia website](https://developer.nvidia.com/cuda-toolkit).
 If you don't have CUDA installed, you can experiment with CPU_ONLY build.
 In `.\windows\CommonSettings.props` set `CpuOnlyBuild` to `true` and set `UseCuDNN` to `false`.
 
 ### cuDNN
-Download `cuDNN v3` or `cuDNN v4` [from nVidia website](https://developer.nvidia.com/cudnn).
+Download `cuDNN v5` [from nVidia website](https://developer.nvidia.com/cudnn).
 Unpack downloaded zip to %CUDA_PATH% (environment variable set by CUDA installer).
 Alternatively, you can unpack zip to any location and set `CuDnnPath` to point to this location in `.\windows\CommonSettings.props`.
 `CuDnnPath` defined in `.\windows\CommonSettings.props`.
