@@ -30,6 +30,8 @@ namespace caffe {
     void SetMemoryDataLayer(std::string layer_name, std::vector<cv::Mat>& input_image, int net_id) {
       SetMemoryDataLayer(layer_name, std::move(input_image), net_id);
     }
+    void SetBlobData(std::string blob_name, std::vector<int> blob_shape, float* data, int net_id);
+    DataBlob GetBlobData(std::string blob_name, int net_id);
     void SetDevice(int gpu_id);
     ~CaffeBinding();
   };

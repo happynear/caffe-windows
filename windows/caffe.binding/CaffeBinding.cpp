@@ -24,7 +24,7 @@ int CaffeBinding::AddNet(string model_definition, string weights, int gpu_id) {
   return nets_.size() - 1;
 }
 
-std::unordered_map<std::string, DataBlob> caffe::CaffeBinding::Forward(int net_id) {
+std::unordered_map<std::string, DataBlob> CaffeBinding::Forward(int net_id) {
   if (!(*predictors_[net_id]).get()) {
     auto predictor =
       std::make_unique<caffe::Net<float>>(prototxts[net_id], Phase::TEST);
@@ -46,7 +46,7 @@ std::unordered_map<std::string, DataBlob> CaffeBinding::Forward(std::vector<cv::
   return Forward(net_id);
 }
 
-void caffe::CaffeBinding::SetMemoryDataLayer(std::string layer_name, std::vector<cv::Mat>&& input_image, int net_id) {
+void CaffeBinding::SetMemoryDataLayer(std::string layer_name, std::vector<cv::Mat>&& input_image, int net_id) {
   if (!(*predictors_[net_id]).get()) {
     auto predictor =
       std::make_unique<caffe::Net<float>>(prototxts[net_id], Phase::TEST);
@@ -58,6 +58,31 @@ void caffe::CaffeBinding::SetMemoryDataLayer(std::string layer_name, std::vector
   labels.push_back(1);
   auto data_layer_ptr = static_pointer_cast<MemoryDataLayer<float>, Layer<float>>(predictor->layer_by_name(layer_name));
   data_layer_ptr->AddMatVector(input_image, labels);
+}
+
+void CaffeBinding::SetBlobData(std::string blob_name, std::vector<int> blob_shape, float* data, int net_id) {
+  if (!(*predictors_[net_id]).get()) {
+    auto predictor =
+      std::make_unique<caffe::Net<float>>(prototxts[net_id], Phase::TEST);
+    predictor->ShareTrainedLayersWith(nets_[net_id]);
+    (*predictors_[net_id]).reset(predictor.release());
+  }
+  auto* predictor = (*predictors_[net_id]).get();
+  predictor->blob_by_name(blob_name)->Reshape(blob_shape);
+  predictor->blob_by_name(blob_name)->set_cpu_data(data);
+}
+
+DataBlob CaffeBinding::GetBlobData(std::string blob_name, int net_id) {
+  if (!(*predictors_[net_id]).get()) {
+    auto predictor =
+      std::make_unique<caffe::Net<float>>(prototxts[net_id], Phase::TEST);
+    predictor->ShareTrainedLayersWith(nets_[net_id]);
+    (*predictors_[net_id]).reset(predictor.release());
+  }
+  auto* predictor = (*predictors_[net_id]).get();
+  auto blob = predictor->blob_by_name(blob_name);
+  if (blob == nullptr) return { NULL, {0}, blob_name };
+  else return { predictor->blob_by_name(blob_name)->cpu_data(), blob->shape(), blob_name };
 }
 
 void CaffeBinding::SetDevice(int gpu_id) {
