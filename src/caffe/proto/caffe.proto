@@ -428,7 +428,8 @@ message LayerParameter {
   optional SoftContrastiveParameter soft_contrastive_loss_param = 216;
   optional GeneralTripletParameter general_triplet_loss_param = 217;
   optional SoftTruncationParameter soft_truncation_param = 218;
-  optional TrainableDataParameter trainable_data_param = 219;
+  optional ProposalParameter proposal_param = 219;
+  optional PSROIPoolingParameter psroi_pooling_param = 220;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1686,8 +1687,20 @@ message SoftTruncationParameter {
   optional float c = 1 [default = 2];
 }
 
-message TrainableDataParameter {
-  repeated uint32 shape = 1;
-  optional FillerParameter blob_filler = 2;
-  optional uint32 num_copy = 3 [default = 1];
+// Message that stores parameters used by ProposalLayer
+message ProposalParameter {
+  optional uint32 feat_stride = 1 [default = 16];
+  optional uint32 base_size = 2 [default = 16];
+  optional uint32 min_size = 3 [default = 16];
+  repeated float ratio = 4;
+  repeated float scale = 5;
+  optional uint32 pre_nms_topn = 6 [default = 6000];
+  optional uint32 post_nms_topn = 7 [default = 300];
+  optional float nms_thresh = 8 [default = 0.7];
 }
+
+message PSROIPoolingParameter {
+   required float spatial_scale = 1; 
+   required int32 output_dim = 2; // output channel number
+   required int32 group_size = 3; // number of groups to encode position-sensitive score maps
+ }

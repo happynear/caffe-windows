@@ -411,8 +411,14 @@
     <ClCompile Include="..\..\src\caffe\layers\soft_truncation_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\trainable_data_layer.cpp">
+    <ClCompile Include="..\..\src\caffe\layers\psroi_pooling_layer.cpp">
       <Filter>src\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\proposal_layer.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\util\nms.cpp">
+      <Filter>src\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -749,8 +755,14 @@
     <ClInclude Include="..\..\include\caffe\layers\soft_truncation_layer.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\trainable_data_layer.hpp">
+    <ClInclude Include="..\..\include\caffe\layers\psroi_pooling_layer.hpp">
       <Filter>include\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\caffe\layers\proposal_layer.hpp">
+      <Filter>include\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\caffe\util\nms.hpp">
+      <Filter>include\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -976,8 +988,14 @@
     <CudaCompile Include="..\..\src\caffe\layers\soft_truncation_layer.cu">
       <Filter>cu\layers</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\trainable_data_layer.cu">
+    <CudaCompile Include="..\..\src\caffe\layers\psroi_pooling_layer.cu">
       <Filter>cu\layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\proposal_layer.cu">
+      <Filter>cu\layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\util\nms.cu">
+      <Filter>cu\util</Filter>
     </CudaCompile>
   </ItemGroup>
 </Project>
