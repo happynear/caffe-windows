@@ -31,7 +31,8 @@ SyncedMemory::~SyncedMemory() {
 
 #ifndef CPU_ONLY
   if (gpu_ptr_ && own_gpu_data_) {
-    CUDA_CHECK(cudaFree(gpu_ptr_));
+    //CUDA_CHECK(cudaFree(gpu_ptr_));
+    cudaFree(gpu_ptr_);
   }
 #endif  // CPU_ONLY
 }

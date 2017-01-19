@@ -96,7 +96,7 @@ void CaffeBinding::SetDevice(int gpu_id) {
 }
 
 CaffeBinding::~CaffeBinding() {
-  for (auto& net : nets_) {
+  for (auto net : nets_) {
     try {
       delete net;
     }
