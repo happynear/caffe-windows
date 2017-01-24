@@ -1682,6 +1682,9 @@ message SoftContrastiveParameter {
 message GeneralTripletParameter {
   optional float margin = 1 [default = 0.2];
   optional bool add_center_loss = 2 [default = true];
+  optional bool hardest_only = 3 [default = false];
+  optional float positive_weight = 4 [default = 1.0];
+  optional float negative_weight = 5 [default = 1.0];
 }
 
 message SoftTruncationParameter {
