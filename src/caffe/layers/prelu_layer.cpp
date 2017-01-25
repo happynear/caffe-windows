@@ -31,7 +31,7 @@ void PReLULayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
     } else {
       FillerParameter filler_param;
       filler_param.set_type("constant");
-      filler_param.set_value(0.25);
+      filler_param.set_value(0.1);
       filler.reset(GetFiller<Dtype>(filler_param));
     }
     filler->Fill(this->blobs_[0].get());
