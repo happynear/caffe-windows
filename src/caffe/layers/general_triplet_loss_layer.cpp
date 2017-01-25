@@ -47,13 +47,14 @@ void GeneralTripletLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bot
   for (int i = 0; i < num; ++i) {
     Dtype same_distance = bottom_data[i * dim + static_cast<int>(label[i])];
     positive_distance += same_distance;
-    if (hardest_only_) hardest_index_data[i] = 0;
+    if (hardest_only_) hardest_index_data[i] = -1;
     for (int j = 0; j < dim; ++j) {
       if (j != static_cast<int>(label[i])) {
         bottom_diff[i * dim + j] = std::max(
           Dtype(0), same_distance + margin_ - bottom_data[i * dim + j]) * negative_weight_;
         negative_distance += bottom_data[i * dim + j];
-        if (hardest_only_ && bottom_diff[i * dim + j] > bottom_diff[i * dim + hardest_index_data[i]]) {
+        if (hardest_only_ && bottom_diff[i * dim + j] > 0 &&
+          (hardest_index_data[i] < 0 || bottom_diff[i * dim + j] > bottom_diff[i * dim + hardest_index_data[i]])) {
           hardest_index_data[i] = j;
         }
       }
@@ -61,7 +62,7 @@ void GeneralTripletLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bot
         bottom_diff[i * dim + j] = Dtype(0);
       }
     }
-    if (hardest_only_) {
+    if (hardest_only_ && hardest_index_data[i] >= 0) {
       for (int j = 0; j < dim; ++j) {
         if (j != static_cast<int>(label[i]) && j != hardest_index_data[i]) {
           bottom_diff[i * dim + j] = Dtype(0);
@@ -99,8 +100,10 @@ void GeneralTripletLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& to
       Dtype same_distance = bottom_data[i * dim + static_cast<int>(label[i])];
       int negative_sum = 0;
       if (hardest_only_) {
-        bottom_diff[i * dim + hardest_index_data[i]] = -negative_weight_;
-        negative_sum += 1;
+        if (hardest_index_data[i] >= 0 && bottom_data[i * dim + hardest_index_data[i]]) {
+          bottom_diff[i * dim + hardest_index_data[i]] = -negative_weight_;
+          negative_sum += 1;
+        }
       }
       else {
         for (int j = 0; j < dim; ++j) {
