@@ -83,11 +83,11 @@ void InnerDistanceLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
       bias_multiplier_.Reshape(bias_shape);
       caffe_set(M_, Dtype(1), bias_multiplier_.mutable_cpu_data());
     }
-  }
-  if (normalize_ && bottom.size() == 1) {
-    vector<int> weight_norm_shape(1, N_);
-    weight_norm_.Reshape(weight_norm_shape);
-    caffe_set(N_, Dtype(0), weight_norm_.mutable_cpu_data());
+    if (normalize_) {
+      vector<int> weight_norm_shape(1, N_);
+      weight_norm_.Reshape(weight_norm_shape);
+      caffe_set(N_, Dtype(0), weight_norm_.mutable_cpu_data());
+    }
   }
 }
 
@@ -145,7 +145,8 @@ void InnerDistanceLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
   const Dtype* top_diff = top[0]->cpu_diff();
   const Dtype* bottom_data = bottom[0]->cpu_data();
   const Dtype* weight = bottom.size() >= 2 ? bottom[1]->cpu_data() : this->blobs_[0]->cpu_data();
-  if (this->param_propagate_down_[0]) {
+  if ((bottom.size() == 1 && this->param_propagate_down_[0]) ||
+    (bottom.size() >= 2 && propagate_down[1])) {
     Dtype* weight_diff = bottom.size() >= 2 ? bottom[1]->mutable_cpu_diff() : this->blobs_[0]->mutable_cpu_diff();
     // Gradient with respect to weight
     if (distance_type_ == "L2") {

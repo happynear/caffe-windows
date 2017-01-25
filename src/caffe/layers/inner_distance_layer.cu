@@ -160,7 +160,8 @@ void InnerDistanceLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   const Dtype* bottom_data = bottom[0]->gpu_data();
   const Dtype* weight = bottom.size() >= 2 ? bottom[1]->gpu_data() : this->blobs_[0]->gpu_data();
 
-  if (bottom.size() >= 2 || this->param_propagate_down_[0]) {
+  if ((bottom.size() == 1 && this->param_propagate_down_[0]) ||
+    (bottom.size() >= 2 && propagate_down[1])) {
     Dtype* weight_diff = bottom.size() >= 2 ? bottom[1]->mutable_gpu_diff() : this->blobs_[0]->mutable_gpu_diff();
     // Gradient with respect to weight
     if (distance_type_ == "L2") {
