@@ -106,6 +106,8 @@ class GeneralTripletLossLayer : public LossLayer<Dtype> {
   Dtype margin_;
   bool add_center_loss_;
   bool hardest_only_;
+  bool positive_first_;
+  Dtype positive_upper_bound_;
   Dtype positive_weight_;
   Dtype negative_weight_;
   Blob<int> hardest_index_;

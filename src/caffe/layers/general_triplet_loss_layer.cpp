@@ -15,6 +15,8 @@ void GeneralTripletLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bott
   hardest_only_ = this->layer_param_.general_triplet_loss_param().hardest_only();
   positive_weight_ = this->layer_param_.general_triplet_loss_param().positive_weight();
   negative_weight_ = this->layer_param_.general_triplet_loss_param().negative_weight();
+  positive_first_ = this->layer_param_.general_triplet_loss_param().positive_fisrt();
+  positive_upper_bound_ = this->layer_param_.general_triplet_loss_param().positive_upper_bound();
 }
 
 template <typename Dtype>
@@ -69,6 +71,13 @@ void GeneralTripletLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bot
         }
       }
     }
+    if (positive_first_ && same_distance > positive_upper_bound_) {
+      for (int j = 0; j < dim; ++j) {
+        if (j != static_cast<int>(label[i])) {
+          bottom_diff[i * dim + j] = Dtype(0);
+        }
+      }
+    }
   }
   Dtype* loss = top[0]->mutable_cpu_data();
   loss[0] = caffe_cpu_asum(count, bottom_diff) / num;
@@ -98,6 +107,15 @@ void GeneralTripletLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& to
 
     for (int i = 0; i < num; ++i) {
       Dtype same_distance = bottom_data[i * dim + static_cast<int>(label[i])];
+      if (positive_first_ && same_distance > positive_upper_bound_) {
+        bottom_diff[i * dim + static_cast<int>(label[i])] = positive_weight_;
+        for (int j = 0; j < dim; ++j) {
+          if (j != static_cast<int>(label[i])) {
+            bottom_diff[i * dim + j] = Dtype(0);
+          }
+        }
+        continue;
+      }
       int negative_sum = 0;
       if (hardest_only_) {
         if (hardest_index_data[i] >= 0 && bottom_data[i * dim + hardest_index_data[i]]) {
