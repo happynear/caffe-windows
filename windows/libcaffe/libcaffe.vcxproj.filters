@@ -423,6 +423,9 @@
     <ClCompile Include="..\..\src\caffe\layers\general_triplet_loss_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\pairwise_layer.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\caffe\proto\caffe.pb.h">
@@ -1001,6 +1004,9 @@
       <Filter>cu\util</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\parameter_layer.cu">
+      <Filter>cu\layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\pairwise_layer.cu">
       <Filter>cu\layers</Filter>
     </CudaCompile>
   </ItemGroup>

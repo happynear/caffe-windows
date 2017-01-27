@@ -430,6 +430,7 @@ message LayerParameter {
   optional SoftTruncationParameter soft_truncation_param = 218;
   optional ProposalParameter proposal_param = 219;
   optional PSROIPoolingParameter psroi_pooling_param = 220;
+  optional PairwiseParameter pairwise_param = 221;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1707,4 +1708,16 @@ message PSROIPoolingParameter {
    required float spatial_scale = 1; 
    required int32 output_dim = 2; // output channel number
    required int32 group_size = 3; // number of groups to encode position-sensitive score maps
+ }
+
+message PairwiseParameter {
+  enum PairwiseOp {
+    SUM = 1;
+    PROD = 2;
+    MAX = 3;
+  }
+
+  optional PairwiseOp operation = 1 [default = SUM]; // reduction operation
+
+  repeated float coeff = 2; // blob-wise coefficient for SUM operation
  }
