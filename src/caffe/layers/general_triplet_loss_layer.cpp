@@ -15,7 +15,7 @@ void GeneralTripletLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bott
   hardest_only_ = this->layer_param_.general_triplet_loss_param().hardest_only();
   positive_weight_ = this->layer_param_.general_triplet_loss_param().positive_weight();
   negative_weight_ = this->layer_param_.general_triplet_loss_param().negative_weight();
-  positive_first_ = this->layer_param_.general_triplet_loss_param().positive_fisrt();
+  positive_first_ = this->layer_param_.general_triplet_loss_param().positive_first();
   positive_upper_bound_ = this->layer_param_.general_triplet_loss_param().positive_upper_bound();
 }
 
