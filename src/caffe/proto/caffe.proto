@@ -1669,6 +1669,8 @@ message GeneralContrastiveParameter {
   optional bool square = 7 [default = false];
   optional bool max_negative_only = 8 [default = false];
   optional bool max_positive_only = 9 [default = false];
+  optional bool positive_first = 10 [default = false];
+  optional float positive_upper_bound = 11 [default = 1.0];
 }
 
 message SoftContrastiveParameter {

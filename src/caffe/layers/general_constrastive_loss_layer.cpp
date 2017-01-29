@@ -19,6 +19,8 @@ void GeneralContrastiveLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& 
   positive_outlier_thresh_ = this->layer_param_.general_contrastive_loss_param().positive_outlier_thresh();
   max_negative_only_ = this->layer_param_.general_contrastive_loss_param().max_negative_only();
   max_positive_only_ = this->layer_param_.general_contrastive_loss_param().max_positive_only();
+  positive_first_ = this->layer_param_.general_contrastive_loss_param().positive_first();
+  positive_upper_bound_ = this->layer_param_.general_contrastive_loss_param().positive_upper_bound();
 }
 
 template <typename Dtype>
@@ -51,6 +53,7 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
   max_positive_index_ = 0;
 
   for (int i = 0; i < num; ++i) {
+    Dtype same_distance = bottom_data[i * dim + static_cast<int>(label[i])];
     if(max_negative_only_) max_negative_index_data[i] = 0;
     for (int j = 0; j < dim; ++j) {
       if (j == static_cast<int>(label[i])) {
@@ -73,6 +76,13 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
         }
         else {
           bottom_diff[i*dim + j] = 0;
+        }
+      }
+    }
+    if (positive_first_ && same_distance > positive_upper_bound_) {
+      for (int j = 0; j < dim; ++j) {
+        if (j != static_cast<int>(label[i])) {
+          bottom_diff[i * dim + j] = Dtype(0);
         }
       }
     }
@@ -124,6 +134,16 @@ void GeneralContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>
     Dtype negative_sum = Dtype(0);
 
     for (int i = 0; i < num; ++i) {
+      Dtype same_distance = bottom_data[i * dim + static_cast<int>(label[i])];
+      if (positive_first_ && same_distance > positive_upper_bound_) {
+        bottom_diff[i * dim + static_cast<int>(label[i])] = positive_weight_;
+        for (int j = 0; j < dim; ++j) {
+          if (j != static_cast<int>(label[i])) {
+            bottom_diff[i * dim + j] = Dtype(0);
+          }
+        }
+        continue;
+      }
       for (int j = 0; j < dim; ++j) {
         if (j == static_cast<int>(label[i])) {
           if (bottom_data[i * dim + j] > positive_margin_ && bottom_data[i * dim + j] < positive_outlier_thresh_
