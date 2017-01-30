@@ -539,6 +539,8 @@ message BatchNormParameter {
   // Small value to add to the variance estimate so that we don't divide by
   // zero.
   optional float eps = 3 [default = 1e-5];
+  optional bool disable_mean = 4 [default = false];
+  optional bool disable_variance = 5 [default = false];
 }
 
 message BiasParameter {
@@ -881,6 +883,7 @@ message InnerDistanceParameter {
   optional bool transpose = 6 [default = false];
   optional string distance_type = 7 [default = "L2"];
   optional bool normalize = 8 [default = false];
+  optional bool update_center_only = 9 [default = false];
 }
 
 message InputParameter {
