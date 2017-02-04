@@ -14,8 +14,10 @@ void NoiseLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   if (this->phase_ == TRAIN) {
     Blob<Dtype> mask;
     mask.ReshapeLike(*bottom[0]);
+    Dtype data_magnitude = sqrt(bottom[0]->sumsq_data() / Dtype(bottom[0]->count()));
     if (this->layer_param_.noise_param().has_gaussian_std()) {
-      caffe_gpu_rng_gaussian<Dtype>(count, (Dtype)this->layer_param_.noise_param().bias(), (Dtype)this->layer_param_.noise_param().gaussian_std(), mask.mutable_gpu_data());
+      caffe_gpu_rng_gaussian<Dtype>(count, (Dtype)this->layer_param_.noise_param().bias(), 
+                                    data_magnitude * (Dtype)this->layer_param_.noise_param().gaussian_std(), mask.mutable_gpu_data());
     }
     else if (this->layer_param_.noise_param().has_uniform_range()) {
       caffe_gpu_rng_uniform<Dtype>(count, (Dtype)this->layer_param_.noise_param().bias() - (Dtype)this->layer_param_.noise_param().uniform_range(),

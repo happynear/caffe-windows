@@ -237,6 +237,7 @@ namespace caffe {
 		Blob<Dtype> diff_;
 		Blob<Dtype> errors_;
 		bool has_weights_;
+    Dtype turn_point_;
 	};
 
   /* Yuanyang adding triplet loss layer */
