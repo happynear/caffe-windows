@@ -114,6 +114,7 @@ namespace caffe {
     string filename;
     char this_line[1024];
     label_count = 0;
+    string last_filename = "";
 
     while (!infile.eof()) {
       infile.getline(this_line, 1024);
@@ -121,6 +122,7 @@ namespace caffe {
       stream << this_line;
       stream >> filename;
       if (filename.length() < 3) break;
+      if (filename == last_filename) break;
       Dtype label;
       shared_ptr<vector<Dtype> > labels_ptr(new vector<Dtype>);
       while (!stream.eof()) {
@@ -135,6 +137,7 @@ namespace caffe {
         CHECK_EQ(label_count, labels_ptr->size()) << "label count do not match for file:" << filename;
       }
       lines_.push_back(std::make_pair(filename, labels_ptr));
+      last_filename = filename;
     }
 
     if (image_data_param.shuffle()) {
@@ -258,14 +261,16 @@ namespace caffe {
         trans_time += timer.MicroSeconds();
 
         valid_sample = true;
-        for (int point_id = 0; point_id < image_data_param.face_point_num(); ++point_id) {
-          if (prefetch_label[item_id * label_count + point_id * 2] < -0.45 * new_width || prefetch_label[item_id * label_count + point_id * 2] > 0.45 * new_width
-              || prefetch_label[item_id * label_count + point_id * 2 + 1] < -0.45 * new_height || prefetch_label[item_id * label_count + point_id * 2 + 1] > 0.45 * new_height) {
-            valid_sample = false;
+        if (image_data_param.face_transform()) {
+          for (int point_id = 0; point_id < image_data_param.face_point_num(); ++point_id) {
+            if (prefetch_label[item_id * label_count + point_id * 2] < -0.45 * new_width || prefetch_label[item_id * label_count + point_id * 2] > 0.45 * new_width
+                || prefetch_label[item_id * label_count + point_id * 2 + 1] < -0.45 * new_height || prefetch_label[item_id * label_count + point_id * 2 + 1] > 0.45 * new_height) {
+              valid_sample = false;
+            }
           }
-        }
-        if (!valid_sample) {
-          LOG(INFO) << "skip " << lines_[lines_id_].first;
+          if (!valid_sample) {
+            LOG(INFO) << "skip " << lines_[lines_id_].first;
+          }
         }
         // go to the next iter
         lines_id_++;
