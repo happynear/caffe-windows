@@ -431,6 +431,7 @@ message LayerParameter {
   optional ProposalParameter proposal_param = 219;
   optional PSROIPoolingParameter psroi_pooling_param = 220;
   optional PairwiseParameter pairwise_param = 221;
+  optional SmoothL1Parameter smoothl1_param = 222;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1728,3 +1729,7 @@ message PairwiseParameter {
 
   repeated float coeff = 2; // blob-wise coefficient for SUM operation
  }
+
+ message SmoothL1Parameter {
+  optional float turn_point = 1 [default = 1];
+}
