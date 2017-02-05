@@ -432,6 +432,9 @@
     <ClCompile Include="..\..\src\caffe\layers\correlation_loss_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\batch_contrastive_loss_layer.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\caffe\proto\caffe.pb.h">
@@ -775,6 +778,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\caffe\util\nms.hpp">
       <Filter>include\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\caffe\layers\batch_contrastive_loss_layer.hpp">
+      <Filter>include\layers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

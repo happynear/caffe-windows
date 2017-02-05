@@ -432,6 +432,7 @@ message LayerParameter {
   optional PSROIPoolingParameter psroi_pooling_param = 220;
   optional PairwiseParameter pairwise_param = 221;
   optional SmoothL1Parameter smoothl1_param = 222;
+  optional BatchContrastiveParameter batch_contrastive_loss_param = 223;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1675,6 +1676,14 @@ message GeneralContrastiveParameter {
   optional bool max_positive_only = 9 [default = false];
   optional bool positive_first = 10 [default = false];
   optional float positive_upper_bound = 11 [default = 1.0];
+}
+
+message BatchContrastiveParameter {
+  optional float positive_margin = 1 [default = 1.0];
+  optional float negative_margin = 2 [default = 1.0];
+  optional float positive_weight = 3 [default = 1.0];
+  optional float negative_weight = 4 [default = 1.0];
+  optional bool max_only = 5 [default = false];
 }
 
 message SoftContrastiveParameter {

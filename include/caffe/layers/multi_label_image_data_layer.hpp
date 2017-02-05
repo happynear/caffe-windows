@@ -40,6 +40,7 @@ namespace caffe {
     vector<std::pair<std::string, shared_ptr<vector<Dtype> > > > lines_;
     int label_count;
     int lines_id_;
+    bool balance_;
   };
 
 }  // namespace caffe
