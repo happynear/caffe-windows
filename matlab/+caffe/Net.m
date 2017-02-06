@@ -151,6 +151,9 @@ classdef Net < handle
     function reshape(self)
       caffe_('net_reshape', self.hNet_self);
     end
+    function net_clear_param_diff(self)
+      caffe_('net_clear_param_diff', self.hNet_self);
+    end
     function save(self, weights_file)
       CHECK(ischar(weights_file), 'weights_file must be a string');
       caffe_('net_save', self.hNet_self, weights_file);
