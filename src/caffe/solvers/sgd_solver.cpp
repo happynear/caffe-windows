@@ -99,6 +99,17 @@ void SGDSolver<Dtype>::ClipGradients() {
 }
 
 template <typename Dtype>
+void SGDSolver<Dtype>::ClampWeights() {
+  if (!this->param_.has_clamp_weights_lower() && !this->param_.has_clamp_weights_upper()) { return; }
+  const Dtype lower_bound = this->param_.clamp_weights_lower();
+  const Dtype upper_bound = this->param_.clamp_weights_upper();
+  const vector<Blob<Dtype>*>& net_params = this->net_->learnable_params();
+  for (int i = 0; i < net_params.size(); ++i) {
+    net_params[i]->Clamp(lower_bound, upper_bound);
+  }
+}
+
+template <typename Dtype>
 void SGDSolver<Dtype>::ApplyUpdate() {
   Dtype rate = GetLearningRate();
   if (this->param_.display() && this->iter_ % this->param_.display() == 0) {
@@ -112,6 +123,7 @@ void SGDSolver<Dtype>::ApplyUpdate() {
     Regularize(param_id);
     ComputeUpdateValue(param_id, rate);
   }
+  ClampWeights();
 #ifdef _MSC_VER
   if (Caffe::root_solver() && this->param_.display() && this->iter_ % this->param_.display() == 0) {
     //string gradient_norm = "layer blob norm:";
