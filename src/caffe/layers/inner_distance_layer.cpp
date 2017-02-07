@@ -16,13 +16,15 @@ void InnerDistanceLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   distance_type_ = this->layer_param_.inner_distance_param().distance_type();
   normalize_ = this->layer_param_.inner_distance_param().normalize();
   update_center_only_ = this->layer_param_.inner_distance_param().update_center_only();
-  N_ = num_output;
+  
   const int axis = bottom[0]->CanonicalAxisIndex(
       this->layer_param_.inner_distance_param().axis());
   // Dimensions starting from "axis" are "flattened" into a single
   // length K_ vector. For example, if bottom[0]'s shape is (N, C, H, W),
   // and axis == 1, N inner products with dimension CHW are performed.
   K_ = bottom[0]->count(axis);
+  if (bottom.size() == 1) N_ = num_output;
+  else N_ = bottom[1]->count(0, axis);
   // Check if we need to set up the weights
   if (this->blobs_.size() > 0 || (!update_center_only_ && bottom.size() > 1)
       || (update_center_only_ && bottom.size() > 2)) {
@@ -59,6 +61,7 @@ void InnerDistanceLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   // The first "axis" dimensions are independent inner products; the total
   // number of these is M_, the product over these dimensions.
   M_ = bottom[0]->count(0, axis);
+  if (bottom.size() >= 2) N_ = bottom[1]->count(0, axis);
   // The top shape will be the bottom shape with the flattened axes dropped,
   // and replaced by a single axis with dimension num_output (N_).
   vector<int> top_shape = bottom[0]->shape();
