@@ -103,6 +103,8 @@ namespace caffe {
     const int new_width = image_data_param.new_width();
     const bool is_color = image_data_param.is_color();
     string root_folder = image_data_param.root_folder();
+    balance_ = image_data_param.balance_class();
+    balance_by_ = image_data_param.balance_by();
 
     CHECK((new_height == 0 && new_width == 0) ||
           (new_height > 0 && new_width > 0)) << "Current implementation requires "
@@ -115,6 +117,7 @@ namespace caffe {
     char this_line[1024];
     label_count = 0;
     string last_filename = "";
+    int max_label = 0;
 
     while (!infile.eof()) {
       infile.getline(this_line, 1024);
@@ -138,6 +141,17 @@ namespace caffe {
       }
       lines_.push_back(std::make_pair(filename, labels_ptr));
       last_filename = filename;
+      if ((*labels_ptr)[balance_by_] > max_label) max_label = (*labels_ptr)[balance_by_];
+    }
+
+    if (balance_) {
+      num_samples_ = vector<int>(max_label + 1);
+      filename_by_class_ = vector<vector<std::pair<std::string, shared_ptr<vector<Dtype> > > > >(max_label + 1);
+      for (auto& l : lines_) {
+        num_samples_[(*l.second)[balance_by_]]++;
+        filename_by_class_[(*l.second)[balance_by_]].push_back(l);
+      }
+      class_id_ = 0;
     }
 
     if (image_data_param.shuffle()) {

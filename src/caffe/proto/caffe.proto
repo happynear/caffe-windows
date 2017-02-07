@@ -849,6 +849,7 @@ message ImageDataParameter {
   optional bool mirror = 6 [default = false];
   optional string root_folder = 12 [default = ""];
   optional bool balance_class = 22 [default = false];
+  optional uint32 balance_by = 23 [default = 0];
 }
 
 message InfogainLossParameter {
