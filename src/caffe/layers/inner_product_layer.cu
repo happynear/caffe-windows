@@ -53,7 +53,7 @@ void InnerProductLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
                          weight, bottom_data, (Dtype)0., top_data);
     if (bias_term_)
       caffe_gpu_axpy<Dtype>(N_, bias_multiplier_.cpu_data()[0],
-                            this->blobs_[1]->gpu_data(), top_data);
+                            bottom.size() == 3 ? bottom[2]->gpu_data() : this->blobs_[1]->gpu_data(), top_data);
   } else {
     caffe_gpu_gemm<Dtype>(CblasNoTrans,
                           transpose_ ? CblasNoTrans : CblasTrans,
@@ -62,7 +62,7 @@ void InnerProductLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     if (bias_term_)
       caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, M_, N_, 1, (Dtype)1.,
                             bias_multiplier_.gpu_data(),
-                            this->blobs_[1]->gpu_data(), (Dtype)1., top_data);
+                            bottom.size() == 3 ? bottom[2]->gpu_data() : this->blobs_[1]->gpu_data(), (Dtype)1., top_data);
   }
 }
 
@@ -89,12 +89,13 @@ void InnerProductLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
           (Dtype)1., weight_diff);
     }
   }
-  if (bias_term_ && this->param_propagate_down_[1]) {
+  if (bias_term_ && (this->param_propagate_down_[1] ||
+    (bottom.size() == 3 && propagate_down[2]))) {
     const Dtype* top_diff = top[0]->gpu_diff();
     // Gradient with respect to bias
     caffe_gpu_gemv<Dtype>(CblasTrans, M_, N_, (Dtype)1., top_diff,
-        bias_multiplier_.gpu_data(), (Dtype)1.,
-        this->blobs_[1]->mutable_gpu_diff());
+                          bias_multiplier_.gpu_data(), (Dtype)1.,
+                          bottom.size() == 3 ? bottom[2]->mutable_gpu_diff() : this->blobs_[1]->mutable_gpu_diff());
   }
   if (propagate_down[0]) {
     const Dtype* top_diff = top[0]->gpu_diff();
