@@ -105,6 +105,8 @@ namespace caffe {
     string root_folder = image_data_param.root_folder();
     balance_ = image_data_param.balance_class();
     balance_by_ = image_data_param.balance_by();
+    label_cut_start_ = image_data_param.label_cut_start();
+    label_cut_end_ = image_data_param.label_cut_start();
 
     CHECK((new_height == 0 && new_width == 0) ||
           (new_height > 0 && new_width > 0)) << "Current implementation requires "
@@ -192,7 +194,7 @@ namespace caffe {
       << top[0]->channels() << "," << top[0]->height() << ","
       << top[0]->width();
     // label
-    vector<int> label_shape = { batch_size, label_count };
+    vector<int> label_shape = { batch_size - label_cut_start_ - label_cut_end_, label_count };
     top[1]->Reshape(label_shape);
     for (int i = 0; i < this->prefetch_.size(); ++i) {
       this->prefetch_[i]->label_.Reshape(label_shape);
@@ -258,8 +260,10 @@ namespace caffe {
         CHECK(cv_img.data) << "Could not load " << lines_[lines_id_].first;
         read_time += timer.MicroSeconds();
         timer.Start();
-        for (int label_id = 0; label_id < label_count; ++label_id) {
-          prefetch_label[item_id * label_count + label_id] = (*lines_[lines_id_].second)[label_id];
+        if (item_id >= label_cut_start_ && item_id < batch_size - label_cut_end_) {
+          for (int label_id = 0; label_id < label_count; ++label_id) {
+            prefetch_label[(item_id - label_cut_start_) * label_count + label_id] = (*lines_[lines_id_].second)[label_id];
+          }
         }
         // Apply transformations (mirror, crop...) to the image
         if (image_data_param.face_transform()) {

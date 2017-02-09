@@ -46,6 +46,8 @@ namespace caffe {
     vector<Dtype> class_weights_;
     vector<vector<std::pair<std::string, shared_ptr<vector<Dtype> > > > > filename_by_class_;
     int class_id_;
+    int label_cut_start_;
+    int label_cut_end_;
   };
 
 }  // namespace caffe

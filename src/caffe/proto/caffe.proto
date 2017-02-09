@@ -850,6 +850,8 @@ message ImageDataParameter {
   optional string root_folder = 12 [default = ""];
   optional bool balance_class = 22 [default = false];
   optional uint32 balance_by = 23 [default = 0];
+  optional uint32 label_cut_start = 24 [default = 0];
+  optional uint32 label_cut_end = 25 [default = 0];
 }
 
 message InfogainLossParameter {
