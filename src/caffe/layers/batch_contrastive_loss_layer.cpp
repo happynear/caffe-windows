@@ -56,7 +56,7 @@ void BatchContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
             max_positive_1_ = i;
             max_positive_2_ = j;
           }
-          loss[0] += positive_weight_;
+          loss[0] += positive_weight_ - positive_margin_;
         }
       }
       else {
@@ -73,8 +73,18 @@ void BatchContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
       }
     }
   }
-  
-  loss[0] /= num * (num - 1) / 2;
+  if (max_only_) {
+    loss[0] = Dtype(0);
+    if (max_positive_1_ >= 0 && max_positive_2_ >= 0) {
+      loss[0] += bottom_data[max_positive_1_ * num + max_positive_2_] - positive_margin_;
+    }
+    if (min_negative_1_ >= 0 && min_negative_2_ >= 0) {
+      loss[0] += negative_margin_ - bottom_data[min_negative_1_ * num + min_negative_2_];
+    }
+  }
+  else {
+    loss[0] /= num * (num - 1) / 2;
+  }
   if (top.size() >= 2) {
     Dtype* distances = top[1]->mutable_cpu_data();
     distances[0] = positive_distance / positive_count;
@@ -97,8 +107,12 @@ void BatchContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& 
 
     caffe_set(num*num, Dtype(0), bottom_diff);
     if (max_only_) {
-      bottom_diff[max_positive_1_ * num + max_positive_2_] = positive_weight_;
-      bottom_diff[min_negative_1_ * num + min_negative_2_] = -negative_weight_;
+      if (max_positive_1_ >= 0 && max_positive_2_ >= 0) {
+        bottom_diff[max_positive_1_ * num + max_positive_2_] = positive_weight_;
+      }
+      if (min_negative_1_ >= 0 && min_negative_2_ >= 0) {
+        bottom_diff[min_negative_1_ * num + min_negative_2_] = -negative_weight_;
+      }
     }
     else {
       for (int i = 0; i < num; ++i) {
@@ -118,7 +132,12 @@ void BatchContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& 
     }
 
     const Dtype loss_weight = top[0]->cpu_diff()[0];
-    caffe_scal(bottom[0]->count(), loss_weight / num, bottom_diff);
+    if (max_only_) {
+      caffe_scal(bottom[0]->count(), loss_weight / 2, bottom_diff);
+    }
+    else {
+      caffe_scal(bottom[0]->count(), loss_weight / num, bottom_diff);
+    }
   }
 }
 
