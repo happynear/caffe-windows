@@ -24,7 +24,7 @@ void InnerDistanceLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   // and axis == 1, N inner products with dimension CHW are performed.
   K_ = bottom[0]->count(axis);
   if (bottom.size() == 1) N_ = num_output;
-  else N_ = bottom[1]->count(0, axis);
+  else N_ = bottom[1]->num();
   // Check if we need to set up the weights
   if (this->blobs_.size() > 0 || (!update_center_only_ && bottom.size() > 1)
       || (update_center_only_ && bottom.size() > 2)) {
@@ -61,7 +61,7 @@ void InnerDistanceLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   // The first "axis" dimensions are independent inner products; the total
   // number of these is M_, the product over these dimensions.
   M_ = bottom[0]->count(0, axis);
-  if (bottom.size() >= 2) N_ = bottom[1]->count(0, axis);
+  if (bottom.size() >= 2) N_ = bottom[1]->num();
   // The top shape will be the bottom shape with the flattened axes dropped,
   // and replaced by a single axis with dimension num_output (N_).
   vector<int> top_shape = bottom[0]->shape();
