@@ -99,7 +99,7 @@ message NetParameter {
 // NOTE
 // Update the next available ID when you add a new SolverParameter field.
 //
-// SolverParameter next available ID: 44 (last added: clamp_weights)
+// SolverParameter next available ID: 45 (last added: clip_weights)
 message SolverParameter {
   //////////////////////////////////////////////////////////////////////////////
   // Specifying the train and test networks
@@ -190,6 +190,7 @@ message SolverParameter {
   // Clamp the weights between lower and upper bound.
   optional float clamp_weights_lower = 42 [default = -999999.9];
   optional float clamp_weights_upper = 43 [default = 999999.9];
+  optional float clip_weights = 44 [default = -1];
 
   optional int32 snapshot = 14 [default = 0]; // The snapshot interval
   optional string snapshot_prefix = 15; // The prefix for the snapshot.

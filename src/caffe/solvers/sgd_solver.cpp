@@ -78,6 +78,27 @@ void SGDSolver<Dtype>::PreSolve() {
 }
 
 template <typename Dtype>
+void SGDSolver<Dtype>::ClipWeights() {
+  const Dtype clip_weights = this->param_.clip_weights();
+  if (clip_weights < 0) { return; }
+  const vector<Blob<Dtype>*>& net_params = this->net_->learnable_params();
+  Dtype sumsq_data = 0;
+  for (int i = 0; i < net_params.size(); ++i) {
+    sumsq_data += net_params[i]->sumsq_data();
+  }
+  const Dtype l2norm_data = std::sqrt(sumsq_data);
+  if (l2norm_data > clip_weights) {
+    Dtype scale_factor = clip_weights / l2norm_data;
+    LOG(INFO) << "Weight clipping: scaling down weights (L2 norm "
+        << l2norm_data << " > " << clip_weights << ") "
+        << "by scale factor " << scale_factor;
+    for (int i = 0; i < net_params.size(); ++i) {
+      net_params[i]->scale_data(scale_factor);
+    }
+  }
+}
+
+template <typename Dtype>
 void SGDSolver<Dtype>::ClipGradients() {
   const Dtype clip_gradients = this->param_.clip_gradients();
   if (clip_gradients < 0) { return; }
@@ -90,8 +111,8 @@ void SGDSolver<Dtype>::ClipGradients() {
   if (l2norm_diff > clip_gradients) {
     Dtype scale_factor = clip_gradients / l2norm_diff;
     LOG(INFO) << "Gradient clipping: scaling down gradients (L2 norm "
-        << l2norm_diff << " > " << clip_gradients << ") "
-        << "by scale factor " << scale_factor;
+      << l2norm_diff << " > " << clip_gradients << ") "
+      << "by scale factor " << scale_factor;
     for (int i = 0; i < net_params.size(); ++i) {
       net_params[i]->scale_diff(scale_factor);
     }
@@ -123,6 +144,7 @@ void SGDSolver<Dtype>::ApplyUpdate() {
     Regularize(param_id);
     ComputeUpdateValue(param_id, rate);
   }
+  ClipWeights();
   ClampWeights();
 #ifdef _MSC_VER
   if (Caffe::root_solver() && this->param_.display() && this->iter_ % this->param_.display() == 0) {
