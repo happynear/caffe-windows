@@ -257,39 +257,45 @@ namespace caffe {
           cv_img = ReadImageToCVMat(root_folder + lines_[lines_id_].first,
                                     new_height, new_width, is_color);
         }
-        CHECK(cv_img.data) << "Could not load " << lines_[lines_id_].first;
-        read_time += timer.MicroSeconds();
-        timer.Start();
-        if (item_id >= label_cut_start_ && item_id < batch_size - label_cut_end_) {
-          for (int label_id = 0; label_id < label_count; ++label_id) {
-            prefetch_label[(item_id - label_cut_start_) * label_count + label_id] = (*lines_[lines_id_].second)[label_id];
-          }
+        if (!cv_img.data) {
+          LOG(INFO) << "Could not load " << lines_[lines_id_].first;
+          valid_sample = false;
         }
-        // Apply transformations (mirror, crop...) to the image
-        if (image_data_param.face_transform()) {
-          extract_face(cv_img, &prefetch_label[item_id * label_count], image_data_param.face_point_num(),
-                       image_data_param.new_width(), image_data_param.new_height(), image_data_param.max_random_shift(),
-                       image_data_param.max_shear_ratio(), image_data_param.max_aspect_ratio(), image_data_param.max_rotate_angle(),
-                       image_data_param.min_random_scale(), image_data_param.max_random_scale(),
-                       image_data_param.face_mirror());
-        }
-        int offset = batch->data_.offset(item_id);
-        this->transformed_data_.set_cpu_data(prefetch_data + offset);
-        this->data_transformer_->Transform(cv_img, &(this->transformed_data_));
-        trans_time += timer.MicroSeconds();
-
-        valid_sample = true;
-        if (image_data_param.face_transform()) {
-          for (int point_id = 0; point_id < image_data_param.face_point_num(); ++point_id) {
-            if (prefetch_label[item_id * label_count + point_id * 2] < -0.45 * new_width || prefetch_label[item_id * label_count + point_id * 2] > 0.45 * new_width
-                || prefetch_label[item_id * label_count + point_id * 2 + 1] < -0.45 * new_height || prefetch_label[item_id * label_count + point_id * 2 + 1] > 0.45 * new_height) {
-              valid_sample = false;
+        else{
+          read_time += timer.MicroSeconds();
+          timer.Start();
+          if (item_id >= label_cut_start_ && item_id < batch_size - label_cut_end_) {
+            for (int label_id = 0; label_id < label_count; ++label_id) {
+              prefetch_label[(item_id - label_cut_start_) * label_count + label_id] = (*lines_[lines_id_].second)[label_id];
             }
           }
-          if (!valid_sample) {
-            LOG(INFO) << "skip " << lines_[lines_id_].first;
+          // Apply transformations (mirror, crop...) to the image
+          if (image_data_param.face_transform()) {
+            extract_face(cv_img, &prefetch_label[item_id * label_count], image_data_param.face_point_num(),
+                         image_data_param.new_width(), image_data_param.new_height(), image_data_param.max_random_shift(),
+                         image_data_param.max_shear_ratio(), image_data_param.max_aspect_ratio(), image_data_param.max_rotate_angle(),
+                         image_data_param.min_random_scale(), image_data_param.max_random_scale(),
+                         image_data_param.face_mirror());
+          }
+          int offset = batch->data_.offset(item_id);
+          this->transformed_data_.set_cpu_data(prefetch_data + offset);
+          this->data_transformer_->Transform(cv_img, &(this->transformed_data_));
+          trans_time += timer.MicroSeconds();
+
+          valid_sample = true;
+          if (image_data_param.face_transform()) {
+            for (int point_id = 0; point_id < image_data_param.face_point_num(); ++point_id) {
+              if (prefetch_label[item_id * label_count + point_id * 2] < -0.45 * new_width || prefetch_label[item_id * label_count + point_id * 2] > 0.45 * new_width
+                  || prefetch_label[item_id * label_count + point_id * 2 + 1] < -0.45 * new_height || prefetch_label[item_id * label_count + point_id * 2 + 1] > 0.45 * new_height) {
+                valid_sample = false;
+              }
+            }
+            if (!valid_sample) {
+              LOG(INFO) << "skip " << lines_[lines_id_].first;
+            }
           }
         }
+        
         // go to the next iter
         lines_id_++;
         if (lines_id_ >= lines_size) {
