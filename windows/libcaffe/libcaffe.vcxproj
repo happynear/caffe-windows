@@ -153,6 +153,7 @@
     <ClCompile Include="..\..\src\caffe\layers\multinomial_logistic_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\multi_label_image_data_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\mvn_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\nca_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\neuron_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\noise_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\normalize_layer.cpp" />
