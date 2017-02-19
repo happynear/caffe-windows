@@ -439,6 +439,7 @@ message LayerParameter {
   optional SmoothL1Parameter smoothl1_param = 222;
   optional BatchContrastiveParameter batch_contrastive_loss_param = 223;
   optional PermuteParameter permute_param = 224;
+  optional TruncationParameter truncation_param = 225;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1721,6 +1722,11 @@ message GeneralTripletParameter {
 
 message SoftTruncationParameter {
   optional float c = 1 [default = 2];
+}
+
+message TruncationParameter {
+  optional float lower_bound = 1 [default = 0];
+  optional float upper_bound = 2 [default = 5];
 }
 
 // Message that stores parameters used by ProposalLayer
