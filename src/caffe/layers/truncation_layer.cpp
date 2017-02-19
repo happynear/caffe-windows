@@ -14,7 +14,7 @@ namespace caffe {
     Dtype lower_bound = this->layer_param_.truncation_param().lower_bound();
     Dtype upper_bound = this->layer_param_.truncation_param().upper_bound();
     for (int i = 0; i < count; ++i) {
-      top_data[i] = min(max(bottom_data[i], lower_bound), upper_bound);
+      top_data[i] = std::min(std::max(bottom_data[i], lower_bound), upper_bound);
     }
   }
 
