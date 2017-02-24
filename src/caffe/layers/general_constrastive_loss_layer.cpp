@@ -21,6 +21,7 @@ void GeneralContrastiveLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& 
   max_positive_only_ = this->layer_param_.general_contrastive_loss_param().max_positive_only();
   positive_first_ = this->layer_param_.general_contrastive_loss_param().positive_first();
   positive_upper_bound_ = this->layer_param_.general_contrastive_loss_param().positive_upper_bound();
+  exp_negative_weight_ = this->layer_param_.general_contrastive_loss_param().exp_negative_weight();
 }
 
 template <typename Dtype>
@@ -66,8 +67,13 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
       }
       else {
         if (bottom_data[i * dim + j] < negative_margin_) {
-          bottom_diff[i * dim + j] = std::max(
-            Dtype(0), negative_margin_ - bottom_data[i * dim + j]) * negative_weight_;
+          if (exp_negative_weight_) {
+            bottom_diff[i * dim + j] = exp(-bottom_data[i * dim + j]) * negative_weight_;
+          }
+          else {
+            bottom_diff[i * dim + j] = std::max(
+              Dtype(0), negative_margin_ - bottom_data[i * dim + j]) * negative_weight_;
+          }
           negative_distance += std::max(
             Dtype(0), negative_margin_ - bottom_data[i * dim + j]);
           if (max_negative_only_ && bottom_diff[i * dim + j] > bottom_diff[i*dim + max_negative_index_data[i]]) {
@@ -160,9 +166,15 @@ void GeneralContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>
               bottom_diff[i * dim + j] = 0;
             }
             else {
-              Dtype distance_fix = 1;// std::min(Dtype(1), (negative_margin_ - bottom_data[i * dim + j]) / (bottom_data[i * dim + j] + Dtype(1e-6)));
-              bottom_diff[i * dim + j] = -negative_weight_ * distance_fix;
-              negative_sum += negative_weight_ * distance_fix;
+              if (exp_negative_weight_) {
+                bottom_diff[i * dim + j] = -1 * exp(-bottom_data[i * dim + j]) * negative_weight_;
+                negative_sum += exp(-bottom_data[i * dim + j]) * negative_weight_;
+              }
+              else {
+                bottom_diff[i * dim + j] = -1 * negative_weight_;
+                negative_sum += negative_weight_;
+              }
+              
             }
           }
           else{

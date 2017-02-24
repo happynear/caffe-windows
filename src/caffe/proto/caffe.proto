@@ -1692,6 +1692,7 @@ message GeneralContrastiveParameter {
   optional bool max_positive_only = 9 [default = false];
   optional bool positive_first = 10 [default = false];
   optional float positive_upper_bound = 11 [default = 1.0];
+  optional bool exp_negative_weight = 12 [default = false];
 }
 
 message BatchContrastiveParameter {
