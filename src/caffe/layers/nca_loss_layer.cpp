@@ -9,6 +9,7 @@ template <typename Dtype>
 void NCALossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
                                                const vector<Blob<Dtype>*>& top) {
   LossLayer<Dtype>::LayerSetUp(bottom, top);
+  min_negative_only_ = this->layer_param_.nca_param().min_negative_only();
   CHECK_GE(bottom.size(), 2);
 }
 
@@ -20,6 +21,9 @@ void NCALossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
     // positive distance, negative distance.
     top[1]->Reshape({ 2 });
   }
+  if (min_negative_only_) {
+    min_negative_index_.Reshape({ bottom[0]->num() });
+  }
 }
 
 template <typename Dtype>
@@ -27,6 +31,8 @@ void NCALossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
   const Dtype* bottom_data = bottom[0]->cpu_data();
   const Dtype* label = bottom[1]->cpu_data();
+  int* min_negative_index_data = NULL;
+  if (min_negative_only_) min_negative_index_data = min_negative_index_.mutable_cpu_data();
   int num = bottom[0]->num();
   int count = bottom[0]->count();
   int dim = count / num;
@@ -35,6 +41,7 @@ void NCALossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   Dtype* loss = top[0]->mutable_cpu_data();
 
   for (int i = 0; i < num; ++i) {
+    if (min_negative_only_) min_negative_index_data[i] = 0;
     for (int j = 0; j < dim; ++j) {
       if (j == static_cast<int>(label[i])) {
         positive_distance += bottom_data[i * dim + j];
@@ -42,8 +49,14 @@ void NCALossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
       }
       else {
         negative_distance += bottom_data[i * dim + j];
-        loss[0] += exp(-bottom_data[i * dim + j]);
+        if(!min_negative_only_) loss[0] += exp(-bottom_data[i * dim + j]);
+        if (min_negative_only_ && bottom_data[i * dim + j] < bottom_data[i*dim + min_negative_index_data[i]]) {
+          min_negative_index_data[i] = j;
+        }
       }
+    }
+    if (min_negative_only_) {
+      loss[0] += exp(-bottom_data[i * dim + min_negative_index_data[i]]);
     }
   }
   
@@ -66,6 +79,8 @@ void NCALossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     const Dtype* bottom_data = bottom[0]->cpu_data();
     Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
     const Dtype* label = bottom[1]->cpu_data();
+    const int* min_negative_index_data = NULL;
+    if (min_negative_only_) min_negative_index_data = min_negative_index_.cpu_data();
     int num = bottom[0]->num();
     int count = bottom[0]->count();
     int dim = count / num;
@@ -73,12 +88,18 @@ void NCALossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     Dtype negative_sum = Dtype(0);
 
     for (int i = 0; i < num; ++i) {
-      for (int j = 0; j < dim; ++j) {
-        if (j == static_cast<int>(label[i])) {
-          bottom_diff[i * dim + j] = 1;
-        }
-        else {
-          bottom_diff[i * dim + j] = -1 * exp(-bottom_data[i * dim + j]);
+      if (min_negative_only_) {
+        bottom_diff[i * dim + static_cast<int>(label[i])] = 1;
+        bottom_diff[i * dim + min_negative_index_data[i]] = -1 * exp(-bottom_data[i * dim + min_negative_index_data[i]]);
+      }
+      else {
+        for (int j = 0; j < dim; ++j) {
+          if (j == static_cast<int>(label[i])) {
+            bottom_diff[i * dim + j] = 1;
+          }
+          else {
+            bottom_diff[i * dim + j] = -1 * exp(-bottom_data[i * dim + j]);
+          }
         }
       }
     }
