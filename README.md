@@ -19,7 +19,7 @@ Check out the [project site](http://caffe.berkeleyvision.org) for all the detail
 and step-by-step examples.
 
 ## Windows Setup
-**Requirements**: Visual Studio 2015 update 1, CUDA 8.0, third party libraries: https://pan.baidu.com/s/1mhZgDeS . Please extract the archive into `./windows/thirdparty/`.
+**Requirements**: Visual Studio 2015, CUDA 8.0, third party libraries: https://pan.baidu.com/s/1mhZgDeS . Please extract the archive into `./windows/thirdparty/`.
 
 ### Pre-Build Steps
 Copy `.\windows\CommonSettings.props.example` to `.\windows\CommonSettings.props`
@@ -27,7 +27,6 @@ Copy `.\windows\CommonSettings.props.example` to `.\windows\CommonSettings.props
 By defaults Windows build requires `CUDA` and `cuDNN` libraries.
 Both can be disabled by adjusting build variables in `.\windows\CommonSettings.props`.
 Python support is disabled by default, but can be enabled via `.\windows\CommonSettings.props` as well.
-3rd party dependencies required by Caffe are automatically resolved via NuGet.
 
 ### CUDA
 Download `CUDA Toolkit 8.0` [from nVidia website](https://developer.nvidia.com/cuda-toolkit).
