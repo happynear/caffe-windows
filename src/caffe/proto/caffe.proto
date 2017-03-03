@@ -554,6 +554,14 @@ message BatchNormParameter {
   optional float eps = 3 [default = 1e-5];
   optional bool disable_mean = 4 [default = false];
   optional bool disable_variance = 5 [default = false];
+  optional FillerParameter scale_filler = 7;
+  optional FillerParameter bias_filler = 8;
+  enum Engine {
+    DEFAULT = 0;
+    CAFFE = 1;
+    CUDNN = 2;
+  }
+  optional Engine engine = 15 [default = DEFAULT];
 }
 
 message BiasParameter {
@@ -651,8 +659,13 @@ message ConvolutionParameter {
   // implementation; for input blobs with num_axes != 2, this option is
   // ignored and the ND implementation will be used.)
   optional bool force_nd_im2col = 17 [default = false];
-
-  repeated uint32 shape_offset = 19;
+  enum CuDNNConvolutionAlgorithmSeeker {
+    GET    = 0;
+    FINDEX = 1;
+  }
+  //Specifies which cudnn routine should be used to find the best convolution algorithm
+  optional CuDNNConvolutionAlgorithmSeeker cudnn_convolution_algo_seeker = 19 [default = FINDEX];
+  repeated uint32 shape_offset = 20;
 }
 
 message CropParameter {
@@ -1580,11 +1593,20 @@ message PReLUParameter {
 }
 // Message that stores parameters used by BNLayer
 message BNParameter {
-  optional FillerParameter scale_filler = 1; // The filler for the scale
-  optional FillerParameter shift_filler = 2; // The filler for the shift
-  optional float var_eps = 3 [default = 1e-10]; // The epsilon added to variance
-  optional bool moving_average = 4 [default = true]; // whether or not using moving average for inference
-  optional float decay = 5 [default = 0.95]; // The decay factor for moving average
+  optional FillerParameter slope_filler = 1;
+  optional FillerParameter bias_filler = 2;
+  optional float momentum = 3 [default = 0.9];
+  optional float eps = 4 [default = 1e-5];
+  // If true, will use the moving average mean and std for training and test.
+  // Will override the lr_param and freeze all the parameters.
+  // Make sure to initialize the layer properly with pretrained parameters.
+  optional bool frozen = 5 [default = false];
+  enum Engine {
+    DEFAULT = 0;
+    CAFFE = 1;
+    CUDNN = 2;
+  }
+  optional Engine engine = 6 [default = DEFAULT];
 }
 
 // Message that stores parameters used by LocalLayer
@@ -1678,6 +1700,7 @@ message FlipParameter {
 
 message NormalizeParameter {
   optional string normalize_type = 1 [default = "L2"];
+  optional bool rescale = 2 [default = false];
 }
 
 message GeneralContrastiveParameter {

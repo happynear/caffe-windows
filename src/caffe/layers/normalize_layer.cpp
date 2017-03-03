@@ -13,6 +13,8 @@ void NormalizeLayer<Dtype>::LayerSetUp(
   const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top) {
   normalize_type_ =
     this->layer_param_.normalize_param().normalize_type();
+  rescale_ =
+    this->layer_param_.normalize_param().rescale();
 }
 
 template <typename Dtype>

@@ -310,6 +310,7 @@ namespace caffe {
 
 		Blob<Dtype> sum_multiplier_, norm_, squared_;
     std::string normalize_type_;
+    bool rescale_;
 	};
 
 	/**
