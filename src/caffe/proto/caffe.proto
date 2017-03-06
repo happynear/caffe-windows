@@ -722,6 +722,7 @@ message DataParameter {
 
 message DropoutParameter {
   optional float dropout_ratio = 1 [default = 0.5]; // dropout ratio
+  optional bool sqrt_scale = 2 [default = false];
 }
 
 // DummyDataLayer fills any number of arbitrarily shaped blobs with random
