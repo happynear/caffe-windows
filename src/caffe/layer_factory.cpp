@@ -78,11 +78,19 @@ REGISTER_LAYER_CREATOR(Convolution, GetConvolutionLayer);
 template <typename Dtype>
 shared_ptr<Layer<Dtype> > GetBatchNormLayer(const LayerParameter& param) {
   BatchNormParameter_Engine engine = param.batch_norm_param().engine();
-  if (engine == BatchNormParameter_Engine_DEFAULT) {
+  bool has_disable_variance = param.batch_norm_param().has_disable_variance();
+  bool has_disable_mean = param.batch_norm_param().has_disable_mean();
+  
+  if (has_disable_mean || has_disable_variance || param.param_size() == 3 || param.param_size() == 0) {
     engine = BatchNormParameter_Engine_CAFFE;
+  }
+  else {
+    if (engine == BatchNormParameter_Engine_DEFAULT) {
+      engine = BatchNormParameter_Engine_CAFFE;
 #ifdef USE_CUDNN
-    engine = BatchNormParameter_Engine_CUDNN;
+      engine = BatchNormParameter_Engine_CUDNN;
 #endif
+    }
   }
   if (engine == BatchNormParameter_Engine_CAFFE) {
     return shared_ptr<Layer<Dtype> >(new BatchNormLayer<Dtype>(param));
