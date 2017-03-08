@@ -235,6 +235,11 @@ void ProposalLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   }
 }
 
+template <typename Dtype>
+void ProposalLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
+                                        const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
+  NOT_IMPLEMENTED;
+}
 
 INSTANTIATE_LAYER_GPU_FUNCS(ProposalLayer);
 

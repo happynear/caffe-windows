@@ -196,11 +196,11 @@ void BatchNormLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
   if (use_global_stats_) {
     if (disable_variance_) {
       if (bottom[0] != top[0]) {
-        caffe_copy(top[0]->count(), top[0]->gpu_diff(), bottom_diff);
+        caffe_copy(top[0]->count(), top[0]->cpu_diff(), bottom_diff);
       }
     }
     else {
-      caffe_gpu_div(temp_.count(), top_diff, temp_.gpu_data(), bottom_diff);
+      caffe_div(temp_.count(), top_diff, temp_.cpu_data(), bottom_diff);
     }
     return;
   }
