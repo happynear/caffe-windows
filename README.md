@@ -38,7 +38,7 @@ Download `cuDNN v5` [from nVidia website](https://developer.nvidia.com/cudnn).
 Unpack downloaded zip to %CUDA_PATH% (environment variable set by CUDA installer).
 Alternatively, you can unpack zip to any location and set `CuDnnPath` to point to this location in `.\windows\CommonSettings.props`.
 `CuDnnPath` defined in `.\windows\CommonSettings.props`.
-Also, you can disable cuDNN by setting `UseCuDNN` to `false` in the property file.
+Also, you can disable cuDNN by setting `UseCuDNN` and `USE_NCCL` to `false` in the property file.
 
 ### Python
 To build Caffe Python wrapper set `PythonSupport` to `true` in `.\windows\CommonSettings.props`.
