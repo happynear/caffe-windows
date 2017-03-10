@@ -1,140 +1,148 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <ImportGroup Label="PropertySheets" />
-    <PropertyGroup Label="UserMacros">
-        <BuildDir>$(SolutionDir)..\Build</BuildDir>
-        <!--NOTE: CpuOnlyBuild and UseCuDNN flags can't be set at the same time.-->
-        <CpuOnlyBuild>false</CpuOnlyBuild>
-        <UseCuDNN>true</UseCuDNN>
-        <UseNCCL>true</UseNCCL>
-        <CudaVersion>8.0</CudaVersion>
-        <!-- NOTE: If Python support is enabled, PythonDir (below) needs to be
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <BuildDir>$(SolutionDir)..\Build</BuildDir>
+    <!--NOTE: CpuOnlyBuild and UseCuDNN flags can't be set at the same time.-->
+    <CpuOnlyBuild>false</CpuOnlyBuild>
+    <UseCuDNN>true</UseCuDNN>
+    <UseNCCL>true</UseNCCL>
+    <CudaVersion>8.0</CudaVersion>
+    <!-- NOTE: If Python support is enabled, PythonDir (below) needs to be
          set to the root of your Python installation. If your Python installation
          does not contain debug libraries, debug build will not work. -->
-        <PythonSupport>true</PythonSupport>
-        
-        <!-- NOTE: If Matlab support is enabled, MatlabDir (below) needs to be
+    <PythonSupport>true</PythonSupport>
+
+    <!-- NOTE: If Matlab support is enabled, MatlabDir (below) needs to be
          set to the root of your Matlab installation. -->
-        <MatlabSupport>true</MatlabSupport>
-        <MXNetSupport>true</MXNetSupport>
-        <CudaDependencies></CudaDependencies>
-        <BoostIncludeFolder>$(SolutionDir)thirdparty\Boost</BoostIncludeFolder>
-        <BoostLibraryFolder>$(SolutionDir)thirdparty\Boost\lib64-msvc-14.0</BoostLibraryFolder>
-        <HDF5Root>$(SolutionDir)thirdparty\HDF5</HDF5Root>
-        <GFlagsRoot>$(SolutionDir)thirdparty\GFlags</GFlagsRoot>
-        <GLogRoot>$(SolutionDir)thirdparty\Glog</GLogRoot>
-        <ProtobufRoot>$(SolutionDir)thirdparty\Protobuf</ProtobufRoot>
-        <ProtocDir>$(ProtobufRoot)\bin\</ProtocDir>
-        <OpenCVRoot>$(SolutionDir)thirdparty\OpenCV</OpenCVRoot>
-        <LMDBRoot>$(SolutionDir)thirdparty\LMDB</LMDBRoot>
-        <OpenBLASRoot>$(SolutionDir)thirdparty\OpenBLAS</OpenBLASRoot>
-        <LevelDBRoot>$(SolutionDir)thirdparty\LEVELDB</LevelDBRoot>
-        <NCCLRoot>$(SolutionDir)thirdparty\NCCL</NCCLRoot>
-        <MXNetRoot>D:\deepLearning\mxnet</MXNetRoot>
+    <MatlabSupport>true</MatlabSupport>
+    <MXNetSupport>true</MXNetSupport>
+    <CudaDependencies></CudaDependencies>
+    <BoostIncludeFolder>$(SolutionDir)thirdparty\Boost</BoostIncludeFolder>
+    <BoostLibraryFolder>$(SolutionDir)thirdparty\Boost\lib64-msvc-14.0</BoostLibraryFolder>
+    <HDF5Root>$(SolutionDir)thirdparty\HDF5</HDF5Root>
+    <GFlagsRoot>$(SolutionDir)thirdparty\GFlags</GFlagsRoot>
+    <GLogRoot>$(SolutionDir)thirdparty\Glog</GLogRoot>
+    <ProtobufRoot>$(SolutionDir)thirdparty\Protobuf</ProtobufRoot>
+    <ProtocDir>$(ProtobufRoot)\bin\</ProtocDir>
+    <OpenCVRoot>$(SolutionDir)thirdparty\OpenCV</OpenCVRoot>
+    <LMDBRoot>$(SolutionDir)thirdparty\LMDB</LMDBRoot>
+    <OpenBLASRoot>$(SolutionDir)thirdparty\OpenBLAS</OpenBLASRoot>
+    <LevelDBRoot>$(SolutionDir)thirdparty\LEVELDB</LevelDBRoot>
+    <NCCLRoot>$(SolutionDir)thirdparty\NCCL</NCCLRoot>
+    <MXNetRoot>D:\deepLearning\mxnet</MXNetRoot>
 
-      <!-- Set CUDA architecture suitable for your GPU.
+    <!-- Set CUDA architecture suitable for your GPU.
          Setting proper architecture is important to mimize your run and compile time. -->
-        <CudaArchitecture>compute_60,sm_60;</CudaArchitecture>
+    <CudaArchitecture>compute_52,sm_52;compute_60,sm_60;</CudaArchitecture>
 
-        <!-- CuDNN 3 and 4 are supported -->
-        <CuDnnPath>D:\CUDA\CuDNNv5</CuDnnPath>
-        <ScriptsDir>$(SolutionDir)\scripts</ScriptsDir>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(CpuOnlyBuild)'=='false'">
-        <CudaDependencies>cublas.lib;cuda.lib;curand.lib;cudart.lib</CudaDependencies>
-    </PropertyGroup>
+    <!-- CuDNN 3 and 4 are supported -->
+    <CuDnnPath>D:\CUDA\CuDNNv5</CuDnnPath>
+    <ScriptsDir>$(SolutionDir)\scripts</ScriptsDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(CpuOnlyBuild)'=='false'">
+    <CudaDependencies>cublas.lib;cuda.lib;curand.lib;cudart.lib</CudaDependencies>
+  </PropertyGroup>
 
-    <PropertyGroup Condition="'$(UseCuDNN)'=='true'">
-        <CudaDependencies>cudnn.lib;$(CudaDependencies)</CudaDependencies>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(UseCuDNN)'=='true' And $(CuDnnPath)!=''">
-        <LibraryPath>$(CuDnnPath)\lib\x64;$(LibraryPath)</LibraryPath>
-        <IncludePath>$(CuDnnPath)\include;$(IncludePath)</IncludePath>
-    </PropertyGroup>
+  <PropertyGroup Condition="'$(UseCuDNN)'=='true'">
+    <CudaDependencies>cudnn.lib;$(CudaDependencies)</CudaDependencies>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(UseCuDNN)'=='true' And $(CuDnnPath)!=''">
+    <LibraryPath>$(CuDnnPath)\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(CuDnnPath)\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
 
-    <PropertyGroup Condition="'$(UseNCCL)'=='true'">
-      <CudaDependencies>nccl.lib;$(CudaDependencies)</CudaDependencies>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(UseNCCL)'=='true' And $(NCCLRoot)!=''">
-      <LibraryPath>$(NCCLRoot)\lib;$(LibraryPath)</LibraryPath>
-      <IncludePath>$(NCCLRoot)\include;$(IncludePath)</IncludePath>
-    </PropertyGroup>
+  <PropertyGroup Condition="'$(UseNCCL)'=='true'">
+    <CudaDependencies>nccl.lib;$(CudaDependencies)</CudaDependencies>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(UseNCCL)'=='true' And $(NCCLRoot)!=''">
+    <LibraryPath>$(NCCLRoot)\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(NCCLRoot)\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <OutDir>$(BuildDir)\$(Platform)\$(Configuration)\</OutDir>
-        <IntDir>$(BuildDir)\Int\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    </PropertyGroup>
-    <PropertyGroup>
-        <LibraryPath>$(OutDir);$(CUDA_PATH)\lib\$(Platform);$(BoostLibraryFolder);$(HDF5Root)\lib;$(GFlagsRoot)\lib;$(GLogRoot)\lib;$(ProtobufRoot)\lib;$(OpenCVRoot)\x64\vc14\lib;$(LMDBRoot)\lib;$(OpenBLASRoot)\lib;$(LevelDBRoot)\lib;$(LibraryPath)</LibraryPath>
-        <IncludePath>$(SolutionDir)..\include;$(SolutionDir)..\include\caffe\proto;$(CUDA_PATH)\include;$(BoostIncludeFolder);$(HDF5Root)\include;$(GFlagsRoot)\include;$(GLogRoot)\include;$(ProtobufRoot)\include;$(OpenCVRoot)\include;$(LMDBRoot)\include;$(OpenBLASRoot)\include;$(LevelDBRoot)\include;$(IncludePath)</IncludePath>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(PythonSupport)'=='true'">
-        <PythonDir>D:\Anaconda2\</PythonDir>
-        <LibraryPath>$(PythonDir)\libs;$(LibraryPath)</LibraryPath>
-        <IncludePath>$(PythonDir)\include;$(IncludePath)</IncludePath>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(MatlabSupport)'=='true'">
-        <MatlabDir>C:\Program Files\MATLAB\R2016a</MatlabDir>
-        <LibraryPath>$(MatlabDir)\extern\lib\win64\microsoft;$(LibraryPath)</LibraryPath>
-        <IncludePath>$(MatlabDir)\extern\include;$(IncludePath)</IncludePath>
-    </PropertyGroup>
-    <ItemDefinitionGroup Condition="'$(CpuOnlyBuild)'=='true'">
-        <ClCompile>
-            <PreprocessorDefinitions>CPU_ONLY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-        </ClCompile>
-    </ItemDefinitionGroup>
-    <ItemDefinitionGroup Condition="'$(UseCuDNN)'=='true'">
-        <ClCompile>
-            <PreprocessorDefinitions>USE_CUDNN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-        </ClCompile>
-        <CudaCompile>
-            <Defines>USE_CUDNN</Defines>
-        </CudaCompile>
-    </ItemDefinitionGroup>
-    <ItemDefinitionGroup Condition="'$(PythonSupport)'=='true'">
-        <ClCompile>
-            <PreprocessorDefinitions>WITH_PYTHON_LAYER;BOOST_PYTHON_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-        </ClCompile>
-    </ItemDefinitionGroup>
-    <ItemDefinitionGroup Condition="'$(MatlabSupport)'=='true'">
-        <ClCompile>
-            <PreprocessorDefinitions>MATLAB_MEX_FILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-        </ClCompile>
-    </ItemDefinitionGroup>
-    <ItemDefinitionGroup>
-        <ClCompile>
-            <MinimalRebuild>false</MinimalRebuild>
-            <MultiProcessorCompilation>true</MultiProcessorCompilation>
-            <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;USE_OPENCV;USE_LEVELDB;USE_LMDB;USE_NCCL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-            <TreatWarningAsError>true</TreatWarningAsError>
-        </ClCompile>
-    </ItemDefinitionGroup>
-    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-        <ClCompile>
-            <Optimization>Full</Optimization>
-            <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-            <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-            <FunctionLevelLinking>true</FunctionLevelLinking>
-            <DisableSpecificWarnings>4819;</DisableSpecificWarnings>
-        </ClCompile>
-        <Link>
-            <EnableCOMDATFolding>true</EnableCOMDATFolding>
-            <GenerateDebugInformation>true</GenerateDebugInformation>
-            <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-            <OptimizeReferences>true</OptimizeReferences>
-            <AdditionalDependencies>leveldb.lib;libopenblas.dll.a;Advapi32.lib;Shlwapi.lib;lmdb.lib;opencv_world310.lib;libprotobuf.lib;glog.lib;gflags.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;$(AdditionalDependencies)</AdditionalDependencies>
-        </Link>
-    </ItemDefinitionGroup>
-    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-        <ClCompile>
-            <Optimization>Disabled</Optimization>
-            <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-            <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-            <DisableSpecificWarnings>4819;</DisableSpecificWarnings>
-        </ClCompile>
-        <Link>
-            <GenerateDebugInformation>true</GenerateDebugInformation>
-            <AdditionalDependencies>leveldbd.lib;libopenblas.dll.a;Advapi32.lib;Shlwapi.lib;lmdbd.lib;opencv_world310d.lib;libprotobufd.lib;glogd.lib;gflagsd.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;$(AdditionalDependencies)</AdditionalDependencies>
-        </Link>
-    </ItemDefinitionGroup>
+  <PropertyGroup>
+    <OutDir>$(BuildDir)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(BuildDir)\Int\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LibraryPath>$(OutDir);$(CUDA_PATH)\lib\$(Platform);$(BoostLibraryFolder);$(HDF5Root)\lib;$(GFlagsRoot)\lib;$(GLogRoot)\lib;$(ProtobufRoot)\lib;$(OpenCVRoot)\x64\vc14\lib;$(LMDBRoot)\lib;$(OpenBLASRoot)\lib;$(LevelDBRoot)\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\include;$(SolutionDir)..\include\caffe\proto;$(CUDA_PATH)\include;$(BoostIncludeFolder);$(HDF5Root)\include;$(GFlagsRoot)\include;$(GLogRoot)\include;$(ProtobufRoot)\include;$(OpenCVRoot)\include;$(LMDBRoot)\include;$(OpenBLASRoot)\include;$(LevelDBRoot)\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(PythonSupport)'=='true'">
+    <PythonDir>D:\Anaconda2\</PythonDir>
+    <LibraryPath>$(PythonDir)\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(PythonDir)\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MatlabSupport)'=='true'">
+    <MatlabDir>C:\Program Files\MATLAB\R2016a</MatlabDir>
+    <LibraryPath>$(MatlabDir)\extern\lib\win64\microsoft;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(MatlabDir)\extern\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(CpuOnlyBuild)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions>CPU_ONLY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(UseCuDNN)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions>USE_CUDNN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <CudaCompile>
+      <Defines>USE_CUDNN</Defines>
+    </CudaCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(UseNCCL)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions>USE_NCCL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <CudaCompile>
+      <Defines>USE_NCCL</Defines>
+    </CudaCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(PythonSupport)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions>WITH_PYTHON_LAYER;BOOST_PYTHON_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(MatlabSupport)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions>MATLAB_MEX_FILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;USE_OPENCV;USE_LEVELDB;USE_LMDB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <DisableSpecificWarnings>4819;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>leveldb.lib;libopenblas.dll.a;Advapi32.lib;Shlwapi.lib;lmdb.lib;opencv_world310.lib;libprotobuf.lib;glog.lib;gflags.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;$(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4819;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>leveldbd.lib;libopenblas.dll.a;Advapi32.lib;Shlwapi.lib;lmdbd.lib;opencv_world310d.lib;libprotobufd.lib;glogd.lib;gflagsd.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;$(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
 </Project>
