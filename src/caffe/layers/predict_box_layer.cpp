@@ -133,6 +133,16 @@ void PredictBoxLayer<Dtype>::Forward_cpu(
   }
 }
 
+template <typename Dtype>
+void PredictBoxLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
+                                          const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
+  NOT_IMPLEMENTED;
+}
+
+#ifdef CPU_ONLY
+STUB_GPU(PredictBoxLayer);
+#endif
+
 INSTANTIATE_CLASS(PredictBoxLayer);
 REGISTER_LAYER_CLASS(PredictBox);
 

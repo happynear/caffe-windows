@@ -42,6 +42,10 @@ void CorrelationLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
   }
 }
 
+#ifdef CPU_ONLY
+STUB_GPU(CorrelationLossLayer);
+#endif
+
 INSTANTIATE_CLASS(CorrelationLossLayer);
 REGISTER_LAYER_CLASS(CorrelationLoss);
 
