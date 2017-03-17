@@ -26,6 +26,24 @@
 #define PyArray_SetBaseObject(arr, x) (PyArray_BASE(arr) = (x))
 #endif
 
+//fix unresolved symbol problem of boost::get_pointer in VS2015
+#if _MSC_VER == 1900
+#define DEFINE_BOOST_GET_POINTER(PTR) template<> const volatile PTR* get_pointer(const volatile PTR* p) { return p; }
+namespace boost {
+  DEFINE_BOOST_GET_POINTER(caffe::Timer);
+  DEFINE_BOOST_GET_POINTER(caffe::NCCL<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::Solver<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::Layer<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::Net<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::SGDSolver<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::NesterovSolver<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::AdaGradSolver<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::RMSPropSolver<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::AdaDeltaSolver<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::AdamSolver<float>);
+}
+#endif
+
 /* Fix to avoid registration warnings in pycaffe (#3960) */
 #define BP_REGISTER_SHARED_PTR_TO_PYTHON(PTR) do { \
   const boost::python::type_info info = \
@@ -37,7 +55,7 @@
   } else if ((*reg).m_to_python == NULL) { \
     bp::register_ptr_to_python<shared_ptr<PTR > >(); \
   } \
-} while (0)
+} while (0);
 
 namespace bp = boost::python;
 
@@ -55,7 +73,7 @@ namespace caffe {
     FLAGS_logtostderr = 1;
     FLAGS_minloglevel = level;
     ::google::InitGoogleLogging("");
-    ::google::InstallFailureSignalHandler();
+    //::google::InstallFailureSignalHandler();
   }
   void InitLogInfo() {
     InitLog(google::INFO);
@@ -287,12 +305,6 @@ namespace caffe {
                            bp::object on_gradients_ready) {
     solver->add_callback(new SolverCallback<Dtype>(on_start, on_gradients_ready));
   }
-};
-template<typename Dtype>
-void Solver_add_callback(Solver<Dtype> * solver, bp::object on_start,
-  bp::object on_gradients_ready) {
-  solver->add_callback(new SolverCallback<Dtype>(on_start, on_gradients_ready));
-}
 
 // Seems boost cannot call the base method directly
 void Solver_add_nccl(Solver<Dtype>* solver
