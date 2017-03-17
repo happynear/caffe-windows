@@ -55,7 +55,7 @@ namespace boost {
   } else if ((*reg).m_to_python == NULL) { \
     bp::register_ptr_to_python<shared_ptr<PTR > >(); \
   } \
-} while (0);
+} while (0)
 
 namespace bp = boost::python;
 
