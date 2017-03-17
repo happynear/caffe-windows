@@ -287,9 +287,15 @@ namespace caffe {
                            bp::object on_gradients_ready) {
     solver->add_callback(new SolverCallback<Dtype>(on_start, on_gradients_ready));
   }
+};
+template<typename Dtype>
+void Solver_add_callback(Solver<Dtype> * solver, bp::object on_start,
+  bp::object on_gradients_ready) {
+  solver->add_callback(new SolverCallback<Dtype>(on_start, on_gradients_ready));
+}
 
-  // Seems boost cannot call the base method directly
-  void Solver_add_nccl(SGDSolver<Dtype>* solver
+// Seems boost cannot call the base method directly
+void Solver_add_nccl(Solver<Dtype>* solver
 #ifdef USE_NCCL
                        , NCCL<Dtype>* nccl
 #endif
