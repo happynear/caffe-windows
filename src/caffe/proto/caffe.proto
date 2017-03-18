@@ -440,6 +440,7 @@ message LayerParameter {
   optional PermuteParameter permute_param = 224;
   optional TruncationParameter truncation_param = 225;
   optional NCAParameter nca_param = 226;
+  optional LargeMarginInnerProductParameter largemargin_inner_product_param = 227;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1797,4 +1798,23 @@ message PermuteParameter {
 
 message NCAParameter {
   optional bool min_negative_only = 1 [default = false];
+}
+
+message LargeMarginInnerProductParameter {
+  optional uint32 num_output = 1; // The number of outputs
+  enum LargeMarginType {
+    SINGLE = 0;
+    DOUBLE = 1;
+    TRIPLE = 2;
+    QUADRUPLE = 3;
+  }
+  optional LargeMarginType type = 2 [default = SINGLE]; // m in the L-Softmax loss
+  optional FillerParameter weight_filler = 3; // The filler for the weight
+  optional int32 axis = 4 [default = 1];
+  // base, gamma, power and lambda_min are parameters for exponential lambda descent
+  optional float base = 5 [default = 1];
+  optional float gamma = 6 [default = 0];
+  optional float power = 7 [default = 1];
+  optional int32 iteration = 8 [default = 0];
+  optional float lambda_min = 9 [default = 0];
 }
