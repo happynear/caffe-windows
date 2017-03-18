@@ -294,10 +294,10 @@ static void get_net(MEX_ARGS) {
   mxFree(phase_name);
 }
 
-// Usage: caffe_('delete_solver', hSolver)
+// Usage: caffe_('delete_net', hNet)
 static void delete_net(MEX_ARGS) {
   mxCHECK(nrhs == 1 && mxIsStruct(prhs[0]),
-      "Usage: caffe_('delete_solver', hNet)");
+      "Usage: caffe_('delete_net', hNet)");
   Net<float>* net = handle_to_ptr<Net<float> >(prhs[0]);
   nets_.erase(std::remove_if(nets_.begin(), nets_.end(),
       [net] (const shared_ptr< Net<float> > &netPtr) {
