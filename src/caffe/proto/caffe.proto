@@ -441,6 +441,8 @@ message LayerParameter {
   optional TruncationParameter truncation_param = 225;
   optional NCAParameter nca_param = 226;
   optional LargeMarginInnerProductParameter largemargin_inner_product_param = 227;
+  optional LabelSpecificRescaleParameter label_specific_rescale_param = 228;
+  optional InfimumLossParamter infimum_loss_param = 229;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1200,6 +1202,8 @@ message ScaleParameter {
   // may be more efficient).  Initialized with bias_filler (defaults to 0).
   optional bool bias_term = 4 [default = false];
   optional FillerParameter bias_filler = 5;
+  optional float min_value = 6;
+  optional float max_value = 7;
 }
 
 message SigmoidParameter {
@@ -1817,4 +1821,16 @@ message LargeMarginInnerProductParameter {
   optional float power = 7 [default = 1];
   optional int32 iteration = 8 [default = 0];
   optional float lambda_min = 9 [default = 0];
+}
+
+message LabelSpecificRescaleParameter {
+  optional float positive_weight = 1 [default = 1.0];
+  optional float negative_weight = 2 [default = 1.0];
+  optional float positive_lower_bound = 3 [default = 0.0];
+  optional float negative_upper_bound = 4 [default = 0.0];
+  optional bool rescale_test = 5 [default = false];
+}
+
+message InfimumLossParamter {
+  optional float infimum = 1 [default = 0.25];
 }

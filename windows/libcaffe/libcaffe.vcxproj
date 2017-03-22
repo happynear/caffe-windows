@@ -139,11 +139,13 @@
     <ClCompile Include="..\..\src\caffe\layers\hotspot_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\im2col_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\image_data_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\infimum_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\infogain_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\inner_distance_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\inner_product_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\input_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\insanity_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\label_specific_rescale.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\largemargin_inner_product_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\local_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\log_layer.cpp" />
@@ -275,6 +277,7 @@
     <ClInclude Include="..\..\include\caffe\layers\inner_distance_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\inner_product_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\input_layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\layers\label_specific_rescale_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\largemargin_inner_product_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\log_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\loss_layer.hpp" />
@@ -409,6 +412,7 @@
     <CudaCompile Include="..\..\src\caffe\layers\hotspot_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\inner_distance_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\insanity_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\label_specific_rescale.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\largemargin_inner_product_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\local_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\lstm_unit_layer.cu" />
