@@ -67,7 +67,7 @@ void EltwiseLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     for (int i = 0; i < bottom.size(); ++i) {
       caffe_copy(count, bottom[i]->gpu_data(), sort_temp_.mutable_gpu_data());
       caffe_gpu_add_scalar(count, Dtype(1), sort_temp_.mutable_gpu_data());
-      caffe_mul(count, top_data, sort_temp_.gpu_data(), top_data);
+      caffe_gpu_mul(count, top_data, sort_temp_.gpu_data(), top_data);
     }
     break;
   default:
@@ -143,7 +143,7 @@ void EltwiseLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
             else {
               caffe_copy(count, bottom[j]->gpu_data(), sort_temp_.mutable_gpu_data());
               caffe_gpu_add_scalar(count, Dtype(1), sort_temp_.mutable_gpu_data());
-              caffe_mul(count, sort_temp_.gpu_data(), bottom_diff,
+              caffe_gpu_mul(count, sort_temp_.gpu_data(), bottom_diff,
                         bottom_diff);
             }
           }
@@ -151,9 +151,9 @@ void EltwiseLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
         else {
           caffe_copy(count, bottom_data, sort_temp_.mutable_gpu_data());
           caffe_gpu_add_scalar(count, Dtype(1), sort_temp_.mutable_gpu_data());
-          caffe_div(count, top_data, sort_temp_.gpu_data(), bottom_diff);
+          caffe_gpu_div(count, top_data, sort_temp_.gpu_data(), bottom_diff);
         }
-        caffe_mul(count, bottom_diff, top_diff, bottom_diff);
+        caffe_gpu_mul(count, bottom_diff, top_diff, bottom_diff);
         break;
       default:
         LOG(FATAL) << "Unknown elementwise operation.";
