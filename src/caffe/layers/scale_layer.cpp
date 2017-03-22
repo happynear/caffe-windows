@@ -125,8 +125,18 @@ void ScaleLayer<Dtype>::Forward_cpu(
     caffe_copy(bottom[0]->count(), bottom[0]->cpu_data(),
                temp_.mutable_cpu_data());
   }
-  const Dtype* scale_data =
-      ((bottom.size() > 1) ? bottom[1] : this->blobs_[0].get())->cpu_data();
+  Dtype* scale_data =
+      ((bottom.size() > 1) ? bottom[1] : this->blobs_[0].get())->mutable_cpu_data();
+  if (this->layer_param_.scale_param().has_min_value()) {
+    for (int d = 0; d < scale_dim_; d++) {
+      scale_data[d] = std::max<Dtype>(scale_data[d], this->layer_param_.scale_param().min_value());
+    }
+  }
+  if (this->layer_param_.scale_param().has_max_value()) {
+    for (int d = 0; d < scale_dim_; d++) {
+      scale_data[d] = std::min<Dtype>(scale_data[d], this->layer_param_.scale_param().max_value());
+    }
+  }
   Dtype* top_data = top[0]->mutable_cpu_data();
   for (int n = 0; n < outer_dim_; ++n) {
     for (int d = 0; d < scale_dim_; ++d) {
