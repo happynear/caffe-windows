@@ -31,14 +31,14 @@ Python support is disabled by default, but can be enabled via `.\windows\CommonS
 ### CUDA
 Download `CUDA Toolkit 8.0` [from nVidia website](https://developer.nvidia.com/cuda-toolkit).
 If you don't have CUDA installed, you can experiment with CPU_ONLY build.
-In `.\windows\CommonSettings.props` set `CpuOnlyBuild` to `true` and set `UseCuDNN` to `false`.
+In `.\windows\CommonSettings.props` set `CpuOnlyBuild` to `true` and set `UseCuDNN` & `UseNCCL` to `false`.
 
 ### cuDNN
 Download `cuDNN v5` [from nVidia website](https://developer.nvidia.com/cudnn).
 Unpack downloaded zip to %CUDA_PATH% (environment variable set by CUDA installer).
 Alternatively, you can unpack zip to any location and set `CuDnnPath` to point to this location in `.\windows\CommonSettings.props`.
 `CuDnnPath` defined in `.\windows\CommonSettings.props`.
-Also, you can disable cuDNN by setting `UseCuDNN` and `USE_NCCL` to `false` in the property file.
+Also, you can disable cuDNN by setting `UseCuDNN` to `false` in the property file.
 
 ### Python
 To build Caffe Python wrapper set `PythonSupport` to `true` in `.\windows\CommonSettings.props`.
