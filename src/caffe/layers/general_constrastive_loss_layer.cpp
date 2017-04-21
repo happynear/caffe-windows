@@ -22,6 +22,9 @@ void GeneralContrastiveLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& 
   positive_first_ = this->layer_param_.general_contrastive_loss_param().positive_first();
   positive_upper_bound_ = this->layer_param_.general_contrastive_loss_param().positive_upper_bound();
   exp_negative_weight_ = this->layer_param_.general_contrastive_loss_param().exp_negative_weight();
+  add_intra_mae_ = this->layer_param_.general_contrastive_loss_param().add_intra_mae();
+  max_negative_margin_ = this->layer_param_.general_contrastive_loss_param().max_negative_margin();
+  intra_mae_ = Dtype(0);
 }
 
 template <typename Dtype>
@@ -29,8 +32,14 @@ void GeneralContrastiveLossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bot
                                                  const vector<Blob<Dtype>*>& top) {
   LossLayer<Dtype>::Reshape(bottom, top);
   if (top.size() >= 2) {
-    // positive distance, negative distance.
-    top[1]->Reshape({ 2 });
+    if (add_intra_mae_) {
+      // positive distance, negative distance, intra_mae.
+      top[1]->Reshape({ 3 });
+    }
+    else {
+      // positive distance, negative distance.
+      top[1]->Reshape({ 2 });
+    }
   }
   if (max_negative_only_) {
     max_negative_index_.Reshape({ bottom[0]->num() });
@@ -52,6 +61,7 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
   Dtype positive_distance = Dtype(0);
   Dtype negative_distance = Dtype(0);
   max_positive_index_ = 0;
+  if (add_intra_mae_) negative_margin_ = intra_mae_ + this->layer_param_.general_contrastive_loss_param().negative_margin();
 
   for (int i = 0; i < num; ++i) {
     Dtype same_distance = bottom_data[i * dim + static_cast<int>(label[i])];
@@ -111,12 +121,18 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
       }
     }
   }
+  intra_mae_ = 0.99 * intra_mae_ + 0.01 * positive_distance / num;
+  if (intra_mae_ > max_negative_margin_) intra_mae_ = max_negative_margin_;
+
   Dtype* loss = top[0]->mutable_cpu_data();
   loss[0] = caffe_cpu_asum(count, bottom_diff) / num;
   if (top.size() >= 2) {
     Dtype* distances = top[1]->mutable_cpu_data();
     distances[0] = positive_distance / num;
     distances[1] = negative_distance / num / (dim - 1);
+    if (add_intra_mae_) {
+      distances[2] = intra_mae_;
+    }
   }
 }
 
