@@ -384,9 +384,6 @@
     <ClCompile Include="..\..\src\caffe\layers\lstm_unit_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\fcn_data_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\fcn_accuracy_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
@@ -454,9 +451,6 @@
       <Filter>src\layers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\label_specific_rescale.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\infimum_loss_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
   </ItemGroup>
