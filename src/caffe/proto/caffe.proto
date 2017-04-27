@@ -1597,22 +1597,24 @@ message PReLUParameter {
   // Whether or not slope parameters are shared across channels.
   optional bool channel_shared = 2 [default = false];
 }
-// Message that stores parameters used by BNLayer
 message BNParameter {
-  optional FillerParameter slope_filler = 1;
-  optional FillerParameter bias_filler = 2;
-  optional float momentum = 3 [default = 0.9];
-  optional float eps = 4 [default = 1e-5];
-  // If true, will use the moving average mean and std for training and test.
-  // Will override the lr_param and freeze all the parameters.
-  // Make sure to initialize the layer properly with pretrained parameters.
-  optional bool frozen = 5 [default = false];
+  // If false, accumulate global mean/variance values via a moving average. If
+  // true, use those accumulated values instead of computing mean/variance
+  // across the batch.
+  optional bool use_global_stats = 1;
+  // How much does the moving average decay each iteration?
+  optional float moving_average_fraction = 2 [default = .999];
+  // Small value to add to the variance estimate so that we don't divide by
+  // zero.
+  optional float eps = 3 [default = 1e-5];
+  optional FillerParameter scale_filler = 5;
+  optional FillerParameter bias_filler = 6;
   enum Engine {
     DEFAULT = 0;
     CAFFE = 1;
     CUDNN = 2;
   }
-  optional Engine engine = 6 [default = DEFAULT];
+  optional Engine engine = 15 [default = DEFAULT];
 }
 
 // Message that stores parameters used by LocalLayer

@@ -7,7 +7,7 @@
 
 #include "caffe/layer.hpp"
 #include "caffe/layer_factory.hpp"
-#include "caffe/layers/batch_norm_layer.hpp"
+#include "caffe/layers/bn_layer.hpp"
 #include "caffe/layers/conv_layer.hpp"
 #include "caffe/layers/lrn_layer.hpp"
 #include "caffe/layers/pooling_layer.hpp"
@@ -18,7 +18,7 @@
 #include "caffe/proto/caffe.pb.h"
 
 #ifdef USE_CUDNN
-#include "caffe/layers/cudnn_batch_norm_layer.hpp"
+#include "caffe/layers/cudnn_bn_layer.hpp"
 #include "caffe/layers/cudnn_conv_layer.hpp"
 #include "caffe/layers/cudnn_lcn_layer.hpp"
 #include "caffe/layers/cudnn_lrn_layer.hpp"
@@ -77,28 +77,20 @@ REGISTER_LAYER_CREATOR(Convolution, GetConvolutionLayer);
 
 // Get BN layer according to engine.
 template <typename Dtype>
-shared_ptr<Layer<Dtype> > GetBatchNormLayer(const LayerParameter& param) {
-  BatchNormParameter_Engine engine = param.batch_norm_param().engine();
-  bool has_disable_variance = param.batch_norm_param().has_disable_variance();
-  bool has_disable_mean = param.batch_norm_param().has_disable_mean();
-  
-  if (has_disable_mean || has_disable_variance || param.param_size() == 3 || param.param_size() == 0) {
-    engine = BatchNormParameter_Engine_CAFFE;
-  }
-  else {
-    if (engine == BatchNormParameter_Engine_DEFAULT) {
-      engine = BatchNormParameter_Engine_CAFFE;
+shared_ptr<Layer<Dtype> > GetBNLayer(const LayerParameter& param) {
+  BNParameter_Engine engine = param.bn_param().engine();
+  if (engine == BNParameter_Engine_DEFAULT) {
+    engine = BNParameter_Engine_CAFFE;
 #ifdef USE_CUDNN
-      engine = BatchNormParameter_Engine_CUDNN;
+    engine = BNParameter_Engine_CUDNN;
 #endif
-    }
   }
-  if (engine == BatchNormParameter_Engine_CAFFE) {
-    return shared_ptr<Layer<Dtype> >(new BatchNormLayer<Dtype>(param));
+  if (engine == BNParameter_Engine_CAFFE) {
+    return shared_ptr<Layer<Dtype> >(new BNLayer<Dtype>(param));
 #ifdef USE_CUDNN
   }
-  else if (engine == BatchNormParameter_Engine_CUDNN) {
-    return shared_ptr<Layer<Dtype> >(new CuDNNBatchNormLayer<Dtype>(param));
+  else if (engine == BNParameter_Engine_CUDNN) {
+    return shared_ptr<Layer<Dtype> >(new CuDNNBNLayer<Dtype>(param));
 #endif
   }
   else {
@@ -106,7 +98,7 @@ shared_ptr<Layer<Dtype> > GetBatchNormLayer(const LayerParameter& param) {
   }
 }
 
-REGISTER_LAYER_CREATOR(BatchNorm, GetBatchNormLayer);
+REGISTER_LAYER_CREATOR(BN, GetBNLayer);
 
 // Get pooling layer according to engine.
 template <typename Dtype>

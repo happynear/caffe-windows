@@ -441,9 +441,6 @@
     <ClCompile Include="..\..\src\caffe\layers\truncation_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\cudnn_batch_norm_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\caffe\util\gpu_memory.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
@@ -451,6 +448,12 @@
       <Filter>src\layers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\label_specific_rescale.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\cudnn_bn_layer.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\bn_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -809,6 +812,12 @@
     <ClInclude Include="..\..\include\caffe\layers\label_specific_rescale_layer.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\caffe\layers\cudnn_bn_layer.hpp">
+      <Filter>include\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\caffe\layers\bn_layer.hpp">
+      <Filter>include\layers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\..\src\caffe\layers\contrastive_loss_layer.cu">
@@ -1060,13 +1069,16 @@
     <CudaCompile Include="..\..\src\caffe\layers\truncation_layer.cu">
       <Filter>cu\layers</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\cudnn_batch_norm_layer.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\largemargin_inner_product_layer.cu">
       <Filter>cu\layers</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\label_specific_rescale.cu">
+      <Filter>cu\layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\cudnn_bn_layer.cu">
+      <Filter>cu\layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\bn_layer.cu">
       <Filter>cu\layers</Filter>
     </CudaCompile>
   </ItemGroup>
