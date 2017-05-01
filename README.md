@@ -15,7 +15,7 @@ Check out the [project site](http://caffe.berkeleyvision.org) for all the detail
 and step-by-step examples.
 
 ## Windows Setup
-**Requirements**: Visual Studio 2015, CUDA 8.0, third party libraries: https://pan.baidu.com/s/1mhZgDeS . Please extract the archive into `./windows/thirdparty/`.
+**Requirements**: Visual Studio 2015, CUDA 8.0, third party libraries: [Baidu Yun](https://pan.baidu.com/s/1mhZgDeS) or [Google Drive](https://drive.google.com/open?id=0B0OhXbSTAU1Hb2s3Z2xfUTJ1TE0). Please extract the archive into `./windows/thirdparty/`.
 
 ### Pre-Build Steps
 Copy `.\windows\CommonSettings.props.example` to `.\windows\CommonSettings.props`
