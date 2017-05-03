@@ -31,7 +31,9 @@
 #define DEFINE_BOOST_GET_POINTER(PTR) template<> const volatile PTR* get_pointer(const volatile PTR* p) { return p; }
 namespace boost {
   DEFINE_BOOST_GET_POINTER(caffe::Timer);
+#if USE_NCCL
   DEFINE_BOOST_GET_POINTER(caffe::NCCL<float>);
+#endif
   DEFINE_BOOST_GET_POINTER(caffe::Solver<float>);
   DEFINE_BOOST_GET_POINTER(caffe::Layer<float>);
   DEFINE_BOOST_GET_POINTER(caffe::Net<float>);
