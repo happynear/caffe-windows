@@ -1,293 +1,321 @@
 #include <algorithm>
 #include <vector>
 
-#include "caffe/filler.hpp"
 #include "caffe/layers/bn_layer.hpp"
+#include "caffe/filler.hpp"
+#include "caffe/layer.hpp"
 #include "caffe/util/math_functions.hpp"
 
 namespace caffe {
 
   template <typename Dtype>
   void BNLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
-                                         const vector<Blob<Dtype>*>& top) {
-    BNParameter param = this->layer_param_.bn_param();
-    moving_average_fraction_ = param.moving_average_fraction();
-    use_global_stats_ = this->phase_ == TEST;
-    if (param.has_use_global_stats())
-      use_global_stats_ = param.use_global_stats();
-    if (bottom[0]->num_axes() == 1)
-      channels_ = 1;
-    else
-      channels_ = bottom[0]->shape(1);
-    eps_ = param.eps();
+                                  const vector<Blob<Dtype>*>& top) {
+    frozen_ = this->layer_param_.bn_param().frozen();
+    bn_momentum_ = this->layer_param_.bn_param().momentum();
+    bn_eps_ = this->layer_param_.bn_param().eps();
+    // Initialize parameters
     if (this->blobs_.size() > 0) {
       LOG(INFO) << "Skipping parameter initialization";
     }
     else {
-      this->blobs_.resize(5);
-
-      vector<int> sz;
-      sz.push_back(channels_);
-      this->blobs_[0].reset(new Blob<Dtype>(sz));  // scale
-      this->blobs_[1].reset(new Blob<Dtype>(sz));  // bias
-      this->blobs_[2].reset(new Blob<Dtype>(sz));  // mean
-      this->blobs_[3].reset(new Blob<Dtype>(sz));  // variance
-
-      shared_ptr<Filler<Dtype> > scale_filler(
-        GetFiller<Dtype>(this->layer_param_.bn_param().scale_filler()));
-      scale_filler->Fill(this->blobs_[0].get());
-      shared_ptr<Filler<Dtype> > bias_filler(
-        GetFiller<Dtype>(this->layer_param_.bn_param().bias_filler()));
+      this->blobs_.resize(4);
+      vector<int> shape;
+      shape.push_back(1);
+      shape.push_back(bottom[0]->channels());
+      // slope
+      this->blobs_[0].reset(new Blob<Dtype>(shape));
+      shared_ptr<Filler<Dtype> > slope_filler(GetFiller<Dtype>(
+        this->layer_param_.bn_param().slope_filler()));
+      slope_filler->Fill(this->blobs_[0].get());
+      // bias
+      this->blobs_[1].reset(new Blob<Dtype>(shape));
+      shared_ptr<Filler<Dtype> > bias_filler(GetFiller<Dtype>(
+        this->layer_param_.bn_param().bias_filler()));
       bias_filler->Fill(this->blobs_[1].get());
-
-      caffe_set(this->blobs_[2]->count(), Dtype(0.),
+      // moving average mean
+      this->blobs_[2].reset(new Blob<Dtype>(shape));
+      caffe_set(this->blobs_[2]->count(), Dtype(0),
                 this->blobs_[2]->mutable_cpu_data());
-      caffe_set(this->blobs_[3]->count(), Dtype(0.),
+      // moving average variance
+      this->blobs_[3].reset(new Blob<Dtype>(shape));
+      caffe_set(this->blobs_[3]->count(), Dtype(1),
                 this->blobs_[3]->mutable_cpu_data());
-
-      sz[0] = 1;
-      this->blobs_[4].reset(new Blob<Dtype>(sz));
-      iter_ = 0;
     }
+    this->param_propagate_down_.resize(this->blobs_.size(), true);
   }
 
   template <typename Dtype>
   void BNLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
-                                      const vector<Blob<Dtype>*>& top) {
-    if (bottom[0]->num_axes() > 1)
-      CHECK_EQ(bottom[0]->shape(1), channels_);
-    top[0]->ReshapeLike(*bottom[0]);
+                               const vector<Blob<Dtype>*>& top) {
+    num_ = bottom[0]->num();
+    channels_ = bottom[0]->channels();
+    height_ = bottom[0]->height();
+    width_ = bottom[0]->width();
 
-    int N = bottom[0]->shape(0);
-    int NC = N* channels_;
-    int S = bottom[0]->count() / NC;  // S = H*W
+    top[0]->ReshapeLike(*(bottom[0]));
 
-    vector<int> sz;
-    sz.push_back(channels_);
-    mean_.Reshape(sz);
-    variance_.Reshape(sz);
-    inv_variance_.Reshape(sz);
-    temp_C_.Reshape(sz);
+    broadcast_buffer_.ReshapeLike(*(bottom[0]));
+    spatial_statistic_.Reshape(num_, channels_, 1, 1);
+    batch_statistic_.Reshape(1, channels_, 1, 1);
 
-    sz[0] = N;
-    ones_N_.Reshape(sz);
-    caffe_set(ones_N_.count(), Dtype(1.), ones_N_.mutable_cpu_data());
-    sz[0] = channels_;
-    ones_C_.Reshape(sz);
-    caffe_set(ones_C_.count(), Dtype(1.), ones_C_.mutable_cpu_data());
-    sz[0] = S;
-    ones_HW_.Reshape(sz);
-    caffe_set(ones_HW_.count(), Dtype(1.), ones_HW_.mutable_cpu_data());
+    x_norm_.ReshapeLike(*(bottom[0]));
+    x_inv_std_.ReshapeLike(batch_statistic_);
 
-    sz[0] = NC;
-    temp_NC_.Reshape(sz);
-
-    temp_.ReshapeLike(*bottom[0]);
-    x_norm_.ReshapeLike(*bottom[0]);
-  }
-
-  //  multicast x[c] into y[.,c,...]
-  template <typename Dtype>
-  void BNLayer<Dtype>::multicast_cpu(int N, int C, int S,
-                                            const Dtype *x, Dtype *y) {
-    Blob<Dtype> temp_NC;
-    vector<int> temp_size;
-    temp_size.push_back(N*C);
-    temp_NC.Reshape(temp_size);
-    caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, N, C, 1,
-                          1., ones_N_.cpu_data(), x, 0., temp_NC.mutable_cpu_data());
-    caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, N*C, S, 1,
-                          1., temp_NC.cpu_data(), ones_HW_.cpu_data(), 0., y);
-  }
-
-  //  y[c] = sum x(.,c,...)
-  template <typename Dtype>
-  void BNLayer<Dtype>::compute_sum_per_channel_cpu(int N, int C, int S,
-                                                          const Dtype *x, Dtype *y) {
-    Blob<Dtype> temp_NC;
-    vector<int> temp_size;
-    temp_size.push_back(N*C);
-    temp_NC.Reshape(temp_size);
-    caffe_cpu_gemv<Dtype>(CblasNoTrans, N * C, S, 1., x, ones_HW_.cpu_data(),
-                          0., temp_NC.mutable_cpu_data());
-    caffe_cpu_gemv<Dtype>(CblasTrans, N, C, 1., temp_NC.cpu_data(),
-                          ones_N_.cpu_data(), 0., y);
-  }
-
-  // y[c] = mean x(.,c,...)
-  template <typename Dtype>
-  void BNLayer<Dtype>::compute_mean_per_channel_cpu(int N, int C, int S,
-                                                           const Dtype *x, Dtype *y) {
-    Dtype F = 1.0 / (N*S);
-    compute_sum_per_channel_cpu(N, C, S, x, y);
-    caffe_cpu_scale(C, F, y, y);
+    spatial_sum_multiplier_.Reshape(1, 1, height_, width_);
+    caffe_set(spatial_sum_multiplier_.count(), Dtype(1),
+              spatial_sum_multiplier_.mutable_cpu_data());
+    batch_sum_multiplier_.Reshape(num_, 1, 1, 1);
+    caffe_set(batch_sum_multiplier_.count(), Dtype(1),
+              batch_sum_multiplier_.mutable_cpu_data());
   }
 
   template <typename Dtype>
   void BNLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
-                                          const vector<Blob<Dtype>*>& top) {
-    int N = bottom[0]->shape(0);
-    int C = channels_;
-    int S = bottom[0]->count(0) / (N*C);
-    int top_size = top[0]->count();
-
-    const Dtype* bottom_data = bottom[0]->cpu_data();
+                                   const vector<Blob<Dtype>*>& top) {
+    const Dtype* const_bottom_data = bottom[0]->cpu_data();
+    const Dtype* const_top_data = top[0]->cpu_data();
     Dtype* top_data = top[0]->mutable_cpu_data();
 
-    if (use_global_stats_) {
-      // use global mean/variance
-      caffe_copy(C, this->blobs_[2]->cpu_data(), mean_.mutable_cpu_data());
-      caffe_copy(C, this->blobs_[3]->cpu_data(), variance_.mutable_cpu_data());
+    const Dtype* scale_data = this->blobs_[0]->cpu_data();
+    const Dtype* shift_data = this->blobs_[1]->cpu_data();
+
+    // Mean normalization
+    if (frozen_ || this->phase_ == TEST) {
+      // Use the moving average mean
+      caffe_copy(batch_statistic_.count(), this->blobs_[2]->cpu_data(),
+                 batch_statistic_.mutable_cpu_data());
     }
     else {
-      compute_mean_per_channel_cpu(N, C, S, bottom_data,
-                                   mean_.mutable_cpu_data());
-    }
-    //  Y = X- EX
-    if (bottom[0] != top[0]) {
-      caffe_copy(top_size, bottom_data, top_data);
-    }
-    multicast_cpu(N, C, S, mean_.cpu_data(), temp_.mutable_cpu_data());
-    caffe_cpu_axpby(top_size, Dtype(-1.), temp_.cpu_data(),
-                    Dtype(1.), top_data);
-    if (!use_global_stats_) {
-      // compute variance E (X-EX)^2
-      caffe_powx(top_size, top_data, Dtype(2.), temp_.mutable_cpu_data());
-      compute_mean_per_channel_cpu(N, C, S, temp_.cpu_data(),
-                                   variance_.mutable_cpu_data());
-
-      // int m = N*S;  // N*H*W
-      // Dtype bias_corr = m > 1 ? Dtype(m)/(m-1) : 1;
-      // bias_corr = 1.;
-      // caffe_cpu_scale(C, bias_corr, variance_.cpu_data(),
-      //    variance_.mutable_cpu_data());
-
-      // clip variance
-      if ((this->phase_ == TRAIN) && (iter_ <= BN_VARIANCE_CLIP_START))
-        iter_++;
-      if (iter_ > BN_VARIANCE_CLIP_START) {
-        // clip from above
-        // temp_C_[c] = average_var + gobal_var[c]
-        Dtype y = caffe_cpu_asum(C, this->blobs_[3]->cpu_data());
-        caffe_cpu_scale(C, Dtype(y / C), ones_C_.cpu_data(),
-                        temp_C_.mutable_cpu_data());
-        caffe_cpu_axpby(C, Dtype(1.0), this->blobs_[3]->cpu_data(),
-                        Dtype(1.0), temp_C_.mutable_cpu_data());
-        caffe_cpu_eltwise_min(C,
-                              Dtype(BN_VARIANCE_CLIP_CONST), temp_C_.cpu_data(),
-                              Dtype(1.0), variance_.mutable_cpu_data());
-        // clip from below
-        caffe_cpu_eltwise_max(C,
-                              Dtype((1.) / BN_VARIANCE_CLIP_CONST), this->blobs_[3]->cpu_data(),
-                              Dtype(1.0), variance_.mutable_cpu_data());
-      }
-      //  update global mean and variance
-      if (iter_ > 1) {
-        caffe_cpu_axpby(C,
-                        Dtype(1. - moving_average_fraction_), mean_.cpu_data(),
-                        Dtype(moving_average_fraction_), this->blobs_[2]->mutable_cpu_data());
-        caffe_cpu_axpby(C,
-                        Dtype(1. - moving_average_fraction_), variance_.cpu_data(),
-                        Dtype(moving_average_fraction_), this->blobs_[3]->mutable_cpu_data());
-      }
-      else {
-        caffe_copy(C, mean_.cpu_data(), this->blobs_[2]->mutable_cpu_data());
-        caffe_copy(C, variance_.cpu_data(), this->blobs_[3]->mutable_cpu_data());
+      // Compute the mean by averaging over spatial and batch dimensions.
+      caffe_cpu_gemv<Dtype>(CblasNoTrans, num_ * channels_, height_ * width_,
+                            Dtype(1) / (height_ * width_), const_bottom_data,
+                            spatial_sum_multiplier_.cpu_data(), Dtype(0),
+                            spatial_statistic_.mutable_cpu_data());
+      caffe_cpu_gemv<Dtype>(CblasTrans, num_, channels_,
+                            Dtype(1) / num_, spatial_statistic_.cpu_data(),
+                            batch_sum_multiplier_.cpu_data(), Dtype(0),
+                            batch_statistic_.mutable_cpu_data());
+      // Add to the moving average
+      if (!frozen_) {
+        caffe_cpu_axpby(batch_statistic_.count(),
+                        Dtype(1) - bn_momentum_, batch_statistic_.cpu_data(),
+                        bn_momentum_, this->blobs_[2]->mutable_cpu_data());
       }
     }
-    //  inv_var= ( eps+ variance)^(-0.5)
-    caffe_add_scalar(C, eps_, variance_.mutable_cpu_data());
-    caffe_powx(C, variance_.cpu_data(), Dtype(-0.5),
-               inv_variance_.mutable_cpu_data());
-    // X_norm = (X-EX) * inv_var
-    multicast_cpu(N, C, S, inv_variance_.cpu_data(), temp_.mutable_cpu_data());
-    caffe_mul(top_size, top_data, temp_.cpu_data(), top_data);
-    // copy x_norm for backward
-    caffe_copy(top_size, top_data, x_norm_.mutable_cpu_data());
+    // Broadcast the mean vector
+    caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_, channels_, 1,
+                          Dtype(1), batch_sum_multiplier_.cpu_data(), batch_statistic_.cpu_data(),
+                          Dtype(0), spatial_statistic_.mutable_cpu_data());
+    caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_ * channels_,
+                          height_ * width_, 1, Dtype(-1),
+                          spatial_statistic_.cpu_data(), spatial_sum_multiplier_.cpu_data(),
+                          Dtype(0), broadcast_buffer_.mutable_cpu_data());
+    // Subtract
+    caffe_add(broadcast_buffer_.count(), const_bottom_data,
+              broadcast_buffer_.cpu_data(), top_data);
 
-    // -- STAGE 2:  Y = X_norm * scale[c] + shift[c]  -----------------
-    // Y = X_norm * scale[c]
-    const Blob<Dtype> & scale_data = *(this->blobs_[0]);
-    multicast_cpu(N, C, S, scale_data.cpu_data(), temp_.mutable_cpu_data());
-    caffe_mul(top_size, top_data, temp_.cpu_data(), top_data);
-    // Y = Y + shift[c]
-    const Blob<Dtype> & shift_data = *(this->blobs_[1]);
-    multicast_cpu(N, C, S, shift_data.cpu_data(), temp_.mutable_cpu_data());
-    caffe_add(top_size, top_data, temp_.mutable_cpu_data(), top_data);
+    // Variance normalization
+    if (frozen_ || this->phase_ == TEST) {
+      // Use the moving average variance
+      caffe_copy(batch_statistic_.count(), this->blobs_[3]->cpu_data(),
+                 batch_statistic_.mutable_cpu_data());
+    }
+    else {
+      caffe_powx(broadcast_buffer_.count(), const_top_data, Dtype(2),
+                 broadcast_buffer_.mutable_cpu_data());
+      caffe_cpu_gemv<Dtype>(CblasNoTrans, num_ * channels_, height_ * width_,
+                            Dtype(1) / (height_ * width_), broadcast_buffer_.cpu_data(),
+                            spatial_sum_multiplier_.cpu_data(), Dtype(0),
+                            spatial_statistic_.mutable_cpu_data());
+      caffe_cpu_gemv<Dtype>(CblasTrans, num_, channels_, Dtype(1) / num_,
+                            spatial_statistic_.cpu_data(), batch_sum_multiplier_.cpu_data(),
+                            Dtype(0), batch_statistic_.mutable_cpu_data());
+      // Add eps
+      caffe_add_scalar(batch_statistic_.count(), bn_eps_,
+                       batch_statistic_.mutable_cpu_data());
+      // Inverse standard deviation
+      caffe_powx(batch_statistic_.count(), batch_statistic_.cpu_data(),
+                 Dtype(-0.5), batch_statistic_.mutable_cpu_data());
+      // Add to the moving average
+      if (!frozen_) {
+        caffe_cpu_axpby(batch_statistic_.count(),
+                        Dtype(1) - bn_momentum_, batch_statistic_.cpu_data(),
+                        bn_momentum_, this->blobs_[3]->mutable_cpu_data());
+      }
+    }
+    // Broadcast the inverse std
+    caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_, channels_, 1,
+                          Dtype(1), batch_sum_multiplier_.cpu_data(), batch_statistic_.cpu_data(),
+                          Dtype(0), spatial_statistic_.mutable_cpu_data());
+    caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_ * channels_,
+                          height_ * width_, 1, Dtype(1),
+                          spatial_statistic_.cpu_data(), spatial_sum_multiplier_.cpu_data(),
+                          Dtype(0), broadcast_buffer_.mutable_cpu_data());
+    // Multiply with the inverse std
+    caffe_mul(broadcast_buffer_.count(), const_top_data,
+              broadcast_buffer_.cpu_data(), top_data);
+
+    // Save the normalized inputs and std for backprop
+    if (!frozen_) {
+      caffe_copy(broadcast_buffer_.count(), const_top_data,
+                 x_norm_.mutable_cpu_data());
+      caffe_copy(batch_statistic_.count(), batch_statistic_.cpu_data(),
+                 x_inv_std_.mutable_cpu_data());
+    }
+
+    // Scale
+    caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_, channels_, 1,
+                          Dtype(1), batch_sum_multiplier_.cpu_data(), scale_data,
+                          Dtype(0), spatial_statistic_.mutable_cpu_data());
+    caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_ * channels_,
+                          height_ * width_, 1, Dtype(1),
+                          spatial_statistic_.cpu_data(), spatial_sum_multiplier_.cpu_data(),
+                          Dtype(0), broadcast_buffer_.mutable_cpu_data());
+    caffe_mul(broadcast_buffer_.count(), const_top_data,
+              broadcast_buffer_.cpu_data(), top_data);
+
+    // Shift
+    caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_, channels_, 1,
+                          Dtype(1), batch_sum_multiplier_.cpu_data(), shift_data,
+                          Dtype(0), spatial_statistic_.mutable_cpu_data());
+    caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_ * channels_,
+                          height_ * width_, 1, Dtype(1),
+                          spatial_statistic_.cpu_data(), spatial_sum_multiplier_.cpu_data(),
+                          Dtype(0), broadcast_buffer_.mutable_cpu_data());
+    caffe_add(broadcast_buffer_.count(), const_top_data,
+              broadcast_buffer_.cpu_data(), top_data);
   }
 
   template <typename Dtype>
   void BNLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
-                                           const vector<bool>& propagate_down,
-                                           const vector<Blob<Dtype>*>& bottom) {
-    int N = bottom[0]->shape(0);
-    int C = channels_;
-    int S = bottom[0]->count(0) / (N*C);
-    int top_size = top[0]->count();
+                                    const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
+    if (frozen_) {
+      if (propagate_down[0]) {
+        const Dtype* const_top_diff = top[0]->cpu_diff();
+        Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
+        // Use the moving average inverse std
+        caffe_copy(batch_statistic_.count(), this->blobs_[3]->cpu_data(),
+                   batch_statistic_.mutable_cpu_data());
+        // Multiple slope with inverse std
+        caffe_mul(batch_statistic_.count(), this->blobs_[0]->cpu_data(),
+                  batch_statistic_.cpu_data(), batch_statistic_.mutable_cpu_data());
+        // Broadcast
+        caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_, channels_, 1,
+                              Dtype(1), batch_sum_multiplier_.cpu_data(), batch_statistic_.cpu_data(),
+                              Dtype(0), spatial_statistic_.mutable_cpu_data());
+        caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_ * channels_,
+                              height_ * width_, 1, Dtype(1),
+                              spatial_statistic_.cpu_data(), spatial_sum_multiplier_.cpu_data(),
+                              Dtype(0), broadcast_buffer_.mutable_cpu_data());
+        // Elementwise multiply top grad with (slope / std)
+        caffe_mul(broadcast_buffer_.count(), const_top_diff,
+                  broadcast_buffer_.cpu_data(), bottom_diff);
+      }
+      return;
+    }
 
-    // --  STAGE 1: compute dE/d(scale) and dE/d(shift) ---------------
+    // gradient w.r.t. slope
+    if (this->param_propagate_down_[0]) {
+      const Dtype* const_top_diff = top[0]->cpu_diff();
+      Dtype* scale_diff = this->blobs_[0]->mutable_cpu_diff();
+      caffe_mul(broadcast_buffer_.count(), x_norm_.cpu_data(), const_top_diff,
+                broadcast_buffer_.mutable_cpu_data());
+      caffe_cpu_gemv<Dtype>(CblasNoTrans, num_ * channels_, height_ * width_,
+                            Dtype(1), broadcast_buffer_.cpu_data(),
+                            spatial_sum_multiplier_.cpu_data(), Dtype(0),
+                            spatial_statistic_.mutable_cpu_data());
+      caffe_cpu_gemv<Dtype>(CblasTrans, num_, channels_, Dtype(1),
+                            spatial_statistic_.cpu_data(), batch_sum_multiplier_.cpu_data(),
+                            Dtype(1), scale_diff);
+    }
 
-    const Dtype* top_diff = top[0]->cpu_diff();
+    // gradient w.r.t. bias
+    if (this->param_propagate_down_[1]) {
+      const Dtype* const_top_diff = top[0]->cpu_diff();
+      Dtype* shift_diff = this->blobs_[1]->mutable_cpu_diff();
+      caffe_cpu_gemv<Dtype>(CblasNoTrans, num_ * channels_, height_ * width_,
+                            Dtype(1), const_top_diff, spatial_sum_multiplier_.cpu_data(),
+                            Dtype(0), spatial_statistic_.mutable_cpu_data());
+      caffe_cpu_gemv<Dtype>(CblasTrans, num_, channels_, Dtype(1),
+                            spatial_statistic_.cpu_data(), batch_sum_multiplier_.cpu_data(),
+                            Dtype(1), shift_diff);
+    }
 
-    // scale_diff: dE/d(scale)  =  sum(dE/dY .* X_norm)
-    Dtype* scale_diff = this->blobs_[0]->mutable_cpu_diff();
-    caffe_mul(top_size, top_diff, x_norm_.cpu_data(), temp_.mutable_cpu_diff());
-    compute_sum_per_channel_cpu(N, C, S, temp_.cpu_diff(), scale_diff);
+    // gradient w.r.t. normalized inputs
+    if (propagate_down[0]) {
+      const Dtype* const_top_diff = top[0]->cpu_diff();
+      const Dtype* const_bottom_diff = bottom[0]->cpu_diff();
+      Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
+      const Dtype* scale_data = this->blobs_[0]->cpu_data();
 
-    // shift_diff: dE/d(shift) = sum (dE/dY)
-    Dtype* shift_diff = this->blobs_[1]->mutable_cpu_diff();
-    compute_sum_per_channel_cpu(N, C, S, top_diff, shift_diff);
+      caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_, channels_, 1,
+                            Dtype(1), batch_sum_multiplier_.cpu_data(), scale_data,
+                            Dtype(0), spatial_statistic_.mutable_cpu_data());
+      caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_ * channels_,
+                            height_ * width_, 1, Dtype(1), spatial_statistic_.cpu_data(),
+                            spatial_sum_multiplier_.cpu_data(), Dtype(0),
+                            broadcast_buffer_.mutable_cpu_data());
+      caffe_mul(broadcast_buffer_.count(), const_top_diff,
+                broadcast_buffer_.cpu_data(), broadcast_buffer_.mutable_cpu_data());
 
-    // --  STAGE 2: backprop dE/d(x_norm) = dE/dY .* scale ------------
+      // sum of x_hat * (dl / dx_hat)
+      caffe_mul(broadcast_buffer_.count(), x_norm_.cpu_data(),
+                broadcast_buffer_.cpu_data(), bottom_diff);
+      caffe_cpu_gemv<Dtype>(CblasNoTrans, num_ * channels_, height_ * width_,
+                            Dtype(1), const_bottom_diff, spatial_sum_multiplier_.cpu_data(),
+                            Dtype(0), spatial_statistic_.mutable_cpu_data());
+      caffe_cpu_gemv<Dtype>(CblasTrans, num_, channels_, Dtype(1),
+                            spatial_statistic_.cpu_data(), batch_sum_multiplier_.cpu_data(),
+                            Dtype(0), batch_statistic_.mutable_cpu_data());
 
-    // dE/d(X_norm) = dE/dY * scale[c]
-    const Dtype* scale_data = this->blobs_[0]->cpu_data();
-    multicast_cpu(N, C, S, scale_data, temp_.mutable_cpu_data());
-    caffe_mul(top_size, top_diff, temp_.cpu_data(), x_norm_.mutable_cpu_diff());
+      // x_hat times the sum
+      caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_, channels_, 1,
+                            Dtype(1), batch_sum_multiplier_.cpu_data(), batch_statistic_.cpu_data(),
+                            Dtype(0), spatial_statistic_.mutable_cpu_data());
+      caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_ * channels_,
+                            height_ * width_, 1, Dtype(1),
+                            spatial_statistic_.cpu_data(), spatial_sum_multiplier_.cpu_data(),
+                            Dtype(0), bottom_diff);
+      caffe_mul(broadcast_buffer_.count(), x_norm_.cpu_data(),
+                const_bottom_diff, bottom_diff);
 
-    // --  STAGE 3: backprop dE/dY --> dE/dX --------------------------
+      // Subtract the average of x_hat times the sum
+      caffe_cpu_gemv<Dtype>(CblasNoTrans, num_ * channels_, height_ * width_,
+                            Dtype(1), broadcast_buffer_.cpu_data(),
+                            spatial_sum_multiplier_.cpu_data(), Dtype(0),
+                            spatial_statistic_.mutable_cpu_data());
+      caffe_cpu_gemv<Dtype>(CblasTrans, num_, channels_, Dtype(1),
+                            spatial_statistic_.cpu_data(), batch_sum_multiplier_.cpu_data(),
+                            Dtype(0), batch_statistic_.mutable_cpu_data());
+      caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_, channels_, 1,
+                            Dtype(1), batch_sum_multiplier_.cpu_data(), batch_statistic_.cpu_data(),
+                            Dtype(0), spatial_statistic_.mutable_cpu_data());
+      caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_ * channels_,
+                            height_ * width_, 1, Dtype(1),
+                            spatial_statistic_.cpu_data(), spatial_sum_multiplier_.cpu_data(),
+                            Dtype(1), bottom_diff);
+      caffe_cpu_axpby(broadcast_buffer_.count(), Dtype(1),
+                      broadcast_buffer_.cpu_data(), Dtype(-1) / (num_ * height_ * width_),
+                      bottom_diff);
 
-    // ATTENTION: from now on we will use notation Y:= X_norm
-    // if Y = (X-mean(X))/(sqrt(var(X)+eps)), then
-    //
-    // dE(Y)/dX =  (dE/dY - mean(dE/dY) - mean(dE/dY .* Y) .* Y)
-    //             ./ sqrt(var(X) + eps)
-    // where
-    // .* and ./ are element-wise product and division,
-    // mean, var, sum are computed along all dimensions except the channels.
-
-    const Dtype* top_data = x_norm_.cpu_data();
-    top_diff = x_norm_.cpu_diff();
-    Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
-
-    // temp = mean(dE/dY .* Y)
-    caffe_mul(top_size, top_diff, top_data, temp_.mutable_cpu_diff());
-    compute_mean_per_channel_cpu(N, C, S, temp_.cpu_diff(),
-                                 temp_C_.mutable_cpu_diff());
-    multicast_cpu(N, C, S, temp_C_.cpu_diff(), temp_.mutable_cpu_diff());
-
-    // bottom = mean(dE/dY .* Y) .* Y
-    caffe_mul(top_size, temp_.cpu_diff(), top_data, bottom_diff);
-
-    // temp = mean(dE/dY)
-    compute_mean_per_channel_cpu(N, C, S, top_diff, temp_C_.mutable_cpu_diff());
-    multicast_cpu(N, C, S, temp_C_.cpu_diff(), temp_.mutable_cpu_diff());
-
-    // bottom = mean(dE/dY) + mean(dE/dY .* Y) .* Y
-    caffe_add(top_size, temp_.cpu_diff(), bottom_diff, bottom_diff);
-
-    // bottom = dE/dY - mean(dE/dY)-mean(dE/dY \cdot Y) \cdot Y
-    caffe_cpu_axpby(top_size, Dtype(1.), top_diff, Dtype(-1.), bottom_diff);
-
-    // dE/dX = dE/dX ./ sqrt(var(X) + eps)
-    multicast_cpu(N, C, S, inv_variance_.cpu_data(), temp_.mutable_cpu_data());
-    caffe_mul(top_size, bottom_diff, temp_.cpu_data(), bottom_diff);
+      // Multiply with the inverse std
+      caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_, channels_, 1,
+                            Dtype(1), batch_sum_multiplier_.cpu_data(), x_inv_std_.cpu_data(),
+                            Dtype(0), spatial_statistic_.mutable_cpu_data());
+      caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, num_ * channels_,
+                            height_ * width_, 1, Dtype(1),
+                            spatial_statistic_.cpu_data(), spatial_sum_multiplier_.cpu_data(),
+                            Dtype(0), broadcast_buffer_.mutable_cpu_data());
+      caffe_mul(broadcast_buffer_.count(), const_bottom_diff,
+                broadcast_buffer_.cpu_data(), bottom_diff);
+    }
   }
+
 
 #ifdef CPU_ONLY
   STUB_GPU(BNLayer);
 #endif
 
   INSTANTIATE_CLASS(BNLayer);
-
 }  // namespace caffe

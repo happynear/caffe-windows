@@ -1,99 +1,76 @@
 #ifdef USE_CUDNN
-
+#include <algorithm>
+#include <cfloat>
 #include <vector>
 
+#include "thrust/device_vector.h"
+
+#include "caffe/layer.hpp"
+#include "caffe/util/math_functions.hpp"
 #include "caffe/filler.hpp"
 #include "caffe/layers/cudnn_bn_layer.hpp"
-#include "caffe/util/im2col.hpp"
-#include "caffe/util/math_functions.hpp"
 
+#if CUDNN_VERSION_MIN(4, 0, 0)
 
 namespace caffe {
 
   template <typename Dtype>
-  void CuDNNBNLayer<Dtype>::LayerSetUp(
-    const vector<Blob<Dtype>*>& bottom,
-    const vector<Blob<Dtype>*>& top) {
+  void CuDNNBNLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+                                       const vector<Blob<Dtype>*>& top) {
     BNLayer<Dtype>::LayerSetUp(bottom, top);
+    if (this->bn_eps_ < CUDNN_BN_MIN_EPSILON) {
+      LOG(WARNING) << "bn_eps is set to CUDNN_BN_MIN_EPSILON.";
+      // Merely setting as CUDNN_BN_MIN_EPSILON fails the check due to
+      // float / double precision problem.
+      this->bn_eps_ = CUDNN_BN_MIN_EPSILON * 1.001;
+    }
+    scale_buf_.ReshapeLike(*(this->blobs_[0]));
+    bias_buf_.ReshapeLike(*(this->blobs_[1]));
+    save_mean_.ReshapeLike(*(this->blobs_[2]));
+    save_inv_variance_.ReshapeLike(*(this->blobs_[3]));
 
+    // Initialize CUDNN.
+    CUDNN_CHECK(cudnnCreate(&handle_));
     cudnn::createTensor4dDesc<Dtype>(&bottom_desc_);
     cudnn::createTensor4dDesc<Dtype>(&top_desc_);
-    cudnn::createTensor4dDesc<Dtype>(&scale_bias_mean_var_desc_);
-
-    // currently only SPATIAL mode is supported (most commonly used mode)
-    // If there's enough demand we can implement CUDNN_BATCHNORM_PER_ACTIVATION
-    // though it's not currently implemented for the CPU layer
-    mode_ = CUDNN_BATCHNORM_SPATIAL;
-    int channels = bottom[0]->channels();
-
-    if (this->blobs_.size() != 5) {
-      LOG(INFO) << "Skipping parameter initialization";
-    }
-    else {
-      this->blobs_.resize(5);
-      this->blobs_[0].reset(new Blob<Dtype>(1, channels, 1, 1));
-      this->blobs_[1].reset(new Blob<Dtype>(1, channels, 1, 1));
-      this->blobs_[2].reset(new Blob<Dtype>(1, channels, 1, 1));
-      this->blobs_[3].reset(new Blob<Dtype>(1, channels, 1, 1));
-      this->blobs_[4].reset(new Blob<Dtype>(1, 1, 1, 1));
-
-      shared_ptr<Filler<Dtype> > scale_filler(
-        GetFiller<Dtype>(this->layer_param_.bn_param().scale_filler()));
-      scale_filler->Fill(this->blobs_[0].get());
-
-      shared_ptr<Filler<Dtype> > bias_filler(
-        GetFiller<Dtype>(this->layer_param_.bn_param().bias_filler()));
-      bias_filler->Fill(this->blobs_[1].get());
-
-      for (int i = 2; i < 5; i++) {
-        caffe_set(this->blobs_[i]->count(), Dtype(0),
-                  this->blobs_[i]->mutable_cpu_data());
-      }
-    }
+    cudnn::createTensor4dDesc<Dtype>(&bn_param_desc_);
     handles_setup_ = true;
   }
 
   template <typename Dtype>
-  void CuDNNBNLayer<Dtype>::Reshape(
-    const vector<Blob<Dtype>*>& bottom,
-    const vector<Blob<Dtype>*>& top) {
-    BNLayer<Dtype>::Reshape(bottom, top);
+  void CuDNNBNLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
+                                    const vector<Blob<Dtype>*>& top) {
+    // Do not call BNLayer::Reshape function as some members are unnecessary
+    this->num_ = bottom[0]->num();
+    this->channels_ = bottom[0]->channels();
+    this->height_ = bottom[0]->height();
+    this->width_ = bottom[0]->width();
 
-    // set up main tensors
-    cudnn::setTensor4dDesc<Dtype>(&bottom_desc_, bottom[0]->num(),
-                                  bottom[0]->channels(), bottom[0]->height(), bottom[0]->width());
-    cudnn::setTensor4dDesc<Dtype>(&top_desc_, bottom[0]->num(),
-                                  bottom[0]->channels(), bottom[0]->height(), bottom[0]->width());
+    top[0]->ReshapeLike(*(bottom[0]));
 
-    // aux tensors for caching mean & invVar from fwd to bwd pass
-    int C = bottom[0]->channels();
-    int H = bottom[0]->height();
-    int W = bottom[0]->width();
-    if (mode_ == CUDNN_BATCHNORM_SPATIAL) {
-      save_mean_.Reshape(1, C, 1, 1);
-      save_inv_var_.Reshape(1, C, 1, 1);
-    }
-    else if (mode_ == CUDNN_BATCHNORM_PER_ACTIVATION) {
-      save_mean_.Reshape(1, C, H, W);
-      save_inv_var_.Reshape(1, C, H, W);
-    }
-    else {
-      LOG(FATAL) << "Unknown cudnnBNMode_t";
-    }
-    CUDNN_CHECK(cudnnDeriveBNTensorDescriptor(scale_bias_mean_var_desc_,
-                                              bottom_desc_, mode_));
+    // CUDNN tensors
+    cudnn::setTensor4dDesc<Dtype>(&bottom_desc_, this->num_, this->channels_,
+                                  this->height_, this->width_);
+    cudnn::setTensor4dDesc<Dtype>(&top_desc_, this->num_, this->channels_,
+                                  this->height_, this->width_);
+    // Fix to the spatial mode
+    CUDNN_CHECK(cudnnDeriveBNTensorDescriptor(bn_param_desc_,
+                                              bottom_desc_, CUDNN_BATCHNORM_SPATIAL));
   }
 
   template <typename Dtype>
   CuDNNBNLayer<Dtype>::~CuDNNBNLayer() {
-    if (!handles_setup_) return;
+    // Check that handles have been setup before destroying.
+    if (!handles_setup_) { return; }
+
     cudnnDestroyTensorDescriptor(bottom_desc_);
     cudnnDestroyTensorDescriptor(top_desc_);
-    cudnnDestroyTensorDescriptor(scale_bias_mean_var_desc_);
+    cudnnDestroyTensorDescriptor(bn_param_desc_);
+    cudnnDestroy(handle_);
   }
 
   INSTANTIATE_CLASS(CuDNNBNLayer);
 
 }  // namespace caffe
-
+#endif
 #endif
