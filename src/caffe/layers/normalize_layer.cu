@@ -62,6 +62,13 @@ __global__ void kernel_channel_dot(const int num, const int channels,
 }
 
 template <typename Dtype>
+__global__ void kernel_sign(const int count, const Dtype* input, Dtype* sign_out) {
+  CUDA_KERNEL_LOOP(index, count) {
+    sign_out[index] = (Dtype(0) < input[index]) - (input[index] < Dtype(0));
+  }
+}
+
+template <typename Dtype>
 void NormalizeLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
   const Dtype* bottom_data = bottom[0]->gpu_data();
@@ -104,7 +111,7 @@ void NormalizeLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   const Dtype* top_diff = top[0]->gpu_diff();
   const Dtype* top_data = top[0]->gpu_data();
   const Dtype* bottom_data = bottom[0]->gpu_data();
-  const Dtype* square_data = squared_.gpu_data();
+  Dtype* square_data = squared_.mutable_gpu_data();
   const Dtype* norm_data = norm_.gpu_data();
   Dtype* bottom_diff = bottom[0]->mutable_gpu_diff();
   Dtype* norm_diff = norm_.mutable_gpu_diff();
@@ -122,6 +129,9 @@ void NormalizeLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
       CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, top_data, norm_diff, bottom_diff);
   }
   else if (normalize_type_ == "L1") {
+    // NOLINT_NEXT_LINE(whitespace/operators)
+    kernel_sign<Dtype> << <CAFFE_GET_BLOCKS(num*channels*spatial_dim),
+      CAFFE_CUDA_NUM_THREADS >> >(num*channels*spatial_dim, bottom_data, square_data);
     // NOLINT_NEXT_LINE(whitespace/operators)
     kernel_channel_scale<Dtype> << <CAFFE_GET_BLOCKS(num*channels*spatial_dim),
       CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, square_data, norm_diff, bottom_diff);

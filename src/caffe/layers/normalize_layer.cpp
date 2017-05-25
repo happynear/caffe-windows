@@ -8,6 +8,8 @@
 
 namespace caffe {
 
+#define sign(x) (Dtype(0) < (x)) - ((x) < Dtype(0))
+
 template <typename Dtype>
 void NormalizeLayer<Dtype>::LayerSetUp(
   const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top) {
@@ -105,7 +107,7 @@ void NormalizeLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
         Dtype a = caffe_cpu_strided_dot(channels, top_data + n*channels*spatial_dim + s, spatial_dim, top_diff + n*channels*spatial_dim + s, spatial_dim);
         for (int c = 0; c < channels; c++) {
           bottom_diff[(n * channels + c) * spatial_dim + s] =
-            (top_diff[(n * channels + c) * spatial_dim + s] - square_data[(n * channels + c) * spatial_dim + s] * a) * norm_data[n*spatial_dim + s];
+            (top_diff[(n * channels + c) * spatial_dim + s] - sign(bottom_data[(n * channels + c) * spatial_dim + s]) * a) * norm_data[n*spatial_dim + s];
         }
       }
     }
