@@ -443,6 +443,7 @@ message LayerParameter {
   optional LargeMarginInnerProductParameter largemargin_inner_product_param = 227;
   optional LabelSpecificRescaleParameter label_specific_rescale_param = 228;
   optional InfimumLossParamter infimum_loss_param = 229;
+  optional OrdinalRegressionParameter ordinal_regression_loss_param = 230;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1835,4 +1836,9 @@ message LabelSpecificRescaleParameter {
 
 message InfimumLossParamter {
   optional float infimum = 1 [default = 0.25];
+}
+
+message OrdinalRegressionParameter {
+  optional uint32 k = 1;
+  optional string weight_file = 2;
 }
