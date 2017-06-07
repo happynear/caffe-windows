@@ -503,10 +503,6 @@ CuDNNConvolutionLayer<Dtype>::~CuDNNConvolutionLayer() {
   }
   CUDNN_CHECK(cudnnDestroyFilterDescriptor(filter_desc_));
 
-  cudaFree(workspaceData);
-  delete [] workspace;
-  delete [] stream_;
-  delete [] handle_;
   delete [] fwd_algo_;
   delete [] bwd_filter_algo_;
   delete [] bwd_data_algo_;
