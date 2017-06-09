@@ -40,12 +40,6 @@
     <Filter Include="cu\solvers">
       <UniqueIdentifier>{fcb8114c-3425-41da-b30a-af2cb33dd851}</UniqueIdentifier>
     </Filter>
-    <Filter Include="3rdparty">
-      <UniqueIdentifier>{70db46e7-36e8-4dbd-9c28-fb42c876186c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="3rdparty\HoG">
-      <UniqueIdentifier>{c8bc6b13-95cf-4463-ba30-c8b16bddf763}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\caffe\util\im2col.cpp">
@@ -386,9 +380,6 @@
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\fcn_accuracy_layer.cpp">
       <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\3rdparty\HoG\gradientMex.cpp">
-      <Filter>3rdparty\HoG</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\center_loss_layer.cpp">
       <Filter>src\layers</Filter>
@@ -763,18 +754,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\caffe\layers\fcn_accuracy_layer.hpp">
       <Filter>include\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\3rdparty\HoG\gradientMex.h">
-      <Filter>3rdparty\HoG</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\3rdparty\HoG\sse.hpp">
-      <Filter>3rdparty\HoG</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\3rdparty\HoG\wrappers.hpp">
-      <Filter>3rdparty\HoG</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\3rdparty\HoG\fhog.hpp">
-      <Filter>3rdparty\HoG</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\caffe\layers\center_loss_layer.hpp">
       <Filter>include\layers</Filter>
