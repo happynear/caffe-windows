@@ -444,6 +444,7 @@ message LayerParameter {
   optional LabelSpecificRescaleParameter label_specific_rescale_param = 228;
   optional InfimumLossParamter infimum_loss_param = 229;
   optional OrdinalRegressionParameter ordinal_regression_loss_param = 230;
+  optional ResizeParameter resize_param = 231;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1850,4 +1851,14 @@ message InfimumLossParamter {
 message OrdinalRegressionParameter {
   optional uint32 k = 1;
   optional string weight_file = 2;
+}
+
+// Message that stores parameters used by ResizeLayer
+message ResizeParameter {// from yangyi
+	//optional float resize_ratio = 1 [default = 1.0]; // The resize ratio (equal in Y, X)
+	optional uint32 height = 1;
+	optional uint32 width = 2;
+	optional bool  is_pyramid_test = 3 [default = false];
+	optional float out_height_scale = 4;
+	optional float out_width_scale = 5;
 }

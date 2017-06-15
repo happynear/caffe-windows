@@ -447,6 +447,12 @@
     <ClCompile Include="..\..\src\caffe\layers\bn_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\resize_layer.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\util\util_img.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\caffe\proto\caffe.pb.h">
@@ -797,6 +803,12 @@
     <ClInclude Include="..\..\include\caffe\layers\bn_layer.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\caffe\layers\resize_layer.hpp">
+      <Filter>include\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\caffe\util\util_img.hpp">
+      <Filter>include\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\..\src\caffe\layers\contrastive_loss_layer.cu">
@@ -1059,6 +1071,12 @@
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\bn_layer.cu">
       <Filter>cu\layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\resize_layer.cu">
+      <Filter>cu\layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\util\util_img.cu">
+      <Filter>cu\util</Filter>
     </CudaCompile>
   </ItemGroup>
 </Project>

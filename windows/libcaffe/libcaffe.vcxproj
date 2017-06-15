@@ -174,6 +174,7 @@
     <ClCompile Include="..\..\src\caffe\layers\reduction_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\relu_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\reshape_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\resize_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\roi_pooling_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\scale_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\sigmoid_cross_entropy_loss_layer.cpp" />
@@ -222,6 +223,7 @@
     <ClCompile Include="..\..\src\caffe\util\nms.cpp" />
     <ClCompile Include="..\..\src\caffe\util\signal_handler.cpp" />
     <ClCompile Include="..\..\src\caffe\util\upgrade_proto.cpp" />
+    <ClCompile Include="..\..\src\caffe\util\util_img.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\caffe\blob.hpp" />
@@ -299,6 +301,7 @@
     <ClInclude Include="..\..\include\caffe\layers\reduction_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\relu_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\reshape_layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\layers\resize_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\scale_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\sigmoid_cross_entropy_loss_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\sigmoid_layer.hpp" />
@@ -340,6 +343,7 @@
     <ClInclude Include="..\..\include\caffe\util\rng.hpp" />
     <ClInclude Include="..\..\include\caffe\util\signal_handler.h" />
     <ClInclude Include="..\..\include\caffe\util\upgrade_proto.hpp" />
+    <ClInclude Include="..\..\include\caffe\util\util_img.hpp" />
   </ItemGroup>
   <ItemGroup Condition="'$(CpuOnlyBuild)'=='false'">
     <CudaCompile Include="..\..\src\caffe\layers\absval_layer.cu" />
@@ -423,6 +427,7 @@
     <CudaCompile Include="..\..\src\caffe\layers\proposal_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\psroi_pooling_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\recurrent_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\resize_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\roi_pooling_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\smooth_L1_loss_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\soft_truncation_layer.cu" />
@@ -431,6 +436,7 @@
     <CudaCompile Include="..\..\src\caffe\layers\triplet_loss_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\truncation_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\util\nms.cu" />
+    <CudaCompile Include="..\..\src\caffe\util\util_img.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(SolutionDir)\CommonSettings.targets" />
