@@ -17,6 +17,16 @@ and step-by-step examples.
 ## Windows Setup
 **Requirements**: Visual Studio 2015, CUDA 8.0, third party libraries: [Baidu Yun](https://pan.baidu.com/s/1mhZgDeS) or [Google Drive](https://drive.google.com/open?id=0B0OhXbSTAU1Hb2s3Z2xfUTJ1TE0). Please extract the archive into `./windows/thirdparty/`. Then, add the folder `./windows/thirdparty/bins` to the environment variable `PATH`.
 
+## Custom distributions
+
+- [Intel optimized branch](https://github.com/BVLC/caffe/tree/intel) for CPU, in particular Xeon processors (HSW, BDW, Xeon Phi).
+- [OpenCL Caffe](https://github.com/BVLC/caffe/tree/opencl) e.g. for AMD or Intel devices.
+- [Windows Caffe](https://github.com/BVLC/caffe/tree/windows)
+
+## Community
+
+[![Join the chat at https://gitter.im/BVLC/caffe](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/BVLC/caffe?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ### Pre-Build Steps
 Copy `.\windows\CommonSettings.props.example` to `.\windows\CommonSettings.props`
 
