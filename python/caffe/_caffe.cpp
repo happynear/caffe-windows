@@ -71,9 +71,7 @@ namespace caffe {
   void set_mode_cpu() { Caffe::set_mode(Caffe::CPU); }
   void set_mode_gpu() { Caffe::set_mode(Caffe::GPU); }
 
-  void InitLog(int level) {
-    FLAGS_logtostderr = 1;
-    FLAGS_minloglevel = level;
+  void InitLog() {
     ::google::InitGoogleLogging("");
     //::google::InstallFailureSignalHandler();
   }
@@ -81,9 +79,9 @@ namespace caffe {
     FLAGS_minloglevel = level;
     InitLog();
   }
-  void InitLogLevelPipe(int level, bool stderr) {
+  void InitLogLevelPipe(int level, bool log_to_stderr) {
     FLAGS_minloglevel = level;
-    FLAGS_logtostderr = stderr;
+    FLAGS_logtostderr = log_to_stderr;
     InitLog();
   }
   void Log(const string& s) {
