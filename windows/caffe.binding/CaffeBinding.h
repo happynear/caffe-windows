@@ -1,9 +1,13 @@
 #pragma once
 
+#ifdef _MSC_VER
 #ifdef CAFFEBINDING_EXPORTS
 #define CAFFE_DLL __declspec(dllexport)
 #else
 #define CAFFE_DLL __declspec(dllimport)
+#endif
+#else
+#define CAFFE_DLL
 #endif
 
 #include <opencv2/opencv.hpp>
