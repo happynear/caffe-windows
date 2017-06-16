@@ -71,9 +71,7 @@ namespace caffe {
   void set_mode_cpu() { Caffe::set_mode(Caffe::CPU); }
   void set_mode_gpu() { Caffe::set_mode(Caffe::GPU); }
 
-  void InitLog(int level) {
-    FLAGS_logtostderr = 1;
-    FLAGS_minloglevel = level;
+  void InitLog() {
     ::google::InitGoogleLogging("");
     //::google::InstallFailureSignalHandler();
   }
