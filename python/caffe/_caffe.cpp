@@ -79,12 +79,12 @@ namespace caffe {
   }
   void InitLogLevel(int level) {
     FLAGS_minloglevel = level;
-    InitLog();
+    InitLog(level);
   }
   void InitLogLevelPipe(int level, bool stderr) {
     FLAGS_minloglevel = level;
     FLAGS_logtostderr = stderr;
-    InitLog();
+    InitLog(level);
   }
   void Log(const string& s) {
     LOG(INFO) << s;
@@ -190,7 +190,7 @@ namespace caffe {
                           bp::object labels_obj) {
     // check that this network has an input MemoryDataLayer
     shared_ptr<MemoryDataLayer<Dtype> > md_layer =
-      boost::dynamic_pointer_cast<MemoryDataLayer<Dtype>>(net->layers()[0]);
+      boost::dynamic_pointer_cast<MemoryDataLayer<Dtype> >(net->layers()[0]);
     if (!md_layer) {
       throw std::runtime_error("set_input_arrays may only be called if the"
                                " first layer is a MemoryDataLayer");

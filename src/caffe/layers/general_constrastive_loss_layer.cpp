@@ -36,15 +36,33 @@ void GeneralContrastiveLossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bot
   if (top.size() >= 2) {
     if (add_intra_mae_) {
       // positive distance, negative distance, intra_mae.
+#if __cplusplus < 201103L
+      int arr[] = { 3 };
+      vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+      top[1]->Reshape(shape);
+#else
       top[1]->Reshape({ 3 });
+#endif
     }
     else {
       // positive distance, negative distance.
+#if __cplusplus < 201103L
+      int arr[] = { 2 };
+      vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+      top[1]->Reshape(shape);
+#else
       top[1]->Reshape({ 2 });
+#endif
     }
   }
   if (max_negative_only_) {
+#if __cplusplus < 201103L
+    int arr[] = { bottom[0]->num() };
+    vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+    max_negative_index_.Reshape(shape);
+#else
     max_negative_index_.Reshape({ bottom[0]->num() });
+#endif
   }
 }
 
@@ -59,7 +77,7 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
   int num = bottom[0]->num();
   int count = bottom[0]->count();
   int dim = count / num;
-  Dtype weighted_count = num * (abs(positive_weight_) + (dim - 1)*abs(negative_weight_));
+//  Dtype weighted_count = num * (abs(positive_weight_) + (dim - 1)*abs(negative_weight_));
   Dtype positive_distance = Dtype(0);
   Dtype negative_distance = Dtype(0);
   max_positive_index_ = 0;

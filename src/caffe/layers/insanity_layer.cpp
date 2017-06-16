@@ -13,7 +13,7 @@ void InsanityLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   CHECK_GE(bottom[0]->num_axes(), 2)
       << "Number of axes of bottom blob must be >=2.";
   InsanityParameter insanity_param_ = this->layer_param().insanity_param();
-  int channels = bottom[0]->channels();
+ // int channels = bottom[0]->channels();
   lb_ = insanity_param_.lb();
   ub_ = insanity_param_.ub();
   CHECK_GT(ub_, lb_) << "upper bound must > lower bound.";
@@ -40,8 +40,8 @@ void InsanityLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   const Dtype* bottom_data = bottom[0]->cpu_data();
   Dtype* top_data = top[0]->mutable_cpu_data();
   const int count = bottom[0]->count();
-  const int dim = bottom[0]->count(2);
-  const int channels = bottom[0]->channels();
+//  const int dim = bottom[0]->count(2);
+//  const int channels = bottom[0]->channels();
   Dtype* slope_data = alpha.mutable_cpu_data();
 
   // For in-place computation
@@ -73,8 +73,8 @@ void InsanityLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
   const Dtype* slope_data = alpha.cpu_data();
   const Dtype* top_diff = top[0]->cpu_diff();
   const int count = bottom[0]->count();
-  const int dim = bottom[0]->count(2);
-  const int channels = bottom[0]->channels();
+//  const int dim = bottom[0]->count(2);
+//  const int channels = bottom[0]->channels();
 
   // For in-place computation
   if (top[0] == bottom[0] && lb_ < 0) {

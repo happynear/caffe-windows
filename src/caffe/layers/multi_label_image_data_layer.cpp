@@ -8,7 +8,11 @@
 #include <string>
 #include <utility>
 #include <vector>
+#if __cplusplus >= 201103L
 #include <random>
+#else
+#include <boost/random.hpp>
+#endif
 
 #include "caffe/layers/multi_label_image_data_layer.hpp"
 #include "caffe/util/benchmark.hpp"
@@ -23,7 +27,11 @@ namespace caffe {
     this->StopInternalThread();
   }
 
+#if __cplusplus >= 201103L
   typedef std::mt19937 RANDOM_ENGINE;
+#else
+  typedef boost::mt19937 RANDOM_ENGINE;
+#endif
 
   template <typename Dtype>
   void extract_face(cv::Mat& input_image, Dtype* points, int point_count,
@@ -40,14 +48,27 @@ namespace caffe {
     double face_scale = 2 * sqrt((face_center.x - mouth_center.x) * (face_center.x - mouth_center.x)
                                  + (face_center.y - mouth_center.y) * (face_center.y - mouth_center.y));
     RANDOM_ENGINE prnd(time(NULL));
+
+#if __cplusplus >= 201103L
     face_center.x += std::uniform_int_distribution<int>(-max_random_shift, max_random_shift)(prnd);
     face_center.y += std::uniform_int_distribution<int>(-max_random_shift, max_random_shift)(prnd);
     std::uniform_real_distribution<float> rand_uniform(0, 1);
+#else
+    face_center.x += boost::random::uniform_int_distribution<int>(-max_random_shift, max_random_shift)(prnd);
+    face_center.y += boost::random::uniform_int_distribution<int>(-max_random_shift, max_random_shift)(prnd);
+    boost::random::uniform_real_distribution<float> rand_uniform(0, 1);
+#endif
+
     // shear
     float s = rand_uniform(prnd) * max_shear_ratio * 2 - max_shear_ratio;
     // rotate
+#if __cplusplus >= 201103L
     int angle = std::uniform_int_distribution<int>(
       -max_rotate_angle, max_rotate_angle)(prnd);
+#else
+    int angle = boost::random::uniform_int_distribution<int>(
+      -max_rotate_angle, max_rotate_angle)(prnd);
+#endif
     float a = cos(angle / 180.0 * CV_PI);
     float b = sin(angle / 180.0 * CV_PI);
     // scale
@@ -61,7 +82,11 @@ namespace caffe {
     float ws = ratio * hs;
     int flip = 1;
     if (face_mirror) {
+#if __cplusplus >= 201103L
       flip = std::uniform_int_distribution<int>(0, 1)(prnd)* 2 - 1;
+#else
+      flip = boost::random::uniform_int_distribution<int>(0, 1)(prnd)* 2 - 1;
+#endif
     }
     hs *= flip;
 
@@ -149,10 +174,17 @@ namespace caffe {
     if (balance_) {
       num_samples_ = vector<int>(max_label + 1);
       filename_by_class_ = vector<vector<std::pair<std::string, shared_ptr<vector<Dtype> > > > >(max_label + 1);
+#if __cplusplus >= 201103L
       for (auto& l : lines_) {
         num_samples_[(*l.second)[balance_by_]]++;
         filename_by_class_[(*l.second)[balance_by_]].push_back(l);
       }
+#else
+      for (typename vector<std::pair<std::string, shared_ptr<vector<Dtype> > > >::iterator l  = lines_.begin(); l != lines_.end(); ++l) {
+        num_samples_[(*l->second)[balance_by_]]++;
+        filename_by_class_[(*l->second)[balance_by_]].push_back(*l);
+      }
+#endif
       class_id_ = 0;
     }
 
@@ -194,7 +226,12 @@ namespace caffe {
       << top[0]->channels() << "," << top[0]->height() << ","
       << top[0]->width();
     // label
+#if __cplusplus >= 201103L
     vector<int> label_shape = { batch_size - label_cut_start_ - label_cut_end_, label_count };
+#else
+    int arr[] = { batch_size - label_cut_start_ - label_cut_end_, label_count };
+    vector<int> label_shape(arr,arr+sizeof(arr)/sizeof(int));
+#endif
     top[1]->Reshape(label_shape);
     for (int i = 0; i < this->prefetch_.size(); ++i) {
       this->prefetch_[i]->label_.Reshape(label_shape);
