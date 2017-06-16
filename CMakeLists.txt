@@ -76,6 +76,7 @@ include_directories(${PROJECT_BINARY_DIR})
 # list(REMOVE_ITEM ...) invocations remove PRIVATE and PUBLIC keywords from collected definitions and include pathes
 if(HAVE_CUDA)
   # pass include pathes to cuda_include_directories()
+  list(APPEND Caffe_INCLUDE_DIRS PRIVATE ${PROJECT_SOURCE_DIR}/3rdparty)
   set(Caffe_ALL_INCLUDE_DIRS ${Caffe_INCLUDE_DIRS})
   list(REMOVE_ITEM Caffe_ALL_INCLUDE_DIRS PRIVATE PUBLIC)
   cuda_include_directories(${Caffe_INCLUDE_DIR} ${Caffe_SRC_DIR} ${Caffe_ALL_INCLUDE_DIRS})

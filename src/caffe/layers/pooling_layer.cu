@@ -378,10 +378,10 @@ if ((n==0)&&( top_data[n*channels_+ch] > 10000))
 			  int phS = ph * stride_;
 		//	 for (int pw = 0; pw < pooled_width_; ++pw) {
 				  int pwS = pw * stride_;
-				  int defval = phS * width_ + pwS;
+//				  int defval = phS * width_ + pwS;
 				 // LOG(INFO) << ph <<","<< pw;
-				  int ihval = Ih[(n*channels_+ch)*N_+phS * width_ + pwS];
-				  int ivval = Iv[(n*channels_+ch)*N_+phS * width_ + pwS];
+//				  int ihval = Ih[(n*channels_+ch)*N_+phS * width_ + pwS];
+//				  int ivval = Iv[(n*channels_+ch)*N_+phS * width_ + pwS];
 				  Dtype hdif = phS - Ih[(n*channels_+ch)*N_+phS * width_ + pwS];
 				  Dtype vdif = pwS - Iv[(n*channels_+ch)*N_+phS * width_ + pwS];
 				//  LOG(INFO) << "fp data[" << defval << "]:" << data_pointer[defval] <<","<< Mdt[defval];
@@ -495,7 +495,7 @@ LOG(INFO) << "Forward_gpu PoolingParameter_PoolMethod_DEF 2.4";
 			  int phS = ph * stride_;
 			  for (int pw = 0; pw < pooled_width_; ++pw) {
 				  int pwS = pw * stride_;
-				  int defval = phS * width_ + pwS;
+//				  int defval = phS * width_ + pwS;
 				  int ihval = Ih[(n*channels_+ch)*N_+phS * width_ + pwS];
 				  int ivval = Iv[(n*channels_+ch)*N_+phS * width_ + pwS];
 				  Dtype hdif = phS - Ih[(n*channels_+ch)*N_+phS * width_ + pwS];
@@ -568,8 +568,8 @@ LOG(INFO) << "Forward_gpu PoolingParameter_PoolMethod_DEF 2.4";
     for (int n = 0; n < bottom[0]->num(); ++n) {
        
 	  int N2 = pooled_height_*pooled_width_;
-	  int center = kernel_size_/2;
-	  int def_center = center+center*kernel_size_;
+//	  int center = kernel_size_/2;
+//	  int def_center = center+center*kernel_size_;
       
 
       for (int ch = 0; ch < channels_; ++ch) {          
@@ -617,9 +617,9 @@ LOG(INFO) << "Forward_gpu PoolingParameter_PoolMethod_DEF 2.4";
 			  if (phS > height_-kernel_size_)
 				  phS = height_ - kernel_size_;
 			  for (int pw = 0; pw < pooled_width_; ++pw) {
-                  int pwS = pw * stride_;
-				  int defval = phS * width_ + pwS;
-				  int defwidx;
+//				  int pwS = pw * stride_;
+//				  int defval = phS * width_ + pwS;
+//				  int defwidx;
 				  int maxIdx;
                   
                   int hstart = ph * stride_h_ - pad_h_;
@@ -944,7 +944,7 @@ void PoolingLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   int* defp;
   int N2;
   int Nparam = kernel_size_*kernel_size_;
-  const Dtype* bottom_data_p;
+//  const Dtype* bottom_data_p;
 
   const Dtype* top_mask = NULL;
   switch (this->layer_param_.pooling_param().pool()) {
@@ -1196,25 +1196,25 @@ void PoolingLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   case PoolingParameter_PoolMethod_DEF_ALL4:
 //LOG(INFO) << "Backward_gpu PoolingParameter_PoolMethod_DEF_ALL3";
 	bottom_diff = bottom[0]->mutable_cpu_diff();
-    top_diff = top[0]->cpu_diff();
-    Ih = Ih_.data();
-    Iv = Iv_.data();
-    defp = defp_.data();
-    d_defw = this->blobs_[0]->mutable_cpu_diff();
-    memset(d_defw, 0, channels_*kernel_size_*kernel_size_* sizeof(Dtype));
-    dh = dh_.mutable_cpu_data();
-    dv = dv_.mutable_cpu_data();
+	top_diff = top[0]->cpu_diff();
+	Ih = Ih_.data();
+	Iv = Iv_.data();
+	defp = defp_.data();
+	d_defw = this->blobs_[0]->mutable_cpu_diff();
+	memset(d_defw, 0, channels_*kernel_size_*kernel_size_* sizeof(Dtype));
+	dh = dh_.mutable_cpu_data();
+	dv = dv_.mutable_cpu_data();
 	N2 = pooled_width_*pooled_height_;
-    for (int n = 0; n < top[0]->num(); ++n) {
-      for (int ch = 0; ch < channels_; ++ch) {
+	for (int n = 0; n < top[0]->num(); ++n) {
+              for (int ch = 0; ch < channels_; ++ch) {
 /*            int vstart = Iv[(n*channels_+ch)*N_+defp[ch]];
             int hstart = Ih[(n*channels_+ch)*N_+defp[ch]];
             int vend = min(vstart + kernel_size_, width_);
             int hend = min(hstart + kernel_size_, height_);*/
 		  for (int ph = 0; ph < pooled_height_; ++ph) {
-			  int phS = ph * stride_;
+			  //int phS = ph * stride_;
 			  for (int pw = 0; pw < pooled_width_; ++pw) {
-				  int pwS = pw * stride_;
+//				  int pwS = pw * stride_;
 				  int idxInv = Ih[(n*channels_+ch)*N2+ph * pooled_width_ + pw];
 				  Dtype t_dif = top_diff[ph * pooled_width_ + pw];
 				  bottom_diff[idxInv] += t_dif;

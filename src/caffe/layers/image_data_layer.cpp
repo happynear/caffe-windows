@@ -55,9 +55,16 @@ void ImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
   if (top.size() == 3) {
     num_samples_ = vector<int>(max_label + 1);
     class_weights_ = vector<Dtype>(max_label + 1);
+#if __cplusplus < 201103L
+    for (vector<std::pair<std::string, int> >::iterator l  = lines_.begin(); l != lines_.end(); ++l) {
+      num_samples_[l->second]++;
+    }
+#else
     for (auto l : lines_) {
       num_samples_[l.second]++;
     }
+#endif
+
     Dtype mean_sample_num = (Dtype)lines_.size() / (Dtype)(max_label + 1);
     Dtype min_weight = 9999, max_weight = 0;
     for (int i = 0; i < num_samples_.size(); i++) {
@@ -76,10 +83,17 @@ void ImageDataLayer<Dtype>::DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
   if (balance_) {
     num_samples_ = vector<int>(max_label + 1);
     filename_by_class_ = vector<vector<std::pair<std::string, int> > >(max_label + 1);
+#if __cplusplus < 201103L
+    for (vector<std::pair<std::string, int> >::iterator l  = lines_.begin(); l != lines_.end(); ++l) {
+      num_samples_[l->second]++;
+      filename_by_class_[l->second].push_back(std::make_pair(l->first, 0));
+    }
+#else
     for (auto l : lines_) {
       num_samples_[l.second]++;
       filename_by_class_[l.second].push_back(std::make_pair(l.first, 0));
     }
+#endif
     class_id_ = 0;
   }
 
@@ -194,6 +208,20 @@ void ImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
 
       if (balance_) {
         int pick_index = (caffe_rng_rand() % num_samples_[class_id_]) + 1;
+#if __cplusplus < 201103L
+        vector<std::pair<std::string, int> >* samples = &filename_by_class_[class_id_];
+        for (vector<std::pair<std::string, int> >::iterator sample = samples->begin(); sample != samples->end(); ++sample) {
+          if (sample->second == 0) {
+            pick_index--;
+            if (pick_index == 0) {
+              this_line = std::make_pair(sample->first, class_id_);
+              sample->second = 1;
+              num_samples_[class_id_]--;
+              break;
+            }
+          }
+        }
+#else
         for (auto& sample : filename_by_class_[class_id_]) {
           if (sample.second == 0) {
             pick_index--;
@@ -205,12 +233,20 @@ void ImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
             }
           }
         }
+#endif
         CHECK_GT(this_line.first.size(), 0);
         if (num_samples_[class_id_] == 0) {
           num_samples_[class_id_] = filename_by_class_[class_id_].size();
+#if __cplusplus < 201103L
+          vector<std::pair<std::string, int> >* samples = &filename_by_class_[class_id_];
+          for (vector<std::pair<std::string, int> >::iterator sample = samples->begin(); sample != samples->end(); ++sample) {
+            sample->second = 0;
+          }
+#else
           for (auto& sample : filename_by_class_[class_id_]) {
             sample.second = 0;
           }
+#endif
         }
       }
       else {

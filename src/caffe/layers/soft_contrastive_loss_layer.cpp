@@ -27,9 +27,19 @@ void SoftContrastiveLossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom
   LossLayer<Dtype>::Reshape(bottom, top);
   if (top.size() >= 2) {
     // positive distance, negative distance.
+#if __cplusplus < 201103L
+    int arr[] = { 2 };
+    vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+    top[1]->Reshape(shape);
+  }
+  int arr_sum_exp[] = { bottom[0]->num(), 1 };
+  vector<int> shape_sum_exp(arr_sum_exp,arr_sum_exp+sizeof(arr_sum_exp)/sizeof(int));
+  sum_exp_.Reshape(shape_sum_exp);
+#else
     top[1]->Reshape({ 2 });
   }
   sum_exp_.Reshape({ bottom[0]->num(), 1 });
+#endif
 }
 
 template <typename Dtype>
@@ -42,7 +52,7 @@ void SoftContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bo
   int num = bottom[0]->num();
   int count = bottom[0]->count();
   int dim = count / num;
-  Dtype weighted_count = num * (abs(positive_weight_) + (dim - 1)*abs(negative_weight_));
+//  Dtype weighted_count = num * (abs(positive_weight_) + (dim - 1)*abs(negative_weight_));
   Dtype positive_distance = Dtype(0);
   Dtype negative_distance = Dtype(0);
   Dtype* loss = top[0]->mutable_cpu_data();
@@ -110,11 +120,11 @@ void SoftContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& t
     int count = bottom[0]->count();
     int dim = count / num;
 
-    Dtype negative_sum = Dtype(0);
+ //   Dtype negative_sum = Dtype(0);
 
     for (int i = 0; i < num; ++i) {
-      Dtype min_negative_distance = FLT_MAX;
-      int min_negative_index = 0;
+//      Dtype min_negative_distance = FLT_MAX;
+//      int min_negative_index = 0;
       for (int j = 0; j < dim; ++j) {
         if (j == static_cast<int>(label[i])) {
           if (bottom_data[i * dim + j] > positive_margin_ && bottom_data[i * dim + j] < positive_outlier_thresh_) {

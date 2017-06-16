@@ -34,7 +34,7 @@ namespace caffe {
   template <typename Dtype>
   void TransformerLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
-    const Dtype* bottom_data = bottom[0]->cpu_data();
+//    const Dtype* bottom_data = bottom[0]->cpu_data();
     Dtype* top_data = top[0]->mutable_cpu_data();
     const Dtype* theta_data = bottom[1]->cpu_data();
     const Dtype* CoordinateTarget_data = CoordinateTarget.cpu_data();
@@ -94,7 +94,7 @@ namespace caffe {
     const vector<bool>& propagate_down,
     const vector<Blob<Dtype>*>& bottom) {
     const Dtype* top_diff = top[0]->cpu_diff();
-    const Dtype* top_data = top[0]->cpu_data();
+ //   const Dtype* top_data = top[0]->cpu_data();
     Dtype* data_diff = bottom[0]->mutable_cpu_diff();
     Dtype* theta_diff = bottom[1]->mutable_cpu_diff();
     int num = bottom[0]->shape(0);

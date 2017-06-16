@@ -64,6 +64,12 @@ After you have built solution with Matlab support, in order to use it you have t
 ### Build
 Now, you should be able to build `.\windows\Caffe.sln`
 
+
+## Ubuntu 16.04 cmake build 
+`cmake . -DCUDA_NVCC_FLAGS="-D_FORCE_INLINES"`
+
+`make`
+
 ## License and Citation
 
 Caffe is released under the [BSD 2-Clause license](https://github.com/BVLC/caffe/blob/master/LICENSE).

@@ -47,12 +47,25 @@ void PredictBoxLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
     CHECK_EQ(bottom[0]->height(), bottom[2]->height());
     CHECK_EQ(bottom[0]->width(), bottom[2]->width());
   }
-
+#if __cplusplus < 201103L
+  int arr[] = { bottom[0]->num(), 5, bottom[0]->height(), bottom[0]->width() };
+  vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+  top[0]->Reshape(shape);
+  if (output_vector_) {
+    int arr_output[] = { bottom[0]->num(), 1, 5 };
+    vector<int> shape_output(arr_output,arr_output+sizeof(arr_output)/sizeof(int));
+    top[1]->Reshape(shape_output);//will be modified on the fly.
+  }
+  int arr_counter[] = { bottom[0]->num(),1,bottom[0]->height(),bottom[0]->width() };
+  vector<int> shape_counter(arr_counter,arr_counter+sizeof(arr_counter)/sizeof(int));
+  counter_.Reshape(shape_counter);
+#else
   top[0]->Reshape({ bottom[0]->num(), 5, bottom[0]->height(), bottom[0]->width() });
   if (output_vector_) {
     top[1]->Reshape({ bottom[0]->num(), 1, 5 });//will be modified on the fly.
   }
   counter_.Reshape({ bottom[0]->num(),1,bottom[0]->height(),bottom[0]->width() });
+#endif
 }
 
 template <typename Dtype>
@@ -111,7 +124,13 @@ void PredictBoxLayer<Dtype>::Forward_cpu(
 
   if (output_vector_) {
     if (num == 1 && count > 0) {
+#if __cplusplus < 201103L
+      int arr[] = { bottom[0]->num(), count, 5 };
+      vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+      top[1]->Reshape(shape);
+#else
       top[1]->Reshape({ bottom[0]->num(), count, 5 });
+#endif
       int i = 0;
       for (int x = 0; x < output_width; x++) {
         for (int y = 0; y < output_height; y++) {
@@ -127,7 +146,13 @@ void PredictBoxLayer<Dtype>::Forward_cpu(
       }
     }
     else {
+#if __cplusplus < 201103L
+      int arr[] = { bottom[0]->num(), 1, 5 };
+      vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+      top[1]->Reshape(shape);
+#else
       top[1]->Reshape({ bottom[0]->num(), 1, 5 });
+#endif
       caffe_set<Dtype>(top[1]->count(), 0, top[1]->mutable_cpu_data());
     }
   }
