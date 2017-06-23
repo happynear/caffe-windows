@@ -6,7 +6,7 @@
 
 #include "caffe/layer.hpp"
 #include "caffe/util/math_functions.hpp"
-#include "caffe/custom_layers.hpp"
+#include "caffe/layers/normalize_layer.hpp"
 
 namespace caffe {
 
@@ -74,7 +74,7 @@ void NormalizeLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   const Dtype* bottom_data = bottom[0]->gpu_data();
   Dtype* top_data = top[0]->mutable_gpu_data();
   Dtype* square_data = squared_.mutable_gpu_data();
-  Dtype* norm_data = norm_.mutable_gpu_data();
+  Dtype* norm_data = (top.size() == 2) ? top[1]->mutable_gpu_data() : norm_.mutable_gpu_data();
   int num = bottom[0]->num();
   int channels = bottom[0]->channels();
   int spatial_dim = bottom[0]->height() * bottom[0]->width();
@@ -112,7 +112,7 @@ void NormalizeLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   const Dtype* top_data = top[0]->gpu_data();
   const Dtype* bottom_data = bottom[0]->gpu_data();
   Dtype* square_data = squared_.mutable_gpu_data();
-  const Dtype* norm_data = norm_.gpu_data();
+  const Dtype* norm_data = (top.size() == 2) ? top[1]->gpu_data() : norm_.gpu_data();
   Dtype* bottom_diff = bottom[0]->mutable_gpu_diff();
   Dtype* norm_diff = norm_.mutable_gpu_diff();
 
