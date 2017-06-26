@@ -1,7 +1,11 @@
 #include "CaffeBinding.h"
-#include <caffe\caffe.hpp>
-#include <caffe\layers\memory_data_layer.hpp>
+#include <caffe/caffe.hpp>
+#include <caffe/layers/memory_data_layer.hpp>
 #include <boost/thread.hpp>
+
+#if __cplusplus < 201402L
+#include <boost/make_unique.hpp>
+#endif
 
 using namespace caffe;
 using namespace std;
@@ -26,8 +30,13 @@ int CaffeBinding::AddNet(string model_definition, string weights, int gpu_id) {
 
 std::unordered_map<std::string, DataBlob> CaffeBinding::Forward(int net_id) {
   if (!(*predictors_[net_id]).get()) {
+#if __cplusplus >= 201402L
     auto predictor =
       std::make_unique<caffe::Net<float>>(prototxts[net_id], Phase::TEST);
+#else
+    auto predictor =
+      boost::make_unique<caffe::Net<float>>(prototxts[net_id], Phase::TEST);
+#endif
     predictor->ShareTrainedLayersWith(nets_[net_id]);
     (*predictors_[net_id]).reset(predictor.release());
   }
@@ -48,8 +57,13 @@ std::unordered_map<std::string, DataBlob> CaffeBinding::Forward(std::vector<cv::
 
 void CaffeBinding::SetMemoryDataLayer(std::string layer_name, std::vector<cv::Mat>&& input_image, int net_id) {
   if (!(*predictors_[net_id]).get()) {
+#if __cplusplus >= 201402L
     auto predictor =
       std::make_unique<caffe::Net<float>>(prototxts[net_id], Phase::TEST);
+#else
+    auto predictor =
+      boost::make_unique<caffe::Net<float>>(prototxts[net_id], Phase::TEST);
+#endif
     predictor->ShareTrainedLayersWith(nets_[net_id]);
     (*predictors_[net_id]).reset(predictor.release());
   }
@@ -62,8 +76,13 @@ void CaffeBinding::SetMemoryDataLayer(std::string layer_name, std::vector<cv::Ma
 
 void CaffeBinding::SetBlobData(std::string blob_name, std::vector<int> blob_shape, float* data, int net_id) {
   if (!(*predictors_[net_id]).get()) {
+#if __cplusplus >= 201402L
     auto predictor =
       std::make_unique<caffe::Net<float>>(prototxts[net_id], Phase::TEST);
+#else
+    auto predictor =
+      boost::make_unique<caffe::Net<float>>(prototxts[net_id], Phase::TEST);
+#endif
     predictor->ShareTrainedLayersWith(nets_[net_id]);
     (*predictors_[net_id]).reset(predictor.release());
   }
@@ -74,8 +93,13 @@ void CaffeBinding::SetBlobData(std::string blob_name, std::vector<int> blob_shap
 
 DataBlob CaffeBinding::GetBlobData(std::string blob_name, int net_id) {
   if (!(*predictors_[net_id]).get()) {
+#if __cplusplus >= 201402L
     auto predictor =
-      std::make_unique<caffe::Net<float>>(prototxts[net_id], Phase::TEST);
+      std::make_unique<caffe::Net<float> >(prototxts[net_id], Phase::TEST);
+#else
+    auto predictor =
+      boost::make_unique<caffe::Net<float> >(prototxts[net_id], Phase::TEST);
+#endif
     predictor->ShareTrainedLayersWith(nets_[net_id]);
     (*predictors_[net_id]).reset(predictor.release());
   }
