@@ -7,6 +7,7 @@
 
 #include "caffe/layer.hpp"
 #include "caffe/layer_factory.hpp"
+#include "caffe/layers/bn_layer.hpp"
 #include "caffe/layers/conv_layer.hpp"
 #include "caffe/layers/lrn_layer.hpp"
 #include "caffe/layers/pooling_layer.hpp"
@@ -17,6 +18,7 @@
 #include "caffe/proto/caffe.pb.h"
 
 #ifdef USE_CUDNN
+#include "caffe/layers/cudnn_bn_layer.hpp"
 #include "caffe/layers/cudnn_conv_layer.hpp"
 #include "caffe/layers/cudnn_lcn_layer.hpp"
 #include "caffe/layers/cudnn_lrn_layer.hpp"
@@ -72,6 +74,31 @@ shared_ptr<Layer<Dtype> > GetConvolutionLayer(
 }
 
 REGISTER_LAYER_CREATOR(Convolution, GetConvolutionLayer);
+
+// Get BN layer according to engine.
+template <typename Dtype>
+shared_ptr<Layer<Dtype> > GetBNLayer(const LayerParameter& param) {
+  BNParameter_Engine engine = param.bn_param().engine();
+  if (engine == BNParameter_Engine_DEFAULT) {
+    engine = BNParameter_Engine_CAFFE;
+#ifdef USE_CUDNN
+    engine = BNParameter_Engine_CUDNN;
+#endif
+  }
+  if (engine == BNParameter_Engine_CAFFE) {
+    return shared_ptr<Layer<Dtype> >(new BNLayer<Dtype>(param));
+#ifdef USE_CUDNN
+  }
+  else if (engine == BNParameter_Engine_CUDNN) {
+    return shared_ptr<Layer<Dtype> >(new CuDNNBNLayer<Dtype>(param));
+#endif
+  }
+  else {
+    LOG(FATAL) << "Layer " << param.name() << " has unknown engine.";
+  }
+}
+
+REGISTER_LAYER_CREATOR(BN, GetBNLayer);
 
 // Get pooling layer according to engine.
 template <typename Dtype>

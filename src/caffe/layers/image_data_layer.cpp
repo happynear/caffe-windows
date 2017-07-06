@@ -188,66 +188,75 @@ void ImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
   for (int item_id = 0; item_id < batch_size; ++item_id) {
     // get a blob
     timer.Start();
-    std::pair<std::string, int> this_line;
+    bool valid_sample = false;
+    while (!valid_sample) {
+      std::pair<std::string, int> this_line;
 
-    if (balance_) {
-      int pick_index = (caffe_rng_rand() % num_samples_[class_id_]) + 1;
-      for (auto& sample : filename_by_class_[class_id_]) {
-        if (sample.second == 0) {
-          pick_index--;
-          if (pick_index == 0) {
-            this_line = std::make_pair(sample.first, class_id_);
-            sample.second = 1;
-            num_samples_[class_id_]--;
-            break;
+      if (balance_) {
+        int pick_index = (caffe_rng_rand() % num_samples_[class_id_]) + 1;
+        for (auto& sample : filename_by_class_[class_id_]) {
+          if (sample.second == 0) {
+            pick_index--;
+            if (pick_index == 0) {
+              this_line = std::make_pair(sample.first, class_id_);
+              sample.second = 1;
+              num_samples_[class_id_]--;
+              break;
+            }
+          }
+        }
+        CHECK_GT(this_line.first.size(), 0);
+        if (num_samples_[class_id_] == 0) {
+          num_samples_[class_id_] = filename_by_class_[class_id_].size();
+          for (auto& sample : filename_by_class_[class_id_]) {
+            sample.second = 0;
           }
         }
       }
-      CHECK_GT(this_line.first.size(), 0);
-      if (num_samples_[class_id_] == 0) {
-        num_samples_[class_id_] = filename_by_class_[class_id_].size();
-        for (auto& sample : filename_by_class_[class_id_]) {
-          sample.second = 0;
+      else {
+        CHECK_GT(lines_size, lines_id_);
+        this_line = lines_[lines_id_];
+      }
+
+      cv::Mat cv_img = ReadImageToCVMat(root_folder + this_line.first,
+                                        new_height, new_width, is_color);
+      if (!cv_img.data) {
+        LOG(INFO) << "Could not load " << this_line.first;
+        valid_sample = false;
+      }
+      else {
+        valid_sample = true;
+      }
+      read_time += timer.MicroSeconds();
+      timer.Start();
+      // Apply transformations (mirror, crop...) to the image
+      int offset = batch->data_.offset(item_id);
+      this->transformed_data_.set_cpu_data(prefetch_data + offset);
+      this->data_transformer_->Transform(cv_img, &(this->transformed_data_));
+      trans_time += timer.MicroSeconds();
+
+      prefetch_label[item_id] = this_line.second;
+      if (this->output_weights_) {
+        prefetch_weight[item_id] = class_weights_[this_line.second];
+      }
+      // go to the next iter
+      if (balance_) {
+        class_id_++;
+        if (class_id_ >= num_samples_.size()) {
+          // We have reached the end. Restart from the first.
+          DLOG(INFO) << "Restarting data prefetching from start.";
+          class_id_ = 0;
         }
       }
-    }
-    else {
-      CHECK_GT(lines_size, lines_id_);
-      this_line = lines_[lines_id_];
-    }
-
-    cv::Mat cv_img = ReadImageToCVMat(root_folder + this_line.first,
-        new_height, new_width, is_color);
-    CHECK(cv_img.data) << "Could not load " << this_line.first;
-    read_time += timer.MicroSeconds();
-    timer.Start();
-    // Apply transformations (mirror, crop...) to the image
-    int offset = batch->data_.offset(item_id);
-    this->transformed_data_.set_cpu_data(prefetch_data + offset);
-    this->data_transformer_->Transform(cv_img, &(this->transformed_data_));
-    trans_time += timer.MicroSeconds();
-
-    prefetch_label[item_id] = this_line.second;
-    if (this->output_weights_) {
-      prefetch_weight[item_id] = class_weights_[this_line.second];
-    }
-    // go to the next iter
-    if (balance_) {
-      class_id_++;
-      if (class_id_ >= num_samples_.size()) {
-        // We have reached the end. Restart from the first.
-        DLOG(INFO) << "Restarting data prefetching from start.";
-        class_id_ = 0;
-      }
-    }
-    else {
-      lines_id_++;
-      if (lines_id_ >= lines_size) {
-        // We have reached the end. Restart from the first.
-        DLOG(INFO) << "Restarting data prefetching from start.";
-        lines_id_ = 0;
-        if (this->layer_param_.image_data_param().shuffle()) {
-          ShuffleImages();
+      else {
+        lines_id_++;
+        if (lines_id_ >= lines_size) {
+          // We have reached the end. Restart from the first.
+          DLOG(INFO) << "Restarting data prefetching from start.";
+          lines_id_ = 0;
+          if (this->layer_param_.image_data_param().shuffle()) {
+            ShuffleImages();
+          }
         }
       }
     }

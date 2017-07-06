@@ -343,6 +343,48 @@ void caffe_gpu_exp<double>(const int N, const double* a, double* y) {
 }
 
 template <typename Dtype>
+__global__ void clamp_kernel(const int n, const Dtype lower_bound, const Dtype upper_bound, Dtype* x) {
+  CUDA_KERNEL_LOOP(index, n) {
+    x[index] = min(max(x[index], lower_bound), upper_bound);
+  }
+}
+
+template <typename Dtype>
+void caffe_gpu_clamp(const int n, const Dtype lower_bound, const Dtype upper_bound, Dtype* x) {
+  // NOLINT_NEXT_LINE(whitespace/operators)
+  clamp_kernel<Dtype> <<<CAFFE_GET_BLOCKS(n), CAFFE_CUDA_NUM_THREADS >>>(
+    n, lower_bound, upper_bound, x);
+}
+
+template <>
+void caffe_gpu_clamp<float>(const int n, const float lower_bound, const float upper_bound, float* x) {
+  // NOLINT_NEXT_LINE(whitespace/operators)
+  clamp_kernel<float> <<<CAFFE_GET_BLOCKS(n), CAFFE_CUDA_NUM_THREADS >>>(
+    n, lower_bound, upper_bound, x);
+}
+
+template <>
+void caffe_gpu_clamp<double>(const int n, const double lower_bound, const double upper_bound, double* x) {
+  // NOLINT_NEXT_LINE(whitespace/operators)
+  clamp_kernel<double> << <CAFFE_GET_BLOCKS(n), CAFFE_CUDA_NUM_THREADS >> >(
+    n, lower_bound, upper_bound, x);
+}
+
+template <>
+void caffe_gpu_clamp<int>(const int n, const int lower_bound, const int upper_bound, int* x) {
+  // NOLINT_NEXT_LINE(whitespace/operators)
+  clamp_kernel<int> << <CAFFE_GET_BLOCKS(n), CAFFE_CUDA_NUM_THREADS >> >(
+    n, lower_bound, upper_bound, x);
+}
+
+template <>
+void caffe_gpu_clamp<unsigned int>(const int n, const unsigned int lower_bound, const unsigned int upper_bound, unsigned int* x) {
+  // NOLINT_NEXT_LINE(whitespace/operators)
+  clamp_kernel<unsigned int> << <CAFFE_GET_BLOCKS(n), CAFFE_CUDA_NUM_THREADS >> >(
+    n, lower_bound, upper_bound, x);
+}
+
+template <typename Dtype>
 __global__ void log_kernel(const int n, const Dtype* a, Dtype* y) {
   CUDA_KERNEL_LOOP(index, n) {
     y[index] = log(a[index]);
@@ -385,6 +427,27 @@ void caffe_gpu_powx<double>(const int N, const double* a,
   // NOLINT_NEXT_LINE(whitespace/operators)
   powx_kernel<double><<<CAFFE_GET_BLOCKS(N), CAFFE_CUDA_NUM_THREADS>>>(
       N, a, alpha, y);
+}
+
+template <typename Dtype>
+__global__ void sqrt_kernel(const int n, const Dtype* a, Dtype* y) {
+  CUDA_KERNEL_LOOP(index, n) {
+    y[index] = sqrt(a[index]);
+  }
+}
+
+template <>
+void caffe_gpu_sqrt<float>(const int N, const float* a, float* y) {
+  // NOLINT_NEXT_LINE(whitespace/operators)
+  sqrt_kernel<float><<<CAFFE_GET_BLOCKS(N), CAFFE_CUDA_NUM_THREADS>>>(
+      N, a, y);
+}
+
+template <>
+void caffe_gpu_sqrt<double>(const int N, const double* a, double* y) {
+  // NOLINT_NEXT_LINE(whitespace/operators)
+  sqrt_kernel<double><<<CAFFE_GET_BLOCKS(N), CAFFE_CUDA_NUM_THREADS>>>(
+      N, a, y);
 }
 
 DEFINE_AND_INSTANTIATE_GPU_UNARY_FUNC(sign, y[index] = (Dtype(0) < x[index])
@@ -433,6 +496,53 @@ void caffe_gpu_rng_gaussian(const int n, const double mu, const double sigma,
                             double* r) {
   CURAND_CHECK(
       curandGenerateNormalDouble(Caffe::curand_generator(), r, n, mu, sigma));
+}
+
+template <typename Dtype>
+__global__ void caffe_gpu_eltwise_max_kernel(const int N,
+                                             const Dtype alpha, const Dtype* x, const Dtype beta, Dtype* y) {
+  CUDA_KERNEL_LOOP(index, N) {
+    y[index] = max(alpha * x[index], beta * y[index]);
+  }
+}
+
+template <>
+void caffe_gpu_eltwise_max<float>(const int N,
+                                  const float alpha, const float* x, const float beta, float* y) {
+  // NOLINT_NEXT_LINE(whitespace/operators)
+  caffe_gpu_eltwise_max_kernel<float> << <CAFFE_GET_BLOCKS(N),
+    CAFFE_CUDA_NUM_THREADS >> >(N, alpha, x, beta, y);
+}
+template <>
+void caffe_gpu_eltwise_max<double>(const int N,
+                                   const double alpha, const double* x, const double beta, double* y) {
+  // NOLINT_NEXT_LINE(whitespace/operators)
+  caffe_gpu_eltwise_max_kernel<double> << <CAFFE_GET_BLOCKS(N),
+    CAFFE_CUDA_NUM_THREADS >> >(N, alpha, x, beta, y);
+}
+
+
+template <typename Dtype>
+__global__ void caffe_gpu_eltwise_min_kernel(const int N,
+                                             const Dtype alpha, const Dtype* x, const Dtype beta, Dtype* y) {
+  CUDA_KERNEL_LOOP(index, N) {
+    y[index] = min(alpha * x[index], beta * y[index]);
+  }
+}
+
+template <>
+void caffe_gpu_eltwise_min<float>(const int N,
+                                  const float alpha, const float* x, const float beta, float* y) {
+  // NOLINT_NEXT_LINE(whitespace/operators)
+  caffe_gpu_eltwise_min_kernel<float> << <CAFFE_GET_BLOCKS(N),
+    CAFFE_CUDA_NUM_THREADS >> >(N, alpha, x, beta, y);
+}
+template <>
+void caffe_gpu_eltwise_min<double>(const int N,
+                                   const double alpha, const double* x, const double beta, double* y) {
+  // NOLINT_NEXT_LINE(whitespace/operators)
+  caffe_gpu_eltwise_min_kernel<double> << <CAFFE_GET_BLOCKS(N),
+    CAFFE_CUDA_NUM_THREADS >> >(N, alpha, x, beta, y);
 }
 
 }  // namespace caffe

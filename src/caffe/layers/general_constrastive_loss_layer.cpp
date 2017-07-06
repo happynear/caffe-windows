@@ -1,5 +1,7 @@
 #include <algorithm>
 #include <vector>
+#include <math.h>
+#include <float.h>
 
 #include "caffe/layers/general_contrastive_loss_layer.hpp"
 #include "caffe/util/math_functions.hpp"
@@ -19,6 +21,12 @@ void GeneralContrastiveLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& 
   positive_outlier_thresh_ = this->layer_param_.general_contrastive_loss_param().positive_outlier_thresh();
   max_negative_only_ = this->layer_param_.general_contrastive_loss_param().max_negative_only();
   max_positive_only_ = this->layer_param_.general_contrastive_loss_param().max_positive_only();
+  positive_first_ = this->layer_param_.general_contrastive_loss_param().positive_first();
+  positive_upper_bound_ = this->layer_param_.general_contrastive_loss_param().positive_upper_bound();
+  exp_negative_weight_ = this->layer_param_.general_contrastive_loss_param().exp_negative_weight();
+  add_intra_mae_ = this->layer_param_.general_contrastive_loss_param().add_intra_mae();
+  max_negative_margin_ = this->layer_param_.general_contrastive_loss_param().max_negative_margin();
+  intra_mae_ = Dtype(0);
 }
 
 template <typename Dtype>
@@ -26,8 +34,14 @@ void GeneralContrastiveLossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bot
                                                  const vector<Blob<Dtype>*>& top) {
   LossLayer<Dtype>::Reshape(bottom, top);
   if (top.size() >= 2) {
-    // positive distance, negative distance.
-    top[1]->Reshape({ 2 });
+    if (add_intra_mae_) {
+      // positive distance, negative distance, intra_mae.
+      top[1]->Reshape({ 3 });
+    }
+    else {
+      // positive distance, negative distance.
+      top[1]->Reshape({ 2 });
+    }
   }
   if (max_negative_only_) {
     max_negative_index_.Reshape({ bottom[0]->num() });
@@ -49,8 +63,10 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
   Dtype positive_distance = Dtype(0);
   Dtype negative_distance = Dtype(0);
   max_positive_index_ = 0;
+  if (add_intra_mae_) negative_margin_ = intra_mae_ + this->layer_param_.general_contrastive_loss_param().negative_margin();
 
   for (int i = 0; i < num; ++i) {
+    Dtype same_distance = bottom_data[i * dim + static_cast<int>(label[i])];
     if(max_negative_only_) max_negative_index_data[i] = 0;
     for (int j = 0; j < dim; ++j) {
       if (j == static_cast<int>(label[i])) {
@@ -63,8 +79,13 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
       }
       else {
         if (bottom_data[i * dim + j] < negative_margin_) {
-          bottom_diff[i * dim + j] = std::max(
-            Dtype(0), negative_margin_ - bottom_data[i * dim + j]) * negative_weight_;
+          if (exp_negative_weight_) {
+            bottom_diff[i * dim + j] = exp(-bottom_data[i * dim + j]) * negative_weight_;
+          }
+          else {
+            bottom_diff[i * dim + j] = std::max(
+              Dtype(0), negative_margin_ - bottom_data[i * dim + j]) * negative_weight_;
+          }
           negative_distance += std::max(
             Dtype(0), negative_margin_ - bottom_data[i * dim + j]);
           if (max_negative_only_ && bottom_diff[i * dim + j] > bottom_diff[i*dim + max_negative_index_data[i]]) {
@@ -73,6 +94,13 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
         }
         else {
           bottom_diff[i*dim + j] = 0;
+        }
+      }
+    }
+    if (positive_first_ && same_distance > positive_upper_bound_) {
+      for (int j = 0; j < dim; ++j) {
+        if (j != static_cast<int>(label[i])) {
+          bottom_diff[i * dim + j] = Dtype(0);
         }
       }
     }
@@ -95,12 +123,18 @@ void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>&
       }
     }
   }
+  intra_mae_ = 0.99 * intra_mae_ + 0.01 * positive_distance / num;
+  if (intra_mae_ > max_negative_margin_) intra_mae_ = max_negative_margin_;
+
   Dtype* loss = top[0]->mutable_cpu_data();
   loss[0] = caffe_cpu_asum(count, bottom_diff) / num;
   if (top.size() >= 2) {
     Dtype* distances = top[1]->mutable_cpu_data();
     distances[0] = positive_distance / num;
     distances[1] = negative_distance / num / (dim - 1);
+    if (add_intra_mae_) {
+      distances[2] = intra_mae_;
+    }
   }
 }
 
@@ -124,6 +158,16 @@ void GeneralContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>
     Dtype negative_sum = Dtype(0);
 
     for (int i = 0; i < num; ++i) {
+      Dtype same_distance = bottom_data[i * dim + static_cast<int>(label[i])];
+      if (positive_first_ && same_distance > positive_upper_bound_) {
+        bottom_diff[i * dim + static_cast<int>(label[i])] = positive_weight_;
+        for (int j = 0; j < dim; ++j) {
+          if (j != static_cast<int>(label[i])) {
+            bottom_diff[i * dim + j] = Dtype(0);
+          }
+        }
+        continue;
+      }
       for (int j = 0; j < dim; ++j) {
         if (j == static_cast<int>(label[i])) {
           if (bottom_data[i * dim + j] > positive_margin_ && bottom_data[i * dim + j] < positive_outlier_thresh_
@@ -140,9 +184,15 @@ void GeneralContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>
               bottom_diff[i * dim + j] = 0;
             }
             else {
-              Dtype distance_fix = 1;// std::min(Dtype(1), (negative_margin_ - bottom_data[i * dim + j]) / (bottom_data[i * dim + j] + Dtype(1e-6)));
-              bottom_diff[i * dim + j] = -negative_weight_ * distance_fix;
-              negative_sum += negative_weight_ * distance_fix;
+              if (exp_negative_weight_) {
+                bottom_diff[i * dim + j] = -1 * exp(-bottom_data[i * dim + j]) * negative_weight_;
+                negative_sum += exp(-bottom_data[i * dim + j]) * negative_weight_;
+              }
+              else {
+                bottom_diff[i * dim + j] = -1 * negative_weight_;
+                negative_sum += negative_weight_;
+              }
+              
             }
           }
           else{

@@ -27,6 +27,20 @@ __global__ void ScaleBiasForward(const int n, const Dtype* in,
 }
 
 template <typename Dtype>
+__global__ void TruncationLowerBounded(const int n, Dtype* in_out, Dtype lower_bound) {
+  CUDA_KERNEL_LOOP(index, n) {
+    in_out[index] = max(in_out[index], lower_bound);
+  }
+}
+
+template <typename Dtype>
+__global__ void TruncationUpperBounded(const int n, Dtype* in_out, Dtype upper_bound) {
+  CUDA_KERNEL_LOOP(index, n) {
+    in_out[index] = min(in_out[index], upper_bound);
+  }
+}
+
+template <typename Dtype>
 void ScaleLayer<Dtype>::Forward_gpu(
     const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top) {
   const int count = top[0]->count();
@@ -39,8 +53,20 @@ void ScaleLayer<Dtype>::Forward_gpu(
     caffe_copy(bottom[0]->count(), bottom[0]->gpu_data(),
                temp_.mutable_gpu_data());
   }
-  const Dtype* scale_data =
-      ((bottom.size() > 1) ? bottom[1] : this->blobs_[0].get())->gpu_data();
+  Dtype* scale_data =
+      ((bottom.size() > 1) ? bottom[1] : this->blobs_[0].get())->mutable_gpu_data();
+  if (this->layer_param_.scale_param().has_min_value()) {
+    // NOLINT_NEXT_LINE(whitespace/operators)
+    TruncationLowerBounded<Dtype> << <CAFFE_GET_BLOCKS(scale_dim_), CAFFE_CUDA_NUM_THREADS >> >(
+      scale_dim_, scale_data, this->layer_param_.scale_param().min_value());
+    CUDA_POST_KERNEL_CHECK;
+  }
+  if (this->layer_param_.scale_param().has_max_value()) {
+    // NOLINT_NEXT_LINE(whitespace/operators)
+    TruncationUpperBounded<Dtype> << <CAFFE_GET_BLOCKS(scale_dim_), CAFFE_CUDA_NUM_THREADS >> >(
+      scale_dim_, scale_data, this->layer_param_.scale_param().max_value());
+    CUDA_POST_KERNEL_CHECK;
+  }
   Dtype* top_data = top[0]->mutable_gpu_data();
   if (bias_layer_) {
     const Dtype* bias_data = this->blobs_[bias_param_id_]->gpu_data();

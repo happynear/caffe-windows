@@ -419,6 +419,33 @@ void Blob<Dtype>::scale_diff(Dtype scale_factor) {
 }
 
 template <typename Dtype>
+void Blob<Dtype>::Clamp(Dtype lower_bound, Dtype upper_bound) {
+  Dtype* data;
+  if (!data_) { return; }
+  switch (data_->head()) {
+  case SyncedMemory::HEAD_AT_CPU:
+    data = mutable_cpu_data();
+    for (int i = 0; i < count_; i++) {
+      data[i] = std::min(std::max(data[i], lower_bound), upper_bound);
+    }
+    return;
+  case SyncedMemory::HEAD_AT_GPU:
+  case SyncedMemory::SYNCED:
+#ifndef CPU_ONLY
+    data = mutable_gpu_data();
+    caffe_gpu_clamp(count_, lower_bound, upper_bound, data);
+    return;
+#else
+    NO_GPU;
+#endif
+  case SyncedMemory::UNINITIALIZED:
+    return;
+  default:
+    LOG(FATAL) << "Unknown SyncedMemory head state: " << data_->head();
+  }
+}
+
+template <typename Dtype>
 bool Blob<Dtype>::ShapeEquals(const BlobProto& other) {
   if (other.has_num() || other.has_channels() ||
       other.has_height() || other.has_width()) {

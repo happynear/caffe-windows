@@ -17,8 +17,6 @@
 #include "caffe/util/math_functions.hpp"
 #include "caffe/util/upgrade_proto.hpp"
 
-#include "caffe/test/test_caffe_main.hpp"
-
 namespace caffe {
 
 template <typename Dtype>
@@ -753,26 +751,29 @@ void Net<Dtype>::CopyTrainedLayersFrom(const NetParameter& param) {
         << "Incompatible number of blobs for layer " << source_layer_name;
     for (int j = 0; j < target_blobs.size(); ++j) {
       if (!target_blobs[j]->ShapeEquals(source_layer.blobs(j))) {
-        Blob<Dtype> source_blob;
         const bool kReshape = true;
-        source_blob.FromProto(source_layer.blobs(j), kReshape);
-        LOG(FATAL) << "Cannot copy param " << j << " weights from layer '"
-            << source_layer_name << "'; shape mismatch.  Source param shape is "
-            << source_blob.shape_string() << "; target param shape is "
-            << target_blobs[j]->shape_string() << ". "
-            << "To learn this layer's parameters from scratch rather than "
-            << "copying from a saved net, rename the layer.";
+        target_blobs[j]->FromProto(source_layer.blobs(j), kReshape);
+        //Blob<Dtype> source_blob;
+        //const bool kReshape = true;
+        //source_blob.FromProto(source_layer.blobs(j), kReshape);
+        //LOG(FATAL) << "Cannot copy param " << j << " weights from layer '"
+        //    << source_layer_name << "'; shape mismatch.  Source param shape is "
+        //    << source_blob.shape_string() << "; target param shape is "
+        //    << target_blobs[j]->shape_string() << ". "
+        //    << "To learn this layer's parameters from scratch rather than "
+        //    << "copying from a saved net, rename the layer.";
       }
-      const bool kReshape = false;
-      target_blobs[j]->FromProto(source_layer.blobs(j), kReshape);
+      else {
+        const bool kReshape = false;
+        target_blobs[j]->FromProto(source_layer.blobs(j), kReshape);
+      }
     }
   }
 }
 
 template <typename Dtype>
 void Net<Dtype>::CopyTrainedLayersFrom(const string trained_filename) {
-  if (trained_filename.size() >= 3 &&
-      trained_filename.compare(trained_filename.size() - 3, 3, ".h5") == 0) {
+  if (H5Fis_hdf5(trained_filename.c_str())) {
     CopyTrainedLayersFromHDF5(trained_filename);
   } else {
     CopyTrainedLayersFromBinaryProto(trained_filename);

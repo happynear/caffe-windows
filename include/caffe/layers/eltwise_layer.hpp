@@ -42,6 +42,7 @@ class EltwiseLayer : public Layer<Dtype> {
   EltwiseParameter_EltwiseOp op_;
   vector<Dtype> coeffs_;
   Blob<int> max_idx_;
+  Blob<Dtype> sort_temp_;
 
   bool stable_prod_grad_;
 };

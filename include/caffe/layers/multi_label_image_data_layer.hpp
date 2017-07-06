@@ -40,6 +40,14 @@ namespace caffe {
     vector<std::pair<std::string, shared_ptr<vector<Dtype> > > > lines_;
     int label_count;
     int lines_id_;
+    bool balance_;
+    int balance_by_;
+    vector<int> num_samples_;
+    vector<Dtype> class_weights_;
+    vector<vector<std::pair<std::string, shared_ptr<vector<Dtype> > > > > filename_by_class_;
+    int class_id_;
+    int label_cut_start_;
+    int label_cut_end_;
   };
 
 }  // namespace caffe

@@ -62,6 +62,15 @@ void EltwiseLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
           count, top_data, bottom[i]->gpu_data(), i-1, top_data, mask);
     }
     break;
+  case EltwiseParameter_EltwiseOp_SORT:
+    caffe_gpu_set(count, Dtype(1), top_data);
+    for (int i = 0; i < bottom.size(); ++i) {
+      caffe_copy(count, bottom[i]->gpu_data(), sort_temp_.mutable_gpu_data());
+      caffe_gpu_add_scalar(count, Dtype(1), sort_temp_.mutable_gpu_data());
+      caffe_gpu_mul(count, top_data, sort_temp_.gpu_data(), top_data);
+    }
+    caffe_gpu_add_scalar(count, Dtype(-1), top_data);
+    break;
   default:
     LOG(FATAL) << "Unknown elementwise operation.";
   }
@@ -121,6 +130,32 @@ void EltwiseLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
         MaxBackward<Dtype>  // NOLINT_NEXT_LINE(whitespace/operators)
             <<<CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS>>>(
             count, top_diff, i, mask, bottom_diff);
+        break;
+      case EltwiseParameter_EltwiseOp_SORT:
+        if (stable_prod_grad_) {
+          bool initialized = false;
+          for (int j = 0; j < bottom.size(); ++j) {
+            if (i == j) { continue; }
+            if (!initialized) {
+              caffe_copy(count, bottom[j]->gpu_data(), bottom_diff);
+              caffe_gpu_add_scalar(count, Dtype(1), bottom_diff);
+              initialized = true;
+            }
+            else {
+              caffe_copy(count, bottom[j]->gpu_data(), sort_temp_.mutable_gpu_data());
+              caffe_gpu_add_scalar(count, Dtype(1), sort_temp_.mutable_gpu_data());
+              caffe_gpu_mul(count, sort_temp_.gpu_data(), bottom_diff,
+                        bottom_diff);
+            }
+          }
+        }
+        else {
+          /*caffe_copy(count, bottom_data, sort_temp_.mutable_gpu_data());
+          caffe_gpu_add_scalar(count, Dtype(1), sort_temp_.mutable_gpu_data());
+          caffe_gpu_div(count, top_data, sort_temp_.gpu_data(), bottom_diff);*/
+          NOT_IMPLEMENTED;
+        }
+        caffe_gpu_mul(count, bottom_diff, top_diff, bottom_diff);
         break;
       default:
         LOG(FATAL) << "Unknown elementwise operation.";

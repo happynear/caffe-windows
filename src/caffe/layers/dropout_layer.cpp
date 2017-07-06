@@ -15,6 +15,9 @@ void DropoutLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   DCHECK(threshold_ > 0.);
   DCHECK(threshold_ < 1.);
   scale_ = 1. / (1. - threshold_);
+  if (this->layer_param_.dropout_param().sqrt_scale()) {
+    scale_ = sqrt(scale_);
+  }
   uint_thres_ = static_cast<unsigned int>(UINT_MAX * threshold_);
 }
 

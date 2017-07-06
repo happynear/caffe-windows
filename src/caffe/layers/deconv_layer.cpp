@@ -11,12 +11,18 @@ void DeconvolutionLayer<Dtype>::compute_output_shape() {
   const int* pad_data = this->pad_.cpu_data();
   const int* dilation_data = this->dilation_.cpu_data();
   this->output_shape_.clear();
+  int shape_offset_size = this->layer_param_.convolution_param().shape_offset_size();
+  if (shape_offset_size > 0) {
+    CHECK_EQ(shape_offset_size, this->num_spatial_axes_);
+  }
   for (int i = 0; i < this->num_spatial_axes_; ++i) {
     // i + 1 to skip channel axis
     const int input_dim = this->input_shape(i + 1);
     const int kernel_extent = dilation_data[i] * (kernel_shape_data[i] - 1) + 1;
-    const int output_dim = stride_data[i] * (input_dim - 1)
-        + kernel_extent - 2 * pad_data[i];
+    const int output_dim = shape_offset_size == 0 ? stride_data[i] * (input_dim - 1)
+      + kernel_extent - 2 * pad_data[i] : stride_data[i] * (input_dim - 1)
+      + kernel_extent - 2 * pad_data[i] + this->layer_param_.convolution_param().
+      shape_offset(i);
     this->output_shape_.push_back(output_dim);
   }
 }

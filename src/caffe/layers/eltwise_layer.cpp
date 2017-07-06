@@ -31,13 +31,19 @@ template <typename Dtype>
 void EltwiseLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
   for (int i = 1; i < bottom.size(); ++i) {
-    CHECK(bottom[i]->shape() == bottom[0]->shape());
+    CHECK(bottom[0]->shape() == bottom[i]->shape())
+        << "bottom[0]: " << bottom[0]->shape_string()
+        << ", bottom[" << i << "]: " << bottom[i]->shape_string();
   }
   top[0]->ReshapeLike(*bottom[0]);
   // If max operation, we will initialize the vector index part.
   if (this->layer_param_.eltwise_param().operation() ==
       EltwiseParameter_EltwiseOp_MAX && top.size() == 1) {
     max_idx_.Reshape(bottom[0]->shape());
+  }
+  if (this->layer_param_.eltwise_param().operation() ==
+      EltwiseParameter_EltwiseOp_SORT && top.size() == 1) {
+    sort_temp_.Reshape(bottom[0]->shape());
   }
 }
 
@@ -91,6 +97,14 @@ void EltwiseLayer<Dtype>::Forward_cpu(
       }
     }
     break;
+  case EltwiseParameter_EltwiseOp_SORT:
+    caffe_set(count, Dtype(1), top_data);
+    for (int i = 0; i < bottom.size(); ++i) {
+      caffe_copy(count, bottom[i]->cpu_data(), sort_temp_.mutable_cpu_data());
+      caffe_add_scalar(count, Dtype(1), sort_temp_.mutable_cpu_data());
+      caffe_mul(count, top_data, sort_temp_.cpu_data(), top_data);
+    }
+    break;
   default:
     LOG(FATAL) << "Unknown elementwise operation.";
   }
@@ -116,13 +130,37 @@ void EltwiseLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
             if (!initialized) {
               caffe_copy(count, bottom[j]->cpu_data(), bottom_diff);
               initialized = true;
-            } else {
+            }
+            else {
               caffe_mul(count, bottom[j]->cpu_data(), bottom_diff,
                         bottom_diff);
             }
           }
-        } else {
+        }
+        else {
           caffe_div(count, top_data, bottom_data, bottom_diff);
+        }
+        caffe_mul(count, bottom_diff, top_diff, bottom_diff);
+        break;
+        if (stable_prod_grad_) {
+          bool initialized = false;
+          for (int j = 0; j < bottom.size(); ++j) {
+            if (i == j) { continue; }
+            if (!initialized) {
+              caffe_copy(count, bottom[j]->cpu_data(), bottom_diff);
+              caffe_add_scalar(count, Dtype(1), bottom_diff);
+              initialized = true;
+            } else {
+              caffe_copy(count, bottom[j]->cpu_data(), sort_temp_.mutable_cpu_data());
+              caffe_add_scalar(count, Dtype(1), sort_temp_.mutable_cpu_data());
+              caffe_mul(count, sort_temp_.cpu_data(), bottom_diff,
+                        bottom_diff);
+            }
+          }
+        } else {
+          caffe_copy(count, bottom_data, sort_temp_.mutable_cpu_data());
+          caffe_add_scalar(count, Dtype(1), sort_temp_.mutable_cpu_data());
+          caffe_div(count, top_data, sort_temp_.cpu_data(), bottom_diff);
         }
         caffe_mul(count, bottom_diff, top_diff, bottom_diff);
         break;
@@ -142,6 +180,31 @@ void EltwiseLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
           }
           bottom_diff[index] = gradient;
         }
+        break;
+      case EltwiseParameter_EltwiseOp_SORT:
+        if (stable_prod_grad_) {
+          bool initialized = false;
+          for (int j = 0; j < bottom.size(); ++j) {
+            if (i == j) { continue; }
+            if (!initialized) {
+              caffe_copy(count, bottom[j]->cpu_data(), bottom_diff);
+              caffe_add_scalar(count, Dtype(1), bottom_diff);
+              initialized = true;
+            }
+            else {
+              caffe_copy(count, bottom[j]->cpu_data(), sort_temp_.mutable_cpu_data());
+              caffe_add_scalar(count, Dtype(1), sort_temp_.mutable_cpu_data());
+              caffe_mul(count, sort_temp_.cpu_data(), bottom_diff,
+                        bottom_diff);
+            }
+          }
+        }
+        else {
+          caffe_copy(count, bottom_data, sort_temp_.mutable_cpu_data());
+          caffe_add_scalar(count, Dtype(1), sort_temp_.mutable_cpu_data());
+          caffe_div(count, top_data, sort_temp_.cpu_data(), bottom_diff);
+        }
+        caffe_mul(count, bottom_diff, top_diff, bottom_diff);
         break;
       default:
         LOG(FATAL) << "Unknown elementwise operation.";

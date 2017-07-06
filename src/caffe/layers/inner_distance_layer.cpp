@@ -12,26 +12,25 @@ template <typename Dtype>
 void InnerDistanceLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
   const int num_output = this->layer_param_.inner_distance_param().num_output();
-  bias_term_ = this->layer_param_.inner_distance_param().bias_term();
   transpose_ = this->layer_param_.inner_distance_param().transpose();
   distance_type_ = this->layer_param_.inner_distance_param().distance_type();
   normalize_ = this->layer_param_.inner_distance_param().normalize();
-  N_ = num_output;
+  update_center_only_ = this->layer_param_.inner_distance_param().update_center_only();
+  
   const int axis = bottom[0]->CanonicalAxisIndex(
       this->layer_param_.inner_distance_param().axis());
   // Dimensions starting from "axis" are "flattened" into a single
   // length K_ vector. For example, if bottom[0]'s shape is (N, C, H, W),
   // and axis == 1, N inner products with dimension CHW are performed.
   K_ = bottom[0]->count(axis);
+  if (bottom.size() == 1) N_ = num_output;
+  else N_ = bottom[1]->num();
   // Check if we need to set up the weights
-  if (this->blobs_.size() > 0 || bottom.size() > 1) {
+  if (this->blobs_.size() > 0 || (!update_center_only_ && bottom.size() > 1)
+      || (update_center_only_ && bottom.size() > 2)) {
     LOG(INFO) << "Skipping parameter initialization";
   } else {
-    if (bias_term_) {
-      this->blobs_.resize(2);
-    } else {
-      this->blobs_.resize(1);
-    }
+    this->blobs_.resize(1);
     // Initialize the weights
     vector<int> weight_shape(2);
     if (transpose_) {
@@ -46,14 +45,6 @@ void InnerDistanceLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
     shared_ptr<Filler<Dtype> > weight_filler(GetFiller<Dtype>(
         this->layer_param_.inner_distance_param().weight_filler()));
     weight_filler->Fill(this->blobs_[0].get());
-    // If necessary, intiialize and fill the bias term
-    if (bias_term_) {
-      vector<int> bias_shape(1, N_);
-      this->blobs_[1].reset(new Blob<Dtype>(bias_shape));
-      shared_ptr<Filler<Dtype> > bias_filler(GetFiller<Dtype>(
-          this->layer_param_.inner_distance_param().bias_filler()));
-      bias_filler->Fill(this->blobs_[1].get());
-    }
   }  // parameter initialization
   if(bottom.size() == 1) this->param_propagate_down_.resize(this->blobs_.size(), true);
 }
@@ -70,6 +61,7 @@ void InnerDistanceLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   // The first "axis" dimensions are independent inner products; the total
   // number of these is M_, the product over these dimensions.
   M_ = bottom[0]->count(0, axis);
+  if (bottom.size() >= 2) N_ = bottom[1]->num();
   // The top shape will be the bottom shape with the flattened axes dropped,
   // and replaced by a single axis with dimension num_output (N_).
   vector<int> top_shape = bottom[0]->shape();
@@ -77,17 +69,11 @@ void InnerDistanceLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   top_shape[axis] = N_;
   top[0]->Reshape(top_shape);
   if (bottom.size() == 1) {
-    // Set up the bias multiplier
-    if (bias_term_) {
-      vector<int> bias_shape(1, M_);
-      bias_multiplier_.Reshape(bias_shape);
-      caffe_set(M_, Dtype(1), bias_multiplier_.mutable_cpu_data());
+    if (normalize_) {
+      vector<int> weight_norm_shape(1, N_);
+      weight_norm_.Reshape(weight_norm_shape);
+      caffe_set(N_, Dtype(0), weight_norm_.mutable_cpu_data());
     }
-  }
-  if (normalize_ && bottom.size() == 1) {
-    vector<int> weight_norm_shape(1, N_);
-    weight_norm_.Reshape(weight_norm_shape);
-    caffe_set(N_, Dtype(0), weight_norm_.mutable_cpu_data());
   }
 }
 
@@ -130,12 +116,6 @@ void InnerDistanceLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   else {
     NOT_IMPLEMENTED;
   }
-  if (bias_term_) {
-    caffe_cpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, M_, N_, 1, (Dtype)1.,
-                          bias_multiplier_.cpu_data(),
-                          bottom.size()==3? bottom[2]->cpu_data() : this->blobs_[1]->cpu_data(),
-                          (Dtype)1., top_data);
-  }
 }
 
 template <typename Dtype>
@@ -145,13 +125,19 @@ void InnerDistanceLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
   const Dtype* top_diff = top[0]->cpu_diff();
   const Dtype* bottom_data = bottom[0]->cpu_data();
   const Dtype* weight = bottom.size() >= 2 ? bottom[1]->cpu_data() : this->blobs_[0]->cpu_data();
-  if (this->param_propagate_down_[0]) {
+  if ((bottom.size() == 1 && this->param_propagate_down_[0]) ||
+    (bottom.size() >= 2 && propagate_down[1])) {
     Dtype* weight_diff = bottom.size() >= 2 ? bottom[1]->mutable_cpu_diff() : this->blobs_[0]->mutable_cpu_diff();
+    const Dtype* label_data = NULL;
+    if (update_center_only_) {
+      label_data = bottom[bottom.size() - 1]->cpu_data();
+    }
     // Gradient with respect to weight
     if (distance_type_ == "L2") {
       for (int n = 0; n < N_; n++) {
         for (int k = 0; k < K_; k++) {
           for (int m = 0; m < M_; m++) {
+            if (update_center_only_ && n != static_cast<int>(label_data[m])) continue;
             weight_diff[n * K_ + k] += top_diff[m * N_ + n] * (weight[n * K_ + k] - bottom_data[m * K_ + k]) * Dtype(2);
           }
         }
@@ -161,6 +147,7 @@ void InnerDistanceLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
       for (int n = 0; n < N_; n++) {
         for (int k = 0; k < K_; k++) {
           for (int m = 0; m < M_; m++) {
+            if (update_center_only_ && n != static_cast<int>(label_data[m])) continue;
             weight_diff[n * K_ + k] += top_diff[m * N_ + n] * sign(weight[n * K_ + k] - bottom_data[m * K_ + k]);
           }
         }
@@ -169,13 +156,6 @@ void InnerDistanceLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     else {
       NOT_IMPLEMENTED;
     }
-  }
-  if (bias_term_ && this->param_propagate_down_[1]) {
-    const Dtype* top_diff = top[0]->cpu_diff();
-    // Gradient with respect to bias
-    caffe_cpu_gemv<Dtype>(CblasTrans, M_, N_, (Dtype)1., top_diff,
-        bias_multiplier_.cpu_data(), (Dtype)1.,
-        bottom.size() ==3 ? bottom[2]->mutable_cpu_diff() : this->blobs_[1]->mutable_cpu_diff());
   }
   if (propagate_down[0]) {
     Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();

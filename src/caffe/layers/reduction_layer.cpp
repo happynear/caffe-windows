@@ -33,9 +33,6 @@ void ReductionLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
     caffe_set(dim_, Dtype(1), sum_multiplier_.mutable_cpu_data());
   }
   coeff_ = this->layer_param().reduction_param().coeff();
-  if (op_ == ReductionParameter_ReductionOp_MEAN) {
-    coeff_ /= dim_;
-  }
 }
 
 template <typename Dtype>
@@ -65,6 +62,11 @@ void ReductionLayer<Dtype>::Forward_cpu(
     }
     bottom_data += dim_;
     ++top_data;
+  }
+  if (op_ == ReductionParameter_ReductionOp_MEAN) {
+    // Reset the top_data pointer.
+    top_data = top[0]->mutable_cpu_data();
+    caffe_scal(num_, Dtype(1) / dim_, top_data);
   }
   if (coeff_ != Dtype(1)) {
     // Reset the top_data pointer.
@@ -96,7 +98,10 @@ void ReductionLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
   const Dtype* top_diff = top[0]->cpu_diff();
   Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
   for (int i = 0; i < num_; ++i) {
-    const Dtype bottom_coeff = (*top_diff) * coeff_;
+    Dtype bottom_coeff = (*top_diff) * coeff_;
+    if (op_ == ReductionParameter_ReductionOp_MEAN) {
+      bottom_coeff /= dim_;
+    }
     switch (op_) {
     case ReductionParameter_ReductionOp_SUM:
     case ReductionParameter_ReductionOp_MEAN:

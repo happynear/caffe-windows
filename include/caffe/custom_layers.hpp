@@ -237,6 +237,7 @@ namespace caffe {
 		Blob<Dtype> diff_;
 		Blob<Dtype> errors_;
 		bool has_weights_;
+    Dtype turn_point_;
 	};
 
   /* Yuanyang adding triplet loss layer */
@@ -279,37 +280,6 @@ namespace caffe {
     Blob<Dtype> dist_binary_;  // tmp storage for gpu forward pass
 
   };
-
-	/**
-	* @brief Normalizes input.
-	*/
-	template <typename Dtype>
-	class NormalizeLayer : public Layer<Dtype> {
-	public:
-		explicit NormalizeLayer(const LayerParameter& param)
-			: Layer<Dtype>(param) {}
-    virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
-                            const vector<Blob<Dtype>*>& top);
-		virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
-			const vector<Blob<Dtype>*>& top);
-
-		virtual inline const char* type() const { return "Normalize"; }
-		virtual inline int ExactNumBottomBlobs() const { return 1; }
-		virtual inline int ExactNumTopBlobs() const { return 1; }
-
-	protected:
-		virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
-			const vector<Blob<Dtype>*>& top);
-		virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
-			const vector<Blob<Dtype>*>& top);
-		virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
-			const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
-		virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
-			const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
-
-		Blob<Dtype> sum_multiplier_, norm_, squared_;
-    std::string normalize_type_;
-	};
 
 	/**
 	* @brief Apply an affine transform on the input layer, where the affine parameters

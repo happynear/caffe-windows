@@ -103,6 +103,10 @@ namespace caffe {
     const int new_width = image_data_param.new_width();
     const bool is_color = image_data_param.is_color();
     string root_folder = image_data_param.root_folder();
+    balance_ = image_data_param.balance_class();
+    balance_by_ = image_data_param.balance_by();
+    label_cut_start_ = image_data_param.label_cut_start();
+    label_cut_end_ = image_data_param.label_cut_start();
 
     CHECK((new_height == 0 && new_width == 0) ||
           (new_height > 0 && new_width > 0)) << "Current implementation requires "
@@ -114,6 +118,8 @@ namespace caffe {
     string filename;
     char this_line[1024];
     label_count = 0;
+    string last_filename = "";
+    int max_label = 0;
 
     while (!infile.eof()) {
       infile.getline(this_line, 1024);
@@ -121,6 +127,7 @@ namespace caffe {
       stream << this_line;
       stream >> filename;
       if (filename.length() < 3) break;
+      if (filename == last_filename) break;
       Dtype label;
       shared_ptr<vector<Dtype> > labels_ptr(new vector<Dtype>);
       while (!stream.eof()) {
@@ -135,6 +142,18 @@ namespace caffe {
         CHECK_EQ(label_count, labels_ptr->size()) << "label count do not match for file:" << filename;
       }
       lines_.push_back(std::make_pair(filename, labels_ptr));
+      last_filename = filename;
+      if ((*labels_ptr)[balance_by_] > max_label) max_label = (*labels_ptr)[balance_by_];
+    }
+
+    if (balance_) {
+      num_samples_ = vector<int>(max_label + 1);
+      filename_by_class_ = vector<vector<std::pair<std::string, shared_ptr<vector<Dtype> > > > >(max_label + 1);
+      for (auto& l : lines_) {
+        num_samples_[(*l.second)[balance_by_]]++;
+        filename_by_class_[(*l.second)[balance_by_]].push_back(l);
+      }
+      class_id_ = 0;
     }
 
     if (image_data_param.shuffle()) {
@@ -175,7 +194,7 @@ namespace caffe {
       << top[0]->channels() << "," << top[0]->height() << ","
       << top[0]->width();
     // label
-    vector<int> label_shape = { batch_size, label_count };
+    vector<int> label_shape = { batch_size - label_cut_start_ - label_cut_end_, label_count };
     top[1]->Reshape(label_shape);
     for (int i = 0; i < this->prefetch_.size(); ++i) {
       this->prefetch_[i]->label_.Reshape(label_shape);
@@ -238,35 +257,45 @@ namespace caffe {
           cv_img = ReadImageToCVMat(root_folder + lines_[lines_id_].first,
                                     new_height, new_width, is_color);
         }
-        CHECK(cv_img.data) << "Could not load " << lines_[lines_id_].first;
-        read_time += timer.MicroSeconds();
-        timer.Start();
-        for (int label_id = 0; label_id < label_count; ++label_id) {
-          prefetch_label[item_id * label_count + label_id] = (*lines_[lines_id_].second)[label_id];
+        if (!cv_img.data) {
+          LOG(INFO) << "Could not load " << lines_[lines_id_].first;
+          valid_sample = false;
         }
-        // Apply transformations (mirror, crop...) to the image
-        if (image_data_param.face_transform()) {
-          extract_face(cv_img, &prefetch_label[item_id * label_count], image_data_param.face_point_num(),
-                       image_data_param.new_width(), image_data_param.new_height(), image_data_param.max_random_shift(),
-                       image_data_param.max_shear_ratio(), image_data_param.max_aspect_ratio(), image_data_param.max_rotate_angle(),
-                       image_data_param.min_random_scale(), image_data_param.max_random_scale(),
-                       image_data_param.face_mirror());
-        }
-        int offset = batch->data_.offset(item_id);
-        this->transformed_data_.set_cpu_data(prefetch_data + offset);
-        this->data_transformer_->Transform(cv_img, &(this->transformed_data_));
-        trans_time += timer.MicroSeconds();
+        else{
+          read_time += timer.MicroSeconds();
+          timer.Start();
+          if (item_id >= label_cut_start_ && item_id < batch_size - label_cut_end_) {
+            for (int label_id = 0; label_id < label_count; ++label_id) {
+              prefetch_label[(item_id - label_cut_start_) * label_count + label_id] = (*lines_[lines_id_].second)[label_id];
+            }
+          }
+          // Apply transformations (mirror, crop...) to the image
+          if (image_data_param.face_transform()) {
+            extract_face(cv_img, &prefetch_label[item_id * label_count], image_data_param.face_point_num(),
+                         image_data_param.new_width(), image_data_param.new_height(), image_data_param.max_random_shift(),
+                         image_data_param.max_shear_ratio(), image_data_param.max_aspect_ratio(), image_data_param.max_rotate_angle(),
+                         image_data_param.min_random_scale(), image_data_param.max_random_scale(),
+                         image_data_param.face_mirror());
+          }
+          int offset = batch->data_.offset(item_id);
+          this->transformed_data_.set_cpu_data(prefetch_data + offset);
+          this->data_transformer_->Transform(cv_img, &(this->transformed_data_));
+          trans_time += timer.MicroSeconds();
 
-        valid_sample = true;
-        for (int point_id = 0; point_id < image_data_param.face_point_num(); ++point_id) {
-          if (prefetch_label[item_id * label_count + point_id * 2] < -0.45 * new_width || prefetch_label[item_id * label_count + point_id * 2] > 0.45 * new_width
-              || prefetch_label[item_id * label_count + point_id * 2 + 1] < -0.45 * new_height || prefetch_label[item_id * label_count + point_id * 2 + 1] > 0.45 * new_height) {
-            valid_sample = false;
+          valid_sample = true;
+          if (image_data_param.face_transform()) {
+            for (int point_id = 0; point_id < image_data_param.face_point_num(); ++point_id) {
+              if (prefetch_label[item_id * label_count + point_id * 2] < -0.45 * new_width || prefetch_label[item_id * label_count + point_id * 2] > 0.45 * new_width
+                  || prefetch_label[item_id * label_count + point_id * 2 + 1] < -0.45 * new_height || prefetch_label[item_id * label_count + point_id * 2 + 1] > 0.45 * new_height) {
+                valid_sample = false;
+              }
+            }
+            if (!valid_sample) {
+              LOG(INFO) << "skip " << lines_[lines_id_].first;
+            }
           }
         }
-        if (!valid_sample) {
-          LOG(INFO) << "skip " << lines_[lines_id_].first;
-        }
+        
         // go to the next iter
         lines_id_++;
         if (lines_id_ >= lines_size) {

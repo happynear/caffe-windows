@@ -1,5 +1,5 @@
-#ifndef CAFFE_TRAINABLE_DATA_LAYER_HPP_
-#define CAFFE_TRAINABLE_DATA_LAYER_HPP_
+#ifndef CAFFE_PAIRWISE_LAYER_HPP_
+#define CAFFE_PAIRWISE_LAYER_HPP_
 
 #include <vector>
 
@@ -10,28 +10,26 @@
 namespace caffe {
 
 /**
- * @brief Computes a sum of two input Blobs, with the shape of the latter Blob
- *        "broadcast" to match the shape of the former. Equivalent to tiling
- *        the latter Blob, then computing the elementwise sum.
+ * @brief Compute elementwise operations, such as product and sum,
+ *        along multiple input Blobs.
  *
- * The second input may be omitted, in which case it's learned as a parameter
- * of the layer. Note: in case bias and scaling are desired, both operations can
- * be handled by `ScaleLayer` configured with `bias_term: true`.
+ * TODO(dox): thorough documentation for Forward, Backward, and proto params.
  */
 template <typename Dtype>
-class TrainableDataLayer : public Layer<Dtype> {
+class PairwiseLayer : public Layer<Dtype> {
  public:
-  explicit TrainableDataLayer(const LayerParameter& param)
+  explicit PairwiseLayer(const LayerParameter& param)
       : Layer<Dtype>(param) {}
   virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
   virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
 
-  virtual inline const char* type() const { return "TrainableData"; }
-  virtual inline int ExactBottomBlobs() const { return 0; }
+  virtual inline const char* type() const { return "Pairwise"; }
+  virtual inline int ExactBottomBlobs() const { return 2; }
   virtual inline int ExactNumTopBlobs() const { return 1; }
 
+ protected:
   virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
   virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
@@ -40,10 +38,14 @@ class TrainableDataLayer : public Layer<Dtype> {
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+
+  PairwiseParameter_PairwiseOp op_;
+  vector<Dtype> coeffs_;
+  Blob<int> max_idx_;
+
+  int M_, N_, K_;
 };
-
-
 
 }  // namespace caffe
 
-#endif  // CAFFE_TRAINABLE_DATA_LAYER_HPP_
+#endif  // CAFFE_PAIRWISE_LAYER_HPP_

@@ -26,6 +26,26 @@
 #define PyArray_SetBaseObject(arr, x) (PyArray_BASE(arr) = (x))
 #endif
 
+//fix unresolved symbol problem of boost::get_pointer in VS2015
+#if _MSC_VER == 1900
+#define DEFINE_BOOST_GET_POINTER(PTR) template<> const volatile PTR* get_pointer(const volatile PTR* p) { return p; }
+namespace boost {
+  DEFINE_BOOST_GET_POINTER(caffe::Timer);
+#if USE_NCCL
+  DEFINE_BOOST_GET_POINTER(caffe::NCCL<float>);
+#endif
+  DEFINE_BOOST_GET_POINTER(caffe::Solver<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::Layer<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::Net<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::SGDSolver<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::NesterovSolver<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::AdaGradSolver<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::RMSPropSolver<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::AdaDeltaSolver<float>);
+  DEFINE_BOOST_GET_POINTER(caffe::AdamSolver<float>);
+}
+#endif
+
 /* Fix to avoid registration warnings in pycaffe (#3960) */
 #define BP_REGISTER_SHARED_PTR_TO_PYTHON(PTR) do { \
   const boost::python::type_info info = \
@@ -51,14 +71,18 @@ namespace caffe {
   void set_mode_cpu() { Caffe::set_mode(Caffe::CPU); }
   void set_mode_gpu() { Caffe::set_mode(Caffe::GPU); }
 
-  void InitLog(int level) {
-    FLAGS_logtostderr = 1;
-    FLAGS_minloglevel = level;
+  void InitLog() {
     ::google::InitGoogleLogging("");
-    ::google::InstallFailureSignalHandler();
+    //::google::InstallFailureSignalHandler();
   }
-  void InitLogInfo() {
-    InitLog(google::INFO);
+  void InitLogLevel(int level) {
+    FLAGS_minloglevel = level;
+    InitLog();
+  }
+  void InitLogLevelPipe(int level, bool log_to_stderr) {
+    FLAGS_minloglevel = level;
+    FLAGS_logtostderr = log_to_stderr;
+    InitLog();
   }
   void Log(const string& s) {
     LOG(INFO) << s;
@@ -164,7 +188,7 @@ namespace caffe {
                           bp::object labels_obj) {
     // check that this network has an input MemoryDataLayer
     shared_ptr<MemoryDataLayer<Dtype> > md_layer =
-      boost::dynamic_pointer_cast<MemoryDataLayer<Dtype> >(net->layers()[0]);
+      boost::dynamic_pointer_cast<MemoryDataLayer<Dtype>>(net->layers()[0]);
     if (!md_layer) {
       throw std::runtime_error("set_input_arrays may only be called if the"
                                " first layer is a MemoryDataLayer");
@@ -289,7 +313,7 @@ namespace caffe {
   }
 
   // Seems boost cannot call the base method directly
-  void Solver_add_nccl(SGDSolver<Dtype>* solver
+  void Solver_add_nccl(Solver<Dtype>* solver
 #ifdef USE_NCCL
                        , NCCL<Dtype>* nccl
 #endif
@@ -297,6 +321,10 @@ namespace caffe {
 #ifdef USE_NCCL
     solver->add_callback(nccl);
 #endif
+  }
+
+  void share_weights(Solver<Dtype>* solver, Net<Dtype>* net) {
+    net->ShareTrainedLayersWith(solver->net().get());
   }
 
   template<typename Dtype>
@@ -340,6 +368,35 @@ namespace caffe {
   };
 #endif
 
+  bool HasNCCL() {
+#ifdef USE_NCCL
+    return true;
+#else
+    return false;
+#endif
+  }
+
+#ifdef USE_NCCL
+  bp::object NCCL_New_Uid() {
+    std::string uid = NCCL<Dtype>::new_uid();
+#if PY_MAJOR_VERSION >= 3
+    // Convert std::string to bytes so that Python does not
+    // try to decode the string using the current locale.
+
+    // Since boost 1.53 boost.python will convert str and bytes
+    // to std::string but will convert std::string to str. Here we
+    // force a bytes object to be returned. When this object
+    // is passed back to the NCCL constructor boost.python will
+    // correctly convert the bytes to std::string automatically
+    PyObject* py_uid = PyBytes_FromString(uid.c_str());
+    return bp::object(bp::handle<>(py_uid));
+#else
+    // automatic conversion is correct for python 2.
+    return bp::object(uid);
+#endif
+  }
+#endif
+
   BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(SolveOverloads, Solve, 0, 1);
 
   BOOST_PYTHON_MODULE(_caffe) {
@@ -350,8 +407,10 @@ namespace caffe {
 
     // Caffe utility functions
     bp::def("init_log", &InitLog);
-    bp::def("init_log", &InitLogInfo);
+    bp::def("init_log", &InitLogLevel);
+    bp::def("init_log", &InitLogLevelPipe);
     bp::def("log", &Log);
+    bp::def("has_nccl", &HasNCCL);
     bp::def("set_mode_cpu", &set_mode_cpu);
     bp::def("set_mode_gpu", &set_mode_gpu);
     bp::def("set_random_seed", &set_random_seed);
@@ -460,6 +519,7 @@ namespace caffe {
       .def("step", &Solver<Dtype>::Step)
       .def("restore", &Solver<Dtype>::Restore)
       .def("snapshot", &Solver<Dtype>::Snapshot)
+      .def("share_weights", &share_weights)
       .add_property("param", bp::make_function(&Solver<Dtype>::param,
                                                bp::return_value_policy<bp::copy_const_reference>()));
     BP_REGISTER_SHARED_PTR_TO_PYTHON(Solver<Dtype>);
@@ -509,7 +569,7 @@ namespace caffe {
       boost::noncopyable>("NCCL",
                           bp::init<shared_ptr<Solver<Dtype> >, const string&>())
 #ifdef USE_NCCL
-      .def("new_uid", &NCCL<Dtype>::new_uid).staticmethod("new_uid")
+      .def("new_uid", NCCL_New_Uid).staticmethod("new_uid")
       .def("bcast", &NCCL<Dtype>::Broadcast)
 #endif
       /* NOLINT_NEXT_LINE(whitespace/semicolon) */

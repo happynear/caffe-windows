@@ -93,11 +93,6 @@ void InnerDistanceLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   else {
     NOT_IMPLEMENTED;
   }
-  if (bias_term_)
-    caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, M_, N_, 1, (Dtype)1.,
-                          bias_multiplier_.gpu_data(),
-                          bottom.size() ==3 ? bottom[2]->gpu_data() : this->blobs_[1]->gpu_data(),
-                          (Dtype)1., top_data);
 }
 
 template <typename Dtype>
@@ -140,14 +135,42 @@ __global__ void inner_distance_weight_backward_L2(const int M_, const int N_, co
 }
 
 template <typename Dtype>
+__global__ void inner_distance_weight_backward_L2_center_only(const int M_, const int N_, const int K_,
+                                                  const Dtype* bottom_data, const Dtype* weight,
+                                                  const Dtype* label_data, const Dtype* top_diff,
+                                                  Dtype* weight_diff) {
+  CUDA_KERNEL_LOOP(index, K_) {
+    int k = index;
+    for (int m = 0; m < M_; ++m) {
+      int n = static_cast<int>(label_data[m]);
+      weight_diff[n * K_ + k] += top_diff[m * N_ + n] * (weight[n * K_ + k] - bottom_data[m * K_ + k]) * Dtype(2);
+    }
+  }
+}
+
+template <typename Dtype>
 __global__ void inner_distance_weight_backward_L1(const int M_, const int N_, const int K_,
-                                           const Dtype* bottom_data, const Dtype* weight, const Dtype* top_diff,
-                                           Dtype* weight_diff) {
+                                                  const Dtype* bottom_data, const Dtype* weight, const Dtype* top_diff,
+                                                  Dtype* weight_diff) {
   CUDA_KERNEL_LOOP(index, N_ * K_) {
     int n = index / K_;
     int k = index % K_;
     for (int m = 0; m < M_; ++m) {
       weight_diff[index] += top_diff[m * N_ + n] * sign(weight[index] - bottom_data[m * K_ + k]);
+    }
+  }
+}
+
+template <typename Dtype>
+__global__ void inner_distance_weight_backward_L1_center_only(const int M_, const int N_, const int K_,
+                                                              const Dtype* bottom_data, const Dtype* weight,
+                                                              const Dtype* label_data, const Dtype* top_diff,
+                                                              Dtype* weight_diff) {
+  CUDA_KERNEL_LOOP(index, K_) {
+    int k = index;
+    for (int m = 0; m < M_; ++m) {
+      int n = static_cast<int>(label_data[m]);
+      weight_diff[n * K_ + k] += top_diff[m * N_ + n] * sign(weight[n * K_ + k] - bottom_data[m * K_ + k]);
     }
   }
 }
@@ -160,31 +183,45 @@ void InnerDistanceLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   const Dtype* bottom_data = bottom[0]->gpu_data();
   const Dtype* weight = bottom.size() >= 2 ? bottom[1]->gpu_data() : this->blobs_[0]->gpu_data();
 
-  if (bottom.size() >= 2 || this->param_propagate_down_[0]) {
+  if ((bottom.size() == 1 && this->param_propagate_down_[0]) ||
+    (bottom.size() >= 2 && propagate_down[1])) {
     Dtype* weight_diff = bottom.size() >= 2 ? bottom[1]->mutable_gpu_diff() : this->blobs_[0]->mutable_gpu_diff();
+    const Dtype* label_data = NULL;
+    if (update_center_only_) {
+      label_data = bottom[bottom.size() - 1]->gpu_data();
+    }
     // Gradient with respect to weight
     if (distance_type_ == "L2") {
-      // NOLINT_NEXT_LINE(whitespace/operators)
-      inner_distance_weight_backward_L2<Dtype> << <CAFFE_GET_BLOCKS(N_ * K_),
-        CAFFE_CUDA_NUM_THREADS >> > (M_, N_, K_,
-                                     bottom_data, weight, top_diff, weight_diff);
+      if (update_center_only_) {
+        // NOLINT_NEXT_LINE(whitespace/operators)
+        inner_distance_weight_backward_L2_center_only<Dtype> << <CAFFE_GET_BLOCKS(K_),
+          CAFFE_CUDA_NUM_THREADS >> > (M_, N_, K_,
+                                       bottom_data, weight, label_data, top_diff, weight_diff);
+      }
+      else {
+        // NOLINT_NEXT_LINE(whitespace/operators)
+        inner_distance_weight_backward_L2<Dtype> << <CAFFE_GET_BLOCKS(N_ * K_),
+          CAFFE_CUDA_NUM_THREADS >> > (M_, N_, K_,
+                                       bottom_data, weight, top_diff, weight_diff);
+      }
     }
     else if (distance_type_ == "L1") {
-      // NOLINT_NEXT_LINE(whitespace/operators)
-      inner_distance_weight_backward_L1<Dtype> << <CAFFE_GET_BLOCKS(N_ * K_),
-        CAFFE_CUDA_NUM_THREADS >> > (M_, N_, K_,
-                                     bottom_data, weight, top_diff, weight_diff);
+      if (update_center_only_) {
+        // NOLINT_NEXT_LINE(whitespace/operators)
+        inner_distance_weight_backward_L1_center_only<Dtype> << <CAFFE_GET_BLOCKS(K_),
+          CAFFE_CUDA_NUM_THREADS >> > (M_, N_, K_,
+                                       bottom_data, weight, label_data, top_diff, weight_diff);
+      }
+      else {
+        // NOLINT_NEXT_LINE(whitespace/operators)
+        inner_distance_weight_backward_L1<Dtype> << <CAFFE_GET_BLOCKS(N_ * K_),
+          CAFFE_CUDA_NUM_THREADS >> > (M_, N_, K_,
+                                       bottom_data, weight, top_diff, weight_diff);
+      }
     }
     else {
       NOT_IMPLEMENTED;
     }
-  }
-  if (bias_term_ && (bottom.size()==3 || this->param_propagate_down_[1])) {
-    const Dtype* top_diff = top[0]->gpu_diff();
-    // Gradient with respect to bias
-    caffe_gpu_gemv<Dtype>(CblasTrans, M_, N_, (Dtype)1., top_diff,
-                          bias_multiplier_.gpu_data(), (Dtype)1.,
-                          bottom.size() == 3 ? bottom[2]->mutable_gpu_diff() : this->blobs_[1]->mutable_gpu_diff());
   }
   if (propagate_down[0]) {
     Dtype* bottom_diff = bottom[0]->mutable_gpu_diff();

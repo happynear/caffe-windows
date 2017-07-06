@@ -1,5 +1,7 @@
 #include <algorithm>
 #include <vector>
+#include <math.h>
+#include <float.h>
 
 #include "caffe/layers/soft_contrastive_loss_layer.hpp"
 #include "caffe/util/math_functions.hpp"
