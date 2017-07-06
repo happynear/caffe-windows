@@ -809,6 +809,9 @@
     <ClInclude Include="..\..\include\caffe\util\util_img.hpp">
       <Filter>include\util</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\caffe\layers\normalize_layer.hpp">
+      <Filter>include\layers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\..\src\caffe\layers\contrastive_loss_layer.cu">
