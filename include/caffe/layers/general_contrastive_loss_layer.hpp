@@ -115,12 +115,6 @@ class GeneralContrastiveLossLayer : public LossLayer<Dtype> {
   Blob<int> max_negative_index_;
   bool max_positive_only_;
   int max_positive_index_;
-  bool positive_first_;
-  Dtype positive_upper_bound_;
-  bool exp_negative_weight_;
-  bool add_intra_mae_;
-  Dtype intra_mae_;
-  Dtype max_negative_margin_;
 };
 
 

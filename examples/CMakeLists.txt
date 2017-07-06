@@ -19,8 +19,7 @@ foreach(source_file ${examples_srcs})
   caffe_set_solution_folder(${name} examples)
 
   # install
-  install(TARGETS ${name} DESTINATION ${CMAKE_INSTALL_BINDIR})
-
+  install(TARGETS ${name} DESTINATION bin)
 
   if(UNIX OR APPLE)
     # Funny command to make tutorials work

@@ -14,4 +14,10 @@ Silences a blob, so that it is not printed.
 
 ## Parameters
 
-No parameters.
+* Parameters (`SilenceParameter silence_param`)
+* From [`./src/caffe/proto/caffe.proto`](https://github.com/BVLC/caffe/blob/master/src/caffe/proto/caffe.proto):
+
+{% highlight Protobuf %}
+{% include proto/BatchNormParameter.txt %}
+{% endhighlight %}
+

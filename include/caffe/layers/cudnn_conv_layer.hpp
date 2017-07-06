@@ -8,9 +8,6 @@
 #include "caffe/proto/caffe.pb.h"
 
 #include "caffe/layers/conv_layer.hpp"
-#ifndef CPU_ONLY
-#include "caffe/util/gpu_memory.hpp"
-#endif
 
 namespace caffe {
 
@@ -31,28 +28,9 @@ namespace caffe {
 */
 template <typename Dtype>
 class CuDNNConvolutionLayer : public ConvolutionLayer<Dtype> {
-  // In iteration 0, use a small amount of memory in order to leave
-  // most of memory for allocating layer blobs.
-  // NOLINT_NEXT_LINE(build/storage_class)
-  const static size_t INITIAL_WORKSPACE_SIZE;
-  // Use 95% of available memory.
-  // Using all of memory may result in failure of workspace.reserve.
-  // NOLINT_NEXT_LINE(build/storage_class)
-  const static float MAX_WORKSPACE_RATIO;
-  // We update it on second Fwd/Bwd pass and we allocate it *once*
-  // when we start third pass. We might recompute it later if demand grows
-  // and/or we suddenly need to get extra memory for other needs.
-  static size_t& workspace_size(int device);
-  static vector<size_t> WORKSPACE_SIZES;
-  // This is the workspace used by all Convolution layers one after another.
-  // We carry it global to prevent unnecessary allocations/deallocations
-  // because they hurt performance.
-  static GPUMemory::MultiWorkspace WORKSPACE;
-
  public:
   explicit CuDNNConvolutionLayer(const LayerParameter& param)
-      : ConvolutionLayer<Dtype>(param), handles_setup_(false),
-        use_algo_seeker_(true), use_modest_workspace_(true) {}
+      : ConvolutionLayer<Dtype>(param), handles_setup_(false) {}
   virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
   virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
@@ -66,6 +44,8 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Dtype> {
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
   bool handles_setup_;
+  cudnnHandle_t* handle_;
+  cudaStream_t*  stream_;
 
   // algorithms for forward and backwards convolutions
   cudnnConvolutionFwdAlgo_t *fwd_algo_;
@@ -76,52 +56,15 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Dtype> {
   cudnnTensorDescriptor_t    bias_desc_;
   cudnnFilterDescriptor_t      filter_desc_;
   vector<cudnnConvolutionDescriptor_t> conv_descs_;
-
   int bottom_offset_, top_offset_, bias_offset_;
 
   size_t *workspace_fwd_sizes_;
   size_t *workspace_bwd_data_sizes_;
   size_t *workspace_bwd_filter_sizes_;
-
- private:
-  bool use_algo_seeker_;
-  bool use_modest_workspace_;
-#if CUDNN_VERSION_MIN(5, 0, 0)
-  void FindExConvAlgo(const vector<Blob<Dtype>*>& bottom,
-                      const vector<Blob<Dtype>*>& top);
-#endif
-  void GetConvAlgo(const vector<Blob<Dtype>*>& bottom,
-                   const vector<Blob<Dtype>*>& top,
-                   const size_t workspace_bytes);
-
-  size_t ComputeFindExWorkspaceSize();
-
-  vector<cudnnTensorDescriptor_t>      cached_bottom_descs_;
-  vector<cudnnConvolutionDescriptor_t> cached_conv_descs_;
-  bool IsBottomDescChanged(const vector<Blob<Dtype>*>& bottom);
-  bool IsConvDescChanged(const vector<Blob<Dtype>*>& bottom);
-
-  bool use_reshape_;
-  bool initialized_cached_descs_;
-
-  void UpdateWorkspaceDemand(int size);
-
-  // This is current *demand*: it might be not yet allocated.
+  size_t workspaceSizeInBytes;  // size of underlying storage
+  void *workspaceData;  // underlying storage
+  void **workspace;  // aliases into workspaceData
 };
-
-template<typename Dtype>
-vector<size_t> CuDNNConvolutionLayer<Dtype>::WORKSPACE_SIZES;
-
-template<typename Dtype>
-const size_t CuDNNConvolutionLayer<Dtype>::INITIAL_WORKSPACE_SIZE =
-    4*1024*1024;
-
-template<typename Dtype>
-GPUMemory::MultiWorkspace CuDNNConvolutionLayer<Dtype>::WORKSPACE;
-
-template<typename Dtype>
-const float CuDNNConvolutionLayer<Dtype>::MAX_WORKSPACE_RATIO = 0.95F;
-
 #endif
 
 }  // namespace caffe

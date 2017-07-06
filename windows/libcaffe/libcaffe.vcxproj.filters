@@ -40,6 +40,12 @@
     <Filter Include="cu\solvers">
       <UniqueIdentifier>{fcb8114c-3425-41da-b30a-af2cb33dd851}</UniqueIdentifier>
     </Filter>
+    <Filter Include="3rdparty">
+      <UniqueIdentifier>{70db46e7-36e8-4dbd-9c28-fb42c876186c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rdparty\HoG">
+      <UniqueIdentifier>{c8bc6b13-95cf-4463-ba30-c8b16bddf763}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\caffe\util\im2col.cpp">
@@ -378,8 +384,14 @@
     <ClCompile Include="..\..\src\caffe\layers\lstm_unit_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\fcn_data_layer.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\fcn_accuracy_layer.cpp">
       <Filter>src\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\3rdparty\HoG\gradientMex.cpp">
+      <Filter>3rdparty\HoG</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\center_loss_layer.cpp">
       <Filter>src\layers</Filter>
@@ -406,51 +418,6 @@
       <Filter>src\layers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\util\nms.cpp">
-      <Filter>src\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\general_triplet_loss_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\pairwise_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\noise_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\correlation_loss_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\batch_contrastive_loss_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\permute_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\nca_loss_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\truncation_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\util\gpu_memory.cpp">
-      <Filter>src\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\largemargin_inner_product_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\label_specific_rescale.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\cudnn_bn_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\bn_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\resize_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\util\util_img.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
   </ItemGroup>
@@ -761,6 +728,18 @@
     <ClInclude Include="..\..\include\caffe\layers\fcn_accuracy_layer.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\3rdparty\HoG\gradientMex.h">
+      <Filter>3rdparty\HoG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\3rdparty\HoG\sse.hpp">
+      <Filter>3rdparty\HoG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\3rdparty\HoG\wrappers.hpp">
+      <Filter>3rdparty\HoG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\3rdparty\HoG\fhog.hpp">
+      <Filter>3rdparty\HoG</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\caffe\layers\center_loss_layer.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
@@ -784,33 +763,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\caffe\util\nms.hpp">
       <Filter>include\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\batch_contrastive_loss_layer.hpp">
-      <Filter>include\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\permute_layer.hpp">
-      <Filter>include\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\largemargin_inner_product_layer.hpp">
-      <Filter>include\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\label_specific_rescale_layer.hpp">
-      <Filter>include\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\cudnn_bn_layer.hpp">
-      <Filter>include\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\bn_layer.hpp">
-      <Filter>include\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\resize_layer.hpp">
-      <Filter>include\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\util\util_img.hpp">
-      <Filter>include\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\normalize_layer.hpp">
-      <Filter>include\layers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1047,39 +999,6 @@
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\parameter_layer.cu">
       <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\pairwise_layer.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\noise_layer.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\correlation_loss_layer.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\permute_layer.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\truncation_layer.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\largemargin_inner_product_layer.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\label_specific_rescale.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\cudnn_bn_layer.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\bn_layer.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\resize_layer.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\util\util_img.cu">
-      <Filter>cu\util</Filter>
     </CudaCompile>
   </ItemGroup>
 </Project>

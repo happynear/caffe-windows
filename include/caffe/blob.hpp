@@ -242,8 +242,6 @@ class Blob {
   /// @brief Compute the sum of squares (L2 norm squared) of the diff.
   Dtype sumsq_diff() const;
 
-  void Clamp(Dtype lower_bound, Dtype upper_bound);
-
   /// @brief Scale the blob data by a constant factor.
   void scale_data(Dtype scale_factor);
   /// @brief Scale the blob diff by a constant factor.

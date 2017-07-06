@@ -99,7 +99,7 @@ message NetParameter {
 // NOTE
 // Update the next available ID when you add a new SolverParameter field.
 //
-// SolverParameter next available ID: 45 (last added: clip_weights)
+// SolverParameter next available ID: 42 (last added: layer_wise_reduce)
 message SolverParameter {
   //////////////////////////////////////////////////////////////////////////////
   // Specifying the train and test networks
@@ -129,7 +129,8 @@ message SolverParameter {
   // The states for the train/test nets. Must be unspecified or
   // specified once per net.
   //
-  // By default, train_state will have phase = TRAIN,
+  // By default, all states will have solver = true;
+  // train_state will have phase = TRAIN,
   // and all test_state's will have phase = TEST.
   // Other defaults are set according to the NetState defaults.
   optional NetState train_state = 26;
@@ -185,11 +186,6 @@ message SolverParameter {
   // Set clip_gradients to >= 0 to clip parameter gradients to that L2 norm,
   // whenever their actual L2 norm is larger.
   optional float clip_gradients = 35 [default = -1];
-  
-  // Clamp the weights between lower and upper bound.
-  optional float clamp_weights_lower = 42 [default = -999999.9];
-  optional float clamp_weights_upper = 43 [default = 999999.9];
-  optional float clip_weights = 44 [default = -1];
 
   optional int32 snapshot = 14 [default = 0]; // The snapshot interval
   optional string snapshot_prefix = 15; // The prefix for the snapshot.
@@ -434,17 +430,6 @@ message LayerParameter {
   optional SoftTruncationParameter soft_truncation_param = 218;
   optional ProposalParameter proposal_param = 219;
   optional PSROIPoolingParameter psroi_pooling_param = 220;
-  optional PairwiseParameter pairwise_param = 221;
-  optional SmoothL1Parameter smoothl1_param = 222;
-  optional BatchContrastiveParameter batch_contrastive_loss_param = 223;
-  optional PermuteParameter permute_param = 224;
-  optional TruncationParameter truncation_param = 225;
-  optional NCAParameter nca_param = 226;
-  optional LargeMarginInnerProductParameter largemargin_inner_product_param = 227;
-  optional LabelSpecificRescaleParameter label_specific_rescale_param = 228;
-  optional InfimumLossParamter infimum_loss_param = 229;
-  optional OrdinalRegressionParameter ordinal_regression_loss_param = 230;
-  optional ResizeParameter resize_param = 231;
 }
 
 // Message that stores parameters used to apply transformation
@@ -468,9 +453,6 @@ message TransformationParameter {
   optional bool force_color = 6 [default = false];
   // Force the decoded image to have 1 color channels.
   optional bool force_gray = 7 [default = false];
-  optional uint32 crop_h = 8 [default = 0];
-  optional uint32 crop_w = 9 [default = 0];
-  optional bool center_crop = 10 [default = false];
 }
 
 // Message that stores parameters shared by loss layers
@@ -547,35 +529,15 @@ message ConcatParameter {
 }
 
 message BatchNormParameter {
-  // If false, normalization is performed over the current mini-batch
-  // and global statistics are accumulated (but not yet used) by a moving
-  // average.
-  // If true, those accumulated mean and variance values are used for the
-  // normalization.
-  // By default, it is set to false when the network is in the training
-  // phase and true when the network is in the testing phase.
+  // If false, accumulate global mean/variance values via a moving average. If
+  // true, use those accumulated values instead of computing mean/variance
+  // across the batch.
   optional bool use_global_stats = 1;
-  // What fraction of the moving average remains each iteration?
-  // Smaller values make the moving average decay faster, giving more
-  // weight to the recent values.
-  // Each iteration updates the moving average @f$S_{t-1}@f$ with the
-  // current mean @f$ Y_t @f$ by
-  // @f$ S_t = (1-\beta)Y_t + \beta \cdot S_{t-1} @f$, where @f$ \beta @f$
-  // is the moving_average_fraction parameter.
+  // How much does the moving average decay each iteration?
   optional float moving_average_fraction = 2 [default = .99];
   // Small value to add to the variance estimate so that we don't divide by
   // zero.
   optional float eps = 3 [default = 1e-5];
-  optional bool disable_mean = 4 [default = false];
-  optional bool disable_variance = 5 [default = false];
-  optional FillerParameter scale_filler = 7;
-  optional FillerParameter bias_filler = 8;
-  enum Engine {
-    DEFAULT = 0;
-    CAFFE = 1;
-    CUDNN = 2;
-  }
-  optional Engine engine = 15 [default = DEFAULT];
 }
 
 message BiasParameter {
@@ -673,13 +635,6 @@ message ConvolutionParameter {
   // implementation; for input blobs with num_axes != 2, this option is
   // ignored and the ND implementation will be used.)
   optional bool force_nd_im2col = 17 [default = false];
-  enum CuDNNConvolutionAlgorithmSeeker {
-    GET    = 0;
-    FINDEX = 1;
-  }
-  //Specifies which cudnn routine should be used to find the best convolution algorithm
-  optional CuDNNConvolutionAlgorithmSeeker cudnn_convolution_algo_seeker = 19 [default = FINDEX];
-  repeated uint32 shape_offset = 20;
 }
 
 message CropParameter {
@@ -736,7 +691,6 @@ message DataParameter {
 
 message DropoutParameter {
   optional float dropout_ratio = 1 [default = 0.5]; // dropout ratio
-  optional bool sqrt_scale = 2 [default = false];
 }
 
 // DummyDataLayer fills any number of arbitrarily shaped blobs with random
@@ -763,7 +717,6 @@ message EltwiseParameter {
     PROD = 0;
     SUM = 1;
     MAX = 2;
-    SORT = 3;
   }
   optional EltwiseOp operation = 1 [default = SUM]; // element-wise operation
   repeated float coeff = 2; // blob-wise coefficient for SUM operation
@@ -885,15 +838,11 @@ message ImageDataParameter {
   optional bool mirror = 6 [default = false];
   optional string root_folder = 12 [default = ""];
   optional bool balance_class = 22 [default = false];
-  optional uint32 balance_by = 23 [default = 0];
-  optional uint32 label_cut_start = 24 [default = 0];
-  optional uint32 label_cut_end = 25 [default = 0];
 }
 
 message InfogainLossParameter {
   // Specify the infogain matrix source.
   optional string source = 1;
-  optional int32 axis = 2 [default = 1]; // axis of prob
 }
 
 message InnerProductParameter {
@@ -931,7 +880,6 @@ message InnerDistanceParameter {
   optional bool transpose = 6 [default = false];
   optional string distance_type = 7 [default = "L2"];
   optional bool normalize = 8 [default = false];
-  optional bool update_center_only = 9 [default = false];
 }
 
 message InputParameter {
@@ -1047,7 +995,9 @@ message PythonParameter {
   // string, dictionary in Python dict format, JSON, etc. You may parse this
   // string in `setup` method and use it in `forward` and `backward`.
   optional string param_str = 3 [default = ''];
-  // DEPRECATED
+  // Whether this PythonLayer is shared among worker solvers during data parallelism.
+  // If true, each worker solver sequentially run forward from this layer.
+  // This value should be set true if you are using it as a data layer.
   optional bool share_in_parallel = 4 [default = false];
 }
 
@@ -1214,8 +1164,6 @@ message ScaleParameter {
   // may be more efficient).  Initialized with bias_filler (defaults to 0).
   optional bool bias_term = 4 [default = false];
   optional FillerParameter bias_filler = 5;
-  optional float min_value = 6;
-  optional float max_value = 7;
 }
 
 message SigmoidParameter {
@@ -1608,21 +1556,13 @@ message PReLUParameter {
   // Whether or not slope parameters are shared across channels.
   optional bool channel_shared = 2 [default = false];
 }
+// Message that stores parameters used by BNLayer
 message BNParameter {
-  optional FillerParameter slope_filler = 1;
-  optional FillerParameter bias_filler = 2;
-  optional float momentum = 3 [default = 0.9];
-  optional float eps = 4 [default = 1e-5];
-  // If true, will use the moving average mean and std for training and test.
-  // Will override the lr_param and freeze all the parameters.
-  // Make sure to initialize the layer properly with pretrained parameters.
-  optional bool frozen = 5 [default = false];
-  enum Engine {
-    DEFAULT = 0;
-    CAFFE = 1;
-    CUDNN = 2;
-  }
-  optional Engine engine = 6 [default = DEFAULT];
+  optional FillerParameter scale_filler = 1; // The filler for the scale
+  optional FillerParameter shift_filler = 2; // The filler for the shift
+  optional float var_eps = 3 [default = 1e-10]; // The epsilon added to variance
+  optional bool moving_average = 4 [default = true]; // whether or not using moving average for inference
+  optional float decay = 5 [default = 0.95]; // The decay factor for moving average
 }
 
 // Message that stores parameters used by LocalLayer
@@ -1716,11 +1656,10 @@ message FlipParameter {
 
 message NormalizeParameter {
   optional string normalize_type = 1 [default = "L2"];
-  optional bool rescale = 2 [default = false];
 }
 
 message GeneralContrastiveParameter {
-  optional float positive_margin = 1 [default = 0.0];
+  optional float positive_margin = 1 [default = 1.0];
   optional float negative_margin = 2 [default = 1.0];
   optional float positive_weight = 3 [default = 1.0];
   optional float negative_weight = 4 [default = 1.0];
@@ -1729,19 +1668,6 @@ message GeneralContrastiveParameter {
   optional bool square = 7 [default = false];
   optional bool max_negative_only = 8 [default = false];
   optional bool max_positive_only = 9 [default = false];
-  optional bool positive_first = 10 [default = false];
-  optional float positive_upper_bound = 11 [default = 1.0];
-  optional bool exp_negative_weight = 12 [default = false];
-  optional bool add_intra_mae = 13 [default = false];
-  optional float max_negative_margin = 14 [default = 1.2];
-}
-
-message BatchContrastiveParameter {
-  optional float positive_margin = 1 [default = 1.0];
-  optional float negative_margin = 2 [default = 1.0];
-  optional float positive_weight = 3 [default = 1.0];
-  optional float negative_weight = 4 [default = 1.0];
-  optional bool max_only = 5 [default = false];
 }
 
 message SoftContrastiveParameter {
@@ -1756,20 +1682,10 @@ message SoftContrastiveParameter {
 message GeneralTripletParameter {
   optional float margin = 1 [default = 0.2];
   optional bool add_center_loss = 2 [default = true];
-  optional bool hardest_only = 3 [default = false];
-  optional bool positive_first = 4 [default = false];
-  optional float positive_upper_bound = 5 [default = 1.0];
-  optional float positive_weight = 6 [default = 1.0];
-  optional float negative_weight = 7 [default = 1.0];
 }
 
 message SoftTruncationParameter {
   optional float c = 1 [default = 2];
-}
-
-message TruncationParameter {
-  optional float lower_bound = 1 [default = 0];
-  optional float upper_bound = 2 [default = 5];
 }
 
 // Message that stores parameters used by ProposalLayer
@@ -1789,76 +1705,3 @@ message PSROIPoolingParameter {
    required int32 output_dim = 2; // output channel number
    required int32 group_size = 3; // number of groups to encode position-sensitive score maps
  }
-
-message PairwiseParameter {
-  enum PairwiseOp {
-    SUM = 1;
-    PROD = 2;
-    MAX = 3;
-  }
-
-  optional PairwiseOp operation = 1 [default = SUM]; // reduction operation
-
-  repeated float coeff = 2; // blob-wise coefficient for SUM operation
- }
-
- message SmoothL1Parameter {
-  optional float turn_point = 1 [default = 1];
-}
-
-message PermuteParameter {
-  // The new orders of the axes of data. Notice it should be with
-  // in the same range as the input data, and it starts from 0.
-  // Do not provide repeated order.
-  repeated uint32 order = 1;
-}
-
-message NCAParameter {
-  optional bool min_negative_only = 1 [default = false];
-}
-
-message LargeMarginInnerProductParameter {
-  optional uint32 num_output = 1; // The number of outputs
-  enum LargeMarginType {
-    SINGLE = 0;
-    DOUBLE = 1;
-    TRIPLE = 2;
-    QUADRUPLE = 3;
-  }
-  optional LargeMarginType type = 2 [default = SINGLE]; // m in the L-Softmax loss
-  optional FillerParameter weight_filler = 3; // The filler for the weight
-  optional int32 axis = 4 [default = 1];
-  // base, gamma, power and lambda_min are parameters for exponential lambda descent
-  optional float base = 5 [default = 1];
-  optional float gamma = 6 [default = 0];
-  optional float power = 7 [default = 1];
-  optional int32 iteration = 8 [default = 0];
-  optional float lambda_min = 9 [default = 0];
-}
-
-message LabelSpecificRescaleParameter {
-  optional float positive_weight = 1 [default = 1.0];
-  optional float negative_weight = 2 [default = 1.0];
-  optional float positive_lower_bound = 3 [default = 0.0];
-  optional float negative_upper_bound = 4 [default = 0.0];
-  optional bool rescale_test = 5 [default = false];
-}
-
-message InfimumLossParamter {
-  optional float infimum = 1 [default = 0.25];
-}
-
-message OrdinalRegressionParameter {
-  optional uint32 k = 1;
-  optional string weight_file = 2;
-}
-
-// Message that stores parameters used by ResizeLayer
-message ResizeParameter {// from yangyi
-	//optional float resize_ratio = 1 [default = 1.0]; // The resize ratio (equal in Y, X)
-	optional uint32 height = 1;
-	optional uint32 width = 2;
-	optional bool  is_pyramid_test = 3 [default = false];
-	optional float out_height_scale = 4;
-	optional float out_width_scale = 5;
-}

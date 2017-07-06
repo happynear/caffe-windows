@@ -36,9 +36,6 @@ classdef Solver < handle
         self.test_nets(n) = caffe.Net(self.attributes.hNet_test_nets(n));
       end
     end
-    function delete (self)
-      caffe_('delete_solver', self.hSolver_self);
-    end
     function iter = iter(self)
       iter = caffe_('solver_get_iter', self.hSolver_self);
     end
@@ -49,9 +46,6 @@ classdef Solver < handle
     end
     function solve(self)
       caffe_('solver_solve', self.hSolver_self);
-    end
-    function update(self)
-      caffe_('solver_update', self.hSolver_self);
     end
     function step(self, iters)
       CHECK(isscalar(iters) && iters > 0, 'iters must be positive integer');

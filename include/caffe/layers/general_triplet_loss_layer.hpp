@@ -103,14 +103,12 @@ class GeneralTripletLossLayer : public LossLayer<Dtype> {
   virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
-  Dtype margin_;
-  bool add_center_loss_;
-  bool hardest_only_;
-  bool positive_first_;
-  Dtype positive_upper_bound_;
+  Dtype positive_margin_;
+  Dtype negative_margin_;
   Dtype positive_weight_;
   Dtype negative_weight_;
-  Blob<int> hardest_index_;
+  bool need_normalize_negative_;
+  Dtype negative_gradient_norm_;
 };
 
 
