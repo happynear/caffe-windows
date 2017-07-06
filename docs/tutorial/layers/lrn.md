@@ -20,9 +20,9 @@ The local response normalization layer performs a kind of "lateral inhibition" b
 
 ## Parameters
 
-* Parameters (`LRNParameter lrn_param`)
+* Parameters (`Parameter lrn_param`)
 * From [`./src/caffe/proto/caffe.proto`](https://github.com/BVLC/caffe/blob/master/src/caffe/proto/caffe.proto):
 
 {% highlight Protobuf %}
-{% include proto/LRNParameter.txt %}
+{% include proto/BatchNormParameter.txt %}
 {% endhighlight %}

@@ -1,21 +1,25 @@
 # Caffe
 
+[![Travis Build Status](https://api.travis-ci.org/Microsoft/caffe.svg?branch=master)](https://travis-ci.org/Microsoft/caffe) Travis (Linux build)
+
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/58wvckt0rcqtwnr5/branch/master?svg=true)] (https://ci.appveyor.com/project/pavlejosipovic/caffe-3a30a) AppVeyor (Windows build)
+
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
 
 Caffe is a deep learning framework made with expression, speed, and modularity in mind.
-It is developed by Berkeley AI Research ([BAIR](http://bair.berkeley.edu))/The Berkeley Vision and Learning Center (BVLC) and community contributors.
+It is developed by the Berkeley Vision and Learning Center ([BVLC](http://bvlc.eecs.berkeley.edu)) and community contributors.
 
 Check out the [project site](http://caffe.berkeleyvision.org) for all the details like
 
 - [DIY Deep Learning for Vision with Caffe](https://docs.google.com/presentation/d/1UeKXVgRvvxg9OUdh_UiC5G71UMscNPlvArsWER41PsU/edit#slide=id.p)
 - [Tutorial Documentation](http://caffe.berkeleyvision.org/tutorial/)
-- [BAIR reference models](http://caffe.berkeleyvision.org/model_zoo.html) and the [community model zoo](https://github.com/BVLC/caffe/wiki/Model-Zoo)
+- [BVLC reference models](http://caffe.berkeleyvision.org/model_zoo.html) and the [community model zoo](https://github.com/BVLC/caffe/wiki/Model-Zoo)
 - [Installation instructions](http://caffe.berkeleyvision.org/installation.html)
 
 and step-by-step examples.
 
 ## Windows Setup
-**Requirements**: Visual Studio 2015, CUDA 8.0, third party libraries: [Baidu Yun](http://pan.baidu.com/s/1hsN2hHq) or [Google Drive](https://drive.google.com/open?id=0B0OhXbSTAU1HSjM5MUdfZ2RPdFk). Please extract the archive into `./windows/thirdparty/`. Then, add the folder `./windows/thirdparty/bins` to the environment variable `PATH`.
+**Requirements**: Visual Studio 2015 update 1, CUDA 8.0, third party libraries: https://pan.baidu.com/s/1mhZgDeS . Please extract the archive into `./windows/thirdparty/`.
 
 ### Pre-Build Steps
 Copy `.\windows\CommonSettings.props.example` to `.\windows\CommonSettings.props`
@@ -23,11 +27,12 @@ Copy `.\windows\CommonSettings.props.example` to `.\windows\CommonSettings.props
 By defaults Windows build requires `CUDA` and `cuDNN` libraries.
 Both can be disabled by adjusting build variables in `.\windows\CommonSettings.props`.
 Python support is disabled by default, but can be enabled via `.\windows\CommonSettings.props` as well.
+3rd party dependencies required by Caffe are automatically resolved via NuGet.
 
 ### CUDA
 Download `CUDA Toolkit 8.0` [from nVidia website](https://developer.nvidia.com/cuda-toolkit).
 If you don't have CUDA installed, you can experiment with CPU_ONLY build.
-In `.\windows\CommonSettings.props` set `CpuOnlyBuild` to `true` and set `UseCuDNN` & `UseNCCL` to `false`.
+In `.\windows\CommonSettings.props` set `CpuOnlyBuild` to `true` and set `UseCuDNN` to `false`.
 
 ### cuDNN
 Download `cuDNN v5` [from nVidia website](https://developer.nvidia.com/cudnn).
@@ -67,7 +72,7 @@ Now, you should be able to build `.\windows\Caffe.sln`
 ## License and Citation
 
 Caffe is released under the [BSD 2-Clause license](https://github.com/BVLC/caffe/blob/master/LICENSE).
-The BAIR/BVLC reference models are released for unrestricted use.
+The BVLC reference models are released for unrestricted use.
 
 Please cite Caffe in your publications if it helps your research:
 

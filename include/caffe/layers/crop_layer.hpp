@@ -41,15 +41,13 @@ class CropLayer : public Layer<Dtype> {
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
-  Blob<int> offsets;
-  Blob<int> src_strides_;
-  Blob<int> dest_strides_;
+  vector<int> offsets;
 
  private:
   // Recursive copy function.
   void crop_copy(const vector<Blob<Dtype>*>& bottom,
                const vector<Blob<Dtype>*>& top,
-               const int* offsets,
+               const vector<int>& offsets,
                vector<int> indices,
                int cur_dim,
                const Dtype* src_data,

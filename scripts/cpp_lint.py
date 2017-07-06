@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python2
 #
 # Copyright (c) 2009 Google Inc. All rights reserved.
 #
@@ -52,10 +52,6 @@ import string
 import sys
 import unicodedata
 
-import six
-
-from six import iteritems, itervalues
-from six.moves import xrange
 
 _USAGE = """
 Syntax: cpp_lint.py [--verbose=#] [--output=vs7] [--filter=-x,+y,...]
@@ -760,7 +756,7 @@ class _CppLintState(object):
 
   def PrintErrorCounts(self):
     """Print a summary of errors by category, and the total."""
-    for category, count in iteritems(self.errors_by_category):
+    for category, count in self.errors_by_category.iteritems():
       sys.stderr.write('Category \'%s\' errors found: %d\n' %
                        (category, count))
     sys.stderr.write('Total errors found: %d\n' % self.error_count)
@@ -3448,16 +3444,16 @@ def GetLineWidth(line):
     The width of the line in column positions, accounting for Unicode
     combining characters and wide characters.
   """
-  if six.PY2:
-    if isinstance(line, unicode):
-      width = 0
-      for uc in unicodedata.normalize('NFC', line):
-        if unicodedata.east_asian_width(uc) in ('W', 'F'):
-          width += 2
-        elif not unicodedata.combining(uc):
-          width += 1
-      return width
-  return len(line)
+  if isinstance(line, unicode):
+    width = 0
+    for uc in unicodedata.normalize('NFC', line):
+      if unicodedata.east_asian_width(uc) in ('W', 'F'):
+        width += 2
+      elif not unicodedata.combining(uc):
+        width += 1
+    return width
+  else:
+    return len(line)
 
 
 def CheckStyle(filename, clean_lines, linenum, file_extension, nesting_state,
@@ -3778,7 +3774,7 @@ def _GetTextInside(text, start_pattern):
 
   # Give opening punctuations to get the matching close-punctuations.
   matching_punctuation = {'(': ')', '{': '}', '[': ']'}
-  closing_punctuation = set(itervalues(matching_punctuation))
+  closing_punctuation = set(matching_punctuation.itervalues())
 
   # Find the position to start extracting text.
   match = re.search(start_pattern, text, re.M)
@@ -4855,11 +4851,10 @@ def main():
 
   # Change stderr to write with replacement characters so we don't die
   # if we try to print something containing non-ASCII characters.
-  if six.PY2:
-    sys.stderr = codecs.StreamReaderWriter(sys.stderr,
-                                          codecs.getreader('utf8'),
-                                          codecs.getwriter('utf8'),
-                                          'replace')
+  sys.stderr = codecs.StreamReaderWriter(sys.stderr,
+                                         codecs.getreader('utf8'),
+                                         codecs.getwriter('utf8'),
+                                         'replace')
 
   _cpplint_state.ResetErrorCounts()
   for filename in filenames:

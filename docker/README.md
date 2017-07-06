@@ -1,8 +1,9 @@
 ### Running an official image
 
-You can run one of the automatic [builds](https://hub.docker.com/r/bvlc/caffe). E.g. for the CPU version:
+You can run one of the automatic [builds](https://hub.docker.com/r/bvlc/caffe)
+like this:
 
-`docker run -ti bvlc/caffe:cpu caffe --version`
+`docker run -ti bvlc/caffe caffe --version`
 
 or for GPU support (You need a CUDA 8.0 capable driver and
 [nvidia-docker](https://github.com/NVIDIA/nvidia-docker)):
@@ -19,13 +20,13 @@ by root. It also runs by default in a container-private folder.
 You can change this using flags, like user (-u), current directory, and volumes (-w and -v).
 E.g. this behaves like the usual caffe executable:
 
-`docker run --rm -u $(id -u):$(id -g) -v $(pwd):$(pwd) -w $(pwd) bvlc/caffe:cpu caffe train --solver=example_solver.prototxt`
+`docker run --rm -u $(id -u):$(id -g) -v $(pwd):$(pwd) -w $(pwd) bvlc/caffe caffe train --solver=example_solver.prototxt`
 
 Containers can also be used interactively, specifying e.g. `bash` or `ipython`
 instead of `caffe`.
 
 ```
-docker run -ti bvlc/caffe:cpu ipython
+docker run -ti bvlc/caffe ipython
 import caffe
 ...
 ```
@@ -38,10 +39,10 @@ utilities can be used directly, e.g. `draw_net.py`, `classify.py`, or `detect.py
 
 Examples:
 
-`docker build -t caffe:cpu cpu`
+`docker build -t caffe cpu`
 
 `docker build -t caffe:gpu gpu`
 
 You can also build Caffe and run the tests in the image:
 
-`docker run -ti caffe:cpu bash -c "cd /opt/caffe/build; make runtest"`
+`docker run -ti caffe bash -c "cd /opt/caffe/build; make runtest"`
