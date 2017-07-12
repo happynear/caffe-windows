@@ -558,11 +558,15 @@ static void glog_failure_handler() {
   }
 }
 
+#ifdef _MSC_VER
+#define snprintf sprintf_s
+#endif
+
 static void protobuf_log_handler(::google::protobuf::LogLevel level, const char* filename, int line,
   const std::string& message) {
   const int max_err_length = 512;
   char err_message[max_err_length];
-  sprintf_s(err_message, max_err_length, "Protobuf : %s . at %s Line %d",
+  snprintf(err_message, max_err_length, "Protobuf : %s . at %s Line %d",
     message.c_str(), filename, line);
   LOG(INFO) << err_message;
   ::google::FlushLogFiles(0);
