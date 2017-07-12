@@ -90,6 +90,17 @@ if(HAVE_CUDA)
   list(APPEND CUDA_NVCC_FLAGS ${Caffe_ALL_DEFINITIONS})
 endif()
 
+if(NOT MSVC)
+  cmake_minimum_required(VERSION 3.3)
+  include(CheckCXXCompilerFlag)
+  check_cxx_compiler_flag("-std=c++11"   SUPPORT_CXX11)
+  if(SUPPORT_CXX11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  else(SUPPORT_CXX11)
+    message(ERROR "I write lots of c++11 codes. Please update your gcc to version 4.8 or higher.")
+  endif()
+endif()
+
 # ---[ Subdirectories
 add_subdirectory(src/gtest)
 add_subdirectory(src/caffe)

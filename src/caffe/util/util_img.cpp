@@ -507,9 +507,11 @@ void CropBlobs( const Blob<Dtype>&src, const int start_h,
 	case Caffe::CPU:
 	  CropBlobs_cpu(src,start_h, start_w,end_h, end_w,dst);
 	  break;
+#ifndef CPU_ONLY
 	case Caffe::GPU:
 		CropBlobs_gpu(src,start_h, start_w,end_h, end_w,dst);
 	  break;
+#endif
 	default:
 	  LOG(FATAL)<< "Unknown caffe mode.";
   }
@@ -534,11 +536,13 @@ void CropBlobs( const Blob<Dtype>&src, const int src_num_id, const int start_h,
 				 start_w,  end_h, end_w, dst,
 				 dst_num_id,dst_start_h  , dst_start_w );
 	  break;
+#ifndef CPU_ONLY
 	case Caffe::GPU:
 	  CropBlobs_gpu( src, src_num_id,  start_h,
 					 start_w,  end_h, end_w, dst,
 					 dst_num_id, dst_start_h  , dst_start_w );
 	  break;
+#endif
 	default:
 	  LOG(FATAL)<< "Unknown caffe mode.";
   }
@@ -559,9 +563,11 @@ void ResizeBlob(const Blob<Dtype>* src,
 		case Caffe::CPU:
 		  ResizeBlob_cpu(src,dst);
 		  break;
+#ifndef CPU_ONLY
 		case Caffe::GPU:
 		  ResizeBlob_gpu(src,dst);
 		  break;
+#endif
 		default:
 		  LOG(FATAL)<< "Unknown caffe mode.";
 	}
@@ -569,5 +575,4 @@ void ResizeBlob(const Blob<Dtype>* src,
 template void ResizeBlob(const Blob<float>* src,Blob<float>* dst);
 template void ResizeBlob(const Blob<double>* src,Blob<double>* dst);
 
-}
-// namespace caffe
+}// namespace caffe

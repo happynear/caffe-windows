@@ -1,4 +1,4 @@
-
+#ifndef CPU_ONLY
 /**
  * developed by zhujin
  */
@@ -596,3 +596,4 @@ template void ConcateSubImagesInBlobs_gpu(const Blob<double>& src,
 
 // namespace caffe
 }
+#endif

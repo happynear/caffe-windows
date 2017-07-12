@@ -79,12 +79,12 @@ void PredictBoxLayer<Dtype>::Forward_cpu(
   int count = 0;
 
   for (int n = 0; n < num; n++) {
-    for (int x = 0; x < output_width; x ++) {
-      for (int y = 0; y < output_height; y ++) {
-        if ((!nms_ && score_data[bottom[0]->offset(n, 1, y, x)] > positive_thresh_) ||
-            (nms_ && score_data[bottom[0]->offset(n, 1, y, x)] > positive_thresh_ && 
-            score_data[bottom[0]->offset(n, 1, y, x)] > bottom[2]->cpu_data()[bottom[2]->offset(n, 1, y, x)] - 1e-5)) {
-          if (use_stitch_ && bottom[2]->cpu_data()[bottom[2]->offset(n, 2, y, x)] == 0) continue;
+    for (int x = 0; x < output_width; x++) {
+      for (int y = 0; y < output_height; y++) {
+        if (((!nms_ && score_data[bottom[0]->offset(n, 1, y, x)] > positive_thresh_) ||
+          (nms_ && score_data[bottom[0]->offset(n, 1, y, x)] > positive_thresh_ &&
+           score_data[bottom[0]->offset(n, 1, y, x)] > bottom[2]->cpu_data()[bottom[2]->offset(n, 1, y, x)] - 1e-5))
+            && !(use_stitch_ && bottom[2]->cpu_data()[bottom[2]->offset(n, 2, y, x)] == 0)) {
           Dtype bias_x = use_stitch_ ? bottom[2]->cpu_data()[bottom[2]->offset(n, 0, y, x)] : 0;
           Dtype bias_y = use_stitch_ ? bottom[2]->cpu_data()[bottom[2]->offset(n, 1, y, x)] : 0;
           Dtype real_receptive_field = use_stitch_ ? bottom[2]->cpu_data()[bottom[2]->offset(n, 2, y, x)] : receptive_field_;

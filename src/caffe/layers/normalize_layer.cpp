@@ -4,7 +4,7 @@
 
 #include "caffe/layer.hpp"
 #include "caffe/util/math_functions.hpp"
-#include "caffe/custom_layers.hpp"
+#include "caffe/layers/normalize_layer.hpp"
 
 namespace caffe {
 
@@ -26,8 +26,14 @@ void NormalizeLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
       bottom[0]->height(), bottom[0]->width());
   squared_.Reshape(bottom[0]->num(), bottom[0]->channels(),
     bottom[0]->height(), bottom[0]->width());
-  norm_.Reshape(bottom[0]->num(), 1,
-                  bottom[0]->height(), bottom[0]->width());
+  if (top.size() == 2) {
+    top[1]->Reshape(bottom[0]->num(), 1,
+                    bottom[0]->height(), bottom[0]->width());
+  }
+  else {
+    norm_.Reshape(bottom[0]->num(), 1,
+                   bottom[0]->height(), bottom[0]->width());
+  }
 }
 
 template <typename Dtype>
@@ -36,7 +42,7 @@ void NormalizeLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   const Dtype* bottom_data = bottom[0]->cpu_data();
   Dtype* top_data = top[0]->mutable_cpu_data();
   Dtype* square_data = squared_.mutable_cpu_data();
-  Dtype* norm_data = norm_.mutable_cpu_data();
+  Dtype* norm_data = (top.size() == 2) ? top[1]->mutable_cpu_data() : norm_.mutable_cpu_data();
   int num = bottom[0]->num();
   int channels = bottom[0]->channels();
   int spatial_dim = bottom[0]->height() * bottom[0]->width();
@@ -83,8 +89,8 @@ void NormalizeLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
   const Dtype* top_diff = top[0]->cpu_diff();
   const Dtype* top_data = top[0]->cpu_data();
   const Dtype* bottom_data = bottom[0]->cpu_data();
- // const Dtype* square_data = squared_.cpu_data();
-  const Dtype* norm_data = norm_.mutable_cpu_data();
+  const Dtype* square_data = squared_.cpu_data();
+  const Dtype* norm_data = (top.size() == 2) ? top[1]->cpu_data() : norm_.cpu_data();
   Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
 
   int num = bottom[0]->num();
