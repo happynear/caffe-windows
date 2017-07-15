@@ -16,7 +16,9 @@
 #include "mex.h"
 
 #include "caffe/caffe.hpp"
+#ifdef _MSC_VER
 #include <direct.h>
+#endif
 
 #define MEX_ARGS int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs
 
@@ -556,11 +558,15 @@ static void glog_failure_handler() {
   }
 }
 
+#ifdef _MSC_VER
+#define snprintf sprintf_s
+#endif
+
 static void protobuf_log_handler(::google::protobuf::LogLevel level, const char* filename, int line,
   const std::string& message) {
   const int max_err_length = 512;
   char err_message[max_err_length];
-  sprintf_s(err_message, max_err_length, "Protobuf : %s . at %s Line %d",
+  snprintf(err_message, max_err_length, "Protobuf : %s . at %s Line %d",
     message.c_str(), filename, line);
   LOG(INFO) << err_message;
   ::google::FlushLogFiles(0);
@@ -585,6 +591,7 @@ static void init_log(MEX_ARGS) {
 
 void initGlog() {
   if (is_log_inited) return;
+#ifdef _MSC_VER
   string log_dir = ".\\log\\";
   _mkdir(log_dir.c_str());
   string log_file = log_dir + "INFO";
@@ -594,7 +601,7 @@ void initGlog() {
   ::google::protobuf::SetLogHandler(&protobuf_log_handler);
   ::google::InitGoogleLogging("caffe_mex");
   ::google::InstallFailureFunction(&glog_failure_handler);
-
+#endif
   is_log_inited = true;
 }
 
@@ -673,7 +680,9 @@ static handler_registry handlers[] = {
 void mexFunction(MEX_ARGS) {
   if (init_key == -2) {
     init_key = static_cast<double>(caffe_rng_rand());
+#ifdef _MSC_VER
     initGlog();
+#endif
   }
   mexLock();  // Avoid clearing the mex file.
   mxCHECK(nrhs > 0, "Usage: caffe_(api_command, arg1, arg2, ...)");
