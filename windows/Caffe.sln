@@ -1,8 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "props", "props", "{632DD6E1-28DF-42F9-AD7F-1C1F2D38765C}"
+	ProjectSection(SolutionItems) = preProject
+		CommonSettings.props = CommonSettings.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{E2EF4AB6-AB52-4777-9783-4669A0D61F80}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\BinplaceCudaDependencies.cmd = scripts\BinplaceCudaDependencies.cmd
+		scripts\FixGFlagsNaming.cmd = scripts\FixGFlagsNaming.cmd
+		scripts\MatlabPostBuild.cmd = scripts\MatlabPostBuild.cmd
+		scripts\MatlabPreBuild.cmd = scripts\MatlabPreBuild.cmd
+		scripts\ProtoCompile.cmd = scripts\ProtoCompile.cmd
+		scripts\PythonPostBuild.cmd = scripts\PythonPostBuild.cmd
+		scripts\PythonPreBuild.cmd = scripts\PythonPreBuild.cmd
+	EndProjectSection
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcaffe", "libcaffe\libcaffe.vcxproj", "{A9ACEF83-7B63-4574-A554-89CE869EA141}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "caffe", "caffe\caffe.vcxproj", "{CE6BBC46-9EFC-4029-9065-85A023866AFB}"
@@ -35,22 +51,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "matcaffe", "matcaffe\matcaffe.vcxproj", "{7173D611-3A7A-4F07-943A-727C6862E8D5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CE6BBC46-9EFC-4029-9065-85A023866AFB} = {CE6BBC46-9EFC-4029-9065-85A023866AFB}
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "props", "props", "{632DD6E1-28DF-42F9-AD7F-1C1F2D38765C}"
-	ProjectSection(SolutionItems) = preProject
-		CommonSettings.props = CommonSettings.props
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{E2EF4AB6-AB52-4777-9783-4669A0D61F80}"
-	ProjectSection(SolutionItems) = preProject
-		scripts\BinplaceCudaDependencies.cmd = scripts\BinplaceCudaDependencies.cmd
-		scripts\FixGFlagsNaming.cmd = scripts\FixGFlagsNaming.cmd
-		scripts\MatlabPostBuild.cmd = scripts\MatlabPostBuild.cmd
-		scripts\MatlabPreBuild.cmd = scripts\MatlabPreBuild.cmd
-		scripts\ProtoCompile.cmd = scripts\ProtoCompile.cmd
-		scripts\PythonPostBuild.cmd = scripts\PythonPostBuild.cmd
-		scripts\PythonPreBuild.cmd = scripts\PythonPreBuild.cmd
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "convert_cifar_data", "convert_cifar_data\convert_cifar_data.vcxproj", "{B166B643-C90B-4903-B735-D2D4ED4F2248}"
