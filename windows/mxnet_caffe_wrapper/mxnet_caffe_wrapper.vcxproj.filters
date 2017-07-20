@@ -7,6 +7,9 @@
     <Filter Include="caffe_wrapper">
       <UniqueIdentifier>{bb4a6b6e-c530-40c7-ba40-483ad3b993e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="nnvm_c_api">
+      <UniqueIdentifier>{3f0cf4a2-a0c6-4608-877e-8ede28853e18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_blob.cc">
@@ -45,6 +48,15 @@
     <ClCompile Include="..\..\..\mxnet\src\c_api\c_api_executor.cc">
       <Filter>c_api</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\mxnet\nnvm\src\c_api\nnvm_api_error.cc">
+      <Filter>nnvm_c_api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\mxnet\nnvm\src\c_api\nnvm_api_graph.cc">
+      <Filter>nnvm_c_api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\mxnet\nnvm\src\c_api\nnvm_api_symbolic.cc">
+      <Filter>nnvm_c_api</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_blob.h">
@@ -67,6 +79,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\mxnet\src\c_api\c_api_common.h">
       <Filter>c_api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\mxnet\nnvm\src\c_api\c_api_common.h">
+      <Filter>nnvm_c_api</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -76,7 +76,7 @@
       <AdditionalOptions>-Xcompiler "/wd 4819" -Xcudafe "--diag_suppress=exception_spec_override_incompat --diag_suppress=useless_using_declaration --diag_suppress=field_without_dll_interface" -D_SCL_SECURE_NO_WARNINGS -DGFLAGS_DLL_DECL= </AdditionalOptions>
     </CudaCompile>
     <ClCompile>
-      <PreprocessorDefinitions>NDEBUG;MSHADOW_FORCE_STREAM;MXNET_USE_OPENCV;MSHADOW_USE_CUDNN=1;MXNET_USE_THREADED_ENGINE;MSHADOW_USE_CBLAS=1;MSHADOW_USE_MKL=0;USE_STATIC_MKL=0;DMLC_USE_CXX11;MSHADOW_IN_CXX11;DMLC_USE_PS=1;MXNET_USE_DIST_KVSTORE=0;MXNET_EXPORTS;GLOG_NO_ABBREVIATED_SEVERITIES;mxnet_EXPORTS;MXNET_USE_NVRTC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;_CONSOLE;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;MSHADOW_FORCE_STREAM;MXNET_USE_OPENCV;MSHADOW_USE_CUDNN=1;MXNET_USE_THREADED_ENGINE;MSHADOW_USE_CBLAS=0;MSHADOW_USE_MKL=1;USE_STATIC_MKL=0;DMLC_USE_CXX11;MSHADOW_IN_CXX11;DMLC_USE_PS=1;MXNET_USE_DIST_KVSTORE=0;MXNET_EXPORTS;NNVM_EXPORTS;USE_MKL=1;CUB_MKL=1;MSHADOW_USE_CUDA=1;USE_CUDNN;MXNET_USE_CAFFE=1;MXNET_USE_CUDA=1;MXNET_USE_NVRTC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(MXNetRoot)\mshadow;$(MXNetRoot)\include;$(MXNetRoot)/dmlc-core/include;$(MXNetRoot)/nnvm/include;$(MXNetRoot)/dlpack/include;$(MXNetRoot)/cub</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4819;4005</DisableSpecificWarnings>
       <OpenMPSupport>true</OpenMPSupport>
@@ -101,6 +101,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\mxnet\nnvm\src\c_api\c_api_common.h" />
     <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_blob.h" />
     <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_common.h" />
     <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_fieldentry.h" />
@@ -110,6 +111,9 @@
     <ClInclude Include="..\..\..\mxnet\src\c_api\c_api_common.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\mxnet\nnvm\src\c_api\nnvm_api_error.cc" />
+    <ClCompile Include="..\..\..\mxnet\nnvm\src\c_api\nnvm_api_graph.cc" />
+    <ClCompile Include="..\..\..\mxnet\nnvm\src\c_api\nnvm_api_symbolic.cc" />
     <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_blob.cc" />
     <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_common.cc" />
     <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_data_iter.cc" />

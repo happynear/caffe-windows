@@ -7,6 +7,7 @@
     <CpuOnlyBuild>false</CpuOnlyBuild>
     <UseCuDNN>true</UseCuDNN>
     <UseNCCL>true</UseNCCL>
+    <UseMKL>false</UseMKL>
     <CudaVersion>8.0</CudaVersion>
     <!-- NOTE: If Python support is enabled, PythonDir (below) needs to be
          set to the root of your Python installation. If your Python installation
@@ -17,7 +18,7 @@
          set to the root of your Matlab installation. -->
     <MatlabSupport>true</MatlabSupport>
     <MXNetSupport>true</MXNetSupport>
-    <CudaDependencies></CudaDependencies>
+    <CudaDependencies>cufft.lib</CudaDependencies>
     <BoostIncludeFolder>$(SolutionDir)thirdparty\Boost</BoostIncludeFolder>
     <BoostLibraryFolder>$(SolutionDir)thirdparty\Boost\lib64-msvc-14.0</BoostLibraryFolder>
     <HDF5Root>$(SolutionDir)thirdparty\HDF5</HDF5Root>
@@ -30,6 +31,7 @@
     <OpenBLASRoot>$(SolutionDir)thirdparty\OpenBLAS</OpenBLASRoot>
     <LevelDBRoot>$(SolutionDir)thirdparty\LEVELDB</LevelDBRoot>
     <NCCLRoot>$(SolutionDir)thirdparty\NCCL</NCCLRoot>
+    <MKLRoot>D:\ThirdPartyLibrary\IntelSWTools\compilers_and_libraries_2017.4.210\windows\mkl</MKLRoot>
     <MXNetRoot>D:\deepLearning\mxnet</MXNetRoot>
 
     <!-- Set CUDA architecture suitable for your GPU.
@@ -52,12 +54,20 @@
     <IncludePath>$(CuDnnPath)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(UseNCCL)'=='true'">
-    <CudaDependencies>nccl.lib;$(CudaDependencies)</CudaDependencies>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(UseNCCL)'=='true' And $(NCCLRoot)!=''">
+    <CudaDependencies>nccl.lib;$(CudaDependencies)</CudaDependencies>
     <LibraryPath>$(NCCLRoot)\lib;$(LibraryPath)</LibraryPath>
     <IncludePath>$(NCCLRoot)\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(UseMKL)'=='true' And $(MKLRoot)!=''">
+    <LibraryPath>$(MKLRoot)\lib\intel64_win;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(MKLRoot)\include;$(IncludePath)</IncludePath>
+    <AdditionalDependencies>mkl_rt.lib;$(AdditionalDependencies)</AdditionalDependencies>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(UseMKL)'=='false' Or $(MKLRoot)==''">
+    <LibraryPath>$(OpenBLASRoot)\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(OpenBLASRoot)\include;$(IncludePath)</IncludePath>
+    <AdditionalDependencies>libopenblas.dll.a;$(AdditionalDependencies)</AdditionalDependencies>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -65,11 +75,11 @@
     <IntDir>$(BuildDir)\Int\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup>
-    <LibraryPath>$(OutDir);$(CUDA_PATH)\lib\$(Platform);$(BoostLibraryFolder);$(HDF5Root)\lib;$(GFlagsRoot)\lib;$(GLogRoot)\lib;$(ProtobufRoot)\lib;$(OpenCVRoot)\x64\vc14\lib;$(LMDBRoot)\lib;$(OpenBLASRoot)\lib;$(LevelDBRoot)\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)..\include;$(SolutionDir)..\include\caffe\proto;$(CUDA_PATH)\include;$(BoostIncludeFolder);$(HDF5Root)\include;$(GFlagsRoot)\include;$(GLogRoot)\include;$(ProtobufRoot)\include;$(OpenCVRoot)\include;$(LMDBRoot)\include;$(OpenBLASRoot)\include;$(LevelDBRoot)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OutDir);$(CUDA_PATH)\lib\$(Platform);$(BoostLibraryFolder);$(HDF5Root)\lib;$(GFlagsRoot)\lib;$(GLogRoot)\lib;$(ProtobufRoot)\lib;$(OpenCVRoot)\x64\vc14\lib;$(LMDBRoot)\lib;$(LevelDBRoot)\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\include;$(SolutionDir)..\include\caffe\proto;$(CUDA_PATH)\include;$(BoostIncludeFolder);$(HDF5Root)\include;$(GFlagsRoot)\include;$(GLogRoot)\include;$(ProtobufRoot)\include;$(OpenCVRoot)\include;$(LMDBRoot)\include;$(LevelDBRoot)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(PythonSupport)'=='true'">
-    <PythonDir>D:\Anaconda2\</PythonDir>
+    <PythonDir>D:\Anaconda3\</PythonDir>
     <LibraryPath>$(PythonDir)\libs;$(LibraryPath)</LibraryPath>
     <IncludePath>$(PythonDir)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
@@ -97,6 +107,14 @@
     </ClCompile>
     <CudaCompile>
       <Defines>USE_NCCL</Defines>
+    </CudaCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(UseMKL)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions>USE_MKL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <CudaCompile>
+      <Defines>USE_MKL</Defines>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(PythonSupport)'=='true'">
@@ -130,7 +148,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>leveldb.lib;libopenblas.dll.a;Advapi32.lib;Shlwapi.lib;lmdb.lib;opencv_world310.lib;libprotobuf.lib;glog.lib;gflags.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;$(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>leveldb.lib;Advapi32.lib;Shlwapi.lib;lmdb.lib;opencv_world310.lib;libprotobuf.lib;glog.lib;gflags.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;$(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -142,7 +160,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>leveldbd.lib;libopenblas.dll.a;Advapi32.lib;Shlwapi.lib;lmdbd.lib;opencv_world310d.lib;libprotobufd.lib;glogd.lib;gflagsd.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;$(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>leveldbd.lib;Advapi32.lib;Shlwapi.lib;lmdbd.lib;opencv_world310d.lib;libprotobufd.lib;glogd.lib;gflagsd.lib;hdf5_tools.lib;hdf5_hl_fortran.lib;hdf5_fortran.lib;hdf5_hl_f90cstub.lib;hdf5_f90cstub.lib;hdf5_cpp.lib;hdf5_hl_cpp.lib;hdf5_hl.lib;hdf5.lib;zlib.lib;szip.lib;$(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
 </Project>
