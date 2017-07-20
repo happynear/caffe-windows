@@ -62,9 +62,9 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
-      <AdditionalDependencies>libcaffe.lib;nvrtc.lib;$(CudaDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcaffe.lib;nvrtc.lib;mkl_rt.lib;static_mxnet.lib;cudart.lib;cufft.lib;curand.lib;$(CudaDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(MXNetRoot)\windows\x64\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(MXNetRoot)\windows\x64\Release;D:\ThirdPartyLibrary\IntelSWTools\compilers_and_libraries_2017.4.210\windows\mkl\lib\intel64_win</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -77,7 +77,7 @@
     </CudaCompile>
     <ClCompile>
       <PreprocessorDefinitions>NDEBUG;MSHADOW_FORCE_STREAM;MXNET_USE_OPENCV;MSHADOW_USE_CUDNN=1;MXNET_USE_THREADED_ENGINE;MSHADOW_USE_CBLAS=1;MSHADOW_USE_MKL=0;USE_STATIC_MKL=0;DMLC_USE_CXX11;MSHADOW_IN_CXX11;DMLC_USE_PS=1;MXNET_USE_DIST_KVSTORE=0;MXNET_EXPORTS;GLOG_NO_ABBREVIATED_SEVERITIES;mxnet_EXPORTS;MXNET_USE_NVRTC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(MXNetRoot)\mshadow;$(MXNetRoot)\include;$(MXNetRoot)/dmlc-core/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MXNetRoot)\mshadow;$(MXNetRoot)\include;$(MXNetRoot)/dmlc-core/include;$(MXNetRoot)/nnvm/include;$(MXNetRoot)/dlpack/include;$(MXNetRoot)/cub</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4819;4005</DisableSpecificWarnings>
       <OpenMPSupport>true</OpenMPSupport>
       <TreatWarningAsError>false</TreatWarningAsError>
@@ -86,6 +86,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\mxnet\dmlc-core\windows\dmlc\dmlc.vcxproj">
       <Project>{6e6dda36-69ba-4555-ba88-10166b11f2d2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\mxnet\windows\static_mxnet\static_mxnet.vcxproj">
+      <Project>{63a79297-9cc4-4081-adac-7f40ce965c95}</Project>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
     <ProjectReference Include="..\libcaffe\libcaffe.vcxproj">
       <Project>{a9acef83-7b63-4574-a554-89ce869ea141}</Project>
@@ -97,294 +101,31 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MXNetRoot)\plugin\caffe\caffe_blob.h" />
-    <ClInclude Include="..\..\..\mxnet\include\mxnet\base.h" />
-    <ClInclude Include="..\..\..\mxnet\include\mxnet\c_api.h" />
-    <ClInclude Include="..\..\..\mxnet\include\mxnet\c_predict_api.h" />
-    <ClInclude Include="..\..\..\mxnet\include\mxnet\engine.h" />
-    <ClInclude Include="..\..\..\mxnet\include\mxnet\io.h" />
-    <ClInclude Include="..\..\..\mxnet\include\mxnet\kvstore.h" />
-    <ClInclude Include="..\..\..\mxnet\include\mxnet\mxrtc.h" />
-    <ClInclude Include="..\..\..\mxnet\include\mxnet\ndarray.h" />
-    <ClInclude Include="..\..\..\mxnet\include\mxnet\operator.h" />
-    <ClInclude Include="..\..\..\mxnet\include\mxnet\resource.h" />
-    <ClInclude Include="..\..\..\mxnet\include\mxnet\storage.h" />
-    <ClInclude Include="..\..\..\mxnet\include\mxnet\symbolic.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\base.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\cuda\reduce.cuh" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\cuda\tensor_gpu-inl.cuh" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\dot_engine-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\expression.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\expr_engine-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\expr_scalar-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\broadcast.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\broadcast_with_axis.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\channel_pool.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\channel_unpool.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\choose.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\complex.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\concat.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\crop.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\fill.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\flip.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\implicit_gemm.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\mirror.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\one_hot.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\pack_col2patch.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\pad.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\range.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\reduceto1d.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\reduce_with_axis.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\reshape.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\slice.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\slice_ex.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\spatial_pool.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\spatial_unpool.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\spatial_upsampling_nearest.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\swapaxis.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\take.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\take_grad.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\transpose.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\extension\unpack_patch2col.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\half.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\io.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\logging.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\packet-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\packet\plain-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\packet\sse-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\random.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\stream_gpu-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\tensor.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\tensor_blob.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\tensor_container.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\tensor_cpu-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\mshadow\mshadow\tensor_gpu-inl.h" />
+    <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_blob.h" />
     <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_common.h" />
     <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_fieldentry.h" />
     <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_loss-inl.h" />
     <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_op-inl.h" />
     <ClInclude Include="..\..\..\mxnet\plugin\caffe\caffe_stream.h" />
-    <ClInclude Include="..\..\..\mxnet\src\common\cuda_utils.h" />
-    <ClInclude Include="..\..\..\mxnet\src\common\lazy_alloc_array.h" />
-    <ClInclude Include="..\..\..\mxnet\src\common\object_pool.h" />
-    <ClInclude Include="..\..\..\mxnet\src\common\thread_local.h" />
-    <ClInclude Include="..\..\..\mxnet\src\common\utils.h" />
-    <ClInclude Include="..\..\..\mxnet\src\c_api\c_api_error.h" />
-    <ClInclude Include="..\..\..\mxnet\src\engine\engine_impl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\engine\stream_manager.h" />
-    <ClInclude Include="..\..\..\mxnet\src\engine\threaded_engine.h" />
-    <ClInclude Include="..\..\..\mxnet\src\engine\thread_pool.h" />
-    <ClInclude Include="..\..\..\mxnet\src\io\image_augmenter.h" />
-    <ClInclude Include="..\..\..\mxnet\src\io\image_recordio.h" />
-    <ClInclude Include="..\..\..\mxnet\src\io\inst_vector.h" />
-    <ClInclude Include="..\..\..\mxnet\src\io\iter_batchloader.h" />
-    <ClInclude Include="..\..\..\mxnet\src\io\iter_normalize.h" />
-    <ClInclude Include="..\..\..\mxnet\src\io\iter_prefetcher.h" />
-    <ClInclude Include="..\..\..\mxnet\src\kvstore\kvstore_device.h" />
-    <ClInclude Include="..\..\..\mxnet\src\kvstore\kvstore_dist.h" />
-    <ClInclude Include="..\..\..\mxnet\src\kvstore\kvstore_dist_server.h" />
-    <ClInclude Include="..\..\..\mxnet\src\kvstore\kvstore_local.h" />
-    <ClInclude Include="..\..\..\mxnet\src\ndarray\ndarray_function-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\ndarray\ndarray_function.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\activation-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\batch_norm-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\block_grad-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\broadcast_reduce_op-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\broadcast_reduce_op_common.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\cast-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\channel_op_common.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\concat-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\convolution-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\correlation-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\crop-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\cudnn_activation-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\cudnn_batch_norm-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\cudnn_convolution-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\cudnn_deconvolution-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\cudnn_lrn-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\cudnn_pooling-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\cudnn_rnn-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\cudnn_softmax_activation-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\cudnn_spatial_transformer-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\custom-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\deconvolution-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\dropout-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\elementwise_binary_broadcast_op-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\elementwise_binary_op-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\elementwise_binary_scalar_op-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\elementwise_sum-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\elementwise_unary_op-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\embedding-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\fully_connected-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\identity_attach_KL_sparse_reg-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\l2_normalization-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\leaky_relu-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\loss_binary_op-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\lrn-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\make_loss-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\matrix_op-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\mshadow_op.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\native_op-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\ndarray_op-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\normalize-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\operator_common.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\pooling-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\regression_output-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\reshape-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\rnn-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\roi_pooling-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\sample_op-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\slice_channel-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\smooth_l1_unary-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\softmax_activation-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\softmax_output-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\spatial_transformer-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\svm_output-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\swapaxis-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\operator\upsampling-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\optimizer\sgd-inl.h" />
-    <ClInclude Include="..\..\..\mxnet\src\storage\cpu_device_storage.h" />
-    <ClInclude Include="..\..\..\mxnet\src\storage\gpu_device_storage.h" />
-    <ClInclude Include="..\..\..\mxnet\src\storage\naive_storage_manager.h" />
-    <ClInclude Include="..\..\..\mxnet\src\storage\pinned_memory_storage.h" />
-    <ClInclude Include="..\..\..\mxnet\src\storage\pooled_storage_manager.h" />
-    <ClInclude Include="..\..\..\mxnet\src\storage\storage_manager.h" />
-    <ClInclude Include="..\..\..\mxnet\src\symbol\graph_algorithm.h" />
-    <ClInclude Include="..\..\..\mxnet\src\symbol\graph_executor.h" />
-    <ClInclude Include="..\..\..\mxnet\src\symbol\graph_memory_allocator.h" />
-    <ClInclude Include="..\..\..\mxnet\src\symbol\static_graph.h" />
+    <ClInclude Include="..\..\..\mxnet\src\c_api\c_api_common.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_blob.cc" />
     <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_common.cc" />
+    <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_data_iter.cc" />
     <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_loss.cc" />
     <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_op.cc" />
     <ClCompile Include="..\..\..\mxnet\plugin\caffe\caffe_stream.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\common\mxrtc.cc" />
     <ClCompile Include="..\..\..\mxnet\src\c_api\c_api.cc" />
     <ClCompile Include="..\..\..\mxnet\src\c_api\c_api_error.cc" />
+    <ClCompile Include="..\..\..\mxnet\src\c_api\c_api_executor.cc" />
+    <ClCompile Include="..\..\..\mxnet\src\c_api\c_api_ndarray.cc" />
+    <ClCompile Include="..\..\..\mxnet\src\c_api\c_api_symbolic.cc" />
     <ClCompile Include="..\..\..\mxnet\src\c_api\c_predict_api.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\engine\engine.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\engine\naive_engine.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\engine\threaded_engine.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\engine\threaded_engine_perdevice.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\engine\threaded_engine_pooled.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\io\image_aug_default.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\io\io.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\io\iter_csv.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\io\iter_image_recordio.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\io\iter_mnist.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\kvstore\kvstore.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\ndarray\ndarray.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\ndarray\ndarray_function.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\activation.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\batch_norm.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\block_grad.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\broadcast_reduce_op.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\cast.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\concat.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\convolution.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\correlation.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\crop.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\cross_device_copy.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\cudnn_batch_norm.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\cudnn_convolution.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\custom.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\deconvolution.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\dropout.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\elementwise_binary_broadcast_op.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\elementwise_binary_op.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\elementwise_binary_scalar_op.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\elementwise_sum.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\elementwise_unary_op.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\embedding.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\fully_connected.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\identity_attach_KL_sparse_reg.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\l2_normalization.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\leaky_relu.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\loss_binary_op.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\lrn.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\make_loss.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\matrix_op.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\native_op.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\ndarray_op.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\normalize.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\operator.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\operator_util.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\pooling.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\regression_output.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\reshape.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\rnn.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\roi_pooling.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\sample_op.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\slice_channel.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\smooth_l1_unary.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\softmax_activation.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\softmax_output.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\spatial_transformer.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\svm_output.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\swapaxis.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\operator\upsampling.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\optimizer\optimizer.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\optimizer\sgd.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\resource.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\storage\storage.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\symbol\graph_executor.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\symbol\graph_memory_allocator.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\symbol\static_graph.cc" />
-    <ClCompile Include="..\..\..\mxnet\src\symbol\symbol.cc" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\..\..\mxnet\plugin\caffe\caffe_loss.cu" />
     <CudaCompile Include="..\..\..\mxnet\plugin\caffe\caffe_op.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\ndarray\ndarray_function.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\activation.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\batch_norm.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\block_grad.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\broadcast_reduce_op.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\cast.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\concat.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\convolution.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\correlation.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\crop.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\cudnn_batch_norm.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\deconvolution.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\dropout.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\elementwise_binary_broadcast_op.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\elementwise_binary_op.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\elementwise_binary_scalar_op.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\elementwise_sum.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\elementwise_unary_op.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\embedding.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\fully_connected.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\identity_attach_KL_sparse_reg.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\l2_normalization.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\leaky_relu.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\loss_binary_op.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\lrn.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\make_loss.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\matrix_op.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\native_op.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\normalize.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\pooling.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\regression_output.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\reshape.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\rnn.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\roi_pooling.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\sample_op.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\slice_channel.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\smooth_l1_unary.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\softmax_activation.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\softmax_output.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\spatial_transformer.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\svm_output.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\swapaxis.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\operator\upsampling.cu" />
-    <CudaCompile Include="..\..\..\mxnet\src\optimizer\sgd.cu" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\mxnet\mshadow\mshadow\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(SolutionDir)\CommonSettings.targets" />
