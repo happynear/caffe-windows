@@ -445,6 +445,7 @@ message LayerParameter {
   optional InfimumLossParamter infimum_loss_param = 229;
   optional OrdinalRegressionParameter ordinal_regression_loss_param = 230;
   optional ResizeParameter resize_param = 231;
+  optional MarginInnerProductParameter margin_inner_product_param = 232;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1861,4 +1862,26 @@ message ResizeParameter {// from yangyi
 	optional bool  is_pyramid_test = 3 [default = false];
 	optional float out_height_scale = 4;
 	optional float out_width_scale = 5;
+}
+
+message MarginInnerProductParameter {
+  optional uint32 num_output = 1; // The number of outputs for the layer
+  enum MarginType {
+    SINGLE = 0;
+    DOUBLE = 1;
+    TRIPLE = 2;
+    QUADRUPLE = 3;
+  }
+  optional MarginType type = 2 [default = SINGLE]; 
+  optional FillerParameter weight_filler = 3; // The filler for the weight
+
+  // The first axis to be lumped into a single inner product computation;
+  // all preceding axes are retained in the output.
+  // May be negative to index from the end (e.g., -1 for the last axis).
+  optional int32 axis = 4 [default = 1];
+  optional float base = 5 [default = 1];
+  optional float gamma = 6 [default = 0];
+  optional float power = 7 [default = 1];
+  optional int32 iteration = 8 [default = 0];
+  optional float lambda_min = 9 [default = 0];
 }
