@@ -114,7 +114,7 @@ void NormalizeLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   Dtype* square_data = squared_.mutable_gpu_data();
   const Dtype* norm_data = (top.size() == 2) ? top[1]->gpu_data() : norm_.gpu_data();
   Dtype* bottom_diff = bottom[0]->mutable_gpu_diff();
-  Dtype* norm_diff = norm_.mutable_gpu_diff();
+  Dtype* norm_diff = (top.size() == 2) ? top[1]->mutable_gpu_diff() : norm_.mutable_gpu_diff();
 
   int num = top[0]->num();
   int channels = top[0]->channels();
