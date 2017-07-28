@@ -58,7 +58,7 @@ void BatchContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
             max_positive_1_ = i;
             max_positive_2_ = j;
           }
-          loss[0] += positive_weight_ - positive_margin_;
+          loss[0] += positive_weight_ * (bottom_data[i*num + j] - positive_margin_);
         }
       }
       else {
@@ -70,7 +70,7 @@ void BatchContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
             min_negative_1_ = i;
             min_negative_2_ = j;
           }
-          loss[0] += negative_margin_ - bottom_data[i*num + j];
+          loss[0] += negative_weight_ * (negative_margin_ - bottom_data[i*num + j]);
         }
       }
     }
@@ -78,10 +78,10 @@ void BatchContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
   if (max_only_) {
     loss[0] = Dtype(0);
     if (max_positive_1_ >= 0 && max_positive_2_ >= 0) {
-      loss[0] += bottom_data[max_positive_1_ * num + max_positive_2_] - positive_margin_;
+      loss[0] += positive_weight_ * (bottom_data[max_positive_1_ * num + max_positive_2_] - positive_margin_);
     }
     if (min_negative_1_ >= 0 && min_negative_2_ >= 0) {
-      loss[0] += negative_margin_ - bottom_data[min_negative_1_ * num + min_negative_2_];
+      loss[0] += negative_weight_ * (negative_margin_ - bottom_data[min_negative_1_ * num + min_negative_2_]);
     }
   }
   else {
