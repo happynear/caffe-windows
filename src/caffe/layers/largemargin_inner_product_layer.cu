@@ -410,7 +410,7 @@ void LargeMarginInnerProductLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*
   const Dtype* label = bottom[1]->gpu_data();
   const Dtype* weight = bottom.size() == 3 ? bottom[2]->gpu_data() : this->blobs_[0]->gpu_data();
 
-  if (this->param_propagate_down_[0]) {
+  if ((bottom.size() == 3 && propagate_down[2]) || this->param_propagate_down_[0]) {
     Dtype* weight_diff = bottom.size() == 3 ? bottom[2]->mutable_gpu_diff() : this->blobs_[0]->mutable_gpu_diff();
     // Gradient with respect to weight
     int nthreads = N_ * K_;
