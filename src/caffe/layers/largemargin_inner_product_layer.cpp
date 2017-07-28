@@ -23,8 +23,13 @@ void LargeMarginInnerProductLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>&
   iter_ = this->layer_param_.largemargin_inner_product_param().iteration();
   lambda_ = (Dtype)0.;
 
-  const int num_output = this->layer_param_.largemargin_inner_product_param().num_output();
-  N_ = num_output;
+  if (bottom.size() == 2) {
+    const int num_output = this->layer_param_.largemargin_inner_product_param().num_output();
+    N_ = num_output;
+  }
+  else {
+    N_ = bottom[2]->num();
+  }
   const int axis = bottom[0]->CanonicalAxisIndex(
       this->layer_param_.largemargin_inner_product_param().axis());
   // Dimensions starting from "axis" are "flattened" into a single
@@ -32,7 +37,7 @@ void LargeMarginInnerProductLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>&
   // and axis == 1, N inner products with dimension CHW are performed.
   K_ = bottom[0]->count(axis);
   // Check if we need to set up the weights
-  if (this->blobs_.size() > 0) {
+  if (this->blobs_.size() > 0 || bottom.size() == 3) {
     LOG(INFO) << "Skipping parameter initialization";
   } else {
     this->blobs_.resize(1);
@@ -46,7 +51,7 @@ void LargeMarginInnerProductLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>&
         this->layer_param_.largemargin_inner_product_param().weight_filler()));
     weight_filler->Fill(this->blobs_[0].get());
   }  // parameter initialization
-  this->param_propagate_down_.resize(this->blobs_.size(), true);
+  if (bottom.size() == 2) this->param_propagate_down_.resize(this->blobs_.size(), true);
 }
 
 template <typename Dtype>
@@ -125,7 +130,7 @@ void LargeMarginInnerProductLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>
   for (int i = 0; i < M_; i++) {
     mutable_x_norm_data[i] = sqrt(caffe_cpu_dot(K_, bottom_data + i * K_, bottom_data + i * K_));
   }
-  const Dtype* weight = this->blobs_[0]->cpu_data();
+  const Dtype* weight = bottom.size() == 3 ? bottom[2]->cpu_data() : this->blobs_[0]->cpu_data();
   Dtype* mutable_w_norm_data = w_norm_.mutable_cpu_data();
   for (int i = 0; i < N_; i++) {
     mutable_w_norm_data[i] = sqrt(caffe_cpu_dot(K_, weight + i * K_, weight + i * K_));
@@ -287,11 +292,11 @@ void LargeMarginInnerProductLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*
   const Dtype* top_diff = top[0]->cpu_diff();
   const Dtype* bottom_data = bottom[0]->cpu_data();
   const Dtype* label = bottom[1]->cpu_data();
-  const Dtype* weight = this->blobs_[0]->cpu_data();
+  const Dtype* weight = bottom.size() == 3 ? bottom[2]->cpu_data() : this->blobs_[0]->cpu_data();
  
   // Gradient with respect to weight
-  if (this->param_propagate_down_[0]) {
-    Dtype* weight_diff = this->blobs_[0]->mutable_cpu_diff();
+  if ((bottom.size()==3 && propagate_down[2]) || this->param_propagate_down_[0]) {
+    Dtype* weight_diff = bottom.size() == 3 ? bottom[2]->mutable_cpu_diff() : this->blobs_[0]->mutable_cpu_diff();
     const Dtype* xw_norm_ratio_data = xw_norm_ratio_.cpu_data();
     switch (type_) {
     case LargeMarginInnerProductParameter_LargeMarginType_SINGLE: {

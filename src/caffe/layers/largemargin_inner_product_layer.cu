@@ -305,7 +305,7 @@ void LargeMarginInnerProductLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>
   top[1]->mutable_cpu_data()[0] = lambda_;
 
   const Dtype* bottom_data = bottom[0]->gpu_data();
-  const Dtype* weight = this->blobs_[0]->gpu_data();
+  const Dtype* weight = bottom.size() == 3 ? bottom[2]->gpu_data() : this->blobs_[0]->gpu_data();
   Dtype* top_data = top[0]->mutable_gpu_data();
   const Dtype* label = bottom[1]->gpu_data();
 
@@ -408,16 +408,16 @@ void LargeMarginInnerProductLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*
   const Dtype* top_diff = top[0]->gpu_diff();
   const Dtype* bottom_data = bottom[0]->gpu_data();
   const Dtype* label = bottom[1]->gpu_data();
-  const Dtype* weight = this->blobs_[0]->gpu_data();
+  const Dtype* weight = bottom.size() == 3 ? bottom[2]->gpu_data() : this->blobs_[0]->gpu_data();
 
   if (this->param_propagate_down_[0]) {
-    Dtype* weight_diff = this->blobs_[0]->mutable_gpu_diff();
+    Dtype* weight_diff = bottom.size() == 3 ? bottom[2]->mutable_gpu_diff() : this->blobs_[0]->mutable_gpu_diff();
     // Gradient with respect to weight
     int nthreads = N_ * K_;
     switch (type_) {
     case LargeMarginInnerProductParameter_LargeMarginType_SINGLE:
       caffe_gpu_gemm<Dtype>(CblasTrans, CblasNoTrans, N_, K_, M_, (Dtype)1.,
-        top_diff, bottom_data, (Dtype)1., this->blobs_[0]->mutable_gpu_diff());
+        top_diff, bottom_data, (Dtype)1., weight_diff);
       break;
     case LargeMarginInnerProductParameter_LargeMarginType_DOUBLE:
       LargeMargin_weight_double_backward_gpu<Dtype><<<CAFFE_GET_BLOCKS(nthreads),
@@ -450,7 +450,7 @@ void LargeMarginInnerProductLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*
     switch (type_) {
     case LargeMarginInnerProductParameter_LargeMarginType_SINGLE:
       caffe_gpu_gemm<Dtype>(CblasNoTrans, CblasNoTrans, M_, K_, N_, (Dtype)1.,
-        top_diff, this->blobs_[0]->gpu_data(), (Dtype)0.,
+        top_diff, weight, (Dtype)0.,
         bottom[0]->mutable_gpu_diff());
       break;
     case LargeMarginInnerProductParameter_LargeMarginType_DOUBLE:

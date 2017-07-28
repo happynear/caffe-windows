@@ -26,7 +26,7 @@ class LargeMarginInnerProductLayer : public Layer<Dtype> {
       const vector<Blob<Dtype>*>& top);
 
   virtual inline const char* type() const { return "LargeMarginInnerProduct"; }
-  virtual inline int ExactNumBottomBlobs() const { return 2; }
+  virtual inline int MinBottomBlobs() const { return 2; }
   virtual inline int MaxTopBlobs() const { return 2; }
 
  protected:
