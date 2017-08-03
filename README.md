@@ -57,9 +57,7 @@ After you have built solution with Python support, in order to use it you have t
 To build Caffe Matlab wrapper set `MatlabSupport` to `true` and `MatlabDir` to the root of your Matlab installation in `.\windows\CommonSettings.props`.
 
 #### Remark
-After you have built solution with Matlab support, in order to use it you have to:
-* add the generated `matcaffe` folder to Matlab search path, and
-* add `<caffe_root>\Build\x64\Release` to your system path.
+After you have built solution with Matlab support, in order to use it you have to add the `./matlab` folder to Matlab search path.
 
 ### Build
 Now, you should be able to build `.\windows\Caffe.sln`
