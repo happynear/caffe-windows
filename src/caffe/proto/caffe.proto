@@ -1844,7 +1844,7 @@ message LabelSpecificRescaleParameter {
   optional float negative_upper_bound = 4 [default = 0.0];
   optional bool rescale_test = 5 [default = false];
   optional bool for_ip = 6 [default = false];
-  optional float base = 7 [default = 1.0];
+  optional float base = 7 [default = 0.0];
   optional float gamma = 8 [default = 0.0];
   optional float power = 9 [default = 1.0];
   optional float lambda_min = 10 [default = 0.0];
