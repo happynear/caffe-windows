@@ -38,6 +38,7 @@ class LabelSpecificRescaleLayer : public Layer<Dtype> {
   Dtype positive_lower_bound;
   Dtype negative_upper_bound;
   bool rescale_test;
+  bool for_ip;
 };
 
 }  // namespace caffe

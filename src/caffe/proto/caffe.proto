@@ -1843,6 +1843,7 @@ message LabelSpecificRescaleParameter {
   optional float positive_lower_bound = 3 [default = 0.0];
   optional float negative_upper_bound = 4 [default = 0.0];
   optional bool rescale_test = 5 [default = false];
+  optional bool for_ip = 6 [default = false];
 }
 
 message InfimumLossParamter {

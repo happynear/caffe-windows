@@ -167,6 +167,14 @@ void SGDSolver<Dtype>::ApplyUpdate() {
       }
     }
     if (scale_layers.size() > 20) LOG(INFO) << scale_layers;
+    string parameter_layers = "parameter layer:";
+    for (int k = 0; k < this->net_->layers().size(); k++) {
+      if (strstr(this->net_->layers()[k]->type(), "Parameter") != NULL
+        && this->net_->layers()[k]->blobs().size() > 0) {
+        parameter_layers += std::to_string(this->net_->layers()[k]->blobs()[0]->asum_data() / this->net_->layers()[k]->blobs()[0]->count()) + " ";
+      }
+    }
+    if (parameter_layers.size() > 20) LOG(INFO) << parameter_layers;
     string prelu_layers = "prelu slope:";
     for (int k = 0; k < this->net_->layers().size(); k++) {
       if (strstr(this->net_->layers()[k]->type(), "PReLU") != NULL

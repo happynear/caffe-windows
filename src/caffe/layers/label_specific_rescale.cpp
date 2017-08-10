@@ -14,6 +14,7 @@ namespace caffe {
     positive_lower_bound = param.positive_lower_bound();//Not implemented
     negative_upper_bound = param.negative_upper_bound();//Not implemented
     rescale_test = param.rescale_test();
+    for_ip = param.for_ip();
   }
 
   template <typename Dtype>
@@ -37,6 +38,7 @@ void LabelSpecificRescaleLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
   if (positive_weight != Dtype(1.0)) {
     for (int i = 0; i < num; ++i) {
       top_data[i * dim + static_cast<int>(label_data[i])] *= positive_weight;
+      top_data[i * dim + static_cast<int>(label_data[i])] += Dtype(1.0) - positive_weight;
     }
   }
   if (negative_weight != Dtype(1.0)) {
