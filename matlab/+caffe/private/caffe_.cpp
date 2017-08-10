@@ -645,6 +645,7 @@ static handler_registry handlers[] = {
   { "solver_restore",     solver_restore  },
   { "solver_solve",       solver_solve    },
   { "solver_step",        solver_step     },
+  { "solver_update",      solver_update   },
   { "get_net",            get_net         },
   { "delete_net",         delete_net      },
   { "net_get_attr",       net_get_attr    },
@@ -668,6 +669,7 @@ static handler_registry handlers[] = {
   { "reset",              reset           },
   { "read_mean",          read_mean       },
   { "write_mean",         write_mean      },
+  { "net_clear_param_diff",         net_clear_param_diff },
   { "init_log", init_log },
   // The end.
   { "END", NULL },
