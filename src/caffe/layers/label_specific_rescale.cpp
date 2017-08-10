@@ -15,6 +15,10 @@ namespace caffe {
     negative_upper_bound = param.negative_upper_bound();//Not implemented
     rescale_test = param.rescale_test();
     for_ip = param.for_ip();
+    base_ = param.base();
+    gamma_ = param.gamma();
+    power_ = param.power();
+    lambda_min_ = param.lambda_min();
   }
 
   template <typename Dtype>
@@ -29,16 +33,24 @@ void LabelSpecificRescaleLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
   const Dtype* bottom_data = bottom[0]->cpu_data();
   const Dtype* label_data = bottom[1]->cpu_data();
   Dtype* top_data = top[0]->mutable_cpu_data();
+
   int num = bottom[0]->num();
   int count = bottom[0]->count();
   int dim = count / num;
+
+  iter_ += (Dtype)1.;
+  lambda_ = base_ * pow(((Dtype)1. + gamma_ * iter_), -power_);
+  lambda_ = std::max(lambda_, lambda_min_);
+  if (top.size() >= 2)top[1]->mutable_cpu_data()[0] = lambda_;
+
   if (top[0] != bottom[0]) caffe_copy(count, bottom_data, top_data);
 
   if (!rescale_test && this->phase_ == TEST) return;
   if (positive_weight != Dtype(1.0)) {
     for (int i = 0; i < num; ++i) {
-      top_data[i * dim + static_cast<int>(label_data[i])] *= positive_weight;
-      top_data[i * dim + static_cast<int>(label_data[i])] += Dtype(1.0) - positive_weight;
+      top_data[i * dim + static_cast<int>(label_data[i])] *= positive_weight + lambda_;
+      if(for_ip) top_data[i * dim + static_cast<int>(label_data[i])] += Dtype(1.0) - positive_weight;
+      top_data[i * dim + static_cast<int>(label_data[i])] /= Dtype(1.0) + lambda_;
     }
   }
   if (negative_weight != Dtype(1.0)) {
