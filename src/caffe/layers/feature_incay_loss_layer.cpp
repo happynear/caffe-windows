@@ -12,6 +12,7 @@ void FeatureIncayLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom
                                                const vector<Blob<Dtype>*>& top) {
   LossLayer<Dtype>::LayerSetUp(bottom, top);
   CHECK_EQ(bottom.size(), 4);//feature, norm, score, label
+  force_incay_ = this->layer_param_.feature_incay_loss_param().force_incay();
 }
 
 template <typename Dtype>
@@ -19,6 +20,7 @@ void FeatureIncayLossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
                                                  const vector<Blob<Dtype>*>& top) {
   LossLayer<Dtype>::Reshape(bottom, top);
   well_classified.Reshape({ bottom[0]->num() });
+  if (top.size() == 2) top[1]->Reshape({ 1 });
 }
 
 template <typename Dtype>
@@ -34,21 +36,33 @@ void FeatureIncayLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& botto
   Dtype* loss = top[0]->mutable_cpu_data();
 
   Dtype epsilon = Dtype(1e-6);
-  loss[0] = 0;
+  loss[0] = Dtype(0.0);
+  if (top.size() == 2) {
+    top[1]->mutable_cpu_data()[0] = Dtype(0.0);
+  }
 
   for (int n = 0; n < num; n++) {
     int max_score_pos = 0;
-    for (int l = 1; l < label_num; l++) {
-      if (score[n*label_num + l] > score[n*label_num + max_score_pos]) {
-        max_score_pos = l;
+    if (!force_incay_) {
+      for (int l = 1; l < label_num; l++) {
+        if (score[n*label_num + l] > score[n*label_num + max_score_pos]) {
+          max_score_pos = l;
+        }
       }
     }
-    if (max_score_pos == static_cast<int>(label[n])) {
+    if (force_incay_ || max_score_pos == static_cast<int>(label[n])) {
       loss[0] += norm[n] * norm[n]; // norm[n] is actually 1 / norm, see normalize_layer.
       well_classified.mutable_cpu_data()[n] = 1;
     }
+    else {
+      well_classified.mutable_cpu_data()[n] = 0;
+    }
+    if (top.size() == 2) {
+      top[1]->mutable_cpu_data()[0] += 1 / norm[n];
+    }
   }
   loss[0] /= num;
+  top[1]->mutable_cpu_data()[0] /= num;
 }
 
 template <typename Dtype>

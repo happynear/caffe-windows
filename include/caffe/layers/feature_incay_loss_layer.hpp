@@ -34,6 +34,7 @@ class FeatureIncayLossLayer : public LossLayer<Dtype> {
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
   Blob<int> well_classified;
+  bool force_incay_;
 };
 
 

@@ -446,6 +446,7 @@ message LayerParameter {
   optional OrdinalRegressionParameter ordinal_regression_loss_param = 230;
   optional ResizeParameter resize_param = 231;
   optional MarginInnerProductParameter margin_inner_product_param = 232;
+  optional FeatureIncayLossParameter feature_incay_loss_param = 233;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1890,4 +1891,8 @@ message MarginInnerProductParameter {
   optional float power = 7 [default = 1];
   optional int32 iteration = 8 [default = 0];
   optional float lambda_min = 9 [default = 0];
+}
+
+message FeatureIncayLossParameter {
+  optional bool force_incay = 1 [default = false];
 }
