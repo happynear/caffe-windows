@@ -19,12 +19,14 @@ namespace caffe {
     gamma_ = param.gamma();
     power_ = param.power();
     lambda_min_ = param.lambda_min();
+    iter_ = 0;
   }
 
   template <typename Dtype>
   void LabelSpecificRescaleLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
                                                     const vector<Blob<Dtype>*>& top) {
     if (top[0] != bottom[0]) top[0]->ReshapeLike(*bottom[0]);
+    if (top.size() == 2) top[1]->Reshape({ 1 });
   }
 
 template <typename Dtype>
@@ -38,7 +40,7 @@ void LabelSpecificRescaleLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
   int count = bottom[0]->count();
   int dim = count / num;
 
-  iter_ += (Dtype)1.;
+  iter_++;
   lambda_ = base_ * pow(((Dtype)1. + gamma_ * iter_), -power_);
   lambda_ = std::max(lambda_, lambda_min_);
   if (top.size() >= 2)top[1]->mutable_cpu_data()[0] = lambda_;
