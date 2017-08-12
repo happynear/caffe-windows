@@ -40,11 +40,11 @@ class LabelSpecificRescaleLayer : public Layer<Dtype> {
   bool rescale_test;
   bool for_ip;
   int iter_;
-  Dtype lambda_;
-  Dtype base_;
+  bool scale_positive_weight_;
+  Dtype positive_weight_base_;
   Dtype gamma_;
   Dtype power_;
-  Dtype lambda_min_;
+  Dtype positive_weight_min_;
 };
 
 }  // namespace caffe
