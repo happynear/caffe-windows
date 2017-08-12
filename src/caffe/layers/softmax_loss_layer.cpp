@@ -64,7 +64,13 @@ void SoftmaxWithLossLayer<Dtype>::LayerSetUp(
   softmax_axis_ =
     bottom[0]->CanonicalAxisIndex(this->layer_param_.softmax_param().axis());
   if (has_class_weight_) {
+#if __cplusplus < 201103L
+    int arr[] = { bottom[0]->shape(softmax_axis_) };
+    vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+    class_weight_.Reshape(shape);
+#else
     class_weight_.Reshape({ bottom[0]->shape(softmax_axis_) });
+#endif
     CHECK_EQ(this->layer_param_.softmax_param().class_weight().size(), bottom[0]->shape(softmax_axis_));
     for (int i = 0; i < bottom[0]->shape(softmax_axis_); i++) {
       class_weight_.mutable_cpu_data()[i] = (Dtype)this->layer_param_.softmax_param().class_weight(i);
@@ -72,7 +78,13 @@ void SoftmaxWithLossLayer<Dtype>::LayerSetUp(
   }
   else {
     if (bottom.size() == 3) {
+#if __cplusplus < 201103L
+      int arr[] = { bottom[0]->shape(softmax_axis_) };
+      vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+      class_weight_.Reshape(shape);
+#else
       class_weight_.Reshape({ bottom[0]->shape(softmax_axis_) });
+#endif
       for (int i = 0; i < bottom[0]->shape(softmax_axis_); i++) {
         class_weight_.mutable_cpu_data()[i] = (Dtype)1.0;
       }
@@ -97,8 +109,15 @@ void SoftmaxWithLossLayer<Dtype>::Reshape(
       bottom[0]->CanonicalAxisIndex(this->layer_param_.softmax_param().axis());
   outer_num_ = bottom[0]->count(0, softmax_axis_);
   inner_num_ = bottom[0]->count(softmax_axis_ + 1);
+#if __cplusplus < 201103L
+  int arr[] = { outer_num_, inner_num_ };
+  vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+  counts_.Reshape(shape);
+  loss_.Reshape(shape);
+#else
   counts_.Reshape({ outer_num_, inner_num_ });
   loss_.Reshape({ outer_num_, inner_num_ });
+#endif
   CHECK_EQ(outer_num_ * inner_num_, bottom[1]->count())
       << "Number of labels must match number of predictions; "
       << "e.g., if softmax axis == 1 and prediction shape is (N, C, H, W), "

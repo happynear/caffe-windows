@@ -75,7 +75,7 @@ void LabelSpecificRescaleLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& 
                                                     const vector<bool>& propagate_down,
                                                     const vector<Blob<Dtype>*>& bottom) {
   if (propagate_down[0]) {
-    const Dtype* bottom_data = bottom[0]->cpu_data();
+//    const Dtype* bottom_data = bottom[0]->cpu_data();
     const Dtype* label_data = bottom[1]->cpu_data();
     const Dtype* top_diff = top[0]->cpu_diff();
     Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();

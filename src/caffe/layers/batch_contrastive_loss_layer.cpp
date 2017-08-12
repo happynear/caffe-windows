@@ -26,7 +26,13 @@ void BatchContrastiveLossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& botto
   CHECK_EQ(bottom[0]->num(), bottom[0]->channels());
   if (top.size() >= 2) {
     // positive distance, negative distance.
+#if __cplusplus < 201103L
+    int arr[] = { 2 };
+    vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+    top[1]->Reshape(shape);
+#else
     top[1]->Reshape({ 2 });
+#endif
   }
 }
 
@@ -34,7 +40,7 @@ template <typename Dtype>
 void BatchContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
   const Dtype* bottom_data = bottom[0]->cpu_data();
-  Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
+//  Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
   const Dtype* label = bottom[1]->cpu_data();
   int num = bottom[0]->num();
   Dtype positive_distance = Dtype(0);

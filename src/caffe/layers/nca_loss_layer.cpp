@@ -19,10 +19,22 @@ void NCALossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   LossLayer<Dtype>::Reshape(bottom, top);
   if (top.size() == 2) {
     // positive distance, negative distance.
+#if __cplusplus < 201103L
+    int arr[] = { 2 };
+    vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+    top[1]->Reshape(shape);
+#else
     top[1]->Reshape({ 2 });
+#endif
   }
   if (min_negative_only_) {
+#if __cplusplus < 201103L
+    int arr[] = { bottom[0]->num() };
+    vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+    min_negative_index_.Reshape(shape);
+#else
     min_negative_index_.Reshape({ bottom[0]->num() });
+#endif
   }
 }
 
@@ -85,7 +97,7 @@ void NCALossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     int count = bottom[0]->count();
     int dim = count / num;
 
-    Dtype negative_sum = Dtype(0);
+//    Dtype negative_sum = Dtype(0);
 
     for (int i = 0; i < num; ++i) {
       if (min_negative_only_) {

@@ -28,12 +28,25 @@ void SubRegionLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
       << "corresponding to (num, channels, height, width)";
   CHECK_EQ(bottom[1]->channels() % 2, 0) << "The coordinate blob's size must be able to divided by 2!";
   int num_point = bottom[1]->channels() / 2;
+#if __cplusplus < 201103L
+  if (as_dim_ == 0) {
+    int arr[] = { bottom[0]->num() * num_point, bottom[0]->channels(), height_, width_ };
+    vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+    top[0]->Reshape(shape);
+  }
+  else {
+    int arr[] = { bottom[0]->num(), bottom[0]->channels() * num_point, height_, width_ };
+    vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+    top[0]->Reshape(shape);
+  }
+#else
   if (as_dim_ == 0) {
     top[0]->Reshape({ bottom[0]->num() * num_point, bottom[0]->channels(), height_, width_ });
   }
   else {
     top[0]->Reshape({ bottom[0]->num(), bottom[0]->channels() * num_point, height_, width_ });
   }
+#endif
   if (top.size() == 3) {
     top[1]->ReshapeLike(*bottom[1]);
     top[2]->ReshapeLike(*bottom[1]);

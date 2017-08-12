@@ -139,10 +139,11 @@ void* Caffe::RNG::generator() {
 #else  // Normal GPU + CPU Caffe.
 
 Caffe::Caffe()
-    : cublas_handle_(NULL), curand_generator_(NULL), random_generator_(),
+    : cublas_handle_(NULL), curand_generator_(NULL), 
 #ifdef USE_CUDNN
-  cudnn_handle_(NULL),
+    cudnn_handle_(NULL),
 #endif
+    random_generator_(),
     mode_(Caffe::CPU),
     solver_count_(1), solver_rank_(0), multiprocess_(false) {
   // Try to create a cublas handler, and report an error if failed (but we will

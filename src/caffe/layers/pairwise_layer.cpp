@@ -33,7 +33,13 @@ void PairwiseLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   M_ = bottom[0]->num();
   N_ = bottom[1]->num();
   K_ = bottom[0]->channels();
+#if __cplusplus < 201103L
+  int arr[] = { M_, N_, K_ };
+  vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+  top[0]->Reshape(shape);
+#else
   top[0]->Reshape({ M_, N_, K_ });
+#endif
   // If max operation, we will initialize the vector index part.
   if (this->layer_param_.pairwise_param().operation() ==
       PairwiseParameter_PairwiseOp_MAX && top.size() == 1) {
@@ -96,8 +102,8 @@ template <typename Dtype>
 void PairwiseLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
   const int* mask = NULL;
-  const int count = top[0]->count();
-  const Dtype* top_data = top[0]->cpu_data();
+ // const int count = top[0]->count();
+//  const Dtype* top_data = top[0]->cpu_data();
   const Dtype* top_diff = top[0]->cpu_diff();
   const Dtype* bottom_data_a = bottom[0]->cpu_data();
   const Dtype* bottom_data_b = bottom[1]->cpu_data();

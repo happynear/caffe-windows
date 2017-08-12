@@ -139,7 +139,13 @@ void PredictBoxLayer<Dtype>::Forward_gpu(
     const Dtype* score_data_cpu = bottom[0]->cpu_data();
     const Dtype* bb_data_cpu = top[0]->cpu_data();
     if (num == 1 && count > 0) {
+#if __cplusplus < 201103L
+      int arr[] = { bottom[0]->num(), (int)count, 5 };
+      vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+      top[1]->Reshape(shape);
+#else
       top[1]->Reshape({ bottom[0]->num(), (int)count, 5 });
+#endif
       int i = 0;
       for (int x = 0; x < output_width; x++) {
         for (int y = 0; y < output_height; y++) {
@@ -155,7 +161,13 @@ void PredictBoxLayer<Dtype>::Forward_gpu(
       }
     }
     else {
+#if __cplusplus < 201103L
+      int arr[] = { bottom[0]->num(), 1, 5 };
+      vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+      top[1]->Reshape(shape);
+#else
       top[1]->Reshape({ bottom[0]->num(), 1, 5 });
+#endif
       caffe_gpu_set<Dtype>(top[1]->count(), 0, top[1]->mutable_gpu_data());
     }
   }

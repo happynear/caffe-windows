@@ -27,10 +27,22 @@ void GeneralTripletLossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   LossLayer<Dtype>::Reshape(bottom, top);
   if (top.size() >= 2) {
     // positive distance, negative distance.
+#if __cplusplus < 201103L
+    int arr[] = { 2 };
+    vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+    top[1]->Reshape(shape);
+#else
     top[1]->Reshape({ 2 });
+#endif
   }
   if (hardest_only_) {
+#if __cplusplus < 201103L
+    int arr[] = { bottom[0]->num() };
+    vector<int> shape(arr,arr+sizeof(arr)/sizeof(int));
+    hardest_index_.Reshape(shape);
+#else
     hardest_index_.Reshape({ bottom[0]->num() });
+#endif
   }
 }
 
