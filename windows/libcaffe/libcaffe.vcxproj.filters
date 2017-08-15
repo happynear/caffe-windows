@@ -432,9 +432,6 @@
     <ClCompile Include="..\..\src\caffe\layers\truncation_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\caffe\util\gpu_memory.cpp">
-      <Filter>src\util</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\largemargin_inner_product_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
