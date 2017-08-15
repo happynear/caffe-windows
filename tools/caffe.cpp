@@ -13,7 +13,6 @@ namespace bp = boost::python;
 
 #include "boost/algorithm/string.hpp"
 #include "caffe/caffe.hpp"
-#include "caffe/util/gpu_memory.hpp"
 #include "caffe/util/signal_handler.h"
 
 using caffe::Blob;
@@ -209,9 +208,6 @@ int train() {
 
   vector<int> gpus;
   get_gpus(&gpus);
-#ifndef CPU_ONLY
-  caffe::GPUMemory::Scope gpu_memory_scope(gpus);
-#endif
   if (gpus.size() == 0) {
     LOG(INFO) << "Use CPU.";
     Caffe::set_mode(Caffe::CPU);
@@ -276,9 +272,6 @@ int test() {
   // Set device id and mode
   vector<int> gpus;
   get_gpus(&gpus);
-#ifndef CPU_ONLY
-  caffe::GPUMemory::Scope gpu_memory_scope(gpus);
-#endif
   if (gpus.size() != 0) {
     LOG(INFO) << "Use GPU with device ID " << gpus[0];
 #ifndef CPU_ONLY
@@ -352,9 +345,6 @@ int time() {
   // Set device id and mode
   vector<int> gpus;
   get_gpus(&gpus);
-#ifndef CPU_ONLY
-  caffe::GPUMemory::Scope gpu_memory_scope(gpus);
-#endif
   if (gpus.size() != 0) {
     LOG(INFO) << "Use GPU with device ID " << gpus[0];
     Caffe::SetDevice(gpus[0]);

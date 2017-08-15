@@ -82,14 +82,14 @@ namespace caffe {
                                                   this->bn_eps_,
                                                   save_mean_data, save_inv_variance_data));
 
-      //if (this->param_propagate_down_[0]) {
-      //  caffe_gpu_add(scale_buf_.count(), scale_diff,
-      //                this->blobs_[0]->gpu_diff(), this->blobs_[0]->mutable_gpu_diff());
-      //}
-      //if (this->param_propagate_down_[1]) {
-      //  caffe_gpu_add(bias_buf_.count(), bias_diff,
-      //                this->blobs_[1]->gpu_diff(), this->blobs_[1]->mutable_gpu_diff());
-      //}
+      if (this->param_propagate_down_[0]) {
+        caffe_gpu_add(scale_buf_.count(), scale_diff,
+                      this->blobs_[0]->gpu_diff(), this->blobs_[0]->mutable_gpu_diff());
+      }
+      if (this->param_propagate_down_[1]) {
+        caffe_gpu_add(bias_buf_.count(), bias_diff,
+                      this->blobs_[1]->gpu_diff(), this->blobs_[1]->mutable_gpu_diff());
+      }
     }
   }
 
