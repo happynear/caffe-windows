@@ -447,6 +447,7 @@ message LayerParameter {
   optional ResizeParameter resize_param = 231;
   optional MarginInnerProductParameter margin_inner_product_param = 232;
   optional FeatureIncayLossParameter feature_incay_loss_param = 233;
+  optional ConfidencePenaltyLossParameter confidence_penalty_loss_param = 234;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1895,4 +1896,8 @@ message MarginInnerProductParameter {
 
 message FeatureIncayLossParameter {
   optional bool force_incay = 1 [default = false];
+}
+
+message ConfidencePenaltyLossParameter{
+  optional float beta = 1 [default = 0.1];
 }

@@ -105,6 +105,7 @@
     <ClCompile Include="..\..\src\caffe\layers\bn_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\center_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\concat_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\confidence_penalty_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\contrastive_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\conv_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\correlation_loss_layer.cpp" />
@@ -248,6 +249,7 @@
     <ClInclude Include="..\..\include\caffe\layers\bn_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\center_loss_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\concat_layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\layers\confidence_penalty_loss_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\contrastive_loss_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\conv_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\crop_layer.hpp" />
