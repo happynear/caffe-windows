@@ -44,7 +44,11 @@ class LabelSpecificRescaleLayer : public Layer<Dtype> {
   Dtype positive_weight_base_;
   Dtype gamma_;
   Dtype power_;
+  bool has_positive_weight_min_;
   Dtype positive_weight_min_;
+  bool has_positive_weight_max_;
+  Dtype positive_weight_max_;
+  bool bias_fix_;
 };
 
 }  // namespace caffe

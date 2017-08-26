@@ -94,6 +94,7 @@
     <ClCompile Include="..\..\src\caffe\layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\absval_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\accuracy_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\arccos_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\argmax_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\base_conv_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\base_data_layer.cpp" />
@@ -238,6 +239,7 @@
     <ClInclude Include="..\..\include\caffe\layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\absval_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\accuracy_layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\layers\arccos_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\argmax_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\base_conv_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\base_data_layer.hpp" />
@@ -412,6 +414,7 @@
     <CudaCompile Include="..\..\src\caffe\util\math_functions.cu" />
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="..\..\src\caffe\layers\arccos_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\bn_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\center_loss_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\correlation_loss_layer.cu" />
