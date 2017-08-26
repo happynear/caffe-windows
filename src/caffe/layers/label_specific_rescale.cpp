@@ -18,7 +18,11 @@ namespace caffe {
     positive_weight_base_ = param.positive_weight_base();
     gamma_ = param.gamma();
     power_ = param.power();
+    has_positive_weight_min_ = param.has_positive_weight_min();
     positive_weight_min_ = param.positive_weight_min();
+    has_positive_weight_max_ = param.has_positive_weight_max();
+    positive_weight_max_ = param.positive_weight_max();
+    bias_fix_ = param.bias_fix();
     scale_positive_weight_ = param.has_positive_weight_base() & (this->phase_ == TRAIN);
     iter_ = 0;
   }
@@ -45,7 +49,12 @@ void LabelSpecificRescaleLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
     iter_++;
     //lambda_ = base_ * pow(((Dtype)1. + gamma_ * iter_), -power_);
     positive_weight = positive_weight_base_ * pow(((Dtype)1. + gamma_ * iter_), -power_);
-    positive_weight = std::max(positive_weight, positive_weight_min_);
+    if (has_positive_weight_min_) {
+      positive_weight = std::max(positive_weight, positive_weight_min_);
+    }
+    if (has_positive_weight_max_) {
+      positive_weight = std::min(positive_weight, positive_weight_max_);
+    }
   }
   if (top.size() >= 2) top[1]->mutable_cpu_data()[0] = positive_weight;
 
@@ -56,6 +65,9 @@ void LabelSpecificRescaleLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
     for (int i = 0; i < num; ++i) {
       if ((!for_ip) || top_data[i * dim + static_cast<int>(label_data[i])] > 0) {
         top_data[i * dim + static_cast<int>(label_data[i])] *= positive_weight;
+        if (bias_fix_) {
+          top_data[i * dim + static_cast<int>(label_data[i])] += 1 - positive_weight;
+        }
       }
     }
   }
