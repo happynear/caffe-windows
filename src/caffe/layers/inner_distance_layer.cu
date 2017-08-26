@@ -186,6 +186,9 @@ void InnerDistanceLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   if ((bottom.size() == 1 && this->param_propagate_down_[0]) ||
     (bottom.size() >= 2 && propagate_down[1])) {
     Dtype* weight_diff = bottom.size() >= 2 ? bottom[1]->mutable_gpu_diff() : this->blobs_[0]->mutable_gpu_diff();
+    if (bottom.size() >= 2) {
+      caffe_gpu_set(bottom[1]->count(), Dtype(0), weight_diff);
+    }
     const Dtype* label_data = NULL;
     if (update_center_only_) {
       label_data = bottom[bottom.size() - 1]->gpu_data();
