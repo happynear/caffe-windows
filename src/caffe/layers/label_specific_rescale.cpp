@@ -28,7 +28,7 @@ namespace caffe {
     if (power_on_positive_) {
       CHECK(bottom[0] != top[0]) << "Inplace is disabled when using power rescaling.";
     }
-    iter_ = 0;
+    iter_ = param.iteration();
   }
 
   template <typename Dtype>
