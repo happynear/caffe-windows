@@ -1854,6 +1854,7 @@ message LabelSpecificRescaleParameter {
   optional float positive_weight_max = 11 [default = 0.0];
   optional uint32 iteration = 12 [default = 0];
   optional bool bias_fix = 13 [default = false];
+  optional bool power_on_positive = 14 [default = false];
 }
 
 message InfimumLossParamter {

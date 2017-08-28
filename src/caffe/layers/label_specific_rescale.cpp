@@ -24,6 +24,10 @@ namespace caffe {
     positive_weight_max_ = param.positive_weight_max();
     bias_fix_ = param.bias_fix();
     scale_positive_weight_ = param.has_positive_weight_base() & (this->phase_ == TRAIN);
+    power_on_positive_ = param.power_on_positive();
+    if (power_on_positive_) {
+      CHECK(bottom[0] != top[0]) << "Inplace is disabled when using power rescaling.";
+    }
     iter_ = 0;
   }
 
@@ -64,9 +68,15 @@ void LabelSpecificRescaleLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
   if (positive_weight != Dtype(1.0)) {
     for (int i = 0; i < num; ++i) {
       if ((!for_ip) || top_data[i * dim + static_cast<int>(label_data[i])] > 0) {
-        top_data[i * dim + static_cast<int>(label_data[i])] *= positive_weight;
-        if (bias_fix_) {
-          top_data[i * dim + static_cast<int>(label_data[i])] += 1 - positive_weight;
+        if (power_on_positive_) {
+          Dtype bottom_sign = caffe_sign(bottom_data[i * dim + static_cast<int>(label_data[i])]);
+          top_data[i * dim + static_cast<int>(label_data[i])] = bottom_sign * pow(abs(bottom_data[i * dim + static_cast<int>(label_data[i])]), positive_weight);
+        }
+        else {
+          top_data[i * dim + static_cast<int>(label_data[i])] *= positive_weight;
+          if (bias_fix_) {
+            top_data[i * dim + static_cast<int>(label_data[i])] += 1 - positive_weight;
+          }
         }
       }
     }
@@ -100,7 +110,12 @@ void LabelSpecificRescaleLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& 
 
     if (positive_weight != Dtype(1.0)) {
       for (int i = 0; i < num; ++i) {
-        bottom_diff[i * dim + static_cast<int>(label_data[i])] *= positive_weight;
+        if (power_on_positive_) {
+          bottom_diff[i * dim + static_cast<int>(label_data[i])] *= positive_weight * pow(abs(bottom_data[i * dim + static_cast<int>(label_data[i])]), positive_weight - 1);
+        }
+        else {
+          bottom_diff[i * dim + static_cast<int>(label_data[i])] *= positive_weight;
+        }
       }
     }
     if (negative_weight != Dtype(1.0)) {

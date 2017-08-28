@@ -5,6 +5,26 @@
 
 namespace caffe {
 
+  template <typename Dtype>
+  __global__ void LabelSpecificPowerPositiveForward(const int n, const int dim, const Dtype* in, const Dtype* label,
+                                               Dtype* out, Dtype positive_weight) {
+    CUDA_KERNEL_LOOP(index, n) {
+      int l = static_cast<int>(label[index]);
+      out[index * dim + l] = (Dtype(0) < in[index * dim + l]) - (in[index * dim + l] < Dtype(0));
+      out[index * dim + l] *= powf(abs(in[index * dim + l]), positive_weight);
+    }
+  }
+
+  template <typename Dtype>
+  __global__ void LabelSpecificPowerPositiveBackward(const int n, const int dim, const Dtype* in, const Dtype* label,
+                                                    Dtype* out, const Dtype* bottom_data, Dtype positive_weight) {
+    CUDA_KERNEL_LOOP(index, n) {
+      int l = static_cast<int>(label[index]);
+      out[index * dim + l] =
+        in[index * dim + l] * positive_weight * powf(abs(bottom_data[index * dim + l]), positive_weight - 1);
+    }
+  }
+
 template <typename Dtype>
 __global__ void LabelSpecificRescalePositive(const int n, const int dim, const Dtype* in, const Dtype* label,
                                             Dtype* out, Dtype positive_weight, bool for_ip, bool bias_fix) {
@@ -59,10 +79,18 @@ void LabelSpecificRescaleLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& b
   if (!rescale_test && this->phase_ == TEST) return;
 
   if (positive_weight != Dtype(1.0)) {
-    // NOLINT_NEXT_LINE(whitespace/operators)
-    LabelSpecificRescalePositive<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> >(
-      num, dim, bottom_data, label_data, top_data, positive_weight, for_ip, bias_fix_);
-    CUDA_POST_KERNEL_CHECK;
+    if (power_on_positive_) {
+      // NOLINT_NEXT_LINE(whitespace/operators)
+      LabelSpecificPowerPositiveForward<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> >(
+        num, dim, bottom_data, label_data, top_data, positive_weight);
+      CUDA_POST_KERNEL_CHECK;
+    }
+    else {
+      // NOLINT_NEXT_LINE(whitespace/operators)
+      LabelSpecificRescalePositive<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> >(
+        num, dim, bottom_data, label_data, top_data, positive_weight, for_ip, bias_fix_);
+      CUDA_POST_KERNEL_CHECK;
+    }
   }
   if (negative_weight != Dtype(1.0)) {
     // NOLINT_NEXT_LINE(whitespace/operators)
@@ -90,10 +118,18 @@ void LabelSpecificRescaleLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& 
     if (!rescale_test && this->phase_ == TEST) return;
     
     if (positive_weight != Dtype(1.0)) {
-      // NOLINT_NEXT_LINE(whitespace/operators)
-      LabelSpecificRescalePositive<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
-        num, dim, top_diff, label_data, bottom_diff, positive_weight, false, false);
-      CUDA_POST_KERNEL_CHECK;
+      if (power_on_positive_) {
+        // NOLINT_NEXT_LINE(whitespace/operators)
+        LabelSpecificPowerPositiveBackward<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> >(
+          num, dim, top_diff, label_data, bottom_diff, bottom_data, positive_weight);
+        CUDA_POST_KERNEL_CHECK;
+      }
+      else {
+        // NOLINT_NEXT_LINE(whitespace/operators)
+        LabelSpecificRescalePositive<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
+          num, dim, top_diff, label_data, bottom_diff, positive_weight, false, false);
+        CUDA_POST_KERNEL_CHECK;
+      }
     }
     if (negative_weight != Dtype(1.0)) {
       // NOLINT_NEXT_LINE(whitespace/operators)
