@@ -55,9 +55,9 @@ void NormalizeLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
           norm_data[n*spatial_dim + s] += square_data[(n * channels + c) * spatial_dim + s];
         }
         norm_data[n*spatial_dim + s] += 1e-6;
-        norm_data[n*spatial_dim + s] = Dtype(1) / sqrt(norm_data[n*spatial_dim + s]);
+        norm_data[n*spatial_dim + s] = sqrt(norm_data[n*spatial_dim + s]);
         for (int c = 0; c < channels; c++) {
-          top_data[(n * channels + c) * spatial_dim + s] = bottom_data[(n * channels + c) * spatial_dim + s] * norm_data[n*spatial_dim + s];
+          top_data[(n * channels + c) * spatial_dim + s] = bottom_data[(n * channels + c) * spatial_dim + s] / norm_data[n*spatial_dim + s];
         }
       }
     }
@@ -71,9 +71,9 @@ void NormalizeLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
           norm_data[n*spatial_dim + s] += square_data[(n * channels + c) * spatial_dim + s];
         }
         norm_data[n*spatial_dim + s] += 1e-6;
-        norm_data[n*spatial_dim + s] = Dtype(1) / norm_data[n*spatial_dim + s];
+        norm_data[n*spatial_dim + s] = norm_data[n*spatial_dim + s];
         for (int c = 0; c < channels; c++) {
-          top_data[(n * channels + c) * spatial_dim + s] = bottom_data[(n * channels + c) * spatial_dim + s] * norm_data[n*spatial_dim + s];
+          top_data[(n * channels + c) * spatial_dim + s] = bottom_data[(n * channels + c) * spatial_dim + s] / norm_data[n*spatial_dim + s];
         }
       }
     }
@@ -102,7 +102,7 @@ void NormalizeLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
         Dtype a = caffe_cpu_strided_dot(channels, top_data + n*channels*spatial_dim + s, spatial_dim, top_diff + n*channels*spatial_dim + s, spatial_dim);
         for (int c = 0; c < channels; c++) {
           bottom_diff[(n * channels + c) * spatial_dim + s] = 
-            (top_diff[(n * channels + c) * spatial_dim + s] - top_data[(n * channels + c) * spatial_dim + s] * a) * norm_data[n*spatial_dim + s];
+            (top_diff[(n * channels + c) * spatial_dim + s] - top_data[(n * channels + c) * spatial_dim + s] * a) / norm_data[n*spatial_dim + s];
         }
       }
     }
@@ -113,7 +113,7 @@ void NormalizeLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
         Dtype a = caffe_cpu_strided_dot(channels, top_data + n*channels*spatial_dim + s, spatial_dim, top_diff + n*channels*spatial_dim + s, spatial_dim);
         for (int c = 0; c < channels; c++) {
           bottom_diff[(n * channels + c) * spatial_dim + s] =
-            (top_diff[(n * channels + c) * spatial_dim + s] - sign(bottom_data[(n * channels + c) * spatial_dim + s]) * a) * norm_data[n*spatial_dim + s];
+            (top_diff[(n * channels + c) * spatial_dim + s] - sign(bottom_data[(n * channels + c) * spatial_dim + s]) * a) / norm_data[n*spatial_dim + s];
         }
       }
     }

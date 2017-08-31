@@ -51,14 +51,14 @@ void FeatureIncayLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& botto
       }
     }
     if (force_incay_ || max_score_pos == static_cast<int>(label[n])) {
-      loss[0] += norm[n] * norm[n]; // norm[n] is actually 1 / norm, see normalize_layer.
+      loss[0] += 1 / norm[n] / norm[n]; 
       well_classified.mutable_cpu_data()[n] = 1;
     }
     else {
       well_classified.mutable_cpu_data()[n] = 0;
     }
     if (top.size() == 2) {
-      top[1]->mutable_cpu_data()[0] += 1 / norm[n];
+      top[1]->mutable_cpu_data()[0] += norm[n];
     }
   }
   loss[0] /= num;
@@ -82,7 +82,7 @@ void FeatureIncayLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
 
     for (int n = 0; n < num; n++) {
       if (well_classified.cpu_data()[n]) {
-        caffe_cpu_scale<Dtype>(dim, -2 * loss_weight * pow(norm[n], 4), feature + n*dim, feature_diff + n*dim);
+        caffe_cpu_scale<Dtype>(dim, -2 * loss_weight / pow(norm[n], 4), feature + n*dim, feature_diff + n*dim);
       }
       else {
         caffe_set<Dtype>(dim, Dtype(0), feature_diff + n*dim);

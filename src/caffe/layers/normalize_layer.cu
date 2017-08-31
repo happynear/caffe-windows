@@ -26,8 +26,8 @@ __global__ void kernel_channel_sum(const int num, const int channels, const int 
 
 template <typename Dtype>
 __global__ void kernel_channel_scale(const int num, const int channels, const int spatial_dim,
-                                     const Dtype* data, const Dtype* norm_data,
-                                     Dtype* output_data) {
+                                   const Dtype* data, const Dtype* norm_data,
+                                   Dtype* output_data) {
   CUDA_KERNEL_LOOP(index, num * channels * spatial_dim) {
     int n = index / channels / spatial_dim;
     int s = index % spatial_dim;
@@ -36,12 +36,23 @@ __global__ void kernel_channel_scale(const int num, const int channels, const in
 }
 
 template <typename Dtype>
-__global__ void kernel_channel_scal(const int num, const int channels, const int spatial_dim,
+__global__ void kernel_channel_div(const int num, const int channels, const int spatial_dim,
+                                     const Dtype* data, const Dtype* norm_data,
+                                     Dtype* output_data) {
+  CUDA_KERNEL_LOOP(index, num * channels * spatial_dim) {
+    int n = index / channels / spatial_dim;
+    int s = index % spatial_dim;
+    output_data[index] = data[index] / norm_data[n * spatial_dim + s];
+  }
+}
+
+template <typename Dtype>
+__global__ void kernel_channel_self_div(const int num, const int channels, const int spatial_dim,
                                      const Dtype* norm_data, Dtype* input_output_data) {
   CUDA_KERNEL_LOOP(index, num * channels * spatial_dim) {
     int n = index / channels / spatial_dim;
     int s = index % spatial_dim;
-    input_output_data[index] *= norm_data[n * spatial_dim + s];
+    input_output_data[index] /= norm_data[n * spatial_dim + s];
   }
 }
 
@@ -83,9 +94,9 @@ void NormalizeLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     // NOLINT_NEXT_LINE(whitespace/operators)
     kernel_channel_sum<Dtype> << <CAFFE_GET_BLOCKS(num*spatial_dim),
       CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, 1e-12, square_data, norm_data);
-    caffe_gpu_powx(num * spatial_dim, norm_data, Dtype(-0.5), norm_data);
+    caffe_gpu_powx(num * spatial_dim, norm_data, Dtype(0.5), norm_data);
     // NOLINT_NEXT_LINE(whitespace/operators)
-    kernel_channel_scale<Dtype> << <CAFFE_GET_BLOCKS(num*channels*spatial_dim),
+    kernel_channel_div<Dtype> << <CAFFE_GET_BLOCKS(num*channels*spatial_dim),
       CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, bottom_data, norm_data, top_data);
   }
   else if (normalize_type_ == "L1") {
@@ -93,9 +104,9 @@ void NormalizeLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     // NOLINT_NEXT_LINE(whitespace/operators)
     kernel_channel_sum<Dtype> << <CAFFE_GET_BLOCKS(num*spatial_dim),
       CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, 1e-6, square_data, norm_data);
-    caffe_gpu_powx(num * spatial_dim, norm_data, Dtype(-1), norm_data);
+    //caffe_gpu_powx(num * spatial_dim, norm_data, Dtype(-1), norm_data);
     // NOLINT_NEXT_LINE(whitespace/operators)
-    kernel_channel_scale<Dtype> << <CAFFE_GET_BLOCKS(num*channels*spatial_dim),
+    kernel_channel_div<Dtype> << <CAFFE_GET_BLOCKS(num*channels*spatial_dim),
       CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, bottom_data, norm_data, top_data);
   }
   else {
@@ -142,7 +153,7 @@ void NormalizeLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
 
   caffe_gpu_sub(num * channels * spatial_dim, top_diff, bottom_diff, bottom_diff);
   // NOLINT_NEXT_LINE(whitespace/operators)
-  kernel_channel_scal<Dtype> << <CAFFE_GET_BLOCKS(num*channels*spatial_dim),
+  kernel_channel_self_div<Dtype> << <CAFFE_GET_BLOCKS(num*channels*spatial_dim),
     CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, norm_data, bottom_diff);
 }
 
