@@ -1,0 +1,28 @@
+name: "Test_InnerDistance_Layer"
+input: "data"
+input_dim: 10
+input_dim: 128
+input_dim: 1
+input_dim: 1
+force_backward: true
+
+layer {
+  name: "norm1"
+  type: "Normalize"
+  bottom: "data"
+  top: "norm_data"
+  top: "data_norm"
+  normalize_param{
+    bp_norm: true
+  }
+}
+
+layer {
+  name: "ori_data"
+  type: "ChannelScale"
+  bottom: "norm_data"
+  bottom: "data_norm"
+  top: "ori_data"
+  propagate_down: true
+  propagate_down: true
+}

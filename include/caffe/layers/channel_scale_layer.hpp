@@ -1,5 +1,5 @@
-#ifndef CAFFE_NORMALIZE_LAYER_HPP_
-#define CAFFE_NORMALIZE_LAYER_HPP_
+#ifndef CAFFE_CHANNEL_SCALE_LAYER_HPP_
+#define CAFFE_CHANNEL_SCALE_LAYER_HPP_
 
 #include <utility>
 #include <vector>
@@ -10,22 +10,21 @@
 
 namespace caffe {
   /**
-  * @brief Normalizes input.
+  * @brief ChannelScales input.
   */
   template <typename Dtype>
-  class NormalizeLayer : public Layer<Dtype> {
+  class ChannelScaleLayer : public Layer<Dtype> {
   public:
-    explicit NormalizeLayer(const LayerParameter& param)
+    explicit ChannelScaleLayer(const LayerParameter& param)
       : Layer<Dtype>(param) {}
     virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
                             const vector<Blob<Dtype>*>& top);
     virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
                          const vector<Blob<Dtype>*>& top);
 
-    virtual inline const char* type() const { return "Normalize"; }
-    virtual inline int ExactNumBottomBlobs() const { return 1; }
-    virtual inline int MinTopBlobs() const { return 1; }
-    virtual inline int MaxTopBlobs() const { return 2; }
+    virtual inline const char* type() const { return "ChannelScale"; }
+    virtual inline int ExactNumBottomBlobs() const { return 2; }
+    virtual inline int ExactNumTopBlobs() const { return 1; }
 
   protected:
     virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
@@ -37,12 +36,9 @@ namespace caffe {
     virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
                               const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
-    Blob<Dtype> sum_multiplier_, squared_, norm_;
-    std::string normalize_type_;
-    bool rescale_;
-    bool bp_norm_;
+    Blob<Dtype> sum_multiplier_;
   };
 
 }
 
-#endif  // CAFFE_NORMALIZE_LAYER_HPP_
+#endif  // CAFFE_CHANNEL_SCALE_LAYER_HPP_
