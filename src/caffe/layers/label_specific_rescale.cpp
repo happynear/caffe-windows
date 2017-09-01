@@ -110,11 +110,13 @@ void LabelSpecificRescaleLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& 
 
     if (positive_weight != Dtype(1.0)) {
       for (int i = 0; i < num; ++i) {
-        if (power_on_positive_) {
-          bottom_diff[i * dim + static_cast<int>(label_data[i])] *= positive_weight * pow(abs(bottom_data[i * dim + static_cast<int>(label_data[i])]), positive_weight - 1);
-        }
-        else {
-          bottom_diff[i * dim + static_cast<int>(label_data[i])] *= positive_weight;
+        if ((!for_ip) || bottom_data[i * dim + static_cast<int>(label_data[i])] > 0) {
+          if (power_on_positive_) {
+            bottom_diff[i * dim + static_cast<int>(label_data[i])] *= positive_weight * pow(abs(bottom_data[i * dim + static_cast<int>(label_data[i])]), positive_weight - 1);
+          }
+          else {
+            bottom_diff[i * dim + static_cast<int>(label_data[i])] *= positive_weight;
+          }
         }
       }
     }
