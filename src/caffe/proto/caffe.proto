@@ -1720,7 +1720,7 @@ message FlipParameter {
 
 message NormalizeParameter {
   optional string normalize_type = 1 [default = "L2"];
-  optional bool rescale = 2 [default = false];
+  optional bool fix_gradient = 2 [default = false];
   optional bool bp_norm = 3 [default = false];
 }
 

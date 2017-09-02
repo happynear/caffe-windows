@@ -15,30 +15,24 @@ void NormalizeLayer<Dtype>::LayerSetUp(
   const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top) {
   normalize_type_ =
     this->layer_param_.normalize_param().normalize_type();
-  rescale_ =
-    this->layer_param_.normalize_param().rescale();
+  fix_gradient_ =
+    this->layer_param_.normalize_param().fix_gradient();
   bp_norm_ = this->layer_param_.normalize_param().bp_norm() && top.size() == 2;
 }
 
 template <typename Dtype>
 void NormalizeLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
-      const vector<Blob<Dtype>*>& top) {
+                                    const vector<Blob<Dtype>*>& top) {
   top[0]->Reshape(bottom[0]->num(), bottom[0]->channels(),
-      bottom[0]->height(), bottom[0]->width());
+                  bottom[0]->height(), bottom[0]->width());
   squared_.Reshape(bottom[0]->num(), bottom[0]->channels(),
-    bottom[0]->height(), bottom[0]->width());
+                   bottom[0]->height(), bottom[0]->width());
   if (top.size() == 2) {
     top[1]->Reshape(bottom[0]->num(), 1,
                     bottom[0]->height(), bottom[0]->width());
-    if (bp_norm_) {
-      norm_.Reshape(bottom[0]->num(), 1,
-                    bottom[0]->height(), bottom[0]->width());
-    }
   }
-  else {
-    norm_.Reshape(bottom[0]->num(), 1,
-                   bottom[0]->height(), bottom[0]->width());
-  }
+  norm_.Reshape(bottom[0]->num(), 1,
+                bottom[0]->height(), bottom[0]->width());
 }
 
 template <typename Dtype>

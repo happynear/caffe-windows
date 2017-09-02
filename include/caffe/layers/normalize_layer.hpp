@@ -39,7 +39,7 @@ namespace caffe {
 
     Blob<Dtype> sum_multiplier_, squared_, norm_;
     std::string normalize_type_;
-    bool rescale_;
+    bool fix_gradient_;
     bool bp_norm_;
   };
 
