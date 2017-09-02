@@ -51,7 +51,7 @@ void GeneralContrastiveLossLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bot
 template <typename Dtype>
 void GeneralContrastiveLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
-  const Dtype* bottom_data = bottom[0]->cpu_data();
+  const Dtype* bottom_data = (bottom.size() == 3) ? bottom[2]->cpu_data() : bottom[0]->cpu_data();
   Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
   const Dtype* label = bottom[1]->cpu_data();
   int* max_negative_index_data = NULL;
@@ -146,7 +146,7 @@ void GeneralContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>
                << " Layer cannot backpropagate to label inputs.";
   }
   if (propagate_down[0]) {
-    const Dtype* bottom_data = bottom[0]->cpu_data();
+    const Dtype* bottom_data = (bottom.size() == 3) ? bottom[2]->cpu_data() : bottom[0]->cpu_data();
     Dtype* bottom_diff = bottom[0]->mutable_cpu_diff();
     const Dtype* label = bottom[1]->cpu_data();
     const int* max_negative_index_data = NULL;
@@ -217,20 +217,6 @@ void GeneralContrastiveLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>
     } 
 
     const Dtype loss_weight = top[0]->cpu_diff()[0];
-    //Dtype weighted_count = num * (abs(positive_weight_) + (dim - 1)*abs(negative_weight_));
-    if (bottom.size() == 3) {
-      Dtype weight_sum = Dtype(0);
-      for (int i = 0; i < num; ++i) {
-        weight_sum += bottom[2]->cpu_data()[i];
-      }
-      weight_sum /= num;
-      for (int i = 0; i < num; ++i) {
-        for (int j = 0; j < dim; ++j) {
-          bottom_diff[i * dim + j] *= bottom[2]->cpu_data()[i] / weight_sum;
-        }
-      }
-    }
-    
     caffe_scal(count, loss_weight / num, bottom_diff);
   }
 }
