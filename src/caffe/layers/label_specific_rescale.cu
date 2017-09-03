@@ -1,7 +1,12 @@
 #include <algorithm>
 #include <vector>
+#include <cmath>
 
 #include "caffe/layers/label_specific_rescale_layer.hpp"
+
+#ifndef M_PI
+#define M_PI       3.14159265358979323846
+#endif
 
 namespace caffe {
 
@@ -10,16 +15,14 @@ namespace caffe {
                                                Dtype* out, Dtype positive_weight, bool bias_fix) {
     CUDA_KERNEL_LOOP(index, n) {
       int l = static_cast<int>(label[index]);
-      //if (in[index * dim + l] > 0) {
-        out[index * dim + l] = (Dtype(0) < in[index * dim + l]) - (in[index * dim + l] < Dtype(0));
-        out[index * dim + l] *= powf(abs(in[index * dim + l]), positive_weight);
-      //}
-      //else {
-      //  out[index * dim + l] = -1 * powf(abs(in[index * dim + l]), 1.1);
-      //}
+        /*out[index * dim + l] = (Dtype(0) < in[index * dim + l]) - (in[index * dim + l] < Dtype(0));
+        out[index * dim + l] *= powf(abs(in[index * dim + l]), positive_weight);*/
+      out[index * dim + l] = in[index * dim + l] * cosf(positive_weight / 180 * M_PI) - 
+        sqrt(1 - in[index * dim + l] * in[index * dim + l] + 1e-12) * sinf(positive_weight / 180 * M_PI);
       if (bias_fix) {
-        out[index * dim + l] *= positive_weight;
-        out[index * dim + l] += 1 - positive_weight;
+        out[index * dim + l] *= positive_weight - 1;
+        out[index * dim + l] -= positive_weight - 1;
+        out[index * dim + l] += in[index * dim + l];
       }
     }
   }
@@ -29,16 +32,13 @@ namespace caffe {
                                                     Dtype* out, const Dtype* bottom_data, Dtype positive_weight, bool bias_fix) {
     CUDA_KERNEL_LOOP(index, n) {
       int l = static_cast<int>(label[index]);
-      //if (in[index * dim + l] > 0) {
-        out[index * dim + l] =
-          in[index * dim + l] * positive_weight * powf(abs(bottom_data[index * dim + l]), positive_weight - 1);
-      //}
-      //else {
-      //  out[index * dim + l] =
-      //    in[index * dim + l] * 1.1 * powf(abs(bottom_data[index * dim + l]), 0.1);
-      //}
+        /*out[index * dim + l] =
+          in[index * dim + l] * positive_weight * powf(abs(bottom_data[index * dim + l]), positive_weight - 1);*/
+      out[index * dim + l] = in[index * dim + l] * (cosf(positive_weight / 180 * M_PI) -
+        bottom_data[index * dim + l] / sqrt(1 - bottom_data[index * dim + l] * bottom_data[index * dim + l] + 1e-12) * sinf(positive_weight / 180 * M_PI));
       if (bias_fix) {
-        out[index * dim + l] *= positive_weight;
+        out[index * dim + l] *= positive_weight - 1;
+        out[index * dim + l] += 1;
       }
     }
   }
