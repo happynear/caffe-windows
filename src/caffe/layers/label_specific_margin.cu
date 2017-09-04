@@ -93,9 +93,6 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
     positive_std = sqrt((positive_std - positive_mean * positive_mean) / num);
     negative_mean /= num * (dim - 1);
     negative_std = sqrt((negative_std - negative_mean * negative_mean) / num / (dim - 1));
-    if (auto_tune_) {
-      margin[0] = (negative_mean - positive_mean) / 2;
-    }
     
     if (this->phase_ == TEST) {
       top[1]->mutable_cpu_data()[0] = margin[0];
@@ -116,6 +113,9 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
         margin[2] = 0.99 * margin[2] + 0.01 * positive_std;
         margin[3] = 0.99 * margin[3] + 0.01 * negative_mean;
         margin[4] = 0.99 * margin[4] + 0.01 * negative_std;
+      }
+      if (auto_tune_) {
+        margin[0] = (margin[3] - margin[1]) / (margin[2] + margin[3]) * margin[2];
       }
       caffe_copy(5, this->blobs_[0]->cpu_data(), top[1]->mutable_cpu_data());
     }
