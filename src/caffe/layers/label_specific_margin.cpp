@@ -22,14 +22,19 @@ namespace caffe {
     }
     else {
       this->blobs_.resize(1);
-      this->blobs_[0].reset(new Blob<Dtype>({ 5 });
+      this->blobs_[0].reset(new Blob<Dtype>({ 5 }));
       caffe_set(5, Dtype(0), this->blobs_[0]->mutable_cpu_data());
       this->blobs_[0]->mutable_cpu_data()[0] = margin_base_;
     }
-    ParamSpec* fixed_param_spec =
-      this->layer_param_.mutable_param(0);
-    fixed_param_spec->set_lr_mult(0.f);
-    fixed_param_spec->set_decay_mult(0.f);
+    if (this->layer_param_.param_size() == 0) {
+      ParamSpec* fixed_param_spec = this->layer_param_.add_param();
+      fixed_param_spec->set_lr_mult(0.f);
+      fixed_param_spec->set_decay_mult(0.f);
+    }
+    else {
+      CHECK_EQ(this->layer_param_.param(0).lr_mult(), 0.f)
+        << "Cannot configure statistics as layer parameters.";
+    }
   }
 
   template <typename Dtype>
