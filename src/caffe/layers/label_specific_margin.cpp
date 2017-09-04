@@ -65,6 +65,7 @@ void LabelSpecificMarginLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bo
     margin[0] = std::min(margin[0], margin_max_);
   }
   
+  caffe_copy(count, bottom_data, top_data);
   if (top.size() >= 2) top[1]->mutable_cpu_data()[0] = margin[0];
 
   if (!margin_on_test_ && this->phase_ == TEST) return;
@@ -91,6 +92,7 @@ void LabelSpecificMarginLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& t
     int count = bottom[0]->count();
     int dim = count / num;
 
+    caffe_copy(count, top_diff, bottom_diff);
     if (!margin_on_test_ && this->phase_ == TEST) return;
 
     if (margin[0] != Dtype(0.0)) {

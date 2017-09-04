@@ -121,6 +121,7 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
     }
   }
 
+  caffe_copy(count, bottom_data, top_data);
   if (!margin_on_test_ && this->phase_ == TEST) return;
 
   if (margin[0] != Dtype(0.0)) {
@@ -146,6 +147,7 @@ void LabelSpecificMarginLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& t
     int count = bottom[0]->count();
     int dim = count / num;
 
+    caffe_copy(count, top_diff, bottom_diff);
     if (!margin_on_test_ && this->phase_ == TEST) return;
     
     if (margin[0] != Dtype(0.0)) {
