@@ -46,6 +46,8 @@ class LabelSpecificMarginLayer : public Layer<Dtype> {
   int iter_;
   bool margin_on_test_;
   bool auto_tune_;
+  Blob<Dtype> positive_mask, negative_mask;
+  Blob<Dtype> bottom_angle, bottom_square;
 };
 
 }  // namespace caffe

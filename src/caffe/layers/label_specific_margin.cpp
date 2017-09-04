@@ -23,8 +23,13 @@ namespace caffe {
     }
     else {
       this->blobs_.resize(1);
-      this->blobs_[0].reset(new Blob<Dtype>({ 5 }));
-      caffe_set(5, Dtype(0), this->blobs_[0]->mutable_cpu_data());
+      if (auto_tune_) {
+        this->blobs_[0].reset(new Blob<Dtype>({ 5 }));
+        caffe_set(5, Dtype(0), this->blobs_[0]->mutable_cpu_data());
+      }
+      else {
+        this->blobs_[0].reset(new Blob<Dtype>({ 1 }));
+      }
       this->blobs_[0]->mutable_cpu_data()[0] = margin_base_;
     }
     if (this->layer_param_.param_size() == 0) {
@@ -42,7 +47,18 @@ namespace caffe {
   void LabelSpecificMarginLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
                                                     const vector<Blob<Dtype>*>& top) {
     top[0]->ReshapeLike(*bottom[0]);
-    if (top.size() == 2) top[1]->Reshape({ 5 });
+    if (top.size() == 2) {
+      if (auto_tune_) {
+        top[1]->Reshape({ 5 });
+        positive_mask.ReshapeLike(*bottom[0]);
+        negative_mask.ReshapeLike(*bottom[0]);
+        bottom_angle.ReshapeLike(*bottom[0]);
+        bottom_square.ReshapeLike(*bottom[0]);
+      }
+      else {
+        top[1]->Reshape({ 1 });
+      }
+    }
   }
 
 template <typename Dtype>

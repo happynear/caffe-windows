@@ -9,12 +9,12 @@ namespace caffe {
   template <typename Dtype>
   __global__ void ArccosForward(const int n, const Dtype* in, Dtype* out) {
     CUDA_KERNEL_LOOP(index, n) {
-      out[index] = acosf(in[index]) / M_PI * 180;
+      out[index] = Dtype(acos(in[index]) / M_PI * 180.0);
     }
   }
 
   template <typename Dtype>
-  __global__ void CreateMask(const int num, const int dim, const Dtype* bottom_data, const Dtype* label, Dtype* positive_mask, Dtype* negative_mask) {
+  __global__ void CreateMask(const int num, const int dim, const Dtype* label, Dtype* positive_mask, Dtype* negative_mask) {
     CUDA_KERNEL_LOOP(index, num) {
       int gt = static_cast<int>(label[index]);
       positive_mask[index*dim + gt] = Dtype(1);
@@ -62,27 +62,24 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
     margin[0] = std::min(margin[0], margin_max_);
   }
 
-  if (top.size() >= 2) {
-    Blob<Dtype> positive_mask, negative_mask;
-    positive_mask.ReshapeLike(*bottom[0]);
-    negative_mask.ReshapeLike(*bottom[0]);
-    caffe_gpu_set(count, Dtype(0), positive_mask.mutable_gpu_data());
-    caffe_gpu_set(count, Dtype(1), negative_mask.mutable_gpu_data());
+  if (top.size() >= 2 && auto_tune_) {
+    Dtype *positive_mask_data = positive_mask.mutable_gpu_data();
+    Dtype *negative_mask_data = negative_mask.mutable_gpu_data();
+    caffe_gpu_set(count, Dtype(0), positive_mask_data);
+    caffe_gpu_set(count, Dtype(1), negative_mask_data);
     // NOLINT_NEXT_LINE(whitespace/operators)
     CreateMask<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
-      num, dim, bottom_data, label_data, positive_mask.mutable_gpu_data(), negative_mask.mutable_gpu_data());
+      num, dim, label_data, positive_mask.mutable_gpu_data(), negative_mask.mutable_gpu_data());
     CUDA_POST_KERNEL_CHECK;
 
     Dtype positive_mean;
     Dtype positive_std;
     Dtype negative_mean;
     Dtype negative_std;
-    Blob<Dtype> bottom_angle, bottom_square;
-    bottom_angle.ReshapeLike(*bottom[0]);
+    
     // NOLINT_NEXT_LINE(whitespace/operators)
     ArccosForward<Dtype> << <CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS >> > (
       count, bottom_data, bottom_angle.mutable_gpu_data());
-    bottom_square.ReshapeLike(*bottom[0]);
     caffe_gpu_powx(count, bottom_angle.gpu_data(), Dtype(2), bottom_square.mutable_gpu_data());
     caffe_gpu_dot(count, bottom_angle.gpu_data(), positive_mask.gpu_data(), &positive_mean);
     caffe_gpu_dot(count, bottom_square.gpu_data(), positive_mask.gpu_data(), &positive_std);
@@ -90,9 +87,9 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
     caffe_gpu_dot(count, bottom_square.gpu_data(), negative_mask.gpu_data(), &negative_std);
 
     positive_mean /= num;
-    positive_std = sqrt((positive_std - positive_mean * positive_mean) / num);
+    positive_std = sqrt(positive_std / num - positive_mean * positive_mean);
     negative_mean /= num * (dim - 1);
-    negative_std = sqrt((negative_std - negative_mean * negative_mean) / num / (dim - 1));
+    negative_std = sqrt(negative_std / num / (dim - 1) - negative_mean * negative_mean);
     
     if (this->phase_ == TEST) {
       top[1]->mutable_cpu_data()[0] = margin[0];
@@ -114,11 +111,13 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
         margin[3] = 0.99 * margin[3] + 0.01 * negative_mean;
         margin[4] = 0.99 * margin[4] + 0.01 * negative_std;
       }
-      if (auto_tune_) {
-        margin[0] = (margin[3] - margin[1]) / (margin[2] + margin[3]) * margin[2];
-      }
+     
+      margin[0] = (margin[3] - margin[1]) / (margin[2] + margin[3]) * margin[2];
       caffe_copy(5, this->blobs_[0]->cpu_data(), top[1]->mutable_cpu_data());
     }
+  }
+  if (top.size() >= 2 && !auto_tune_) {
+    top[1]->mutable_cpu_data()[0] = margin[0];
   }
 
   caffe_copy(count, bottom_data, top_data);
