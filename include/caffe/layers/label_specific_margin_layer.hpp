@@ -45,6 +45,7 @@ class LabelSpecificMarginLayer : public Layer<Dtype> {
   Dtype gamma_;
   int iter_;
   bool margin_on_test_;
+  bool auto_tune_;
 };
 
 }  // namespace caffe

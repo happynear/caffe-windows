@@ -1930,4 +1930,5 @@ message LabelSpecificMarginParameter {
   optional int32 iteration = 5 [default = 0];
   optional bool reset_margin = 6 [default = false];
   optional bool margin_on_test = 7 [default = false];
+  optional bool auto_tune = 8 [default = false];
 }
