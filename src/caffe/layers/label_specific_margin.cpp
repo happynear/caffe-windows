@@ -22,7 +22,8 @@ namespace caffe {
     }
     else {
       this->blobs_.resize(1);
-      this->blobs_[0].reset(new Blob<Dtype>(vector<int>(0)));
+      this->blobs_[0].reset(new Blob<Dtype>({ 5 });
+      caffe_set(5, Dtype(0), this->blobs_[0]->mutable_cpu_data());
       this->blobs_[0]->mutable_cpu_data()[0] = margin_base_;
     }
     ParamSpec* fixed_param_spec =

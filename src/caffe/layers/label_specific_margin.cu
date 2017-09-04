@@ -63,8 +63,6 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
   }
 
   if (top.size() >= 2) {
-    top[1]->mutable_cpu_data()[0] = margin[0];
-
     Blob<Dtype> positive_mask, negative_mask;
     positive_mask.ReshapeLike(*bottom[0]);
     negative_mask.ReshapeLike(*bottom[0]);
@@ -84,10 +82,23 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
     caffe_gpu_dot(count, bottom_square.gpu_data(), negative_mask.gpu_data(), statistics.mutable_gpu_data() + 3);
 
     const Dtype* statistic_data = statistics.cpu_data();
-    top[1]->mutable_cpu_data()[1] = statistic_data[0] / num;
-    top[1]->mutable_cpu_data()[2] = (statistic_data[1] - statistic_data[0] / num * statistic_data[0] / num) / num;
-    top[1]->mutable_cpu_data()[3] = statistic_data[2] / num;
-    top[1]->mutable_cpu_data()[4] = (statistic_data[3] - statistic_data[2] / num * statistic_data[2] / num) / num;
+    Dtype positive_mean = statistic_data[0] / num;
+    Dtype positive_std = sqrt((statistic_data[1] - statistic_data[0] / num * statistic_data[0] / num) / num);
+    Dtype negative_mean = statistic_data[2] / num;
+    Dtype negative_std = sqrt((statistic_data[3] - statistic_data[2] / num * statistic_data[2] / num) / num);
+    if (iter_ == 1) {
+      margin[1] = positive_mean;
+      margin[2] = positive_std;
+      margin[3] = negative_mean;
+      margin[4] = negative_std;
+    }
+    else {
+      margin[1] = 0.99 * margin[1] + 0.01 * positive_mean;
+      margin[2] = 0.99 * margin[2] + 0.01 * positive_std;
+      margin[3] = 0.99 * margin[3] + 0.01 * negative_mean;
+      margin[4] = 0.99 * margin[4] + 0.01 * negative_std;
+    }
+    caffe_copy(5, this->blobs_[0]->cpu_data(), top[1]->mutable_cpu_data());
   }
 
   if (!margin_on_test_ && this->phase_ == TEST) return;
