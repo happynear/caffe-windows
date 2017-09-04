@@ -17,6 +17,7 @@ namespace caffe {
     power_ = param.power();
     iter_ = param.iteration();
     margin_on_test_ = param.margin_on_test() & (this->phase_ == TRAIN);
+    auto_tune_ = param.auto_tune();
     if (this->blobs_.size() > 0) {
       LOG(INFO) << "Skipping parameter initialization";
     }
