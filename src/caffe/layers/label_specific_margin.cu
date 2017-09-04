@@ -71,21 +71,23 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
       num, dim, bottom_data, label_data, positive_mask.mutable_gpu_data(), negative_mask.mutable_gpu_data());
     CUDA_POST_KERNEL_CHECK;
 
-    Blob<Dtype> statistics;
-    statistics.Reshape({ 4 });//positive_mean, positive_std, negative_mean, negative_std
+    Dtype positive_mean;
+    Dtype positive_std;
+    Dtype negative_mean;
+    Dtype negative_std;
     Blob<Dtype> bottom_square;
     bottom_square.ReshapeLike(*bottom[0]);
     caffe_gpu_powx(count, bottom_data, Dtype(2), bottom_square.mutable_gpu_data());
-    caffe_gpu_dot(count, bottom_data, positive_mask.gpu_data(), statistics.mutable_gpu_data());
-    caffe_gpu_dot(count, bottom_square.gpu_data(), positive_mask.gpu_data(), statistics.mutable_gpu_data() + 1);
-    caffe_gpu_dot(count, bottom_data, negative_mask.gpu_data(), statistics.mutable_gpu_data() + 2);
-    caffe_gpu_dot(count, bottom_square.gpu_data(), negative_mask.gpu_data(), statistics.mutable_gpu_data() + 3);
+    caffe_gpu_dot(count, bottom_data, positive_mask.gpu_data(), &positive_mean);
+    caffe_gpu_dot(count, bottom_square.gpu_data(), positive_mask.gpu_data(), &positive_std);
+    caffe_gpu_dot(count, bottom_data, negative_mask.gpu_data(), &negative_mean);
+    caffe_gpu_dot(count, bottom_square.gpu_data(), negative_mask.gpu_data(), &negative_std);
 
-    const Dtype* statistic_data = statistics.cpu_data();
-    Dtype positive_mean = statistic_data[0] / num;
-    Dtype positive_std = sqrt((statistic_data[1] - statistic_data[0] / num * statistic_data[0] / num) / num);
-    Dtype negative_mean = statistic_data[2] / num;
-    Dtype negative_std = sqrt((statistic_data[3] - statistic_data[2] / num * statistic_data[2] / num) / num);
+    positive_mean /= num;
+    positive_std = sqrt((positive_std - positive_mean * positive_mean) / num);
+    negative_mean /= num * (dim - 1);
+    negative_std = sqrt((negative_std - negative_mean * negative_mean) / num / (dim - 1));
+    
     if (iter_ == 1) {
       margin[1] = positive_mean;
       margin[2] = positive_std;
