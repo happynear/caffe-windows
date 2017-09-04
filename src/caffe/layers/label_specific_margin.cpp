@@ -16,7 +16,7 @@ namespace caffe {
     gamma_ = param.gamma();
     power_ = param.power();
     iter_ = param.iteration();
-    margin_on_test_ = param.margin_on_test();
+    margin_on_test_ = param.margin_on_test() & (this->phase_ == TRAIN);
     if (this->blobs_.size() > 0) {
       LOG(INFO) << "Skipping parameter initialization";
     }
