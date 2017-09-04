@@ -35,7 +35,7 @@ namespace caffe {
   void LabelSpecificMarginLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
                                                     const vector<Blob<Dtype>*>& top) {
     top[0]->ReshapeLike(*bottom[0]);
-    if (top.size() == 2) top[1]->Reshape({ 1 });
+    if (top.size() == 2) top[1]->Reshape({ 5 });
   }
 
 template <typename Dtype>
@@ -51,7 +51,7 @@ void LabelSpecificMarginLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bo
   int dim = count / num;
 
   if (has_margin_base_) {
-    margin[0] = margin_base_ + pow(((Dtype)1. + gamma_ * iter_), power_);
+    margin[0] = margin_base_ + pow(((Dtype)1. + gamma_ * iter_), power_) - 1;
     iter_++;
   }
   if (has_margin_max_) {
