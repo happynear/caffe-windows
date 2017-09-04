@@ -112,7 +112,7 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
         margin[4] = 0.99 * margin[4] + 0.01 * negative_std;
       }
      
-      margin[0] = (margin[3] - margin[1]) / (margin[2] + margin[3]) * margin[2];
+      margin[0] = (margin[3] - margin[1]) / (margin[2] + margin[4]) * margin[2];
       caffe_copy(5, this->blobs_[0]->cpu_data(), top[1]->mutable_cpu_data());
     }
   }
