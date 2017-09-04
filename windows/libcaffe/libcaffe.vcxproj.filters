@@ -468,6 +468,9 @@
     <ClCompile Include="..\..\src\caffe\layers\channel_scale_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\label_specific_margin.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\caffe\proto\caffe.pb.h">
@@ -1124,6 +1127,9 @@
       <Filter>cu\layers</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\channel_scale_layer.cu">
+      <Filter>cu\layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\label_specific_margin.cu">
       <Filter>cu\layers</Filter>
     </CudaCompile>
   </ItemGroup>

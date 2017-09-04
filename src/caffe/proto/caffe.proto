@@ -449,6 +449,7 @@ message LayerParameter {
   optional FeatureIncayLossParameter feature_incay_loss_param = 233;
   optional ConfidencePenaltyLossParameter confidence_penalty_loss_param = 234;
   optional FocalLossParameter focal_loss_param = 235;
+  optional LabelSpecificMarginParameter label_specific_margin_param = 236;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1919,4 +1920,14 @@ message FocalLossParameter {
   // cross-categories weights to solve the imbalance problem
   optional float alpha = 3 [default = 1.0]; 
   optional float beta  = 4 [default = 1.0];
+}
+
+message LabelSpecificMarginParameter {
+  optional float margin_base = 1 [default = 0.0];
+  optional float margin_max = 2 [default = 10.0];
+  optional float power = 3 [default = 1.0];
+  optional float gamma = 4 [default = 1.0];
+  optional int32 iteration = 5 [default = 0];
+  optional bool reset_margin = 6 [default = false];
+  optional bool margin_on_test = 7 [default = false];
 }
