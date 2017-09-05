@@ -18,6 +18,8 @@ namespace caffe {
   public:
     explicit NoiseLayer(const LayerParameter& param)
       : NeuronLayer<Dtype>(param) {}
+    virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+                         const vector<Blob<Dtype>*>& top);
 
     virtual inline const char* type() const { return "Noise"; }
 
@@ -31,6 +33,7 @@ namespace caffe {
     virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
                               const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
+    Blob<Dtype> mask;
   };
 
 }  // namespace caffe

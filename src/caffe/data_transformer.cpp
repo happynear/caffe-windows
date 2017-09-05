@@ -104,6 +104,22 @@ void DataTransformer<Dtype>::Transform(const Datum& datum,
     }
   }
 
+  cv::RNG rng(caffe_rng_rand());//caffe's rng is difficult to use.
+  const bool do_erase = param_.has_erase_ratio() & (rng.uniform(0.0,1.0) < param_.erase_ratio());
+  int erase_x_min = width, erase_x_max = -1, erase_y_min = height, erase_y_max = -1;
+  if (do_erase) {
+    do {
+      float erase_scale = rng.uniform(param_.scale_min(), param_.scale_max());
+      int erase_width = (float)width * erase_scale;
+      float erase_aspect = rng.uniform(param_.aspect_min(), param_.aspect_max());
+      int erase_height = (float)erase_width * erase_aspect;
+      erase_x_min = rng.uniform(0, width);
+      erase_y_min = rng.uniform(0, height);
+      erase_x_max = erase_x_min + erase_width - 1;
+      erase_y_max = erase_y_min + erase_height - 1;
+    } while (erase_x_min < 0 || erase_y_min < 0 || erase_x_max >= width || erase_y_max >= height);
+  }
+
   Dtype datum_element;
   int top_index, data_index;
   for (int c = 0; c < datum_channels; ++c) {
@@ -115,11 +131,17 @@ void DataTransformer<Dtype>::Transform(const Datum& datum,
         } else {
           top_index = (c * height + h) * width + w;
         }
-        if (has_uint8) {
-          datum_element =
-            static_cast<Dtype>(static_cast<uint8_t>(data[data_index]));
-        } else {
-          datum_element = datum.float_data(data_index);
+        if (do_erase && w >= erase_x_min && w <= erase_x_max && h >= erase_y_min && h <= erase_y_max) {
+          datum_element = Rand(255);
+        }
+        else {
+          if (has_uint8) {
+            datum_element =
+              static_cast<Dtype>(static_cast<uint8_t>(data[data_index]));
+          }
+          else {
+            datum_element = datum.float_data(data_index);
+          }
         }
         if (has_mean_file) {
           transformed_data[top_index] =
@@ -343,6 +365,22 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
     }
   }
 
+  const bool do_erase = param_.has_erase_ratio() & (Rand(1000) < param_.erase_ratio() * 1000);
+  int erase_x_min = width, erase_x_max = -1, erase_y_min = height, erase_y_max = -1;
+  cv::RNG rng(caffe_rng_rand());//caffe's rng is difficult to use.
+  if (do_erase) {
+    do {
+      float erase_scale = rng.uniform(param_.scale_min(), param_.scale_max());
+      int erase_width = (float)width * erase_scale;
+      float erase_aspect = rng.uniform(param_.aspect_min(), param_.aspect_max());
+      int erase_height = (float)erase_width * erase_aspect;
+      erase_x_min = rng.uniform(0, width);
+      erase_y_min = rng.uniform(0, height);
+      erase_x_max = erase_x_min + erase_width - 1;
+      erase_y_max = erase_y_min + erase_height - 1;
+    } while (erase_x_min < 0 || erase_y_min < 0 || erase_x_max >= width || erase_y_max >= height);
+  }
+
   CHECK(cv_cropped_img.data);
 
   Dtype* transformed_data = transformed_blob->mutable_cpu_data();
@@ -362,7 +400,13 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
             top_index = (c * height + h) * width + w;
           }
           // int top_index = (c * height + h) * width + w;
-          Dtype pixel = static_cast<Dtype>(is_float_data ? float_ptr[img_index] : ptr[img_index]);
+          Dtype pixel;
+          if (do_erase && w >= erase_x_min && w <= erase_x_max && h >= erase_y_min && h <= erase_y_max) {
+            pixel = Rand(255);
+          }
+          else {
+            pixel = static_cast<Dtype>(is_float_data ? float_ptr[img_index] : ptr[img_index]);
+          }
           img_index++;
           if (has_mean_file) {
             int mean_index;
@@ -397,7 +441,13 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
             top_index = (c * height + h) * width + w;
           }
           // int top_index = (c * height + h) * width + w;
-          Dtype pixel = static_cast<Dtype>(is_float_data ? float_ptr[img_index] : ptr[img_index]);
+          Dtype pixel;
+          if (do_erase && w >= erase_x_min && w <= erase_x_max && h >= erase_y_min && h <= erase_y_max) {
+            pixel = Rand(255);
+          }
+          else {
+            pixel = static_cast<Dtype>(is_float_data ? float_ptr[img_index] : ptr[img_index]);
+          }
           img_index++;
           if (has_mean_file) {
             int mean_index;
@@ -651,7 +701,8 @@ vector<int> DataTransformer<Dtype>::InferBlobShape(
 template <typename Dtype>
 void DataTransformer<Dtype>::InitRand() {
   const bool needs_rand = param_.mirror() ||
-      (phase_ == TRAIN && (param_.crop_size() || param_.crop_h() || param_.crop_w()) && !param_.center_crop());
+      (phase_ == TRAIN && (param_.crop_size() || param_.crop_h() || param_.crop_w()) && !param_.center_crop()) ||
+    param_.has_erase_ratio();
   if (needs_rand) {
     const unsigned int rng_seed = caffe_rng_rand();
     rng_.reset(new Caffe::RNG(rng_seed));

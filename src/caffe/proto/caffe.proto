@@ -476,6 +476,11 @@ message TransformationParameter {
   optional uint32 crop_h = 8 [default = 0];
   optional uint32 crop_w = 9 [default = 0];
   optional bool center_crop = 10 [default = false];
+  optional float erase_ratio = 11 [default = 0];
+  optional float scale_min = 12 [default = 0.02];
+  optional float scale_max = 13 [default = 0.4];
+  optional float aspect_min = 14 [default = 0.33];
+  optional float aspect_max = 15 [default = 3];
 }
 
 // Message that stores parameters shared by loss layers
