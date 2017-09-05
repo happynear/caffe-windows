@@ -1923,6 +1923,11 @@ message FocalLossParameter {
 }
 
 message LabelSpecificMarginParameter {
+  enum MarginType {
+    HARD = 0;
+    SOFT = 1;
+  }
+  optional MarginType type   = 9 [default = HARD]; 
   optional float margin_base = 1 [default = 0.0];
   optional float margin_max = 2 [default = 10.0];
   optional float power = 3 [default = 1.0];

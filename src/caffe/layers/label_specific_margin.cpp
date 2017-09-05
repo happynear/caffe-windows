@@ -18,6 +18,7 @@ namespace caffe {
     iter_ = param.iteration();
     margin_on_test_ = param.margin_on_test() & (this->phase_ == TRAIN);
     auto_tune_ = param.auto_tune();
+    type_ = param.type();
     if (this->blobs_.size() > 0) {
       LOG(INFO) << "Skipping parameter initialization";
     }
@@ -58,6 +59,9 @@ namespace caffe {
       else {
         top[1]->Reshape({ 1 });
       }
+    }
+    if (type_ == LabelSpecificMarginParameter_MarginType::LabelSpecificMarginParameter_MarginType_SOFT) {
+      one_minus_x.ReshapeLike(*bottom[0]);
     }
   }
 
