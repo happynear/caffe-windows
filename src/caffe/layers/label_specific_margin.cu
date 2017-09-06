@@ -7,7 +7,7 @@
 namespace caffe {
 
   template <typename Dtype>
-  __global__ void ArccosForward(const int n, const Dtype* in, Dtype* out) {
+  __global__ void ArcCosDegree(const int n, const Dtype* in, Dtype* out) {
     CUDA_KERNEL_LOOP(index, n) {
       out[index] = Dtype(acos(in[index]) / M_PI * 180.0);
     }
@@ -98,7 +98,7 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
     //Dtype negative_std;
     
     // NOLINT_NEXT_LINE(whitespace/operators)
-    ArccosForward<Dtype> << <CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS >> > (
+    ArcCosDegree<Dtype> << <CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS >> > (
       count, bottom_data, bottom_angle.mutable_gpu_data());
     //caffe_gpu_powx(count, bottom_angle.gpu_data(), Dtype(2), bottom_square.mutable_gpu_data());
     caffe_gpu_dot(count, bottom_angle.gpu_data(), positive_mask.gpu_data(), &positive_mean);
