@@ -450,6 +450,7 @@ message LayerParameter {
   optional ConfidencePenaltyLossParameter confidence_penalty_loss_param = 234;
   optional FocalLossParameter focal_loss_param = 235;
   optional LabelSpecificMarginParameter label_specific_margin_param = 236;
+  optional ChannelScaleParameter channel_scale_param = 237;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1941,4 +1942,10 @@ message LabelSpecificMarginParameter {
   optional bool reset_margin = 6 [default = false];
   optional bool margin_on_test = 7 [default = false];
   optional bool auto_tune = 8 [default = false];
+}
+
+message ChannelScaleParameter{
+  optional bool do_forward = 1 [default = true];
+  optional bool do_backward_feature = 2 [default = true];
+  optional bool do_backward_scale = 3 [default = true];
 }

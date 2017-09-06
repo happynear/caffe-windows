@@ -42,12 +42,17 @@ void ChannelScaleLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   const Dtype* scale_data = bottom[1]->gpu_data();
   Dtype* top_data = top[0]->mutable_gpu_data();
   
-  int num = bottom[0]->num();
-  int channels = bottom[0]->channels();
-  int spatial_dim = bottom[0]->height() * bottom[0]->width();
-  // NOLINT_NEXT_LINE(whitespace/operators)
-  kernel_channel_scale<Dtype> << <CAFFE_GET_BLOCKS(num*channels*spatial_dim),
-    CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, Dtype(1), bottom_data, scale_data, Dtype(0), top_data);
+  if (do_forward_) {
+    int num = bottom[0]->num();
+    int channels = bottom[0]->channels();
+    int spatial_dim = bottom[0]->height() * bottom[0]->width();
+    // NOLINT_NEXT_LINE(whitespace/operators)
+    kernel_channel_scale<Dtype> << <CAFFE_GET_BLOCKS(num*channels*spatial_dim),
+      CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, Dtype(1), bottom_data, scale_data, Dtype(0), top_data);
+  }
+  else {
+    caffe_copy(bottom[0]->count(), bottom_data, top_data);
+  }
 }
 
 
@@ -66,16 +71,26 @@ void ChannelScaleLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   int spatial_dim = bottom[0]->height() * bottom[0]->width();
 
   if (propagate_down[1]) {
-    caffe_gpu_mul(bottom[0]->count(), top_diff, bottom_data, bottom_diff);
-    // NOLINT_NEXT_LINE(whitespace/operators)
-    kernel_channel_sum<Dtype> << <CAFFE_GET_BLOCKS(num*spatial_dim),
-      CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, bottom_diff, scale_diff);
+    if (do_backward_scale_) {
+      caffe_gpu_mul(bottom[0]->count(), top_diff, bottom_data, bottom_diff);
+      // NOLINT_NEXT_LINE(whitespace/operators)
+      kernel_channel_sum<Dtype> << <CAFFE_GET_BLOCKS(num*spatial_dim),
+        CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, bottom_diff, scale_diff);
+    }
+    else {
+      caffe_gpu_set(bottom[1]->count(), Dtype(0), scale_diff);
+    }
   }
   
   if (propagate_down[0]) {
-    // NOLINT_NEXT_LINE(whitespace/operators)
-    kernel_channel_scale<Dtype> << <CAFFE_GET_BLOCKS(num*channels*spatial_dim),
-      CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, Dtype(1), top_diff, scale_data, Dtype(0), bottom_diff);
+    if (do_backward_feature_) {
+      // NOLINT_NEXT_LINE(whitespace/operators)
+      kernel_channel_scale<Dtype> << <CAFFE_GET_BLOCKS(num*channels*spatial_dim),
+        CAFFE_CUDA_NUM_THREADS >> >(num, channels, spatial_dim, Dtype(1), top_diff, scale_data, Dtype(0), bottom_diff);
+    }
+    else {
+      caffe_copy(bottom[0]->count(), top_diff, bottom_diff);
+    }
   }
 }
 

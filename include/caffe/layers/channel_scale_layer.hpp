@@ -37,6 +37,9 @@ namespace caffe {
                               const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
     Blob<Dtype> sum_multiplier_;
+    bool do_forward_;
+    bool do_backward_feature_;
+    bool do_backward_scale_;
   };
 
 }

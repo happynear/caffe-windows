@@ -15,6 +15,9 @@ void ChannelScaleLayer<Dtype>::LayerSetUp(
   const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top) {
   CHECK(bottom[0]->num() == bottom[1]->num());
   CHECK(bottom[0]->count() / bottom[0]->channels() == bottom[1]->count());
+  do_forward_ = this->layer_param_.channel_scale_param().do_forward();
+  do_backward_feature_ = this->layer_param_.channel_scale_param().do_backward_feature();
+  do_backward_scale_ = this->layer_param_.channel_scale_param().do_backward_scale();
 }
 
 template <typename Dtype>
@@ -29,15 +32,21 @@ void ChannelScaleLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
   const Dtype* bottom_data = bottom[0]->cpu_data();
   const Dtype* scale_data = bottom[1]->cpu_data();
   Dtype* top_data = top[0]->mutable_cpu_data();
-  int num = bottom[0]->num();
-  int channels = bottom[0]->channels();
-  int spatial_dim = bottom[0]->height() * bottom[0]->width();
-  for (int n = 0; n < num; n++) {
-    for (int s = 0; s < spatial_dim; s++) {
-      for (int c = 0; c < channels; c++) {
-        top_data[(n * channels + c) * spatial_dim + s] = scale_data[n*spatial_dim + s] * bottom_data[(n * channels + c) * spatial_dim + s];
+  
+  if (do_forward_) {
+    int num = bottom[0]->num();
+    int channels = bottom[0]->channels();
+    int spatial_dim = bottom[0]->height() * bottom[0]->width();
+    for (int n = 0; n < num; n++) {
+      for (int s = 0; s < spatial_dim; s++) {
+        for (int c = 0; c < channels; c++) {
+          top_data[(n * channels + c) * spatial_dim + s] = scale_data[n*spatial_dim + s] * bottom_data[(n * channels + c) * spatial_dim + s];
+        }
       }
     }
+  }
+  else {
+    caffe_copy(bottom[0]->count(), bottom_data, top_data);
   }
 }
 
@@ -55,17 +64,22 @@ void ChannelScaleLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
   int spatial_dim = bottom[0]->height() * bottom[0]->width();
 
   if (propagate_down[0]) {
-    for (int n = 0; n < num; n++) {
-      for (int s = 0; s < spatial_dim; s++) {
-        for (int c = 0; c < channels; c++) {
-          bottom_diff[(n * channels + c) * spatial_dim + s] = scale_data[n*spatial_dim + s] * top_diff[(n * channels + c) * spatial_dim + s];
+    if (do_backward_feature_) {
+      for (int n = 0; n < num; n++) {
+        for (int s = 0; s < spatial_dim; s++) {
+          for (int c = 0; c < channels; c++) {
+            bottom_diff[(n * channels + c) * spatial_dim + s] = scale_data[n*spatial_dim + s] * top_diff[(n * channels + c) * spatial_dim + s];
+          }
         }
       }
+    }
+    else {
+      caffe_copy(bottom[0]->count(), top_diff, bottom_diff);
     }
   }
 
   caffe_set(num*spatial_dim, Dtype(0), scale_diff);
-  if (propagate_down[1]) {
+  if (propagate_down[1] && do_backward_scale_) {
     for (int n = 0; n < num; n++) {
       for (int s = 0; s < spatial_dim; s++) {
         for (int c = 0; c < channels; c++) {
