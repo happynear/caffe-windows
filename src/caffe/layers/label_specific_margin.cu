@@ -74,11 +74,11 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
   int count = bottom[0]->count();
   int dim = count / num;
 
-  if (has_margin_base_) {
+  if (has_margin_base_ && this->phase_ == TRAIN) {
     margin[0] = margin_base_ + pow(((Dtype)1. + gamma_ * iter_), power_) - 1;
     iter_++;
   }
-  if (has_margin_max_) {
+  if (has_margin_max_ && this->phase_ == TRAIN) {
     margin[0] = std::min(margin[0], margin_max_);
   }
 
@@ -93,48 +93,48 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
     CUDA_POST_KERNEL_CHECK;
 
     Dtype positive_mean;
-    Dtype positive_std;
+    //Dtype positive_std;
     Dtype negative_mean;
-    Dtype negative_std;
+    //Dtype negative_std;
     
     // NOLINT_NEXT_LINE(whitespace/operators)
     ArccosForward<Dtype> << <CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS >> > (
       count, bottom_data, bottom_angle.mutable_gpu_data());
-    caffe_gpu_powx(count, bottom_angle.gpu_data(), Dtype(2), bottom_square.mutable_gpu_data());
+    //caffe_gpu_powx(count, bottom_angle.gpu_data(), Dtype(2), bottom_square.mutable_gpu_data());
     caffe_gpu_dot(count, bottom_angle.gpu_data(), positive_mask.gpu_data(), &positive_mean);
-    caffe_gpu_dot(count, bottom_square.gpu_data(), positive_mask.gpu_data(), &positive_std);
+    //caffe_gpu_dot(count, bottom_square.gpu_data(), positive_mask.gpu_data(), &positive_std);
     caffe_gpu_dot(count, bottom_angle.gpu_data(), negative_mask.gpu_data(), &negative_mean);
-    caffe_gpu_dot(count, bottom_square.gpu_data(), negative_mask.gpu_data(), &negative_std);
+    //caffe_gpu_dot(count, bottom_square.gpu_data(), negative_mask.gpu_data(), &negative_std);
 
     positive_mean /= num;
-    positive_std = sqrt(positive_std / num - positive_mean * positive_mean);
+    //positive_std = sqrt(positive_std / num - positive_mean * positive_mean);
     negative_mean /= num * (dim - 1);
-    negative_std = sqrt(negative_std / num / (dim - 1) - negative_mean * negative_mean);
+    //negative_std = sqrt(negative_std / num / (dim - 1) - negative_mean * negative_mean);
     
     if (this->phase_ == TEST) {
       top[1]->mutable_cpu_data()[0] = margin[0];
       top[1]->mutable_cpu_data()[1] = positive_mean;
-      top[1]->mutable_cpu_data()[2] = positive_std;
-      top[1]->mutable_cpu_data()[3] = negative_mean;
-      top[1]->mutable_cpu_data()[4] = negative_std;
+      //top[1]->mutable_cpu_data()[2] = positive_std;
+      top[1]->mutable_cpu_data()[2] = negative_mean;
+      //top[1]->mutable_cpu_data()[4] = negative_std;
     }
     else {
       if (iter_ == 1) {
         margin[1] = positive_mean;
-        margin[2] = positive_std;
-        margin[3] = negative_mean;
-        margin[4] = negative_std;
+        //margin[2] = positive_std;
+        margin[2] = negative_mean;
+        //margin[4] = negative_std;
       }
       else {
         margin[1] = 0.99 * margin[1] + 0.01 * positive_mean;
-        margin[2] = 0.99 * margin[2] + 0.01 * positive_std;
-        margin[3] = 0.99 * margin[3] + 0.01 * negative_mean;
-        margin[4] = 0.99 * margin[4] + 0.01 * negative_std;
+        //margin[2] = 0.99 * margin[2] + 0.01 * positive_std;
+        margin[2] = 0.99 * margin[2] + 0.01 * negative_mean;
+        //margin[4] = 0.99 * margin[4] + 0.01 * negative_std;
       }
      
       //margin[0] = (margin[3] - margin[1]) / (margin[2] + margin[4]) * margin[2];
-      margin[0] = (margin[3] - margin[1]) / 2;
-      caffe_copy(5, this->blobs_[0]->cpu_data(), top[1]->mutable_cpu_data());
+      margin[0] = (margin[2] - margin[1]) / 2;
+      caffe_copy(3, this->blobs_[0]->cpu_data(), top[1]->mutable_cpu_data());
     }
   }
   if (top.size() >= 2 && !auto_tune_) {

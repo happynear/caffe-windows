@@ -25,7 +25,7 @@ namespace caffe {
     else {
       this->blobs_.resize(1);
       if (auto_tune_) {
-        this->blobs_[0].reset(new Blob<Dtype>({ 5 }));
+        this->blobs_[0].reset(new Blob<Dtype>({ 3 }));
         caffe_set(5, Dtype(0), this->blobs_[0]->mutable_cpu_data());
       }
       else {
@@ -50,11 +50,11 @@ namespace caffe {
     top[0]->ReshapeLike(*bottom[0]);
     if (top.size() == 2) {
       if (auto_tune_) {
-        top[1]->Reshape({ 5 });
+        top[1]->Reshape({ 3 });
         positive_mask.ReshapeLike(*bottom[0]);
         negative_mask.ReshapeLike(*bottom[0]);
         bottom_angle.ReshapeLike(*bottom[0]);
-        bottom_square.ReshapeLike(*bottom[0]);
+        //bottom_square.ReshapeLike(*bottom[0]);
       }
       else {
         top[1]->Reshape({ 1 });
