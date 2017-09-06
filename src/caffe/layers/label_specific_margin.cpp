@@ -61,7 +61,7 @@ namespace caffe {
       }
     }
     if (type_ == LabelSpecificMarginParameter_MarginType::LabelSpecificMarginParameter_MarginType_SOFT) {
-      one_minus_x.ReshapeLike(*bottom[0]);
+      theta.ReshapeLike(*bottom[0]);
     }
   }
 

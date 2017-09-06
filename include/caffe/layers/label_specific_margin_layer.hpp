@@ -49,7 +49,7 @@ class LabelSpecificMarginLayer : public Layer<Dtype> {
   Blob<Dtype> positive_mask, negative_mask;
   Blob<Dtype> bottom_angle, bottom_square;
   LabelSpecificMarginParameter_MarginType type_;
-  Blob<Dtype> one_minus_x;
+  Blob<Dtype> theta;
 };
 
 }  // namespace caffe

@@ -24,21 +24,23 @@ namespace caffe {
 
   template <typename Dtype>
   __global__ void LabelSpecificSoftMarginForward(const int n, const int dim, const Dtype* bottom_data, const Dtype* label,
-                                                 Dtype* top_data, Dtype* one_minus_x) {
+                                                 Dtype* top_data, Dtype* theta, Dtype margin) {
     CUDA_KERNEL_LOOP(index, n) {
       int gt = static_cast<int>(label[index]);
-      one_minus_x[index * dim + gt] = sqrt(1 - bottom_data[index * dim + gt] * bottom_data[index * dim + gt]);
-      Dtype sign_data = (Dtype(0) < bottom_data[index * dim + gt]) - (bottom_data[index * dim + gt] < Dtype(0));
-      top_data[index * dim + gt] = sign_data * sqrt(0.5 * (1 - one_minus_x[index * dim + gt]));
+      theta[index * dim + gt] = acos(bottom_data[index * dim + gt]);
+      if (margin * theta[index * dim + gt] > M_PI - 1e-2) {
+        theta[index * dim + gt] = M_PI - 1e-2;
+      }
+      top_data[index * dim + gt] = cos(margin * theta[index * dim + gt]);
     }
   }
 
   template <typename Dtype>
   __global__ void LabelSpecificSoftMarginBackward(const int n, const int dim, const Dtype* top_diff, const Dtype* label,
-                                                  Dtype* bottom_diff, const Dtype* bottom_data, const Dtype* one_minus_x, const Dtype* top_data) {
+                                                  Dtype* bottom_diff, const Dtype* bottom_data, const Dtype* theta, const Dtype* top_data, Dtype margin) {
     CUDA_KERNEL_LOOP(index, n) {
       int gt = static_cast<int>(label[index]);
-      bottom_diff[index * dim + gt] = top_diff[index * dim + gt] * bottom_data[index * dim + gt] / one_minus_x[index * dim + gt] / top_data[index * dim + gt] / 4;
+      bottom_diff[index * dim + gt] = top_diff[index * dim + gt] * margin * sin(margin * theta[index * dim + gt]) / sqrt(1 - bottom_data[index * dim + gt] * bottom_data[index * dim + gt] + 1e-12);
     }
   }
 
@@ -148,7 +150,7 @@ void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bo
     if (type_ == LabelSpecificMarginParameter_MarginType_SOFT) {
       // NOLINT_NEXT_LINE(whitespace/operators)
       LabelSpecificSoftMarginForward<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
-        num, dim, bottom_data, label_data, top_data, one_minus_x.mutable_gpu_data());
+        num, dim, bottom_data, label_data, top_data, theta.mutable_gpu_data(), margin[0]);
       CUDA_POST_KERNEL_CHECK;
     }
     else {
@@ -183,7 +185,7 @@ void LabelSpecificMarginLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& t
       if (type_ == LabelSpecificMarginParameter_MarginType_SOFT) {
         // NOLINT_NEXT_LINE(whitespace/operators)
         LabelSpecificSoftMarginBackward<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
-          num, dim, top_diff, label_data, bottom_diff, bottom_data, one_minus_x.gpu_data(), top_data);
+          num, dim, top_diff, label_data, bottom_diff, bottom_data, theta.gpu_data(), top_data, margin[0]);
         CUDA_POST_KERNEL_CHECK;
       }
       else {
