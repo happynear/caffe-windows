@@ -71,6 +71,15 @@ namespace caffe {
   }
 
   template <typename Dtype>
+  __global__ void LabelSpecificHardMarginBackwardToMargin(const int n, const int dim, const Dtype* top_diff, const Dtype* label,
+                                                          Dtype* margin_diff, const Dtype* top_data) {
+    CUDA_KERNEL_LOOP(index, n) {
+      int gt = static_cast<int>(label[index]);
+      margin_diff[index] = top_diff[index * dim + gt] * sqrt(1 - top_data[index * dim + gt] * top_data[index * dim + gt]);
+    }
+  }
+
+  template <typename Dtype>
   void LabelSpecificMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
                                                     const vector<Blob<Dtype>*>& top) {
     const Dtype* bottom_data = bottom[0]->gpu_data();
@@ -90,7 +99,7 @@ namespace caffe {
       margin[0] = std::min(margin[0], margin_max_);
     }
 
-    if (top.size() >= 2 && auto_tune_) {
+    if (top.size() == 2 && auto_tune_) {
       Dtype *positive_mask_data = positive_mask.mutable_gpu_data();
       Dtype *negative_mask_data = negative_mask.mutable_gpu_data();
       caffe_gpu_set(count, Dtype(0), positive_mask_data);
@@ -145,7 +154,10 @@ namespace caffe {
         caffe_copy(3, this->blobs_[0]->cpu_data(), top[1]->mutable_cpu_data());
       }
     }
-    if (top.size() >= 2 && !auto_tune_) {
+    if (bottom.size() == 3) {
+      margin[0] = bottom[2]->cpu_data()[0];
+    }
+    if (top.size() >= 2) {
       top[1]->mutable_cpu_data()[0] = margin[0];
     }
 
@@ -199,6 +211,13 @@ namespace caffe {
           LabelSpecificHardMarginBackward<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
             num, dim, top_diff, label_data, bottom_diff, bottom_data, cos(margin[0] / 180 * M_PI), sin(margin[0] / 180 * M_PI));
           CUDA_POST_KERNEL_CHECK;
+          if (bottom.size() == 3 && propagate_down[3]) {
+            // NOLINT_NEXT_LINE(whitespace/operators)
+            LabelSpecificHardMarginBackwardToMargin<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
+              num, dim, top_diff, label_data, positive_data.mutable_gpu_data(), top_data);
+            CUDA_POST_KERNEL_CHECK;
+            caffe_gpu_dot(num, positive_data.gpu_data(), sum_multiplier_.gpu_data(), bottom[3]->mutable_cpu_data());
+          }
         }
       }
     }
