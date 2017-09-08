@@ -8,7 +8,7 @@ namespace caffe {
   template <typename Dtype>
   void LabelSpecificAffineLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
                                                     const vector<Blob<Dtype>*>& top) {
-    const LabelSpecificAffineParameter& param = this->layer_param_.label_specific_margin_param();
+    const LabelSpecificAffineParameter& param = this->layer_param_.label_specific_affine_param();
     scale_base_ = param.scale_base();
     scale_gamma_ = param.scale_gamma();
     scale_power_ = param.scale_power();
@@ -18,11 +18,12 @@ namespace caffe {
     bias_power_ = param.bias_power();
     bias_max_ = param.bias_max();
     iteration_ = param.iteration();
+    reset_ = param.reset();
     transform_test_ = param.transform_test() & (this->phase_ == TRAIN);
     auto_tune_ = param.auto_tune();
     if (this->blobs_.size() > 0) {
       LOG(INFO) << "Skipping parameter initialization";
-      if (reset) {
+      if (reset_) {
         this->blobs_[0]->mutable_cpu_data()[0] = scale_base_;
         this->blobs_[0]->mutable_cpu_data()[1] = bias_base_;
       }
@@ -50,7 +51,7 @@ namespace caffe {
 
 template <typename Dtype>
 void LabelSpecificAffineLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
-    const vector<Blob<Dtype>*>& top) {
+                                                  const vector<Blob<Dtype>*>& top) {
   const Dtype* bottom_data = bottom[0]->cpu_data();
   const Dtype* label_data = bottom[1]->cpu_data();
   Dtype* top_data = top[0]->mutable_cpu_data();
@@ -77,7 +78,7 @@ void LabelSpecificAffineLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bo
       iteration_++;
     }
   }
-  
+
   caffe_copy(count, bottom_data, top_data);
   if (top.size() >= 2) {
     top[1]->mutable_cpu_data()[0] = scale;
@@ -85,11 +86,9 @@ void LabelSpecificAffineLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bo
   }
 
   if (!transform_test_ && this->phase_ == TEST) return;
-  if (margin[0] != Dtype(0.0)) {
-    for (int i = 0; i < num; ++i) {
-      int gt = static_cast<int>(label_data[i]);
-      top_data[i * dim + gt] = bottom_data[i * dim + gt] * scale + bias;
-    }
+  for (int i = 0; i < num; ++i) {
+    int gt = static_cast<int>(label_data[i]);
+    top_data[i * dim + gt] = bottom_data[i * dim + gt] * scale + bias;
   }
 }
 

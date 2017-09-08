@@ -48,6 +48,7 @@ class LabelSpecificAffineLayer : public Layer<Dtype> {
   bool transform_test_;
   int iteration_;
   bool auto_tune_;
+  bool reset_;
   Dtype scale, bias;
   Blob<Dtype> selected_value_;
   Blob<Dtype> sum_multiplier_;
