@@ -46,6 +46,7 @@ namespace caffe {
     if (auto_tune_ || bottom.size() == 3) {
       selected_value_.Reshape({ bottom[0]->num() });
       sum_multiplier_.Reshape({ bottom[0]->num() });
+      caffe_set(sum_multiplier_.count(), Dtype(1), sum_multiplier_.mutable_cpu_data());
     }
   }
 
