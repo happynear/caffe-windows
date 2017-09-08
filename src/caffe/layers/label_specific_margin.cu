@@ -9,6 +9,8 @@ namespace caffe {
   template <typename Dtype>
   __global__ void ArcCosDegree(const int n, const Dtype* in, Dtype* out) {
     CUDA_KERNEL_LOOP(index, n) {
+      Dtype fixed_in_data = min(in[index], Dtype(1.0) - Dtype(1e-4));
+      fixed_in_data = max(fixed_in_data, Dtype(-1.0) + Dtype(1e-4));
       out[index] = Dtype(acos(in[index]) / M_PI * 180.0);
     }
   }
@@ -28,8 +30,8 @@ namespace caffe {
     CUDA_KERNEL_LOOP(index, n) {
       int gt = static_cast<int>(label[index]);
       theta[index * dim + gt] = acos(bottom_data[index * dim + gt]);
-      if (margin * theta[index * dim + gt] > M_PI - 1e-2) {
-        theta[index * dim + gt] = M_PI - 1e-2;
+      if (margin * theta[index * dim + gt] > M_PI - 1e-4) {
+        theta[index * dim + gt] = M_PI - 1e-4;
       }
       top_data[index * dim + gt] = cos(margin * theta[index * dim + gt]);
     }
@@ -40,9 +42,11 @@ namespace caffe {
                                                   Dtype* bottom_diff, const Dtype* bottom_data, const Dtype* theta, const Dtype* top_data, Dtype margin) {
     CUDA_KERNEL_LOOP(index, n) {
       int gt = static_cast<int>(label[index]);
-      Dtype gradient = margin * sin(margin * theta[index * dim + gt]) / sqrt(1 - bottom_data[index * dim + gt] * bottom_data[index * dim + gt] + 1e-12);
+      Dtype fixed_bottom_data = min(bottom_data[index * dim + gt], Dtype(1.0) - Dtype(1e-4));
+      fixed_bottom_data = max(fixed_bottom_data, Dtype(-1.0) + Dtype(1e-4));
+      Dtype gradient = margin * sin(margin * theta[index * dim + gt]) / sqrt(1 - fixed_bottom_data * fixed_bottom_data);
       gradient = gradient > 2 ? 2 : gradient;//bound the gradient.
-      gradient = gradient < -2 ? -2 : gradient;
+      gradient = gradient < 0 ? 0 : gradient;
       bottom_diff[index * dim + gt] = top_diff[index * dim + gt] * gradient;
     }
   }
@@ -51,9 +55,11 @@ namespace caffe {
   __global__ void LabelSpecificHardMarginForward(const int n, const int dim, const Dtype* bottom_data, const Dtype* label,
                                                  Dtype* top_data, Dtype cos_margin, Dtype sin_margin) {
     CUDA_KERNEL_LOOP(index, n) {
-      int l = static_cast<int>(label[index]);
-      top_data[index * dim + l] = bottom_data[index * dim + l] * cos_margin -
-        sqrt(1 - bottom_data[index * dim + l] * bottom_data[index * dim + l] + 1e-12) * sin_margin;
+      int gt = static_cast<int>(label[index]);
+      Dtype fixed_bottom_data = min(bottom_data[index * dim + gt], Dtype(1.0) - Dtype(1e-4));
+      fixed_bottom_data = max(fixed_bottom_data, Dtype(-1.0) + Dtype(1e-4));
+      top_data[index * dim + gt] = fixed_bottom_data * cos_margin -
+        sqrt(1 - fixed_bottom_data * fixed_bottom_data) * sin_margin;
     }
   }
 
@@ -62,10 +68,11 @@ namespace caffe {
                                                   Dtype* bottom_diff, const Dtype* bottom_data, Dtype cos_margin, Dtype sin_margin) {
     CUDA_KERNEL_LOOP(index, n) {
       int gt = static_cast<int>(label[index]);
-      Dtype gradient = cos_margin -
-        bottom_data[index * dim + gt] / sqrt(1 - bottom_data[index * dim + gt] * bottom_data[index * dim + gt] + 1e-12) * sin_margin;
+      Dtype fixed_bottom_data = min(bottom_data[index * dim + gt], Dtype(1.0) - Dtype(1e-4));
+      fixed_bottom_data = max(fixed_bottom_data, Dtype(-1.0) + Dtype(1e-4));
+      Dtype gradient = cos_margin - fixed_bottom_data / sqrt(1 - fixed_bottom_data * fixed_bottom_data) * sin_margin;
       gradient = gradient > 2 ? 2 : gradient;//bound the gradient.
-      gradient = gradient < -2 ? -2 : gradient;
+      gradient = gradient < 0 ? 0 : gradient;
       bottom_diff[index * dim + gt] = top_diff[index * dim + gt] * gradient;
     }
   }

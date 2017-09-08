@@ -10,7 +10,9 @@ namespace caffe {
   template <typename Dtype>
   __global__ void ArccosForward(const int n, const Dtype* in, Dtype* out) {
     CUDA_KERNEL_LOOP(index, n) {
-      out[index] = acosf(in[index]);
+      Dtype fixed_in_data = min(in[index], Dtype(1.0) - Dtype(1e-4));
+      fixed_in_data = max(fixed_in_data, Dtype(-1.0) + Dtype(1e-4));
+      out[index] = acosf(fixed_in_data);
     }
   }
 
@@ -18,7 +20,8 @@ namespace caffe {
   template <typename Dtype>
   __global__ void ArccosBackward(const int n, const Dtype* in_diff, const Dtype* in_data, Dtype* out_diff) {
     CUDA_KERNEL_LOOP(index, n) {
-      Dtype fixed_in_data = min(in_data[index], Dtype(1.0) - Dtype(0.01));
+      Dtype fixed_in_data = min(in_data[index], Dtype(1.0) - Dtype(1e-4));
+      fixed_in_data = max(fixed_in_data, Dtype(-1.0) + Dtype(1e-4));
       out_diff[index] = in_diff[index] * -1 / sqrtf(1.0f - fixed_in_data * fixed_in_data);
     }
   }
