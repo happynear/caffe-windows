@@ -451,6 +451,7 @@ message LayerParameter {
   optional FocalLossParameter focal_loss_param = 235;
   optional LabelSpecificMarginParameter label_specific_margin_param = 236;
   optional ChannelScaleParameter channel_scale_param = 237;
+  optional LabelSpecificAffineParameter label_specific_affine_param = 238;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1948,4 +1949,19 @@ message ChannelScaleParameter{
   optional bool do_forward = 1 [default = true];
   optional bool do_backward_feature = 2 [default = true];
   optional bool do_backward_scale = 3 [default = true];
+}
+
+message LabelSpecificAffineParameter {
+  optional float scale_base = 1 [default = 1.0];
+  optional float scale_gamma = 2 [default = 0.0];
+  optional float scale_power = 3 [default = 1.0];
+  optional float scale_max = 4 [default =1.0];
+  optional bool transform_test = 5 [default = false];
+  optional uint32 iteration = 6 [default = 0];
+  optional float bias_base = 7 [default = 0.0];
+  optional float bias_gamma = 8 [default = 0.0];
+  optional float bias_power = 9 [default = 1.0];
+  optional float bias_max = 10 [default =0.0];
+  optional bool auto_tune = 11 [default = false];
+  optional bool reset = 12 [default = false];
 }
