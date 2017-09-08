@@ -90,6 +90,7 @@ void LabelSpecificAffineLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bo
   for (int i = 0; i < num; ++i) {
     int gt = static_cast<int>(label_data[i]);
     top_data[i * dim + gt] = bottom_data[i * dim + gt] * scale + bias;
+    if (top_data[index * dim + gt] > M_PI - 1e-4) top_data[index * dim + gt] = M_PI - 1e-4;
   }
 }
 

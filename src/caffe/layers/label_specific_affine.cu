@@ -11,7 +11,8 @@ namespace caffe {
                                                  Dtype* top_data, Dtype scale, Dtype bias) {
     CUDA_KERNEL_LOOP(index, n) {
       int gt = static_cast<int>(label[index]);
-      top_data[index * dim + gt] = bottom_data[index * dim + gt] * scale + bias;
+      top_data[index * dim + gt] = bottom_data[index * dim + gt] * scale + bias / 180 * M_PI;
+      if (top_data[index * dim + gt] > M_PI - 1e-4) top_data[index * dim + gt] = M_PI - 1e-4;
     }
   }
 
@@ -73,6 +74,10 @@ namespace caffe {
     }
 
     caffe_copy(count, bottom_data, top_data);
+    if (top.size() >= 2) {
+      top[1]->mutable_cpu_data()[0] = scale;
+      top[1]->mutable_cpu_data()[1] = bias;
+    }
     if (!transform_test_ && this->phase_ == TEST) return;
 
     // NOLINT_NEXT_LINE(whitespace/operators)
