@@ -105,7 +105,7 @@ namespace caffe {
       CUDA_POST_KERNEL_CHECK;
     }
 
-    if (auto_tune_ || (bottom.size() == 3 && propagate_down[2]) {
+    if (auto_tune_ || (bottom.size() == 3 && propagate_down[2])) {
       // NOLINT_NEXT_LINE(whitespace/operators)
       LabelSpecificAffineBackwardScale<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
         num, dim, top_diff, label_data, bottom_data, selected_value_.mutable_gpu_data());

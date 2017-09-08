@@ -116,7 +116,7 @@ void LabelSpecificAffineLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& t
     }
   }
 
-  if (auto_tune_ || (bottom.size() == 3 && propagate_down[2]) {
+  if (auto_tune_ || (bottom.size() == 3 && propagate_down[2])) {
     scale_bias_diff[0] = Dtype(0);
     scale_bias_diff[0] = Dtype(1);
     for (int i = 0; i < num; ++i) {
