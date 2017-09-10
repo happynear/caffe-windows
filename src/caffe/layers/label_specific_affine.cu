@@ -8,20 +8,20 @@ namespace caffe {
 
   template <typename Dtype>
   __global__ void LabelSpecificAffineForward(const int n, const int dim, const Dtype* bottom_data, const Dtype* label,
-                                                 Dtype* top_data, Dtype scale, Dtype bias) {
+                                                 Dtype* top_data, Dtype scale, Dtype bias, Dtype power) {
     CUDA_KERNEL_LOOP(index, n) {
       int gt = static_cast<int>(label[index]);
-      top_data[index * dim + gt] = bottom_data[index * dim + gt] * scale + bias / 180 * M_PI;
+      top_data[index * dim + gt] = pow(bottom_data[index * dim + gt], power) * scale + bias / 180 * M_PI;
       if (top_data[index * dim + gt] > M_PI - 1e-4) top_data[index * dim + gt] = M_PI - 1e-4;
     }
   }
 
   template <typename Dtype>
   __global__ void LabelSpecificAffineBackward(const int n, const int dim, const Dtype* top_diff, const Dtype* label,
-                                              Dtype* bottom_diff, Dtype scale) {
+                                              const Dtype* bottom_data, Dtype* bottom_diff, Dtype scale, Dtype power) {
     CUDA_KERNEL_LOOP(index, n) {
       int gt = static_cast<int>(label[index]);
-      bottom_diff[index * dim + gt] = top_diff[index * dim + gt] * scale;
+      bottom_diff[index * dim + gt] = top_diff[index * dim + gt] * scale * power * pow(bottom_data[index * dim + gt], power - 1);
     }
   }
 
@@ -58,17 +58,21 @@ namespace caffe {
     if (this->phase_ == TEST) {
       scale = Dtype(1);
       bias = Dtype(0);
+      power = Dtype(1);
     }
     else {
       if (auto_tune_) {
         scale = scale_bias[0];
         bias = scale_bias[1];
+        power = scale_bias[2];
       }
       else {
         scale = scale_base_ * pow(((Dtype)1. + scale_gamma_ * iteration_), scale_power_);
         bias = bias_base_ + pow(((Dtype)1. + bias_gamma_ * iteration_), bias_power_) - (Dtype)1.;
+        power = power_base_ * pow(((Dtype)1. + power_gamma_ * iteration_), power_power_);
         scale = std::min(scale, scale_max_);
         bias = std::min(bias, bias_max_);
+        power = std::max(power, power_min_);
         iteration_++;
       }
     }
@@ -77,12 +81,13 @@ namespace caffe {
     if (top.size() >= 2) {
       top[1]->mutable_cpu_data()[0] = scale;
       top[1]->mutable_cpu_data()[1] = bias;
+      top[1]->mutable_cpu_data()[2] = power;
     }
     if (!transform_test_ && this->phase_ == TEST) return;
 
     // NOLINT_NEXT_LINE(whitespace/operators)
     LabelSpecificAffineForward<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
-      num, dim, bottom_data, label_data, top_data, scale, bias);
+      num, dim, bottom_data, label_data, top_data, scale, bias, power);
     CUDA_POST_KERNEL_CHECK;
   }
 
@@ -106,7 +111,7 @@ namespace caffe {
 
       // NOLINT_NEXT_LINE(whitespace/operators)
       LabelSpecificAffineBackward<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
-        num, dim, top_diff, label_data, bottom_diff, scale);
+        num, dim, top_diff, label_data, bottom_data, bottom_diff, scale, power);
       CUDA_POST_KERNEL_CHECK;
     }
 

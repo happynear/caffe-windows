@@ -17,10 +17,14 @@ namespace caffe {
     bias_gamma_ = param.bias_gamma();
     bias_power_ = param.bias_power();
     bias_max_ = param.bias_max();
+    power_base_ = param.power_base();
+    power_gamma_ = param.power_gamma();
+    power_power_ = param.power_power();
+    power_min_ = param.power_min();
     iteration_ = param.iteration();
     reset_ = param.reset();
     transform_test_ = param.transform_test() & (this->phase_ == TRAIN);
-    auto_tune_ = param.auto_tune();
+    auto_tune_ = param.auto_tune();//doesn't work.
     if (this->blobs_.size() > 0) {
       LOG(INFO) << "Skipping parameter initialization";
       if (reset_) {
@@ -30,7 +34,7 @@ namespace caffe {
     }
     else {
       this->blobs_.resize(1);
-      this->blobs_[0].reset(new Blob<Dtype>({ 2 }));
+      this->blobs_[0].reset(new Blob<Dtype>({ 3 }));
       this->blobs_[0]->mutable_cpu_data()[0] = scale_base_;
       this->blobs_[0]->mutable_cpu_data()[1] = bias_base_;
     }
@@ -41,7 +45,7 @@ namespace caffe {
                                                     const vector<Blob<Dtype>*>& top) {
     top[0]->ReshapeLike(*bottom[0]);
     if (top.size() == 2) {
-      top[1]->Reshape({ 2 });
+      top[1]->Reshape({ 3 });
     }
     if (auto_tune_ || bottom.size() == 3) {
       selected_value_.Reshape({ bottom[0]->num() });
@@ -65,17 +69,21 @@ void LabelSpecificAffineLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bo
   if (this->phase_ == TEST) {
     scale = Dtype(1);
     bias = Dtype(0);
+    power = Dtype(1);
   }
   else {
     if (auto_tune_) {
       scale = scale_bias[0];
       bias = scale_bias[1];
+      power = scale_bias[2];
     }
     else {
       scale = scale_base_ * pow(((Dtype)1. + scale_gamma_ * iteration_), scale_power_);
       bias = bias_base_ + pow(((Dtype)1. + bias_gamma_ * iteration_), bias_power_) - (Dtype)1.;
+      power = power_base_ * pow(((Dtype)1. + power_gamma_ * iteration_), power_power_);
       scale = std::min(scale, scale_max_);
       bias = std::min(bias, bias_max_);
+      power = std::max(power, power_min_);
       iteration_++;
     }
   }
@@ -84,12 +92,13 @@ void LabelSpecificAffineLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bo
   if (top.size() >= 2) {
     top[1]->mutable_cpu_data()[0] = scale;
     top[1]->mutable_cpu_data()[1] = bias;
+    top[1]->mutable_cpu_data()[2] = power;
   }
 
   if (!transform_test_ && this->phase_ == TEST) return;
   for (int i = 0; i < num; ++i) {
     int gt = static_cast<int>(label_data[i]);
-    top_data[i * dim + gt] = bottom_data[i * dim + gt] * scale + bias;
+    top_data[i * dim + gt] = pow(bottom_data[i * dim + gt], power) * scale + bias;
     if (top_data[i * dim + gt] > M_PI - 1e-4) top_data[i * dim + gt] = M_PI - 1e-4;
   }
 }
@@ -113,7 +122,7 @@ void LabelSpecificAffineLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& t
 
     for (int i = 0; i < num; ++i) {
       int gt = static_cast<int>(label_data[i]);
-      bottom_diff[i * dim + gt] = top_diff[i * dim + gt] * scale;
+      bottom_diff[i * dim + gt] = top_diff[i * dim + gt] * scale * power * pow(bottom_data[i * dim + gt], power - 1);
     }
   }
 

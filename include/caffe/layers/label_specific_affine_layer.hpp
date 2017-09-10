@@ -45,11 +45,15 @@ class LabelSpecificAffineLayer : public Layer<Dtype> {
   Dtype bias_gamma_;
   Dtype bias_power_;
   Dtype bias_max_;
+  Dtype power_base_;
+  Dtype power_gamma_;
+  Dtype power_power_;
+  Dtype power_min_;
   bool transform_test_;
   int iteration_;
   bool auto_tune_;
   bool reset_;
-  Dtype scale, bias;
+  Dtype scale, bias, power;
   Blob<Dtype> selected_value_;
   Blob<Dtype> sum_multiplier_;
 };
