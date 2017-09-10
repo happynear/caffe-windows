@@ -2,6 +2,7 @@
 #define CAFFE_DATA_TRANSFORMER_HPP
 
 #include <vector>
+#include <random>
 
 #include "caffe/blob.hpp"
 #include "caffe/common.hpp"
@@ -144,6 +145,7 @@ class DataTransformer {
 
 
   shared_ptr<Caffe::RNG> rng_;
+  std::mt19937 prnd_;//caffe's RNG is difficult to use.
   Phase phase_;
   Blob<Dtype> data_mean_;
   vector<Dtype> mean_values_;
