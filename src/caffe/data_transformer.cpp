@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <random>
 
 #include "caffe/data_transformer.hpp"
 #include "caffe/util/io.hpp"
@@ -104,17 +105,17 @@ void DataTransformer<Dtype>::Transform(const Datum& datum,
     }
   }
 
-  cv::RNG rng(caffe_rng_rand());//caffe's rng is difficult to use.
-  const bool do_erase = param_.has_erase_ratio() & (rng.uniform(0.0,1.0) < param_.erase_ratio());
+  std::mt19937 prnd(time(NULL));
+  const bool do_erase = param_.has_erase_ratio() & (std::uniform_real_distribution<float>(0.0f, 1.0f)(prnd) < param_.erase_ratio());
   int erase_x_min = width, erase_x_max = -1, erase_y_min = height, erase_y_max = -1;
   if (do_erase) {
     do {
-      float erase_scale = rng.uniform(param_.scale_min(), param_.scale_max());
+      float erase_scale = std::uniform_real_distribution<float>(param_.scale_min(), param_.scale_max())(prnd);
       int erase_width = (float)width * erase_scale;
-      float erase_aspect = rng.uniform(param_.aspect_min(), param_.aspect_max());
+      float erase_aspect = std::uniform_real_distribution<float>(param_.aspect_min(), param_.aspect_max())(prnd);
       int erase_height = (float)erase_width * erase_aspect;
-      erase_x_min = rng.uniform(0, width);
-      erase_y_min = rng.uniform(0, height);
+      erase_x_min = std::uniform_int_distribution<int>(0, width)(prnd);
+      erase_y_min = std::uniform_int_distribution<int>(0, height)(prnd);
       erase_x_max = erase_x_min + erase_width - 1;
       erase_y_max = erase_y_min + erase_height - 1;
     } while (erase_x_min < 0 || erase_y_min < 0 || erase_x_max >= width || erase_y_max >= height);
@@ -365,17 +366,17 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& cv_img,
     }
   }
 
-  cv::RNG rng(caffe_rng_rand());//caffe's rng is difficult to use.
-  const bool do_erase = param_.has_erase_ratio() & (rng.uniform(0.0, 1.0) < param_.erase_ratio());
+  std::mt19937 prnd(time(NULL));
+  const bool do_erase = param_.has_erase_ratio() & (std::uniform_real_distribution<float>(0.0f, 1.0f)(prnd) < param_.erase_ratio());
   int erase_x_min = width, erase_x_max = -1, erase_y_min = height, erase_y_max = -1;
   if (do_erase) {
     do {
-      float erase_scale = rng.uniform(param_.scale_min(), param_.scale_max());
+      float erase_scale = std::uniform_real_distribution<float>(param_.scale_min(), param_.scale_max())(prnd);
       int erase_width = (float)width * erase_scale;
-      float erase_aspect = rng.uniform(param_.aspect_min(), param_.aspect_max());
+      float erase_aspect = std::uniform_real_distribution<float>(param_.aspect_min(), param_.aspect_max())(prnd);
       int erase_height = (float)erase_width * erase_aspect;
-      erase_x_min = rng.uniform(0, width);
-      erase_y_min = rng.uniform(0, height);
+      erase_x_min = std::uniform_int_distribution<int>(0, width)(prnd);
+      erase_y_min = std::uniform_int_distribution<int>(0, height)(prnd);
       erase_x_max = erase_x_min + erase_width - 1;
       erase_y_max = erase_y_min + erase_height - 1;
     } while (erase_x_min < 0 || erase_y_min < 0 || erase_x_max >= width || erase_y_max >= height);
