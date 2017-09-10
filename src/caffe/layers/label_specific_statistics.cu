@@ -48,6 +48,8 @@ namespace caffe {
 
     positive_mean /= M_PI / Dtype(180.0);
     negative_mean /= M_PI / Dtype(180.0);
+    positive_std /= M_PI / Dtype(180.0) * M_PI / Dtype(180.0);
+    negative_std /= M_PI / Dtype(180.0) * M_PI / Dtype(180.0);
     positive_mean /= num;
     positive_std = sqrt(positive_std / num - positive_mean * positive_mean);
     negative_mean /= num * (dim - 1);
@@ -58,7 +60,7 @@ namespace caffe {
     top[0]->mutable_cpu_data()[2] = negative_mean;
     top[0]->mutable_cpu_data()[3] = negative_std;
     if (top.size() == 2) {
-      top[1]->mutable_cpu_data()[0] = negative_mean - negative_std * 2 - positive_mean;
+      top[1]->mutable_cpu_data()[0] = (negative_mean - positive_mean)/2;
     }
   }
 

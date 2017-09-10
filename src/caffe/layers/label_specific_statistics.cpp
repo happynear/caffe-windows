@@ -16,7 +16,8 @@ namespace caffe {
                                                     const vector<Blob<Dtype>*>& top) {
     positive_mask.ReshapeLike(*bottom[0]);
     negative_mask.ReshapeLike(*bottom[0]);
-    top[0]->Reshape({ 2 });
+    bottom_square.ReshapeLike(*bottom[0]);
+    top[0]->Reshape({ 4 });
     if (top.size() == 2)top[1]->Reshape({ 1 });
   }
 
