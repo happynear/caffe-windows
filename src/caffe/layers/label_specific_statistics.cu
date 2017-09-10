@@ -36,27 +36,29 @@ namespace caffe {
     CUDA_POST_KERNEL_CHECK;
 
     Dtype positive_mean;
-    //Dtype positive_std;
+    Dtype positive_std;
     Dtype negative_mean;
-    //Dtype negative_std;
+    Dtype negative_std;
 
-    //caffe_gpu_powx(count, bottom_data, Dtype(2), bottom_square.mutable_gpu_data());
+    caffe_gpu_powx(count, bottom_data, Dtype(2), bottom_square.mutable_gpu_data());
     caffe_gpu_dot(count, bottom_data, positive_mask.gpu_data(), &positive_mean);
-    //caffe_gpu_dot(count, bottom_square.gpu_data(), positive_mask.gpu_data(), &positive_std);
+    caffe_gpu_dot(count, bottom_square.gpu_data(), positive_mask.gpu_data(), &positive_std);
     caffe_gpu_dot(count, bottom_data, negative_mask.gpu_data(), &negative_mean);
-    //caffe_gpu_dot(count, bottom_square.gpu_data(), negative_mask.gpu_data(), &negative_std);
+    caffe_gpu_dot(count, bottom_square.gpu_data(), negative_mask.gpu_data(), &negative_std);
 
     positive_mean /= M_PI / Dtype(180.0);
     negative_mean /= M_PI / Dtype(180.0);
     positive_mean /= num;
-    //positive_std = sqrt(positive_std / num - positive_mean * positive_mean);
+    positive_std = sqrt(positive_std / num - positive_mean * positive_mean);
     negative_mean /= num * (dim - 1);
-    //negative_std = sqrt(negative_std / num / (dim - 1) - negative_mean * negative_mean);
+    negative_std = sqrt(negative_std / num / (dim - 1) - negative_mean * negative_mean);
 
     top[0]->mutable_cpu_data()[0] = positive_mean;
-    top[0]->mutable_cpu_data()[1] = negative_mean;
+    top[0]->mutable_cpu_data()[1] = positive_std;
+    top[0]->mutable_cpu_data()[2] = negative_mean;
+    top[0]->mutable_cpu_data()[3] = negative_std;
     if (top.size() == 2) {
-      top[1]->mutable_cpu_data()[0] = (negative_mean - positive_mean) / Dtype(2);
+      top[1]->mutable_cpu_data()[0] = negative_mean - negative_std * 2 - positive_mean;
     }
   }
 
@@ -72,8 +74,8 @@ namespace caffe {
       int dim = count / num;
       Dtype top_diff = top[1]->cpu_diff()[0];
 
-      caffe_gpu_scal(count, -top_diff / Dtype(2) / Dtype(num) / Dtype(M_PI) * Dtype(180.0), positive_mask.mutable_gpu_data());
-      caffe_gpu_scal(count, top_diff / Dtype(2) / Dtype(num) / Dtype(dim - 1) / Dtype(M_PI) * Dtype(180.0), negative_mask.mutable_gpu_data());
+      caffe_gpu_scal(count, -top_diff / Dtype(num) / Dtype(M_PI) * Dtype(180.0), positive_mask.mutable_gpu_data());
+      caffe_gpu_scal(count, top_diff / Dtype(num) / Dtype(dim - 1) / Dtype(M_PI) * Dtype(180.0), negative_mask.mutable_gpu_data());
       caffe_gpu_add(count, positive_mask.gpu_data(), negative_mask.gpu_data(), bottom_diff);
     }
   }

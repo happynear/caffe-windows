@@ -37,7 +37,7 @@ class LabelSpecificStatisticsLayer : public Layer<Dtype> {
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
-  Blob<Dtype> positive_mask, negative_mask;
+  Blob<Dtype> positive_mask, negative_mask, bottom_square;
 };
 
 }  // namespace caffe
