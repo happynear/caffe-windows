@@ -11,7 +11,7 @@ namespace caffe {
                                                  Dtype* top_data, Dtype scale, Dtype bias, Dtype power) {
     CUDA_KERNEL_LOOP(index, n) {
       int gt = static_cast<int>(label[index]);
-      top_data[index * dim + gt] = pow(bottom_data[index * dim + gt], power) * scale + bias / 180 * M_PI;
+      top_data[index * dim + gt] = pow(bottom_data[index * dim + gt], power) * scale * pow(Dtype(M_PI), Dtype(1) - power) + bias / 180 * M_PI;
       if (top_data[index * dim + gt] > M_PI - 1e-4) top_data[index * dim + gt] = M_PI - 1e-4;
     }
   }
@@ -21,7 +21,7 @@ namespace caffe {
                                               const Dtype* bottom_data, Dtype* bottom_diff, Dtype scale, Dtype power) {
     CUDA_KERNEL_LOOP(index, n) {
       int gt = static_cast<int>(label[index]);
-      bottom_diff[index * dim + gt] = top_diff[index * dim + gt] * scale * power * pow(bottom_data[index * dim + gt], power - 1);
+      bottom_diff[index * dim + gt] = top_diff[index * dim + gt] * scale * pow(Dtype(M_PI), Dtype(1) - power) * power * pow(bottom_data[index * dim + gt], power - 1);
     }
   }
 

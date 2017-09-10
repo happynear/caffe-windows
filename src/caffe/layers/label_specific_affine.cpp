@@ -98,7 +98,7 @@ void LabelSpecificAffineLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bo
   if (!transform_test_ && this->phase_ == TEST) return;
   for (int i = 0; i < num; ++i) {
     int gt = static_cast<int>(label_data[i]);
-    top_data[i * dim + gt] = pow(bottom_data[i * dim + gt], power) * scale + bias;
+    top_data[i * dim + gt] = pow(bottom_data[i * dim + gt], power) * scale * pow(Dtype(M_PI), Dtype(1) - power) + bias;
     if (top_data[i * dim + gt] > M_PI - 1e-4) top_data[i * dim + gt] = M_PI - 1e-4;
   }
 }
@@ -122,7 +122,7 @@ void LabelSpecificAffineLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& t
 
     for (int i = 0; i < num; ++i) {
       int gt = static_cast<int>(label_data[i]);
-      bottom_diff[i * dim + gt] = top_diff[i * dim + gt] * scale * power * pow(bottom_data[i * dim + gt], power - 1);
+      bottom_diff[i * dim + gt] = top_diff[i * dim + gt] * scale * pow(Dtype(M_PI), Dtype(1) - power) * power * pow(bottom_data[i * dim + gt], power - 1);
     }
   }
 
