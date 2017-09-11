@@ -8,6 +8,8 @@ namespace caffe {
   template <typename Dtype>
   void LabelSpecificHardMarginLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
                                                     const vector<Blob<Dtype>*>& top) {
+    const LabelSpecificHardMarginParameter& param = this->layer_param_.label_specific_hard_margin_param();
+    positive_weight = param.positive_weight();
     //transform_test_ = param.transform_test() & (this->phase_ == TRAIN);
   }
 

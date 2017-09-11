@@ -40,6 +40,7 @@ class LabelSpecificHardMarginLayer : public Layer<Dtype> {
   Blob<int> hardest_pos_;
   Blob<Dtype> margins_;
   Blob<Dtype> sum_multiplier_;
+  Dtype positive_weight;
 };
 
 }  // namespace caffe
