@@ -35,13 +35,14 @@ namespace caffe {
         counts[index] = 0;
       }
       else {
+        loss[index] = Dtype(0);
         for (int c = 0; c < channels; ++c) {
           if (c == label_value) {
-            loss[index] = -(1 - label_smooth_factor) * log(max(prob_data[n * dim + label_value * spatial_dim + s], Dtype(FLT_MIN)));
+            loss[index] -= (1 - label_smooth_factor) * log(max(prob_data[n * dim + label_value * spatial_dim + s], Dtype(FLT_MIN)));
           }
           else {
             if (label_smooth_factor > Dtype(1e-6)) {
-              loss[index] = -label_smooth_factor / (channels - 1) * log(max(prob_data[n * dim + c * spatial_dim + s], Dtype(FLT_MIN)));
+              loss[index] -= label_smooth_factor / (channels - 1) * log(max(prob_data[n * dim + c * spatial_dim + s], Dtype(FLT_MIN)));
             }
           }
         }
@@ -77,13 +78,14 @@ namespace caffe {
         counts[index] = 0;
       }
       else {
+        loss[index] = Dtype(0);
         for (int c = 0; c < channels; ++c) {
           if (c == label_value) {
-            loss[index] = -weight_value * (1 - label_smooth_factor) * log(max(prob_data[n * dim + label_value * spatial_dim + s], Dtype(FLT_MIN)));
+            loss[index] -= weight_value * (1 - label_smooth_factor) * log(max(prob_data[n * dim + label_value * spatial_dim + s], Dtype(FLT_MIN)));
           }
           else {
             if (label_smooth_factor > Dtype(1e-6)) {
-              loss[index] = -weight_value * label_smooth_factor / (channels - 1) * log(max(prob_data[n * dim + c * spatial_dim + s], Dtype(FLT_MIN)));
+              loss[index] -= weight_value * label_smooth_factor / (channels - 1) * log(max(prob_data[n * dim + c * spatial_dim + s], Dtype(FLT_MIN)));
             }
           }
         }
