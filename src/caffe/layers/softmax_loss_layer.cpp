@@ -37,6 +37,7 @@ void SoftmaxWithLossLayer<Dtype>::LayerSetUp(
     NOT_IMPLEMENTED;
   }
 
+  label_smooth_factor_ = this->layer_param_.softmax_param().label_smooth_factor();
   has_ignore_label_ =
     this->layer_param_.loss_param().has_ignore_label();
   if (has_ignore_label_) {

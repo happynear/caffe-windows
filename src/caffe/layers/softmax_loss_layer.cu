@@ -12,18 +12,19 @@ namespace caffe {
 
   template <typename Dtype>
   __global__ void SoftmaxLossForwardGPU(const int nthreads,
-    Dtype* prob_data, const Dtype* label, Dtype* loss,
-    const int num, const int dim, const int spatial_dim,
-    const bool has_ignore_label_, const int ignore_label_,
-    const bool has_hard_mining_label_, const int hard_mining_label_,
-    const bool has_cutting_point_, Dtype cutting_point_, Dtype* counts) {
+                                        Dtype* prob_data, const Dtype* label, Dtype* loss,
+                                        const int num, const int dim, const int spatial_dim,
+                                        const bool has_ignore_label_, const int ignore_label_,
+                                        const bool has_hard_mining_label_, const int hard_mining_label_,
+                                        const bool has_cutting_point_, Dtype cutting_point_,
+                                        Dtype label_smooth_factor, Dtype* counts) {
     CUDA_KERNEL_LOOP(index, nthreads) {
       const int n = index / spatial_dim;
       const int s = index % spatial_dim;
       const int label_value = static_cast<int>(label[n * spatial_dim + s]);
       const int channels = dim / spatial_dim;
       if (has_cutting_point_ && prob_data[n * dim + label_value * spatial_dim + s] > cutting_point_
-        && (!has_hard_mining_label_ || hard_mining_label_ == label_value)) {
+          && (!has_hard_mining_label_ || hard_mining_label_ == label_value)) {
         for (int c = 0; c < channels; ++c) {
           prob_data[n * dim + c * spatial_dim + s] = 0;
         }
@@ -34,8 +35,16 @@ namespace caffe {
         counts[index] = 0;
       }
       else {
-        loss[index] = -log(max(prob_data[n * dim + label_value * spatial_dim + s],
-          Dtype(FLT_MIN)));
+        for (int c = 0; c < channels; ++c) {
+          if (c == label_value) {
+            loss[index] = -(1 - label_smooth_factor) * log(max(prob_data[n * dim + label_value * spatial_dim + s], Dtype(FLT_MIN)));
+          }
+          else {
+            if (label_smooth_factor > Dtype(1e-6)) {
+              loss[index] = -label_smooth_factor / (channels - 1) * log(max(prob_data[n * dim + c * spatial_dim + s], Dtype(FLT_MIN)));
+            }
+          }
+        }
         counts[index] = 1;
       }
     }
@@ -43,12 +52,13 @@ namespace caffe {
 
   template <typename Dtype>
   __global__ void SoftmaxLossForwardWithWeightsGPU(const int nthreads,
-    Dtype* prob_data, const Dtype* label, Dtype* loss,
-    const Dtype* weights, const Dtype* class_weights,
-    const int num, const int dim, const int spatial_dim,
-    const bool has_ignore_label_, const int ignore_label_,
-    const bool has_hard_mining_label_, const int hard_mining_label_,
-    const bool has_cutting_point_, Dtype cutting_point_, Dtype* counts) {
+                                                   Dtype* prob_data, const Dtype* label, Dtype* loss,
+                                                   const Dtype* weights, const Dtype* class_weights,
+                                                   const int num, const int dim, const int spatial_dim,
+                                                   const bool has_ignore_label_, const int ignore_label_,
+                                                   const bool has_hard_mining_label_, const int hard_mining_label_,
+                                                   const bool has_cutting_point_, Dtype cutting_point_, 
+                                                   Dtype label_smooth_factor, Dtype* counts) {
     CUDA_KERNEL_LOOP(index, nthreads) {
       const int n = index / spatial_dim;
       const int s = index % spatial_dim;
@@ -56,7 +66,7 @@ namespace caffe {
       const Dtype weight_value = weights[n * spatial_dim + s] * class_weights[label_value];
       const int channels = dim / spatial_dim;
       if (has_cutting_point_ && prob_data[n * dim + label_value * spatial_dim + s] > cutting_point_
-        && (!has_hard_mining_label_ || hard_mining_label_ == label_value)) {
+          && (!has_hard_mining_label_ || hard_mining_label_ == label_value)) {
         for (int c = 0; c < channels; ++c) {
           prob_data[n * dim + c * spatial_dim + s] = 0;
         }
@@ -67,8 +77,16 @@ namespace caffe {
         counts[index] = 0;
       }
       else {
-        loss[index] = -weight_value * log(max(prob_data[n * dim + label_value * spatial_dim + s],
-          Dtype(FLT_MIN)));
+        for (int c = 0; c < channels; ++c) {
+          if (c == label_value) {
+            loss[index] = -weight_value * (1 - label_smooth_factor) * log(max(prob_data[n * dim + label_value * spatial_dim + s], Dtype(FLT_MIN)));
+          }
+          else {
+            if (label_smooth_factor > Dtype(1e-6)) {
+              loss[index] = -weight_value * label_smooth_factor / (channels - 1) * log(max(prob_data[n * dim + c * spatial_dim + s], Dtype(FLT_MIN)));
+            }
+          }
+        }
         counts[index] = weight_value;
       }
     }
@@ -95,7 +113,7 @@ namespace caffe {
         CAFFE_CUDA_NUM_THREADS >> >(nthreads, prob_data, label, loss_data,
           outer_num_, dim, inner_num_, has_ignore_label_, ignore_label_,
           has_hard_mining_label_, hard_mining_label_,
-          has_cutting_point_, cutting_point_, counts);
+          has_cutting_point_, cutting_point_, label_smooth_factor_, counts);
     }
     else if (bottom.size() == 3) {
       const Dtype* weights = bottom[2]->gpu_data();
@@ -105,7 +123,7 @@ namespace caffe {
           weights, class_weight_.gpu_data(),
           outer_num_, dim, inner_num_, has_ignore_label_, ignore_label_,
           has_hard_mining_label_, hard_mining_label_,
-          has_cutting_point_, cutting_point_, counts);
+          has_cutting_point_, cutting_point_, label_smooth_factor_, counts);
     }
     Dtype loss;
     caffe_gpu_asum(nthreads, loss_data, &loss);
@@ -127,7 +145,7 @@ namespace caffe {
   __global__ void SoftmaxLossBackwardGPU(const int nthreads, const Dtype* top,
                                          const Dtype* label, Dtype* bottom_diff, const int num, const int dim,
                                          const int spatial_dim, const bool has_ignore_label_,
-                                         const int ignore_label_, Dtype* counts) {
+                                         const int ignore_label_, Dtype label_smooth_factor, Dtype* counts) {
     const int channels = dim / spatial_dim;
 
     CUDA_KERNEL_LOOP(index, nthreads) {
@@ -142,7 +160,16 @@ namespace caffe {
         counts[index] = 0;
       }
       else {
-        bottom_diff[n * dim + label_value * spatial_dim + s] -= 1;
+        for (int c = 0; c < channels; ++c) {
+          if (c == label_value) {
+            bottom_diff[n * dim + label_value * spatial_dim + s] -= 1 - label_smooth_factor;
+          }
+          else {
+            if (label_smooth_factor > Dtype(1e-6)) {
+              bottom_diff[n * dim + c * spatial_dim + s] -= label_smooth_factor / (channels - 1);
+            }
+          }
+        }
         counts[index] = 1;
       }
     }
@@ -153,7 +180,7 @@ namespace caffe {
                                                     const Dtype* weights, const Dtype* class_weight,
                                                     const Dtype* label, Dtype* bottom_diff, const int num, const int dim,
                                                     const int spatial_dim, const bool has_ignore_label_,
-                                                    const int ignore_label_, Dtype* counts) {
+                                                    const int ignore_label_, Dtype label_smooth_factor, Dtype* counts) {
     const int channels = dim / spatial_dim;
 
     CUDA_KERNEL_LOOP(index, nthreads) {
@@ -168,8 +195,15 @@ namespace caffe {
         counts[index] = 0;
       }
       else {
-        bottom_diff[n * dim + label_value * spatial_dim + s] -= 1;
         for (int c = 0; c < channels; ++c) {
+          if (c == label_value) {
+            bottom_diff[n * dim + label_value * spatial_dim + s] -= 1 - label_smooth_factor;
+          }
+          else {
+            if (label_smooth_factor > Dtype(1e-6)) {
+              bottom_diff[n * dim + c * spatial_dim + s] -= label_smooth_factor / (channels - 1);
+            }
+          }
           bottom_diff[n * dim + c * spatial_dim + s] *= weight_value * class_weight[c];
         }
         counts[index] = weight_value;
@@ -231,7 +265,7 @@ namespace caffe {
         // NOLINT_NEXT_LINE(whitespace/operators)
         SoftmaxLossBackwardGPU<Dtype> << <CAFFE_GET_BLOCKS(nthreads),
           CAFFE_CUDA_NUM_THREADS >> >(nthreads, top_data, label, bottom_diff,
-          outer_num_, dim, inner_num_, has_ignore_label_, ignore_label_, counts);
+          outer_num_, dim, inner_num_, has_ignore_label_, ignore_label_, label_smooth_factor_, counts);
       }
       else if (bottom.size() == 3) {
         const Dtype* weights = bottom[2]->gpu_data();
@@ -239,7 +273,7 @@ namespace caffe {
         SoftmaxLossBackwardWithWeightsGPU<Dtype> << <CAFFE_GET_BLOCKS(nthreads),
           CAFFE_CUDA_NUM_THREADS >> >(nthreads, top_data, 
           weights, class_weight_.gpu_data(), label, bottom_diff,
-          outer_num_, dim, inner_num_, has_ignore_label_, ignore_label_, counts);
+          outer_num_, dim, inner_num_, has_ignore_label_, ignore_label_, label_smooth_factor_, counts);
       }
 
       Dtype valid_count = -1;
