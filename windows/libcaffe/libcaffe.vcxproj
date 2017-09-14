@@ -133,7 +133,7 @@
     <ClCompile Include="..\..\src\caffe\layers\euclidean_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\exp_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\fcn_accuracy_layer.cpp" />
-    <ClCompile Include="..\..\src\caffe\layers\feature_incay_loss_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\feature_decay_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\filter_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\flatten_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\flip_layer.cpp" />
@@ -286,7 +286,7 @@
     <ClInclude Include="..\..\include\caffe\layers\euclidean_loss_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\exp_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\fcn_accuracy_layer.hpp" />
-    <ClInclude Include="..\..\include\caffe\layers\feature_incay_loss_layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\layers\feature_decay_loss_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\filter_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\flatten_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\flip_layer.hpp" />

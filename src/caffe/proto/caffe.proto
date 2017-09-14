@@ -446,7 +446,7 @@ message LayerParameter {
   optional OrdinalRegressionParameter ordinal_regression_loss_param = 230;
   optional ResizeParameter resize_param = 231;
   optional MarginInnerProductParameter margin_inner_product_param = 232;
-  optional FeatureIncayLossParameter feature_incay_loss_param = 233;
+  optional FeatureDecayLossParameter feature_decay_loss_param = 233;
   optional ConfidencePenaltyLossParameter confidence_penalty_loss_param = 234;
   optional FocalLossParameter focal_loss_param = 235;
   optional LabelSpecificMarginParameter label_specific_margin_param = 236;
@@ -1909,8 +1909,9 @@ message MarginInnerProductParameter {
   optional float lambda_min = 9 [default = 0];
 }
 
-message FeatureIncayLossParameter {
-  optional bool force_incay = 1 [default = false];
+message FeatureDecayLossParameter {
+  optional float decay_threshold = 1 [default = 20.0];
+  optional bool force_decay = 2 [default = false];
 }
 
 message ConfidencePenaltyLossParameter{
