@@ -46,7 +46,7 @@ namespace caffe {
 
   template <typename Dtype>
   void LabelSpecificMarginLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
-                                                    const vector<Blob<Dtype>*>& top) {
+                                                const vector<Blob<Dtype>*>& top) {
     top[0]->ReshapeLike(*bottom[0]);
     if (top.size() == 2) {
       if (auto_tune_ && bottom.size() < 3) {
@@ -65,12 +65,9 @@ namespace caffe {
     }
     if (bottom.size() == 3) {
       positive_data.Reshape({ bottom[0]->num() });
-      if (sum_multiplier_.Reshape({ bottom[0]->num() })) {
-        caffe_set(sum_multiplier_.count(), Dtype(1), sum_multiplier_.mutable_cpu_data());
-      }
-      
+      sum_multiplier_.Reshape({ bottom[0]->num() });
+      caffe_set(sum_multiplier_.count(), Dtype(1), sum_multiplier_.mutable_cpu_data());
     }
-    
   }
 
 template <typename Dtype>
