@@ -106,7 +106,6 @@
     <ClCompile Include="..\..\src\caffe\layers\bnll_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\bn_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\center_loss_layer.cpp" />
-    <ClCompile Include="..\..\src\caffe\layers\channel_scale_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\concat_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\confidence_penalty_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\contrastive_loss_layer.cpp" />
@@ -133,7 +132,6 @@
     <ClCompile Include="..\..\src\caffe\layers\euclidean_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\exp_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\fcn_accuracy_layer.cpp" />
-    <ClCompile Include="..\..\src\caffe\layers\feature_decay_loss_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\filter_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\flatten_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\flip_layer.cpp" />
@@ -152,11 +150,6 @@
     <ClCompile Include="..\..\src\caffe\layers\inner_product_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\input_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\insanity_layer.cpp" />
-    <ClCompile Include="..\..\src\caffe\layers\label_specific_affine.cpp" />
-    <ClCompile Include="..\..\src\caffe\layers\label_specific_hard_margin.cpp" />
-    <ClCompile Include="..\..\src\caffe\layers\label_specific_margin.cpp" />
-    <ClCompile Include="..\..\src\caffe\layers\label_specific_rescale.cpp" />
-    <ClCompile Include="..\..\src\caffe\layers\label_specific_statistics.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\largemargin_inner_product_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\local_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\log_layer.cpp" />
@@ -260,7 +253,6 @@
     <ClInclude Include="..\..\include\caffe\layers\bnll_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\bn_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\center_loss_layer.hpp" />
-    <ClInclude Include="..\..\include\caffe\layers\channel_scale_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\concat_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\confidence_penalty_loss_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\contrastive_loss_layer.hpp" />
@@ -286,7 +278,6 @@
     <ClInclude Include="..\..\include\caffe\layers\euclidean_loss_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\exp_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\fcn_accuracy_layer.hpp" />
-    <ClInclude Include="..\..\include\caffe\layers\feature_decay_loss_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\filter_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\flatten_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\flip_layer.hpp" />
@@ -299,9 +290,6 @@
     <ClInclude Include="..\..\include\caffe\layers\inner_distance_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\inner_product_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\input_layer.hpp" />
-    <ClInclude Include="..\..\include\caffe\layers\label_specific_hard_margin.hpp" />
-    <ClInclude Include="..\..\include\caffe\layers\label_specific_rescale_layer.hpp" />
-    <ClInclude Include="..\..\include\caffe\layers\label_specific_statistics_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\largemargin_inner_product_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\log_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\loss_layer.hpp" />
@@ -433,7 +421,6 @@
     <CudaCompile Include="..\..\src\caffe\layers\axpy_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\bn_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\center_loss_layer.cu" />
-    <CudaCompile Include="..\..\src\caffe\layers\channel_scale_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\correlation_loss_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\cosine_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\cudnn_bn_layer.cu" />
@@ -443,11 +430,6 @@
     <CudaCompile Include="..\..\src\caffe\layers\hotspot_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\inner_distance_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\insanity_layer.cu" />
-    <CudaCompile Include="..\..\src\caffe\layers\label_specific_affine.cu" />
-    <CudaCompile Include="..\..\src\caffe\layers\label_specific_hard_margin.cu" />
-    <CudaCompile Include="..\..\src\caffe\layers\label_specific_margin.cu" />
-    <CudaCompile Include="..\..\src\caffe\layers\label_specific_rescale.cu" />
-    <CudaCompile Include="..\..\src\caffe\layers\label_specific_statistics.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\largemargin_inner_product_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\local_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\lstm_unit_layer.cu" />

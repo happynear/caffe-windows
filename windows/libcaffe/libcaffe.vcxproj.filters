@@ -435,9 +435,6 @@
     <ClCompile Include="..\..\src\caffe\layers\largemargin_inner_product_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\label_specific_rescale.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\cudnn_bn_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
@@ -462,31 +459,13 @@
     <ClCompile Include="..\..\src\caffe\layers\focal_loss_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\channel_scale_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\label_specific_margin.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\label_specific_statistics.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\cosine_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\label_specific_affine.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\label_specific_hard_margin.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\axpy_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\moving_normalize_layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\caffe\layers\feature_decay_loss_layer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -830,9 +809,6 @@
     <ClInclude Include="..\..\include\caffe\layers\largemargin_inner_product_layer.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\label_specific_rescale_layer.hpp">
-      <Filter>include\layers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\caffe\layers\cudnn_bn_layer.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
@@ -860,25 +836,13 @@
     <ClInclude Include="..\..\include\caffe\layers\arccos_layer.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\channel_scale_layer.hpp">
-      <Filter>include\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\label_specific_statistics_layer.hpp">
-      <Filter>include\layers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\caffe\layers\cosine_layer.hpp">
-      <Filter>include\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\label_specific_hard_margin.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\caffe\layers\axpy_layer.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\caffe\layers\moving_normalize_layer.hpp">
-      <Filter>include\layers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\caffe\layers\feature_decay_loss_layer.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1135,9 +1099,6 @@
     <CudaCompile Include="..\..\src\caffe\layers\largemargin_inner_product_layer.cu">
       <Filter>cu\layers</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\label_specific_rescale.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\cudnn_bn_layer.cu">
       <Filter>cu\layers</Filter>
     </CudaCompile>
@@ -1159,22 +1120,7 @@
     <CudaCompile Include="..\..\src\caffe\layers\focal_loss_layer.cu">
       <Filter>cu\layers</Filter>
     </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\channel_scale_layer.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\label_specific_margin.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\label_specific_statistics.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\cosine_layer.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\label_specific_affine.cu">
-      <Filter>cu\layers</Filter>
-    </CudaCompile>
-    <CudaCompile Include="..\..\src\caffe\layers\label_specific_hard_margin.cu">
       <Filter>cu\layers</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\axpy_layer.cu">
