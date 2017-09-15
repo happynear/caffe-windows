@@ -7,18 +7,18 @@
 namespace caffe {
 
   template <typename Dtype>
-  __global__ void LabelSpecificHardMarginForward(const int num, const int dim, const Dtype* bottom_data, const Dtype* label,
+  __global__ void LabelSpecificHardMarginForwardUnshare(const int num, const int dim, const Dtype* bottom_data, const Dtype* label,
                                                  Dtype* row_sum, Dtype* top_data, Dtype positive_weight) {
     CUDA_KERNEL_LOOP(index, num) {
       int gt = static_cast<int>(label[index]);
-      row_sum[index] = (row_sum[index] - bottom_data[index * dim + gt]) / (dim - 1);
-      top_data[index * dim + gt] = bottom_data[index * dim + gt] * positive_weight + row_sum[index] * (1 - positive_weight);
-      row_sum[index] = top_data[index * dim + gt] - bottom_data[index * dim + gt];
+      row_sum[index] = (row_sum[index] - bottom_data[index * dim + gt]) / (dim - 1);//negative_mean
+      row_sum[index] = (row_sum[index] - bottom_data[index * dim + gt]) * (1 - positive_weight);//margin
+      top_data[index * dim + gt] = bottom_data[index * dim + gt] + row_sum[index];
     }
   }
 
   template <typename Dtype>
-  __global__ void LabelSpecificHardMarginBackward(const int num, const int dim, const Dtype* top_diff, const Dtype* label,
+  __global__ void LabelSpecificHardMarginBackwardPositive(const int num, const int dim, const Dtype* top_diff, const Dtype* label,
                                               const Dtype* bottom_data, Dtype* bottom_diff, Dtype positive_weight) {
     CUDA_KERNEL_LOOP(index, num) {
       int gt = static_cast<int>(label[index]);
@@ -53,15 +53,16 @@ namespace caffe {
     caffe_copy(count, bottom_data, top_data);
     if (this->phase_ == TEST) return;
 
-    caffe_gpu_gemv(CblasNoTrans, num, dim, Dtype(1), bottom_data, sum_multiplier_.gpu_data(), Dtype(0), margins_.mutable_gpu_data());
+    caffe_gpu_gemv(CblasNoTrans, num, dim, Dtype(1), bottom_data, sum_multiplier_col_.gpu_data(), Dtype(0), margins_.mutable_gpu_data());
 
     // NOLINT_NEXT_LINE(whitespace/operators)
-    LabelSpecificHardMarginForward<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
+    LabelSpecificHardMarginForwardUnshare<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
       num, dim, bottom_data, label_data, margins_.mutable_gpu_data(), top_data, positive_weight);
     CUDA_POST_KERNEL_CHECK;
 
     if (top.size() == 2) {
-      top[1]->mutable_cpu_data()[0] = margins_.asum_data() / Dtype(num) / Dtype(M_PI) * Dtype(180.0);
+      caffe_gpu_dot(margins_.count(), margins_.gpu_data(), sum_multiplier_row_.gpu_data(), top[1]->mutable_cpu_data());
+      top[1]->mutable_cpu_data()[0] /= Dtype(num) * Dtype(M_PI) / Dtype(180);
     }
   }
 
@@ -82,15 +83,15 @@ namespace caffe {
       caffe_copy(count, top_diff, bottom_diff);
       if (this->phase_ == TEST) return;
 
-      // NOLINT_NEXT_LINE(whitespace/operators)
-      LabelSpecificHardMarginBackward<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
-        num, dim, top_diff, label_data, bottom_data, bottom_diff, positive_weight);
-      CUDA_POST_KERNEL_CHECK;
+      //// NOLINT_NEXT_LINE(whitespace/operators)
+      //LabelSpecificHardMarginBackwardPositive<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
+      //  num, dim, top_diff, label_data, bottom_data, bottom_diff, positive_weight);
+      //CUDA_POST_KERNEL_CHECK;
 
-      // NOLINT_NEXT_LINE(whitespace/operators)
-      LabelSpecificHardMarginBackwardNegative<Dtype> << <CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS >> > (
-        num, dim, top_diff, label_data, bottom_data, bottom_diff, positive_weight);
-      CUDA_POST_KERNEL_CHECK;
+      //// NOLINT_NEXT_LINE(whitespace/operators)
+      //LabelSpecificHardMarginBackwardNegative<Dtype> << <CAFFE_GET_BLOCKS(count), CAFFE_CUDA_NUM_THREADS >> > (
+      //  num, dim, top_diff, label_data, bottom_data, bottom_diff, positive_weight);
+      //CUDA_POST_KERNEL_CHECK;
     }
   }
 

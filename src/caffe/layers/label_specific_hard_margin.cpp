@@ -22,9 +22,10 @@ namespace caffe {
     }
     hardest_pos_.Reshape({ bottom[0]->num() });
     margins_.Reshape({ bottom[0]->num() });
-    if (sum_multiplier_.Reshape({ bottom[0]->channels() })) {
-      caffe_set(sum_multiplier_.count(), Dtype(1), sum_multiplier_.mutable_cpu_data());
-    }
+    sum_multiplier_col_.Reshape({ bottom[0]->channels() });
+    caffe_set(sum_multiplier_col_.count(), Dtype(1), sum_multiplier_col_.mutable_cpu_data());
+    sum_multiplier_row_.Reshape({ bottom[0]->num() });
+    caffe_set(sum_multiplier_row_.count(), Dtype(1), sum_multiplier_row_.mutable_cpu_data());
   }
 
 template <typename Dtype>

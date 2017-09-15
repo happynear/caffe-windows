@@ -39,7 +39,7 @@ class LabelSpecificHardMarginLayer : public Layer<Dtype> {
 
   Blob<int> hardest_pos_;
   Blob<Dtype> margins_;
-  Blob<Dtype> sum_multiplier_;
+  Blob<Dtype> sum_multiplier_row_, sum_multiplier_col_;
   Dtype positive_weight;
 };
 
