@@ -65,10 +65,8 @@ namespace caffe {
     }
     if (bottom.size() == 3) {
       positive_data.Reshape({ bottom[0]->num() });
-      if (sum_multiplier_.Reshape({ bottom[0]->num() })) {
-        caffe_set(sum_multiplier_.count(), Dtype(1), sum_multiplier_.mutable_cpu_data());
-      }
-      
+      sum_multiplier_.Reshape({ bottom[0]->num() });
+      caffe_set(sum_multiplier_.count(), Dtype(1), sum_multiplier_.mutable_cpu_data());
     }
     
   }

@@ -56,7 +56,7 @@ void FeatureDecayLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& botto
     moving_average_norm[0] = mean_norm;
   }
   else {
-    moving_average_norm[0] = moving_average_norm[0] * 0.99 + mean_norm * 0.01;
+    moving_average_norm[0] = moving_average_norm[0] * 0.9 + mean_norm * 0.1;
   }
   loss[0] = moving_average_norm[0];
 }
@@ -69,7 +69,7 @@ void FeatureDecayLossLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
     const Dtype* loss_weight = top[0]->cpu_diff();
     const Dtype* moving_average_norm = this->blobs_[0]->cpu_data();
     if (force_decay_ || moving_average_norm[0] > decay_threshold_) {
-      caffe_set(num, loss_weight[0], bottom[0]->mutable_cpu_diff());
+      caffe_cpu_axpby(num, loss_weight[0], bottom[0]->cpu_data(), Dtype(0), bottom[0]->mutable_cpu_diff());
     }
     else {
       caffe_set(num, Dtype(0), bottom[0]->mutable_cpu_diff());
