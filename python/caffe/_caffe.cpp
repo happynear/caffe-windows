@@ -484,48 +484,56 @@ namespace caffe {
       .add_property("width", &Blob<Dtype>::width)
       .add_property("count", static_cast<int (Blob<Dtype>::*)() const>(
         &Blob<Dtype>::count))
-      .def("reshape", bp::raw_function(&Blob_Reshape))
-      .add_property("data", bp::make_function(&Blob<Dtype>::mutable_cpu_data,
-                                              NdarrayCallPolicies()))
-      .add_property("diff", bp::make_function(&Blob<Dtype>::mutable_cpu_diff,
-                                              NdarrayCallPolicies()));
-    BP_REGISTER_SHARED_PTR_TO_PYTHON(Blob<Dtype>);
+    .def("reshape",           bp::raw_function(&Blob_Reshape))
+#ifndef CPU_ONLY
+    .add_property("_gpu_data_ptr",
+        reinterpret_cast<uintptr_t (Blob<Dtype>::*)()>(
+          &Blob<Dtype>::mutable_gpu_data))
+    .add_property("_gpu_diff_ptr",
+        reinterpret_cast<uintptr_t (Blob<Dtype>::*)()>(
+          &Blob<Dtype>::mutable_gpu_diff))
+#endif
+    .add_property("data",     bp::make_function(&Blob<Dtype>::mutable_cpu_data,
+          NdarrayCallPolicies()))
+    .add_property("diff",     bp::make_function(&Blob<Dtype>::mutable_cpu_diff,
+          NdarrayCallPolicies()));
+  BP_REGISTER_SHARED_PTR_TO_PYTHON(Blob<Dtype>);
 
-    bp::class_<Layer<Dtype>, shared_ptr<PythonLayer<Dtype> >,
-      boost::noncopyable>("Layer", bp::init<const LayerParameter&>())
-      .add_property("blobs", bp::make_function(&Layer<Dtype>::blobs,
-                                               bp::return_internal_reference<>()))
-      .def("setup", &Layer<Dtype>::LayerSetUp)
-      .def("reshape", &Layer<Dtype>::Reshape)
-      .add_property("type", bp::make_function(&Layer<Dtype>::type));
-    BP_REGISTER_SHARED_PTR_TO_PYTHON(Layer<Dtype>);
+  bp::class_<Layer<Dtype>, shared_ptr<PythonLayer<Dtype> >,
+    boost::noncopyable>("Layer", bp::init<const LayerParameter&>())
+    .add_property("blobs", bp::make_function(&Layer<Dtype>::blobs,
+          bp::return_internal_reference<>()))
+    .def("setup", &Layer<Dtype>::LayerSetUp)
+    .def("reshape", &Layer<Dtype>::Reshape)
+    .add_property("type", bp::make_function(&Layer<Dtype>::type));
+  BP_REGISTER_SHARED_PTR_TO_PYTHON(Layer<Dtype>);
 
-    bp::class_<SolverParameter>("SolverParameter", bp::no_init)
-      .add_property("max_iter", &SolverParameter::max_iter)
-      .add_property("display", &SolverParameter::display)
-      .add_property("layer_wise_reduce", &SolverParameter::layer_wise_reduce);
-    bp::class_<LayerParameter>("LayerParameter", bp::no_init);
+  bp::class_<SolverParameter>("SolverParameter", bp::no_init)
+    .add_property("max_iter", &SolverParameter::max_iter)
+    .add_property("display", &SolverParameter::display)
+    .add_property("layer_wise_reduce", &SolverParameter::layer_wise_reduce);
+  bp::class_<LayerParameter>("LayerParameter", bp::no_init);
 
-    bp::class_<Solver<Dtype>, shared_ptr<Solver<Dtype> >, boost::noncopyable>(
-      "Solver", bp::no_init)
-      .add_property("net", &Solver<Dtype>::net)
-      .add_property("test_nets", bp::make_function(&Solver<Dtype>::test_nets,
-                                                   bp::return_internal_reference<>()))
-      .add_property("iter", &Solver<Dtype>::iter)
-      .def("add_callback", &Solver_add_callback<Dtype>)
-      .def("add_callback", &Solver_add_nccl)
-      .def("solve", static_cast<void (Solver<Dtype>::*)(const char*)>(
-        &Solver<Dtype>::Solve), SolveOverloads())
-      .def("step", &Solver<Dtype>::Step)
-      .def("restore", &Solver<Dtype>::Restore)
-      .def("snapshot", &Solver<Dtype>::Snapshot)
-      .def("share_weights", &share_weights)
-      .add_property("param", bp::make_function(&Solver<Dtype>::param,
-                                               bp::return_value_policy<bp::copy_const_reference>()));
-    BP_REGISTER_SHARED_PTR_TO_PYTHON(Solver<Dtype>);
+  bp::class_<Solver<Dtype>, shared_ptr<Solver<Dtype> >, boost::noncopyable>(
+    "Solver", bp::no_init)
+    .add_property("net", &Solver<Dtype>::net)
+    .add_property("test_nets", bp::make_function(&Solver<Dtype>::test_nets,
+          bp::return_internal_reference<>()))
+    .add_property("iter", &Solver<Dtype>::iter)
+    .def("add_callback", &Solver_add_callback<Dtype>)
+    .def("add_callback", &Solver_add_nccl)
+    .def("solve", static_cast<void (Solver<Dtype>::*)(const char*)>(
+          &Solver<Dtype>::Solve), SolveOverloads())
+    .def("step", &Solver<Dtype>::Step)
+    .def("restore", &Solver<Dtype>::Restore)
+    .def("snapshot", &Solver<Dtype>::Snapshot)
+    .def("share_weights", &share_weights)
+    .add_property("param", bp::make_function(&Solver<Dtype>::param,
+              bp::return_value_policy<bp::copy_const_reference>()));
+  BP_REGISTER_SHARED_PTR_TO_PYTHON(Solver<Dtype>);
 
-    bp::class_<SGDSolver<Dtype>, bp::bases<Solver<Dtype> >,
-      shared_ptr<SGDSolver<Dtype> >, boost::noncopyable>(
+  bp::class_<SGDSolver<Dtype>, bp::bases<Solver<Dtype> >,
+    shared_ptr<SGDSolver<Dtype> >, boost::noncopyable>(
         "SGDSolver", bp::init<string>());
     bp::class_<NesterovSolver<Dtype>, bp::bases<Solver<Dtype> >,
       shared_ptr<NesterovSolver<Dtype> >, boost::noncopyable>(
