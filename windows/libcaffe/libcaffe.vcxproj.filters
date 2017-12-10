@@ -1129,5 +1129,8 @@
     <CudaCompile Include="..\..\src\caffe\layers\moving_normalize_layer.cu">
       <Filter>cu\layers</Filter>
     </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\accuracy_layer.cu">
+      <Filter>cu\layers</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>

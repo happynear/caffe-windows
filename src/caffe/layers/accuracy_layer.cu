@@ -12,7 +12,7 @@ __global__ void AccuracyForwardGPU(const int nthreads,
           const int num, const int dim, const int spatial_dim,
           const int num_labels, const int top_k,
           const bool has_ignore_label_, const int ignore_label_,
-          Dtype* counts) {
+          Dtype* counts, bool min_is_better) {
   CUDA_KERNEL_LOOP(index, nthreads) {
     const int n = index / spatial_dim;
     const int s = index % spatial_dim;
@@ -26,8 +26,14 @@ __global__ void AccuracyForwardGPU(const int nthreads,
       counts[index] = 0;
     } else {
       for (int k = 0; k < num_labels & num_better_predictions < top_k; k++) {
-        num_better_predictions +=
-          (bottom_data[n * dim + k * spatial_dim + s] >= prob_of_true_class);
+        if (min_is_better) {
+          num_better_predictions +=
+            (bottom_data[n * dim + k * spatial_dim + s] <= prob_of_true_class);
+        }
+        else {
+          num_better_predictions +=
+            (bottom_data[n * dim + k * spatial_dim + s] >= prob_of_true_class);
+        }
       }
       acc[index] = (num_better_predictions < top_k);
       counts[index] = 1;
@@ -37,25 +43,33 @@ __global__ void AccuracyForwardGPU(const int nthreads,
 
 template <typename Dtype>
 __global__ void AccuracyForwardWithPerClassGPU(const int nthreads,
-          const Dtype* bottom_data, const Dtype* label,
-          Dtype* acc, Dtype* counts,
-          const int num, const int dim, const int spatial_dim,
-          const int num_labels, const int top_k,
-          const bool has_ignore_label_, const int ignore_label_) {
+                                               const Dtype* bottom_data, const Dtype* label,
+                                               Dtype* acc, Dtype* counts,
+                                               const int num, const int dim, const int spatial_dim,
+                                               const int num_labels, const int top_k,
+                                               const bool has_ignore_label_, const int ignore_label_,
+                                               bool min_is_better) {
   CUDA_KERNEL_LOOP(index, nthreads) {
     const int n = index / spatial_dim;
     const int s = index % spatial_dim;
     const int label_value = static_cast<int>(label[n * spatial_dim + s]);
     const Dtype prob_of_true_class = bottom_data[n * dim
-                                                 + label_value * spatial_dim
-                                                 + s];
+      + label_value * spatial_dim
+      + s];
     if (has_ignore_label_ && label_value == ignore_label_) {
       // nothing to be done.
-    } else {
+    }
+    else {
       int num_better_predictions = -1;  // true_class also counts as "better"
       for (int k = 0; k < num_labels & num_better_predictions < top_k; k++) {
-        num_better_predictions +=
-          (bottom_data[n * dim + k * spatial_dim + s] >= prob_of_true_class);
+        if (min_is_better) {
+          num_better_predictions +=
+            (bottom_data[n * dim + k * spatial_dim + s] <= prob_of_true_class);
+        }
+        else {
+          num_better_predictions +=
+            (bottom_data[n * dim + k * spatial_dim + s] >= prob_of_true_class);
+        }
       }
       acc[label_value*nthreads + index] += (num_better_predictions < top_k);
       counts[label_value*nthreads + index] = 1;
@@ -85,7 +99,7 @@ void AccuracyLayer<Dtype>::Forward_gpu(
     AccuracyForwardGPU<Dtype><<<CAFFE_GET_BLOCKS(nthreads),
         CAFFE_CUDA_NUM_THREADS>>>(nthreads, bottom_data, bottom_label,
         acc_data, outer_num_, dim, inner_num_, num_labels, top_k_,
-        has_ignore_label_, ignore_label_, counts);
+        has_ignore_label_, ignore_label_, counts, min_is_better_);
     Dtype acc;
     caffe_gpu_asum(nthreads, acc_data, &acc);
     Dtype valid_count;
@@ -109,7 +123,7 @@ void AccuracyLayer<Dtype>::Forward_gpu(
     AccuracyForwardWithPerClassGPU<Dtype><<<CAFFE_GET_BLOCKS(nthreads),
         CAFFE_CUDA_NUM_THREADS>>>(nthreads, bottom_data, bottom_label,
         acc_data, counts, outer_num_, dim, inner_num_, num_labels, top_k_,
-        has_ignore_label_, ignore_label_);
+        has_ignore_label_, ignore_label_, min_is_better_);
 
     // get the overall accuracy
     Dtype acc;

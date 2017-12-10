@@ -417,6 +417,7 @@
     <CudaCompile Include="..\..\src\caffe\util\math_functions.cu" />
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="..\..\src\caffe\layers\accuracy_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\arccos_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\axpy_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\bn_layer.cu" />
