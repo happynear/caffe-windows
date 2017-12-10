@@ -309,6 +309,8 @@ message ParamSpec {
 
   // The multiplier on the global weight decay for this parameter.
   optional float decay_mult = 4 [default = 1.0];
+
+  optional bool fix_lr = 5 [default = false];
 }
 
 // NOTE
@@ -1866,6 +1868,7 @@ message LabelSpecificRescaleParameter {
   optional uint32 iteration = 12 [default = 0];
   optional bool bias_fix = 13 [default = false];
   optional bool power_on_positive = 14 [default = false];
+  optional bool do_backward = 15 [default = true];
 }
 
 message InfimumLossParamter {
@@ -1911,7 +1914,7 @@ message MarginInnerProductParameter {
 
 message FeatureDecayLossParameter {
   optional float decay_threshold = 1 [default = 20.0];
-  optional bool force_decay = 2 [default = false];
+  optional float incay_threshold = 2 [default = 10.0];
 }
 
 message ConfidencePenaltyLossParameter{
@@ -1952,25 +1955,33 @@ message ChannelScaleParameter{
   optional bool do_forward = 1 [default = true];
   optional bool do_backward_feature = 2 [default = true];
   optional bool do_backward_scale = 3 [default = true];
+  optional bool global_scale = 4 [default = false];
+  optional float max_global_scale = 5 [default = 1000.0];
+  optional float min_global_scale = 6 [default = 0.0];
+  optional float init_global_scale = 7 [default = 1.0];
 }
 
 message LabelSpecificAffineParameter {
   optional float scale_base = 1 [default = 1.0];
   optional float scale_gamma = 2 [default = 0.0];
   optional float scale_power = 3 [default = 1.0];
-  optional float scale_max = 4 [default =1.0];
-  optional bool transform_test = 5 [default = false];
-  optional uint32 iteration = 6 [default = 0];
-  optional float bias_base = 7 [default = 0.0];
-  optional float bias_gamma = 8 [default = 0.0];
-  optional float bias_power = 9 [default = 1.0];
-  optional float bias_max = 10 [default =0.0];
-  optional float power_base = 11 [default = 1.0];
-  optional float power_gamma = 12 [default = 0.0];
-  optional float power_power = 13 [default = -1.0];
-  optional float power_min = 14 [default =0.5];
-  optional bool auto_tune = 15 [default = false];
-  optional bool reset = 16 [default = false];
+  optional float scale_min = 4 [default =1.0];
+  optional float scale_max = 5 [default =1.0];
+  optional bool transform_test = 6 [default = false];
+  optional uint32 iteration = 7 [default = 0];
+  optional float bias_base = 8 [default = 0.0];
+  optional float bias_gamma = 9 [default = 0.0];
+  optional float bias_power = 10 [default = 1.0];
+  optional float bias_min = 11 [default =0.0];
+  optional float bias_max = 12 [default =0.0];
+  optional float power_base = 13 [default = 1.0];
+  optional float power_gamma = 14 [default = 0.0];
+  optional float power_power = 15 [default = -1.0];
+  optional float power_min = 16 [default = 1.0];
+  optional float power_max = 17 [default = 1.0];
+  optional bool auto_tune = 18 [default = false];
+  optional bool reset = 19 [default = false];
+  optional bool original_bp = 20 [default = false];
 }
 
 message LabelSpecificHardMarginParameter {
