@@ -46,10 +46,12 @@ namespace caffe {
     caffe_gpu_dot(count, bottom_data, negative_mask.gpu_data(), &negative_mean);
     caffe_gpu_dot(count, bottom_square.gpu_data(), negative_mask.gpu_data(), &negative_std);
 
-    positive_mean /= M_PI / Dtype(180.0);
-    negative_mean /= M_PI / Dtype(180.0);
-    positive_std /= M_PI / Dtype(180.0) * M_PI / Dtype(180.0);
-    negative_std /= M_PI / Dtype(180.0) * M_PI / Dtype(180.0);
+    if (scale_for_angle_) {
+      positive_mean /= M_PI / Dtype(180.0);
+      negative_mean /= M_PI / Dtype(180.0);
+      positive_std /= M_PI / Dtype(180.0) * M_PI / Dtype(180.0);
+      negative_std /= M_PI / Dtype(180.0) * M_PI / Dtype(180.0);
+    }
     positive_mean /= num;
     positive_std = sqrt(positive_std / num - positive_mean * positive_mean);
     negative_mean /= num * (dim - 1);
@@ -76,8 +78,9 @@ namespace caffe {
       int dim = count / num;
       Dtype top_diff = top[1]->cpu_diff()[0];
 
-      caffe_gpu_scal(count, -top_diff / Dtype(num) / Dtype(M_PI) * Dtype(180.0), positive_mask.mutable_gpu_data());
-      caffe_gpu_scal(count, top_diff / Dtype(num) / Dtype(dim - 1) / Dtype(M_PI) * Dtype(180.0), negative_mask.mutable_gpu_data());
+      Dtype scale_fix = scale_for_angle_ ? Dtype(180.0) / Dtype(M_PI) : Dtype(1.0);
+      caffe_gpu_scal(count, -top_diff / Dtype(num)* scale_fix, positive_mask.mutable_gpu_data());
+      caffe_gpu_scal(count, top_diff / Dtype(num) / Dtype(dim - 1) * scale_fix, negative_mask.mutable_gpu_data());
       caffe_gpu_add(count, positive_mask.gpu_data(), negative_mask.gpu_data(), bottom_diff);
     }
   }

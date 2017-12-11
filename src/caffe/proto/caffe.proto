@@ -455,6 +455,7 @@ message LayerParameter {
   optional ChannelScaleParameter channel_scale_param = 237;
   optional LabelSpecificAffineParameter label_specific_affine_param = 238;
   optional LabelSpecificHardMarginParameter label_specific_hard_margin_param = 239;
+  optional LabelSpecificStatisticsParameter label_specific_statistics_param = 240;
 }
 
 // Message that stores parameters used to apply transformation
@@ -1986,4 +1987,8 @@ message LabelSpecificAffineParameter {
 
 message LabelSpecificHardMarginParameter {
   optional float positive_weight = 1 [default = 0.5];
+}
+
+message LabelSpecificStatisticsParameter {
+  optional bool scale_for_angle = 1 [default = true];
 }

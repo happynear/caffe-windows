@@ -8,7 +8,8 @@ namespace caffe {
   template <typename Dtype>
   void LabelSpecificStatisticsLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
                                                     const vector<Blob<Dtype>*>& top) {
-    
+    const LabelSpecificStatisticsParameter& param = this->layer_param_.label_specific_statistics_param();
+    scale_for_angle_ = param.scale_for_angle();
   }
 
   template <typename Dtype>
