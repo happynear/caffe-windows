@@ -7,6 +7,9 @@
 #include "caffe/common.hpp"
 #include "caffe/proto/caffe.pb.h"
 
+#define CUDNN_VERSION_MIN(major, minor, patch) \
+    (CUDNN_VERSION >= (major * 1000 + minor * 100 + patch))
+
 #define CUDNN_CHECK(condition) \
   do { \
     cudnnStatus_t status = condition; \
@@ -14,9 +17,7 @@
       << cudnnGetErrorString(status); \
   } while (0)
 
-#if CUDNN_VERSION < 20
-
-inline const char* cudnnGetErrorString(cudnnStatus_t status) {
+inline const char* CUDNNWINAPI cudnnGetErrorString(cudnnStatus_t status) {
   switch (status) {
     case CUDNN_STATUS_SUCCESS:
       return "CUDNN_STATUS_SUCCESS";
@@ -43,7 +44,6 @@ inline const char* cudnnGetErrorString(cudnnStatus_t status) {
   }
   return "Unknown cudnn status";
 }
-#endif
 
 namespace caffe {
 
@@ -56,7 +56,6 @@ template<> class dataType<float>  {
   static float oneval, zeroval;
   static const void *one, *zero;
 };
-
 template<> class dataType<double> {
  public:
   static const cudnnDataType_t type = CUDNN_DATA_DOUBLE;

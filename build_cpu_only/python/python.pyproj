@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{de04745b-5fb5-4b31-ad2d-b412be598a9b}</ProjectGuid>
+    <ProjectHome>..\..\</ProjectHome>
+    <StartupFile />
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>{9a7a9026-48c1-4688-9d5d-e5699d47d074}</InterpreterId>
+    <InterpreterVersion>2.7</InterpreterVersion>
+    <Name>python</Name>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="examples\finetune_flickr_style\assemble_data.py" />
+    <Compile Include="examples\web_demo\app.py" />
+    <Compile Include="examples\web_demo\exifutil.py" />
+    <Compile Include="python\caffe\classifier.py" />
+    <Compile Include="python\caffe\detector.py" />
+    <Compile Include="python\caffe\draw.py" />
+    <Compile Include="python\caffe\io.py" />
+    <Compile Include="python\caffe\net_spec.py" />
+    <Compile Include="python\caffe\proto\caffe_pb2.py" />
+    <Compile Include="python\caffe\proto\__init__.py" />
+    <Compile Include="python\caffe\pycaffe.py" />
+    <Compile Include="python\caffe\test\test_net.py" />
+    <Compile Include="python\caffe\test\test_net_spec.py" />
+    <Compile Include="python\caffe\test\test_python_layer.py" />
+    <Compile Include="python\caffe\test\test_solver.py" />
+    <Compile Include="python\caffe\__init__.py" />
+    <Compile Include="python\classify.py" />
+    <Compile Include="python\detect.py" />
+    <Compile Include="python\draw_net.py" />
+    <Compile Include="scripts\copy_notebook.py" />
+    <Compile Include="scripts\cpp_lint.py" />
+    <Compile Include="scripts\download_model_binary.py" />
+    <Compile Include="src\caffe\proto\caffe_pb2.py" />
+    <Compile Include="src\caffe\test\test_data\generate_sample_data.py" />
+    <Compile Include="tools\extra\extract_seconds.py" />
+    <Compile Include="tools\extra\parse_log.py" />
+    <Compile Include="tools\extra\resize_and_crop_images.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="examples\" />
+    <Folder Include="examples\finetune_flickr_style" />
+    <Folder Include="examples\web_demo" />
+    <Folder Include="python" />
+    <Folder Include="python\caffe" />
+    <Folder Include="python\caffe\proto" />
+    <Folder Include="python\caffe\test" />
+    <Folder Include="scripts" />
+    <Folder Include="src\" />
+    <Folder Include="src\caffe\" />
+    <Folder Include="src\caffe\proto" />
+    <Folder Include="src\caffe\test\" />
+    <Folder Include="src\caffe\test\test_data" />
+    <Folder Include="tools\" />
+    <Folder Include="tools\extra" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="{9a7a9026-48c1-4688-9d5d-e5699d47d074}\2.7" />
+  </ItemGroup>
+  <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
+</Project>

@@ -1,12 +1,11 @@
 #include <algorithm>
 #include <vector>
 
-#include "caffe/layer.hpp"
-#include "caffe/vision_layers.hpp"
+#include "caffe/layers/bnll_layer.hpp"
 
 namespace caffe {
 
-#define kBNLL_THRESHOLD 50.;
+__device__ __constant__  float kBNLL_THRESHOLD = 50.;
 
 template <typename Dtype>
 __global__ void BNLLForward(const int n, const Dtype* in, Dtype* out) {
@@ -33,7 +32,7 @@ template <typename Dtype>
 __global__ void BNLLBackward(const int n, const Dtype* in_diff,
     const Dtype* in_data, Dtype* out_diff) {
   CUDA_KERNEL_LOOP(index, n) {
-    Dtype expval = exp(min(in_data[index], Dtype(50.)));
+    Dtype expval = exp(min(in_data[index], Dtype(kBNLL_THRESHOLD)));
     out_diff[index] = in_diff[index] * expval / (expval + 1.);
   }
 }

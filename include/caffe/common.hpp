@@ -15,9 +15,12 @@
 #include <string>
 #include <utility>  // pair
 #include <vector>
-#include <direct.h>
 
 #include "caffe/util/device_alternate.hpp"
+
+// Convert macro to string
+#define STRINGIFY(m) #m
+#define AS_STRING(m) STRINGIFY(m)
 
 // gflags 2.1 issue: namespace google was changed to gflags without warning.
 // Luckily we will be able to use GFLAGS_GFLAGS_H_ to detect if it is version
@@ -27,10 +30,6 @@
 #ifndef GFLAGS_GFLAGS_H_
 namespace gflags = google;
 #endif  // GFLAGS_GFLAGS_H_
-
-#ifdef _MSC_VER
-#define snprintf sprintf_s
-#endif
 
 // Disable the copy and assignment operator for a class.
 #define DISABLE_COPY_AND_ASSIGN(classname) \
@@ -82,8 +81,8 @@ using boost::shared_ptr;
 // Common functions and classes from std that caffe often uses.
 using std::fstream;
 using std::ios;
-//using std::isnan;
-//using std::isinf;
+using std::isnan;
+using std::isinf;
 using std::iterator;
 using std::make_pair;
 using std::map;
@@ -103,12 +102,12 @@ void GlobalInit(int* pargc, char*** pargv);
 class Caffe {
  public:
   ~Caffe();
-  inline static Caffe& Get() {
-    if (!singleton_.get()) {
-      singleton_.reset(new Caffe());
-    }
-    return *singleton_;
-  }
+
+  // Thread local context for Caffe. Moved to common.cpp instead of
+  // including boost/thread.hpp to avoid a boost/NVCC issues (#1009, #1010)
+  // on OSX. Also fails on Linux with CUDA 7.0.18.
+  static Caffe& Get();
+
   enum Brew { CPU, GPU };
 
   // This random number generator facade hides boost and CUDA rng
@@ -154,6 +153,16 @@ class Caffe {
   static void SetDevice(const int device_id);
   // Prints the current GPU status.
   static void DeviceQuery();
+  // Check if specified device is available
+  static bool CheckDevice(const int device_id);
+  // Search from start_id to the highest possible device ordinal,
+  // return the ordinal of the first available device.
+  static int FindDevice(const int start_id = 0);
+  // Parallel training info
+  inline static int solver_count() { return Get().solver_count_; }
+  inline static void set_solver_count(int val) { Get().solver_count_ = val; }
+  inline static bool root_solver() { return Get().root_solver_; }
+  inline static void set_root_solver(bool val) { Get().root_solver_ = val; }
 
  protected:
 #ifndef CPU_ONLY
@@ -163,7 +172,8 @@ class Caffe {
   shared_ptr<RNG> random_generator_;
 
   Brew mode_;
-  static shared_ptr<Caffe> singleton_;
+  int solver_count_;
+  bool root_solver_;
 
  private:
   // The private constructor to avoid duplicate instantiation.

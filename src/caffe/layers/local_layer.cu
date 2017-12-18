@@ -4,7 +4,7 @@
 #include "caffe/layer.hpp"
 #include "caffe/util/im2col.hpp"
 #include "caffe/util/math_functions.hpp"
-#include "caffe/vision_layers.hpp"
+#include "caffe/custom_layers.hpp"
 
 namespace caffe {
 
@@ -106,7 +106,7 @@ void LocalLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   intermediate.Reshape(1, 1, K_, N_);
   for (int n=0; n<num_; n++) {
     im2col_gpu(bottom_data + bottom[0]->offset(n), channels_, height_,
-               width_, kernel_size_, kernel_size_, pad_, pad_, stride_, stride_, x_data);
+               width_, kernel_size_, kernel_size_, pad_, pad_, stride_, stride_, 1, 1, x_data);
 
     for (int m=0; m<num_output_; m++) {
       caffe_gpu_mul(K_*N_, x_data, weight+this->blobs_[0]->offset(m),
@@ -162,7 +162,7 @@ void LocalLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
   CUDA_CHECK(cudaMemset(weight_diff, 0, sizeof(Dtype) * this->blobs_[0]->count()));
   for (int n=0; n<num_; n++) {
     im2col_gpu(bottom_data + bottom[0]->offset(n), channels_, height_,
-               width_, kernel_size_, kernel_size_, pad_, pad_, stride_, stride_, x_data);
+               width_, kernel_size_, kernel_size_, pad_, pad_, stride_, stride_, 1, 1, x_data);
 
     local_update1_gpu(top_diff+top[0]->offset(n), x_data, weight_diff, K_, N_, M_);
 
@@ -172,7 +172,7 @@ void LocalLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
 
       // col2im back to the data
       col2im_gpu(x_diff, channels_, height_, width_, kernel_size_, kernel_size_,
-                 pad_, pad_, stride_, stride_, bottom_diff + bottom[0]->offset(n));
+                 pad_, pad_, stride_, stride_, 1, 1, bottom_diff + bottom[0]->offset(n));
     }
   }
 }

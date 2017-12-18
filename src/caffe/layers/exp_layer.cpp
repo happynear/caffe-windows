@@ -1,9 +1,7 @@
-#include <algorithm>
 #include <vector>
 
-#include "caffe/layer.hpp"
+#include "caffe/layers/exp_layer.hpp"
 #include "caffe/util/math_functions.hpp"
-#include "caffe/vision_layers.hpp"
 
 namespace caffe {
 
@@ -18,14 +16,15 @@ void ExpLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   // If base == -1, interpret the base as e and set log_base = 1 exactly.
   // Otherwise, calculate its log explicitly.
   const Dtype log_base = (base == Dtype(-1)) ? Dtype(1) : log(base);
-  CHECK(!_isnanf(log_base))
+  CHECK(!isnan(log_base))
       << "NaN result: log(base) = log(" << base << ") = " << log_base;
-  CHECK(_finitef(log_base))
+  CHECK(!isinf(log_base))
       << "Inf result: log(base) = log(" << base << ") = " << log_base;
   const Dtype input_scale = this->layer_param_.exp_param().scale();
   const Dtype input_shift = this->layer_param_.exp_param().shift();
   inner_scale_ = log_base * input_scale;
-  outer_scale_ = (input_shift == Dtype(0)) ? Dtype(1) : pow(base, input_shift);
+  outer_scale_ = (input_shift == Dtype(0)) ? Dtype(1) :
+     ( (base != Dtype(-1)) ? pow(base, input_shift) : exp(input_shift) );
 }
 
 template <typename Dtype>

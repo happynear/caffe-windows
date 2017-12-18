@@ -56,7 +56,6 @@ Makefile.config
 # 1. reference, and not casually committed
 # 2. custom, and live on their own unless they're deliberated contributed
 data/*
-models/*
 *.caffemodel
 *.solverstate
 *.binaryproto
@@ -75,7 +74,6 @@ distribute/*
 python/caffe/proto/
 cmake_build
 .cmake_build
-3rdparty
 bin
 *.sdf
 *.opensdf
@@ -108,3 +106,8 @@ MANIFEST-*
 *.ERROR
 *.FATAL
 
+*.jpg
+*.bmp
+*.png
+
+Inceptionism
