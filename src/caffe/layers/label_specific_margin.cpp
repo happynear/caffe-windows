@@ -123,7 +123,7 @@ void LabelSpecificMarginLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& t
     if (margin[0] != Dtype(0.0)) {
       for (int i = 0; i < num; ++i) {
         int gt = static_cast<int>(label_data[i]);
-        bottom_diff[i * dim + gt] = top_diff[i * dim + gt] * (cosf(margin[0] / 180 * M_PI) -
+        bottom_diff[i * dim + gt] = top_diff[i * dim + gt] * (cosf(margin[0] / 180 * M_PI) +
                                                               bottom_data[i * dim + gt] / sqrt(1 - bottom_data[i * dim + gt] * bottom_data[i * dim + gt] + 1e-12)
                                                               * sinf(margin[0] / 180 * M_PI));
       }
