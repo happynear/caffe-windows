@@ -70,7 +70,7 @@ namespace caffe {
       int gt = static_cast<int>(label[index]);
       Dtype fixed_bottom_data = min(bottom_data[index * dim + gt], Dtype(1.0) - Dtype(1e-4));
       fixed_bottom_data = max(fixed_bottom_data, Dtype(-1.0) + Dtype(1e-4));
-      Dtype gradient = cos_margin - fixed_bottom_data / sqrt(1 - fixed_bottom_data * fixed_bottom_data) * sin_margin;
+      Dtype gradient = cos_margin + fixed_bottom_data / sqrt(1 - fixed_bottom_data * fixed_bottom_data) * sin_margin;
       gradient = gradient > 2 ? 2 : gradient;//bound the gradient.
       gradient = gradient < 0 ? 0 : gradient;
       bottom_diff[index * dim + gt] = top_diff[index * dim + gt] * gradient;
