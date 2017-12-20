@@ -205,6 +205,7 @@ namespace caffe {
 
       caffe_copy(count, top_diff, bottom_diff);
       if (!margin_on_test_ && this->phase_ == TEST) return;
+      if (pass_bp_) return;
 
       if (margin[0] != Dtype(0.0)) {
         if (type_ == LabelSpecificMarginParameter_MarginType_SOFT) {

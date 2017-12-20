@@ -1950,6 +1950,7 @@ message LabelSpecificMarginParameter {
   optional bool reset_margin = 6 [default = false];
   optional bool margin_on_test = 7 [default = false];
   optional bool auto_tune = 8 [default = false];
+  optional bool pass_bp = 10 [default = false];
 }
 
 message ChannelScaleParameter{
