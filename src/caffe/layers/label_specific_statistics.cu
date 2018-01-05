@@ -62,7 +62,9 @@ namespace caffe {
     top[0]->mutable_cpu_data()[2] = negative_mean;
     top[0]->mutable_cpu_data()[3] = negative_std;
     if (top.size() == 2) {
-      top[1]->mutable_cpu_data()[0] = (negative_mean - positive_mean)/2;
+      top[1]->mutable_cpu_data()[0] = Dtype(1.0);
+      top[1]->mutable_cpu_data()[1] = (negative_mean - positive_mean)/2;
+      top[1]->mutable_cpu_data()[2] = Dtype(1.0);
     }
   }
 
