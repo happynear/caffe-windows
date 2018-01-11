@@ -37,6 +37,10 @@ class LabelSpecificAffineLayer : public Layer<Dtype> {
   virtual void Backward_gpu(const vector<Blob<Dtype>*>& top,
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
 
+  virtual Dtype CalcLSE(const vector<Blob<Dtype>*>& bottom,
+                        Blob<Dtype>* LSE);
+  virtual Dtype MeanTargetLogit(const vector<Blob<Dtype>*>& bottom);
+
   Dtype scale_base_;
   Dtype scale_gamma_;
   Dtype scale_power_;
@@ -52,6 +56,8 @@ class LabelSpecificAffineLayer : public Layer<Dtype> {
   Dtype power_power_;
   Dtype power_min_;
   Dtype power_max_;
+  Dtype scale_factor_;
+  bool protect_low_bound_;
   bool transform_test_;
   int iteration_;
   bool auto_tune_;
@@ -60,6 +66,8 @@ class LabelSpecificAffineLayer : public Layer<Dtype> {
   Dtype scale, bias, power;
   Blob<Dtype> selected_value_;
   Blob<Dtype> sum_multiplier_;
+  Blob<double> sum_multiplier_channel_;
+  Blob<Dtype> lower_bound_;
 };
 
 }  // namespace caffe

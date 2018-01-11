@@ -39,6 +39,7 @@ class LabelSpecificStatisticsLayer : public Layer<Dtype> {
 
   Blob<Dtype> positive_mask, negative_mask, bottom_square;
   bool scale_for_angle_;
+  Dtype scale_factor_;
 };
 
 }  // namespace caffe

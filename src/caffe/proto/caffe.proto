@@ -1984,6 +1984,8 @@ message LabelSpecificAffineParameter {
   optional bool auto_tune = 18 [default = false];
   optional bool reset = 19 [default = false];
   optional bool original_bp = 20 [default = false];
+  optional float scale_factor = 21 [default = 30.0];
+  optional bool protect_low_bound = 22 [default = false];
 }
 
 message LabelSpecificHardMarginParameter {
@@ -1992,4 +1994,5 @@ message LabelSpecificHardMarginParameter {
 
 message LabelSpecificStatisticsParameter {
   optional bool scale_for_angle = 1 [default = true];
+  optional float scale_factor = 2 [default = 30.0];
 }

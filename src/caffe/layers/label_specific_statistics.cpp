@@ -10,6 +10,7 @@ namespace caffe {
                                                     const vector<Blob<Dtype>*>& top) {
     const LabelSpecificStatisticsParameter& param = this->layer_param_.label_specific_statistics_param();
     scale_for_angle_ = param.scale_for_angle();
+    scale_factor_ = param.scale_factor();
   }
 
   template <typename Dtype>

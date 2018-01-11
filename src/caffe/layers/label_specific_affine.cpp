@@ -25,6 +25,8 @@ namespace caffe {
     power_min_ = param.power_min();
     power_max_ = param.power_max();
     iteration_ = param.iteration();
+    scale_factor_ = param.scale_factor();
+    protect_low_bound_ = param.protect_low_bound();
     reset_ = param.reset();
     transform_test_ = param.transform_test() & (this->phase_ == TRAIN);
     auto_tune_ = param.auto_tune();//doesn't work.
@@ -51,10 +53,14 @@ namespace caffe {
     if (top.size() == 2) {
       top[1]->Reshape({ 3 });
     }
-    if (auto_tune_ || bottom.size() == 3) {
+    if (auto_tune_) {
+      top[1]->Reshape({ 5 });
       selected_value_.Reshape({ bottom[0]->num() });
+      lower_bound_.Reshape({ bottom[0]->num() });
       sum_multiplier_.Reshape({ bottom[0]->num() });
       caffe_set(sum_multiplier_.count(), Dtype(1), sum_multiplier_.mutable_cpu_data());
+      sum_multiplier_channel_.Reshape({ bottom[0]->channels() });
+      caffe_set<double>(sum_multiplier_channel_.count(), 1.0, sum_multiplier_channel_.mutable_cpu_data());
     }
   }
 

@@ -16,6 +16,13 @@ namespace caffe {
   }
 
   template <typename Dtype>
+  __global__ void kernel_exp(const int count, const Dtype* data, Dtype* out) {
+    CUDA_KERNEL_LOOP(index, count) {
+      out[index] = exp(data[index]);
+    }
+  }
+
+  template <typename Dtype>
   void LabelSpecificStatisticsLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
                                                         const vector<Blob<Dtype>*>& top) {
     const Dtype* bottom_data = bottom[0]->gpu_data();
