@@ -40,6 +40,7 @@ class LabelSpecificAffineLayer : public Layer<Dtype> {
   virtual Dtype CalcLSE(const vector<Blob<Dtype>*>& bottom,
                         Blob<Dtype>* LSE);
   virtual Dtype MeanTargetLogit(const vector<Blob<Dtype>*>& bottom);
+  virtual Dtype MeanMaxNegativeLogit(const vector<Blob<Dtype>*>& bottom);
 
   Dtype scale_base_;
   Dtype scale_gamma_;

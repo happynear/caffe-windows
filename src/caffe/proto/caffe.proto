@@ -1273,6 +1273,7 @@ message SoftmaxParameter {
   optional float cutting_point = 6;
   optional string normalize_type = 7 [default="Softmax"];
   optional float label_smooth_factor = 8 [default = 0.];
+  optional float margin = 9 [default = 0.];
 }
 
 message TanHParameter {

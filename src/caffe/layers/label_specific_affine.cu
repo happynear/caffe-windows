@@ -95,11 +95,25 @@ namespace caffe {
   }
 
   template <typename Dtype>
-  __global__ void select_target_values(const int n, const int dim, const Dtype* bottom_data, const Dtype* label,
+  __global__ void select_target_logits(const int n, const int dim, const Dtype* bottom_data, const Dtype* label,
                                                Dtype* selected_value) {
     CUDA_KERNEL_LOOP(index, n) {
       int gt = static_cast<int>(label[index]);
       selected_value[index] = bottom_data[index * dim + gt];
+    }
+  }
+
+  template <typename Dtype>
+  __global__ void max_negative_logit(const int n, const int dim, const Dtype* bottom_data, const Dtype* label,
+                                       Dtype* max_negative) {
+    CUDA_KERNEL_LOOP(index, n) {
+      int gt = static_cast<int>(label[index]);
+      max_negative[index] = Dtype(-1.0);
+      for (int i = 0; i < dim; i++) {
+        if (i != gt && bottom_data[index * dim + i] > max_negative[index]) {
+          max_negative[index] = bottom_data[index * dim + i];
+        }
+      }
     }
   }
 
@@ -151,7 +165,7 @@ namespace caffe {
     int dim = count / num;
 
     // NOLINT_NEXT_LINE(whitespace/operators)
-    select_target_values<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
+    select_target_logits<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
       num, dim, bottom_data, label_data, selected_value_.mutable_gpu_data());
 
     Dtype mean_target;
@@ -163,6 +177,28 @@ namespace caffe {
 
   template double LabelSpecificAffineLayer<double>::MeanTargetLogit(const vector<Blob<double>*>& bottom);
   template float LabelSpecificAffineLayer<float>::MeanTargetLogit(const vector<Blob<float>*>& bottom);
+
+  template <typename Dtype>
+  Dtype LabelSpecificAffineLayer<Dtype>::MeanMaxNegativeLogit(const vector<Blob<Dtype>*>& bottom) {
+    const Dtype* bottom_data = bottom[0]->gpu_data();
+    const Dtype* label_data = bottom[1]->gpu_data();
+    int num = bottom[0]->num();
+    int count = bottom[0]->count();
+    int dim = count / num;
+
+    // NOLINT_NEXT_LINE(whitespace/operators)
+    max_negative_logit<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
+      num, dim, bottom_data, label_data, selected_value_.mutable_gpu_data());
+
+    Dtype mean_target;
+    caffe_gpu_dot(num, selected_value_.gpu_data(), sum_multiplier_.gpu_data(), &mean_target);
+    mean_target /= num;
+
+    return mean_target;
+  }
+
+  template double LabelSpecificAffineLayer<double>::MeanMaxNegativeLogit(const vector<Blob<double>*>& bottom);
+  template float LabelSpecificAffineLayer<float>::MeanMaxNegativeLogit(const vector<Blob<float>*>& bottom);
 
   template <typename Dtype>
   void LabelSpecificAffineLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
@@ -189,12 +225,12 @@ namespace caffe {
         scale_bias[2] = power;
 
         Dtype mean_target = MeanTargetLogit(bottom);
-        Dtype mean_LSE = CalcLSE(bottom, &lower_bound_);
-        scale_bias[1] = 0.9 * scale_bias[1] + 0.1 * (mean_LSE - mean_target);
+        Dtype mean_max_negative = CalcLSE(bottom, &lower_bound_);
+        scale_bias[1] = 0.9 * scale_bias[1] + 0.1 * (mean_max_negative - mean_target);
         bias = scale_bias[1] < Dtype(0) ? scale_bias[1] : Dtype(0);
         if (top.size() >= 2) {
           top[1]->mutable_cpu_data()[3] = mean_target;
-          top[1]->mutable_cpu_data()[4] = mean_LSE;
+          top[1]->mutable_cpu_data()[4] = mean_max_negative;
         }
       }
       else {
