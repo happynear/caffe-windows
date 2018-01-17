@@ -25,7 +25,7 @@ namespace caffe {
       int gt = static_cast<int>(label[index]);
       if (bottom_data[index * dim + gt] > 0) {
         top_data[index * dim + gt] = pow(bottom_data[index * dim + gt], power) * scale;
-        /*if (top_data[index * dim + gt] > -bias)*/ top_data[index * dim + gt] += bias;
+        if (top_data[index * dim + gt] > -bias) top_data[index * dim + gt] += bias;
       }
     }
   }
