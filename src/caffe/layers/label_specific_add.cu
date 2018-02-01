@@ -29,6 +29,13 @@ namespace caffe {
     if (top[0] != bottom[0]) caffe_copy(count, bottom_data, top_data);
     if (!transform_test_ && this->phase_ == TEST) return;
 
+    if (anneal_bias_) {
+      bias_ = bias_base_ + pow(((Dtype)1. + bias_gamma_ * iteration_), bias_power_) - (Dtype)1.;
+      bias_ = std::max(bias_, bias_min_);
+      bias_ = std::min(bias_, bias_max_);
+      iteration_++;
+    }
+
     // NOLINT_NEXT_LINE(whitespace/operators)
     LabelSpecificAddForward<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (
       num, dim, label_data, top_data, bias_);

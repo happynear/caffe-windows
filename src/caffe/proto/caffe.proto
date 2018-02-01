@@ -1990,4 +1990,10 @@ message LabelSpecificStatisticsParameter {
 message LabelSpecificAddParameter {
   optional float bias = 1 [default = 0.0];
   optional bool transform_test = 2 [default = false];
+  optional float bias_base = 3 [default = 0.0];
+  optional float bias_gamma = 4 [default = 0.0];
+  optional float bias_power = 5 [default = 1.0];
+  optional float bias_min = 6 [default =0.0];
+  optional float bias_max = 7 [default =0.0];
+  optional uint32 iteration = 8 [default = 0];
 }
