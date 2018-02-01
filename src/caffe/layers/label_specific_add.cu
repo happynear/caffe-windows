@@ -35,6 +35,9 @@ namespace caffe {
       bias_ = std::min(bias_, bias_max_);
       iteration_++;
     }
+    if (top.size() == 2) {
+      top[1]->mutable_cpu_data()[0] = bias_;
+    }
 
     // NOLINT_NEXT_LINE(whitespace/operators)
     LabelSpecificAddForward<Dtype> << <CAFFE_GET_BLOCKS(num), CAFFE_CUDA_NUM_THREADS >> > (

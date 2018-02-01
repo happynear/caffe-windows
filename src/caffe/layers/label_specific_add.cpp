@@ -24,6 +24,7 @@ namespace caffe {
   void LabelSpecificAddLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
                                                     const vector<Blob<Dtype>*>& top) {
     if(top[0] != bottom[0]) top[0]->ReshapeLike(*bottom[0]);
+    if (top.size() == 2) top[1]->Reshape({ 1 });
   }
 
 template <typename Dtype>
@@ -46,6 +47,9 @@ void LabelSpecificAddLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& botto
     bias_ = std::max(bias_, bias_min_);
     bias_ = std::min(bias_, bias_max_);
     iteration_++;
+  }
+  if (top.size() == 2) {
+    top[1]->mutable_cpu_data()[0] = bias_;
   }
 
   for (int i = 0; i < num; ++i) {
