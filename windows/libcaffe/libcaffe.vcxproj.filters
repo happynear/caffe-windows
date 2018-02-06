@@ -480,6 +480,9 @@
     <ClCompile Include="..\..\src\caffe\layers\label_specific_add.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\caffe\layers\radial_removal_margin_layer.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\caffe\proto\caffe.pb.h">
@@ -881,6 +884,9 @@
     <ClInclude Include="..\..\include\caffe\layers\label_specific_add_layer.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\caffe\layers\radial_removal_margin_layer.hpp">
+      <Filter>include\layers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\..\src\caffe\layers\absval_layer.cu">
@@ -1187,6 +1193,9 @@
       <Filter>src\util</Filter>
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\label_specific_add.cu">
+      <Filter>src\layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\layers\radial_removal_margin_layer.cu">
       <Filter>src\layers</Filter>
     </CudaCompile>
   </ItemGroup>

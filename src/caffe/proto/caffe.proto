@@ -457,6 +457,7 @@ message LayerParameter {
   optional LabelSpecificHardMarginParameter label_specific_hard_margin_param = 239;
   optional LabelSpecificStatisticsParameter label_specific_statistics_param = 240;
   optional LabelSpecificAddParameter label_specific_add_param = 241;
+  optional RadialRemovalMarginParameter radial_removal_margin_param = 242;
 }
 
 // Message that stores parameters used to apply transformation
@@ -2002,4 +2003,8 @@ message LabelSpecificStatisticsParameter {
 message LabelSpecificAddParameter {
   optional float bias = 1 [default = 0.0];
   optional bool transform_test = 2 [default = false];
+}
+
+message RadialRemovalMarginParameter {
+  optional float scale = 1 [default = 1.0];
 }
