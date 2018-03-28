@@ -8,7 +8,7 @@
 
 namespace caffe {
 
-#define sign(x) (Dtype(0) < (x)) - ((x) < Dtype(0))
+#define sign(x) ((Dtype(0) < (x)) - ((x) < Dtype(0)))
 
 template <typename Dtype>
 void NormalizeLayer<Dtype>::LayerSetUp(
