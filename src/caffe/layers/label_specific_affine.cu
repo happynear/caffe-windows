@@ -225,11 +225,12 @@ namespace caffe {
         scale_bias[2] = power;
 
         Dtype mean_target = MeanTargetLogit(bottom);
-        Dtype mean_max_negative = CalcLSE(bottom, &lower_bound_);
+        Dtype mean_max_negative = MeanMaxNegativeLogit(bottom);
+        Dtype mean_LSE = CalcLSE(bottom, &lower_bound_);
         scale_bias[1] = 0.9 * scale_bias[1] + 0.1 * (mean_max_negative - mean_target);
         bias = scale_bias[1] < Dtype(0) ? scale_bias[1] : Dtype(0);
         if (top.size() >= 2) {
-          top[1]->mutable_cpu_data()[3] = mean_target;
+          top[1]->mutable_cpu_data()[3] = mean_LSE;
           top[1]->mutable_cpu_data()[4] = mean_max_negative;
         }
       }

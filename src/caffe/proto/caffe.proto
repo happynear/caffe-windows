@@ -457,6 +457,7 @@ message LayerParameter {
   optional LabelSpecificHardMarginParameter label_specific_hard_margin_param = 239;
   optional LabelSpecificStatisticsParameter label_specific_statistics_param = 240;
   optional LabelSpecificAddParameter label_specific_add_param = 241;
+  optional ExpTripletParameter exp_triplet_loss_param = 242;
 }
 
 // Message that stores parameters used to apply transformation
@@ -2002,4 +2003,16 @@ message LabelSpecificStatisticsParameter {
 message LabelSpecificAddParameter {
   optional float bias = 1 [default = 0.0];
   optional bool transform_test = 2 [default = false];
+  optional float bias_base = 3 [default = 0.0];
+  optional float bias_gamma = 4 [default = 0.0];
+  optional float bias_power = 5 [default = 1.0];
+  optional float bias_min = 6 [default =0.0];
+  optional float bias_max = 7 [default =0.0];
+  optional uint32 iteration = 8 [default = 0];
+}
+
+
+message ExpTripletParameter {
+  optional float scale = 1 [default = 1.0];
+  optional float margin = 2 [default = 0.0];
 }

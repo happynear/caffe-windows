@@ -39,6 +39,13 @@ class LabelSpecificAddLayer : public Layer<Dtype> {
 
   Dtype bias_;
   bool transform_test_;
+  bool anneal_bias_;
+  Dtype bias_base_;
+  Dtype bias_gamma_;
+  Dtype bias_power_;
+  Dtype bias_min_;
+  Dtype bias_max_;
+  int iteration_;
 };
 
 }  // namespace caffe
