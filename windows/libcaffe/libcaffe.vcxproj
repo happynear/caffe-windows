@@ -185,6 +185,7 @@
     <ClCompile Include="..\..\src\caffe\layers\prelu_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\proposal_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\psroi_pooling_layer.cpp" />
+    <ClCompile Include="..\..\src\caffe\layers\radial_removal_margin_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\recurrent_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\reduction_layer.cpp" />
     <ClCompile Include="..\..\src\caffe\layers\relu_layer.cpp" />
@@ -328,6 +329,7 @@
     <ClInclude Include="..\..\include\caffe\layers\proposal_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\psroi_pooling_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\python_layer.hpp" />
+    <ClInclude Include="..\..\include\caffe\layers\radial_removal_margin_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\reduction_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\relu_layer.hpp" />
     <ClInclude Include="..\..\include\caffe\layers\reshape_layer.hpp" />
@@ -470,6 +472,7 @@
     <CudaCompile Include="..\..\src\caffe\layers\predict_box_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\proposal_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\psroi_pooling_layer.cu" />
+    <CudaCompile Include="..\..\src\caffe\layers\radial_removal_margin_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\recurrent_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\resize_layer.cu" />
     <CudaCompile Include="..\..\src\caffe\layers\roi_pooling_layer.cu" />
