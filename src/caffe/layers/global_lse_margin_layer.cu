@@ -8,7 +8,7 @@ namespace caffe {
 
   template <typename Dtype>
   __global__ void GlobalLSEMarginForward(const int n, const int dim, const Dtype* bottom_data, const Dtype* label,
-                                                 Dtype* top_data, Dtype margin) {
+                                         Dtype* top_data, Dtype margin) {
     CUDA_KERNEL_LOOP(index, n) {
       int gt = static_cast<int>(label[index]);
       if (margin > 0) {
@@ -93,8 +93,8 @@ namespace caffe {
 
   template <typename Dtype>
   __global__ void kernel_num_scale(const int num, const int dim,
-                                       const Dtype* data, const Dtype* norm_data,
-                                       Dtype* output_data) {
+                                   const Dtype* data, const Dtype* norm_data,
+                                   Dtype* output_data) {
     CUDA_KERNEL_LOOP(index, num * dim) {
       int n = index / dim;
       //int d = index % dim;
@@ -127,6 +127,17 @@ namespace caffe {
           sum_margin += margin_data[i];
           non_zero_count++;
         }
+      }
+      if (non_zero_count == 0) { // re-initialize
+        sum_margin = Dtype(0);
+        for (int i = 0; i < num; i++) {
+          sum_margin += margin_data[i];
+          non_zero_count++;
+        }
+        mu = sum_margin / non_zero_count;
+        last_mu = mu;
+        loop++;
+        continue;
       }
       mu = sum_margin / non_zero_count;
       if (abs(last_mu - mu) < 0.001) break;
@@ -186,7 +197,7 @@ namespace caffe {
     }
 
     caffe_gpu_gemv<Dtype>(CblasNoTrans, num, dim, 1.0,
-                           exp_bottom_data.gpu_data(), sum_multiplier_channel_.gpu_data(), 0.0, LSE->mutable_gpu_data());
+                          exp_bottom_data.gpu_data(), sum_multiplier_channel_.gpu_data(), 0.0, LSE->mutable_gpu_data());
 
     if (original_norm_) {
       // NOLINT_NEXT_LINE(whitespace/operators)
@@ -210,7 +221,7 @@ namespace caffe {
 
   template <typename Dtype>
   void GlobalLSEMarginLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
-                                                    const vector<Blob<Dtype>*>& top) {
+                                                const vector<Blob<Dtype>*>& top) {
     const Dtype* cos_data = bottom[0]->gpu_data();
     const Dtype* label_data = bottom[1]->gpu_data();
     Dtype* top_data = top[0]->mutable_gpu_data();
@@ -231,16 +242,17 @@ namespace caffe {
     Dtype mean_max_negative = MeanMaxNegativeLogit(bottom);
     Dtype mean_lse = CalcLSE(bottom, &lse_);
     caffe_gpu_sub(num, target_logits_.gpu_data(), lse_.gpu_data(), margins_.mutable_gpu_data());
-    
+
     if (margin[0] == Dtype(0)) {//initialize
       Dtype mean_margin;
       caffe_gpu_dot(num, margins_.gpu_data(), sum_multiplier_.gpu_data(), &mean_margin);
       mean_margin /= num;
-      margin[0] = MeanShift(&margins_, mean_margin, 20);
+      Dtype batch_margin = MeanShift(&margins_, mean_margin, 20);
+      if (!isnan(batch_margin)) margin[0] = batch_margin;
     }
     else {
       Dtype batch_margin = MeanShift(&margins_, margin[0]);
-      margin[0] = 0.9 * margin[0] + 0.1 * batch_margin;
+      if (!isnan(batch_margin)) margin[0] = 0.9 * margin[0] + 0.1 * batch_margin;
     }
 
     caffe_copy(count, cos_data, top_data);
@@ -280,8 +292,8 @@ namespace caffe {
 
   template <typename Dtype>
   void GlobalLSEMarginLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
-                                                     const vector<bool>& propagate_down,
-                                                     const vector<Blob<Dtype>*>& bottom) {
+                                                 const vector<bool>& propagate_down,
+                                                 const vector<Blob<Dtype>*>& bottom) {
     const Dtype* top_diff = top[0]->gpu_diff();
     const Dtype* top_data = top[0]->gpu_data();
     Dtype* bottom_diff = bottom[0]->mutable_gpu_diff();
@@ -302,7 +314,7 @@ namespace caffe {
       caffe_gpu_dot(count, top_diff, top_data, this->blobs_[0]->mutable_cpu_diff());
       this->blobs_[0]->mutable_cpu_diff()[0] /= scale;
     }
-    
+
 
     //caffe_set(bottom[2]->count(), Dtype(0), bottom[2]->mutable_gpu_diff());
     if (propagate_down[0]) {
