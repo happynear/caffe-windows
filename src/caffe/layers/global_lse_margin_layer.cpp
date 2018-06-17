@@ -78,6 +78,35 @@ void GlobalLSEMarginLayer<Dtype>::Backward_cpu(const vector<Blob<Dtype>*>& top,
   NOT_IMPLEMENTED;
 }
 
+#ifdef CPU_ONLY
+template <typename Dtype>
+Dtype GlobalLSEMarginLayer<Dtype>::MeanShift(Blob<Dtype>* margins, Dtype mu, int loop) {
+  NOT_IMPLEMENTED;
+  return Dtype(0);
+}
+
+template double GlobalLSEMarginLayer<double>::MeanShift(Blob<double>* margins, double mu, int loop);
+template float GlobalLSEMarginLayer<float>::MeanShift(Blob<float>* margins, float mu, int loop);
+
+template <typename Dtype>
+Dtype GlobalLSEMarginLayer<Dtype>::MeanMaxNegativeLogit(const vector<Blob<Dtype>*>& bottom) {
+  NOT_IMPLEMENTED;
+  return Dtype(0);
+}
+
+template double GlobalLSEMarginLayer<double>::MeanMaxNegativeLogit(const vector<Blob<double>*>& bottom);
+template float GlobalLSEMarginLayer<float>::MeanMaxNegativeLogit(const vector<Blob<float>*>& bottom);
+
+template <typename Dtype>
+Dtype GlobalLSEMarginLayer<Dtype>::CalcLSE(const vector<Blob<Dtype>*>& bottom, Blob<Dtype>* LSE) {
+  NOT_IMPLEMENTED;
+  return Dtype(0);
+}
+
+template double GlobalLSEMarginLayer<double>::CalcLSE(const vector<Blob<double>*>& bottom, Blob<double>* LSE);
+template float GlobalLSEMarginLayer<float>::CalcLSE(const vector<Blob<float>*>& bottom, Blob<float>* LSE);
+#endif
+
 
 #ifdef CPU_ONLY
 STUB_GPU(GlobalLSEMarginLayer);
